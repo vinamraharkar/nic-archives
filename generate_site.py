@@ -260,6 +260,32 @@ figure.article-image figcaption {
     vertical-align: super;
     margin-right: 0.2rem;
 }
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 0.5rem 3rem;
+    }
+    .page {
+        padding: 2rem 1.25rem;
+    }
+    .book-frame-inner {
+        padding: 1.5rem 1rem;
+    }
+    .masthead-title {
+        font-size: clamp(1.2rem, 7.5vw, 2.6rem);
+        letter-spacing: 0.12em;
+    }
+    .masthead-meta {
+        font-size: 0.75rem;
+    }
+    h1.article-title {
+        font-size: 1.6rem;
+    }
+    .article-body p.first-para::first-letter {
+        font-size: 3em;
+    }
+}
 """
 
 ARTICLE_ORDER = [
