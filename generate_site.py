@@ -16,112 +16,143 @@ CSS = """
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background: #f4efe4;
-    color: #1c1208;
+    background: #1a0f07;
+    color: #1e1408;
     font-family: Georgia, "Times New Roman", serif;
     font-size: 17px;
     line-height: 1.7;
+    min-height: 100vh;
+    padding: 3rem 1.5rem 5rem;
 }
 
-.container {
-    max-width: 700px;
+/* ── Page card (cream vellum sheet on dark leather) ── */
+.page {
+    max-width: 720px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 3.5rem 4rem;
+    background: #f7f0d8;
+    box-shadow: 0 6px 60px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.5);
 }
 
-/* ── Masthead ── */
-.masthead {
-    border-bottom: 3px double #c4a882;
-    padding-bottom: 1.2rem;
-    margin-bottom: 1.5rem;
+/* ── Double-border masthead frame ── */
+.book-frame {
+    border: 3px solid #b8892a;
+    padding: 4px;
+    margin-bottom: 2.5rem;
+}
+.book-frame-inner {
+    border: 1px solid #b8892a;
+    padding: 2.5rem 2rem;
     text-align: center;
 }
 .masthead-title {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 900;
-    letter-spacing: 0.08em;
-    color: #8b1a1a;
+    letter-spacing: 0.25em;
+    color: #7a1f1f;
     text-transform: uppercase;
     line-height: 1;
 }
+.masthead-ornament {
+    color: #b8892a;
+    font-size: 1.1rem;
+    margin: 0.6rem 0;
+    letter-spacing: 0.4em;
+}
 .masthead-sub {
-    font-size: 0.9rem;
-    letter-spacing: 0.12em;
-    color: #6b5a3e;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.2rem;
+}
+.masthead-meta {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    color: #8a7355;
     margin-top: 0.3rem;
-    text-transform: uppercase;
 }
 
 /* ── PDF link ── */
 .pdf-link {
     display: inline-block;
-    margin: 1rem 0 1.5rem;
-    padding: 0.45rem 1rem;
-    border: 1px solid #c4a882;
-    border-radius: 2px;
-    color: #8b1a1a;
+    margin: 0.5rem 0 0;
+    padding: 0.5rem 1.4rem;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
     text-decoration: none;
     font-size: 0.85rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
-.pdf-link:hover { background: #ede6d6; }
+.pdf-link:hover { background: #ede6c0; }
 
-/* ── Article list ── */
-.section-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
+/* ── Table of Contents heading ── */
+.toc-heading {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #8b1a1a;
-    border: 1px solid #8b1a1a;
-    padding: 0.15rem 0.4rem;
-    margin-right: 0.5rem;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
-.article-list {
-    list-style: none;
-    border-top: 1px solid #c4a882;
-}
-.article-list li {
-    border-bottom: 1px solid #c4a882;
-    padding: 0.85rem 0;
-}
-.article-list a {
-    color: #1c1208;
-    text-decoration: none;
-    font-size: 1.05rem;
-}
-.article-list a:hover { color: #8b1a1a; text-decoration: underline; }
-.article-meta {
-    font-size: 0.8rem;
-    color: #7a6a52;
-    margin-top: 0.2rem;
-}
-
-.articles-heading {
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #6b5a3e;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
     margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
 }
 
-/* ── Back link ── */
+/* ── TOC list ── */
+.toc {
+    list-style: none;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+}
+.toc-section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.02rem;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.1rem;
+}
+
+/* ── Back link (sits on dark background above page card) ── */
+.back-wrap {
+    max-width: 720px;
+    margin: 0 auto 1rem;
+}
 .back-link {
     display: inline-block;
-    color: #8b1a1a;
+    color: #c9a96e;
     text-decoration: none;
     font-size: 0.85rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
 }
-.back-link:hover { text-decoration: underline; }
+.back-link:hover { color: #f7f0d8; text-decoration: underline; }
 
-/* ── Article page ── */
+/* ── Article page header ── */
 .article-header {
-    border-bottom: 2px solid #c4a882;
     padding-bottom: 1rem;
     margin-bottom: 1.8rem;
 }
@@ -129,22 +160,27 @@ body {
     font-size: 0.68rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #8b1a1a;
-    border: 1px solid #8b1a1a;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
     padding: 0.1rem 0.35rem;
     display: inline-block;
     margin-bottom: 0.6rem;
 }
 h1.article-title {
-    font-size: 2rem;
+    font-size: 2.1rem;
     font-weight: 800;
     line-height: 1.25;
-    color: #1c1208;
+    color: #7a1f1f;
     margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
 }
 .article-byline {
     font-size: 0.85rem;
-    color: #7a6a52;
+    color: #8a7355;
     font-style: italic;
 }
 
@@ -154,22 +190,45 @@ h1.article-title {
     text-align: justify;
     hyphens: auto;
 }
+
+/* Drop cap on first paragraph */
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 900;
+    margin: 0.05em 0.12em 0 0;
+}
+
+/* Section headings with gold ornamental prefix */
 .article-body h3.section-heading {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #8b1a1a;
-    margin: 1.8rem 0 0.6rem;
-    border-top: 1px solid #c4a882;
-    padding-top: 0.8rem;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h3.section-heading::before {
+    content: '\2014 ';
+    color: #b8892a;
+}
+
+/* Ornamental section divider */
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
 }
 
 /* ── Figure / image ── */
 figure.article-image {
     margin: 1.5rem 0;
-    border: 1px solid #c4a882;
-    background: #ede6d6;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
     padding: 0.75rem;
 }
 figure.article-image img {
@@ -180,7 +239,7 @@ figure.article-image img {
 }
 figure.article-image figcaption {
     font-size: 0.8rem;
-    color: #6b5a3e;
+    color: #8a7355;
     font-style: italic;
     line-height: 1.5;
 }
@@ -188,8 +247,8 @@ figure.article-image figcaption {
 /* ── Footnotes ── */
 .footnote {
     font-size: 0.82rem;
-    color: #6b5a3e;
-    border-top: 1px solid #c4a882;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
     padding-top: 0.6rem;
     margin-top: 2rem;
     font-style: italic;
@@ -202,17 +261,28 @@ figure.article-image figcaption {
 """
 
 ARTICLE_ORDER = [
-    'cover-role-of-nic-in-the-election-process.md',
-    'nics-election-experience-a-rich-harvest.md',
-    'financial-management-informatics-project.md',
-    'the-lakshadweeps-not-so-far-away.md',
-    'all-set-for-tax-computerization.md',
-    'around-the-nic-world.md',
-    'keeping-monkeys-at-bay.md',
-    'products.md',
-    'projects.md',
-    'misc.md',
+    'cover-role-of-nic-in-the-election-process.md',   # p.1
+    'misc.md',                                          # p.2 left col (editorial)
+    'financial-management-informatics-project.md',      # p.2 right col
+    'around-the-nic-world.md',                          # p.3 left col
+    'all-set-for-tax-computerization.md',               # p.3 right col top
+    'keeping-monkeys-at-bay.md',                        # p.3 right col bottom
+    'nics-election-experience-a-rich-harvest.md',       # pp.4–5
+    'products.md',                                      # p.6
+    'projects.md',                                      # p.7
+    'the-lakshadweeps-not-so-far-away.md',              # p.8
 ]
+
+
+def roman(n):
+    """Convert integer to Roman numeral string (supports 1–10)."""
+    vals = [(10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')]
+    result = ''
+    for v, s in vals:
+        while n >= v:
+            result += s
+            n -= v
+    return result
 
 
 def extract_images():
@@ -309,16 +379,22 @@ def md_to_html(body, images):
     lines = body.splitlines()
     html_parts = []
     pending_para = []
+    first_para_emitted = False
 
     # State for collecting multi-line image descriptions
     in_image = False
     image_desc_lines = []
 
     def flush_para():
+        nonlocal first_para_emitted
         if pending_para:
             text = ' '.join(pending_para).strip()
             if text:
-                html_parts.append(f'<p>{inline_md(html_escape(text))}</p>')
+                if not first_para_emitted:
+                    html_parts.append(f'<p class="first-para">{inline_md(html_escape(text))}</p>')
+                    first_para_emitted = True
+                else:
+                    html_parts.append(f'<p>{inline_md(html_escape(text))}</p>')
             pending_para.clear()
 
     def render_image(desc_text):
@@ -444,17 +520,20 @@ def render_article_page(meta, html_body, filename):
 <style>{CSS}</style>
 </head>
 <body>
-<div class="container">
-  <a class="back-link" href="../index.html">&larr; Back to Issue</a>
-  <div class="article-header">
-    {section_badge}
-    <h1 class="article-title">{title}</h1>
-    {byline_block}
+  <div class="back-wrap">
+    <a class="back-link" href="../index.html">&larr; Back to Issue</a>
   </div>
-  <div class="article-body">
-    {html_body}
+  <div class="page">
+    <div class="article-header">
+      {section_badge}
+      <h1 class="article-title">{title}</h1>
+      <hr class="title-rule">
+      {byline_block}
+    </div>
+    <div class="article-body">
+      {html_body}
+    </div>
   </div>
-</div>
 </body>
 </html>"""
 
@@ -462,7 +541,7 @@ def render_article_page(meta, html_body, filename):
 def render_index(articles):
     """Return full HTML index page string."""
     items_html = []
-    for meta, filename in articles:
+    for idx, (meta, filename) in enumerate(articles, start=1):
         title = html_escape(meta.get('title', 'Untitled'))
         author = meta.get('author')
         section = meta.get('section')
@@ -471,7 +550,7 @@ def render_index(articles):
 
         badge = ''
         if section:
-            badge = f'<span class="section-label">{html_escape(section)}</span>'
+            badge = f'<span class="toc-section-label">{html_escape(section)}</span>'
 
         meta_parts = []
         if author:
@@ -480,12 +559,16 @@ def render_index(articles):
             meta_parts.append(page_display(pages))
         meta_line = ''
         if meta_parts:
-            meta_line = f'<div class="article-meta">{" &bull; ".join(meta_parts)}</div>'
+            meta_line = f'<div class="toc-meta">{" &bull; ".join(meta_parts)}</div>'
 
         items_html.append(
             f'<li>'
-            f'{badge}<a href="articles/{stem}">{title}</a>'
+            f'<span class="toc-num">{roman(idx)}.</span>'
+            f'<div>'
+            f'{badge}'
+            f'<a href="articles/{stem}">{title}</a>'
             f'{meta_line}'
+            f'</div>'
             f'</li>'
         )
 
@@ -500,21 +583,24 @@ def render_index(articles):
 <style>{CSS}</style>
 </head>
 <body>
-<div class="container">
-  <div class="masthead">
-    <div class="masthead-title">Informatics</div>
-    <div class="masthead-sub">Vol.&nbsp;1, No.&nbsp;2 &nbsp;&bull;&nbsp; October 1992 &nbsp;&bull;&nbsp; National Informatics Centre</div>
-  </div>
+  <div class="page">
+    <div class="book-frame">
+      <div class="book-frame-inner">
+        <div class="masthead-title">Informatics</div>
+        <div class="masthead-ornament">&#10022; &#10022; &#10022;</div>
+        <div class="masthead-sub">Quarterly Newsletter</div>
+        <div class="masthead-meta">Vol.&nbsp;1, No.&nbsp;2 &nbsp;&bull;&nbsp; October 1992 &nbsp;&bull;&nbsp; National Informatics Centre</div>
+        <div style="margin-top:1.2rem;">
+          <a class="pdf-link" href="NIC Archives.pdf">&#10022;&nbsp; Download Original PDF</a>
+        </div>
+      </div>
+    </div>
 
-  <div style="text-align:center;">
-    <a class="pdf-link" href="NIC Archives.pdf">&#128196; Download Original PDF</a>
+    <p class="toc-heading">Table of Contents</p>
+    <ul class="toc">
+      {items}
+    </ul>
   </div>
-
-  <p class="articles-heading">Articles in this issue</p>
-  <ul class="article-list">
-    {items}
-  </ul>
-</div>
 </body>
 </html>"""
 
