@@ -1,0 +1,12 @@
+---
+title: "AS WE STEP INTO 2012, I WISH YOU & YOUR FAMILY A VERY HAPPY & PROSPEROUS NEW YEAR!"
+publication: "Informatics"
+issue_date: "January 2012"
+pages: [3]
+author: "Dr. B.K. Gairola"
+section: null
+---
+
+## AS WE STEP INTO 2012, I WISH YOU & YOUR FAMILY A VERY HAPPY & PROSPEROUS NEW YEAR!
+
+NIC is the front runner in providing e-Governance services to the government and the common man alike. Thanks to your hard work, dedication and commitment the organisation has achieved new heights of success. I compliment you all for the great achievements. The Government of India is placing great emphasis on accelerating implementation of e-Governance initiatives in all sectors, especially the social sector, which impacts the lives of the aam aadmi. This will facilitate efficient, transparent, accountable & participative governance for the Citizens. NIC's role has become very crucial in the implementation of various national/State level ICT enabled initiatives and acquiring strategic control of these ICT applications on behalf of the government. In order to accelerate the implementation of e-Governance it is very vital that we, as technology support providers and enablers, free the users from the drudgery of managing either the ICT infrastructure or the application platform for their respective applications. NIC therefore has to work towards creation of a Common National Information Infrastructure and move to 'cloud' over a period of time. It must provide a ready- to- use secure environment for the users and allow them to concentrate on the services. All of you today are building a number of applications with multiple variants for meeting specific needs of the State Governments. This is not only an inefficient way of software development but also does not allow building of interoperable unified systems. We need to build common service delivery platform/s with effective process reforms to meet the challenge in the future. Technology is changing very rapidly. We need to keep pace with it to ensure that India takes maximum advantage to meet the challenges which are unique to us. In the coming years therefore, we need to rededicate ourselves to accelerate the e-governance process and achieve the vision and goal before us. I am sure that together we will be successful in our endeavors and bring glory to the organization. I once again wish everyone, the best in this year and the times to come.

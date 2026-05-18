@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assam — Informatics April 2005</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2005"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/april-2005/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2005/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2005/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/april-2005/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2005/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2005/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/april-2005/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2005/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2005/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2005/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2005/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2005/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2005.html">April 2005</a><span class="breadcrumb-sep">&rsaquo;</span><span>Assam</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">STATE IN FOCUS</div>
+          <h1 class="article-title" data-pagefind-meta="title">Assam</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 7–15</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2005.html">April 2005</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">All NIC offices are equipped with the latest in computer and communication equipment. High-end servers, state-of-the-art clients, up-to-date peripherals and high-speed satellite and terrestrial communication connectivities including DVB and SCPC VSATs give NIC infrastructure the required cutting edge in technology. With the implementation of the Community Information Centre Project (CIC), there is now a CIC in each of the 219 Administrative Blocks of the State. In keeping with the dictum of utilizing Information and Communication Technology (ICT) tools for facilitating the delivery of government and non-government amenities and services to the people, the Assam State Centre of the National Informatics Centre (NIC) is engaged in a concerted effort to usher in e-Governance in the state of Assam. This has been made possible because of a strong and reliable ICT superstructure that provides the platform for launching such an ambitious initiative. The Approach It is a three-pronged approach, each led by the three arms of the NIC Assam State Centre- Sanjog, Impact and Drishti. Team Sanjog (Solution Architect and Joint Network Operation Group) is primarily entrusted with the responsibility of providing all ICT solutions, including networking and communications, to the highest level of the Government machinery within the Assam Secretariat at Dispur. The functioning of the Network Operation Centre (NOC) falls within its purview. Team Impact (Infrastructure Maintenance and Project Action) looks after all the national-level ICT projects, and is also responsible for maintaining the statewide ICT infrastructure and the VSAT-based Wide Area Network (WAN) of NICNET. The brief of Team Drishti (District Resource and Software Hub Team for Information) is the development and implementation of all state and district-level computerization projects. It also spearheads the e-Governance endeavour of the NIC Assam State Centre. The objectives of each of these groups are well defined. They coalesce to provide ICT support, infrastructural facilities and services at all levels of the Government hierarchy and in as many sectors of development and walks of life as possible. NICSI provides additional resources in terms of hardware, software development and logistic support. NE Communication Hub NIC Assam State Centre provides the entire networking solution for the Sachivalaya through NICNET. It has installed and maintains an optical fibre-based Local Area Network (LAN). NIC Network Operating Centre (NOC) at the Sachivalaya acts as a Wide Area Network (WAN) gateway with a 4 Mbps leased circuit between Guwahati and NIC HQ at New Delhi and a 2 Mbps back-up leased circuit between Guwahati and NIC, Hyderabad. The NOC also serves as the gateway for all the seven other states of the Northeast, including Sikkim. A 64 Kbps VSAT-based WAN interconnects the state, district and block administrative headquarters providing direct access to the Internet. Multi-point videoconferencing facility at a bandwidth of 256 Kbps has been provided at the Assam Sachivalaya and is under implementation at all district administrative headquarters. NIC Assam State Centre maintains various database, mail and web servers which cater to the requirements of the entire state. A Data Centre of clustered servers is being set up at the Assam Sachivalaya. The Presence Assam State Centre (ASC) of the National Informatics Centre (NIC) was set up in 1986. Information Technology was then at a very nascent stage, yet NIC had envisaged the crucial role this technology could play in the development and transformation of the country. Starting with only its State Centre in Guwahati, NIC Assam State Centre began setting up district units from 1990 onwards, and now has a NIC District Unit in 23 of the 27 districts of the State, the additional four districts having been formed recently. NIC's strength lies in its pool of experienced and technically sound manpower resources. The State Informatics Officer (SIO) leads all NIC activities in the entire State. At the state level, he is supported by a team of 20 technical officers and support staff. Each NIC District Centre is manned by two officers. NICSI office and dedicated NIC cells in the Guwahati High Court and at Postal Life Insurance office. Paving the Way e-Governance is not a stand-alone entity. Any e-Governance endeavour depends on the seamless integration of existing systems with the e-Governance effort. Many of the existing computerized systems of Assam were in fact e-Governance ready to a very great extent. Besides, a large repository of information was already available in the form of websites. The NIC Assam State Centre has about 300 websites to its credit. This includes the official website of the Assam State Government launched in 1999. Development of Human Resources is crucial for implementation of e-Governance. More than 40 training programmes are conducted in a year with a maximum of 30 participants per batch by the NIC Assam State Centre. Computerization projects such as Gana Sewa, Office Process Automation (OPA) and Chief Minister's Relief Monitoring Application have been developed and implemented in the Assam Sachivalaya. The NIC Assam State Centre has developed and implemented several national and state-level projects which have boosted the prospects of e-Governance to a great extent. The AGMARKNET (Agricultural Marketing Information System Network) and DACNET (Department of Agriculture and Cooperation Network) projects utilize ICT facilities for the betterment of the Agriculture Sector. 3 state-level offices &amp; 13 Agriculture-Produce Market Committees of the state have been provided with computer hardware &amp; software and are connected with the nationwide agriculture information network. Passport Computerization System generates receipts on filing of applications, gives the processing status of application, handles cases of renewal, loss and damage of passports and prints the passports for the Guwahati Passports Office which covers all the 7 states of the Northeast. National Register of Citizenship (NRC) is a computerized system which creates databases to store all the information contained in the manual National Registers of Citizenship (NRCs) in the original language itself. Different types of reports are generated by the software. The Land Records System of 20 out of the 27 districts of Assam have been computerized under the Computerized Land Records (CLR) Scheme of the Ministry of Rural Development, Government of India. Presently, Jamabandis (Records of Rights) are being issued to land owners in six districts of Assam. Jamabandi data of three districts (Kamrup, Tinsukia and Dibrugarh) have been web enabled for public viewing. Dharti is a software developed by NIC Assam State Centre for the new Land Records Computerization System to be implemented in the district of Sonitpur as a pilot project. The NIC Assam state Centre has been associated with the Guwahati High Court since 1994. Filing of cases, updating of case records, reports and causelist generation and caveat matching were taken up initially. Thereafter, the causelists were made available on the Internet (http://causelists.nic.in). The Guwahati High Court website was launched in 2002, and is being maintained by NIC regularly since then (http://ghconline.nic.in). The judgments of Guwahati High Court have been made available on the website http://judis.nic.in. All district boundaries of Assam have been digitized under Prithvi - Geographical Information System (GIS) based project of the NIC Assam State Centre. Block boundaries of 12 districts, village boundaries of three districts and ward maps of Guwahati have also been digitized. Prithvi has become an exemplary Web GIS Server facility for sustainable planning even at the cadastral level. Sonitpur district became the first district to adopt Cadastral Mapping at the Circle level. The application is used for interactive retrieval of data related to district, circle and village, and thus generating various thematic maps to be effectively and efficiently used in improving micro-level planning. Thematic maps based on various GIS layers such as rail, road, river, forest, drainage, water bodies etc. are generated as per requirement. A national-level GIS Conference was conducted in December 2004 at Guwahati, to initiate Prithvi as the key planning tool for the District Administration. Udyog Ratna is an effective and efficient tool for monitoring the performance of the District Industries Centres (DICs). It is a web-based online system which helps the General Managers of DICs to enter monthly progress reports of different schemes such as the 20-Point Programme, PMRY, Industrial Policy, Expenditure Statement etc. The data thus entered is made available to the Directors of Industries and the GMs of the DICs for use in planning. Bhubaneswar Barooah Cancer Institute (BBCI) is the only hospital in the entire Northeast for the treatment of cancer. Arogya, developed by the NIC Assam State Centre, is a web-enabled Management Information System (MIS) for the Hospital which incorporates Patient Registration, Accounts and Stores Management. The NIC Assam State Centre has been providing computerization support to the office of the Chief Electoral Officer (CEO) in each election since 1991. NIC has hosted a web site for the CEO. A web-enabled system collects round-wise counting information from NIC District Units and CICs. The results are displayed in a Results Display Booth. A Delivery Mechanism The final impetus for e-Governance was perhaps provided by the Community Information Centre (CIC) project. The CIC Project was conceived in 2000 exclusively for the Northeast. This Rs 242-crore Project aimed to make the advantages and benefits of Information and Communication Technology (ICT) available right down to the grass-root level of the region. The mandate was to set up a Community Information Centre in each of the 487 blocks of the eight states of the Northeast, including Sikkim. Everybody plunged in with zeal and determination. Notwithstanding the heavy monsoon rains of Assam, the landslides and the floods, work progressed at a rapid pace. No barrier was insurmountable enough. Equipments were airlifted, carried on foot, on boats, and on elephant back; installation engineers walked for hours to reach their work sites. On August 17, 2002, the CICs were declared open to the people of the Northeast and the nation. Assam had a total of 219 CICs. In the two-and-a-half years of their existence, the CICs of Assam have taken ICT right upto the doorsteps of the rural population. They have successfully bridged the Digital Divide. Their track record speaks for itself: • Total persons trained : 63,837 • Total recorded users: 3,73,573 • Total revenue earned : Rs 1,12,46,711 In the CICs, Assam found the perfect delivery mechanism for ICT services. The CICs prepared the ground for e-Governance. PRAGATI : The e-Governance Umbrella NIC Assam State Centre has indigenously designed and developed, PRAGATI -- an umbrella of 13 e-Governance applications for implementation in the districts of Assam. These frontline web-based applications will synergize with the other existing software applications to form the backbone of e-Governance for both the districts and the State as a whole. VIDHAN - Magistracy Case Management System: This package has been developed to automate the process of taking-up magistracy cases by the Magistracy Branch of District Magistrate's Office and to facilitate online query of case-status and generation of various reports. SHAPATH - Affidavits Management System: This package automates the process of maintaining the affidavits records by the Magistracy Branch of the Deputy Commissioner's office. AUGNEASTRA - Fire Arms Licensing Software System: This application provides the details of Fire Arms Licenses issued to various agencies. It generates various reports/queries for efficient decision making by the Administration. JANA-SEWA - Computerized Public Services Facilitation Counter System: Jana-Sewa incorporates features for recording petitions receipt for various services and providing efficient, timely and quality services to the citizens on the following important requirement: Caste Certificate, PRC, Legal Heir Certificate, Bakijai Clearance Certificate, Passport, Senior Citizen Certificate, Registration/Renewal of Club/NGO, Delayed Birth/Death Certificate, Ex-gratia Grant, Arms License, Licenses of Touring Cinema, Certified Copy of Court's Order, Certified Copy of Electoral Roll, License for Stamp Vendor, License for Pleader's Clerk, Issue of NOC for Explosive License, Disposal of Petitions for release of Gun from Police Station, Permission of Special events etc. PARISHODH - Computerised Bakijai (Loan Repayment) System: The objective of this Application Software System is to facilitate efficient registration, quick query, and timely generation of various Bakijai reports such as Monthly Register of newly taken up cases, the Monthly Bakijai Collection Statement, etc. Parishodh promises to help in increasing the State Government Revenue. NATHI-AWASTHITI - Computerized File Monitoring System: Nathi-Awasthiti is a G2G application developed to facilitate officials to monitor the movement of Files in the Deputy Commissioner's office and to review the status of each and every File. ANUSHRAWAN - Computerized Circle Office to DC Office Monthly Reporting System: ANUSHRAWAN facilitates speedy and efficient submission of the following Monthly Reports (mostly land records and revenue related) from the Circle Office to the Deputy Commissioner's Office: Progress of disposal of mutation cases, progress of updating of land records, Rajah Adalat, statements of NR/conversion/eviction cases. MANAB-SAMPAD - Computerized Personnel Information Management System: Manab-Sampad provides features for department-wise up-to-date maintenance, querying and reporting system on 'Human Resources' of the District Administration. GRIHA-LAKSHMI - Computerized Public Distribution System (PDS): Griha-Lakshmi aims to facilitate efficient maintenance of information on various essential public distribution commodities such as food grains, sugar, petroleum products, and other notified items issued to the public through various agencies. It generates various reports such as Card details, Fair Price Shops details, Oil Depot details etc. for effective decision making. BATON - Computerized Payroll System: Baton works for providing salaries on time and without any hassles. A prominent feature of this application is the timely generation of all the information/reports relating to Payroll System of an Establishment/Organization of the Government such as Pay Bill generation of the current month, Annual Pay Statement, Annual Consolidated report, Pay statement of previous month, Income Tax Report, Last Pay Certificate(LPC), Challans for GPF, etc. ABHIYOG - Computerized Public Grievance System: Abhiyog's enables citizens to lodge their grievances from any Internet cafe, CIC, etc. and also to see the status at any point of time. GRAMUNNAYAN - Computerized DRDA Schemes Monitoring System: This application software monitors and generates the reports on the progress of various schemes running under SGSY/SGRY/IAY and DRDA Administration in different District Rural Development Agencies (DRDAs) of Assam. OAK - Mail Management Application: This application software enters details of dak (post) received as well as dak issued by any office of the District Administration. It also monitors action taken on the dak on a weekly/fortnightly/monthly basis. Various queries can be made on the dak, and reports can be generated on dak issued on a particular date. The software also forwards the dak to the relevant officer/department. Creating Awareness Creating awareness and promoting the facilities assumes great importance. The NIC Assam State Centre has participated in national and state-level exhibitions. Assam CIC exhibition set up by the NIC Assam State Centre at the India International Trade Fair (IITF) 2004 at Pragati Maidan of New Delhi from November 14 to 28, 2004 and apprised the citizens of the Capital with the penetration of ICT at the grassroot level. NIC Assam State Centre participated in the exhibition of the 68th Session of the Assam Sahitya Sabha held at Sipajhar of Darrang district of the State from February 17 to 19, 2005. The Assam Sahitya Sabha is the biggest literary and socio-cultural organization of Assam, and its biennial sessions draw delegates and visitors from all over the state in large numbers. ASC primarily displayed the achievements, infrastructure, services and activities of the Community Information Centres (CICs) of Assam. The CICs of Darrang district developed a website for the Sahitya Sabha with the help of the NIC Assam State Centre (http://www.assamsahityasabha.nic.in). This marks the advent of ICT and web technology in the literary and socio-cultural fields of Assam. The CICs of Darrang district and NICSI, extended all technical and logistical help in making the participation a success. e-Governance is on a roll in Assam. The stage is all set for a prosperous digital future. Assam stands on the threshold of a digital revolution in Governance for which, the NIC Assam State Centre plays the role of a catalyst.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="chamoli-setting-new-limits-april-2005.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">CHAMOLI : Setting New Limits</span></a><a class="article-nav-link next" href="purnia-striving-to-generate-ict-awareness-april-2005.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">PURNIA : Striving to Generate ICT Awareness</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+---
+title: "MyGov Platform: Heralding a New Era in Governance"
+publication: "Informatics"
+issue_date: "October 2014"
+pages: [5, 6, 7, 8]
+author: "Alka Mishra, Mohan Das Viswam, D.P. Misra, Lokesh Joshi, Narender Kumar Jain, Varun Gupta, Neeta Verma"
+section: "Lead Story"
+---
+
+## MyGov Platform: Heralding a New Era in Governance
+
+National Informatics Centre, DeitY was entrusted with the task of coming up with an online platform, which bridges the gap between people and government through effective citizen’s participation in the process of governance. Being the frontrunner in facilitating many innovative e-Governance initiatives of the government, NIC has come up with ‘MyGov’, a unique and citizen centric initiative in which their ideas, suggestions and contributions are collectively utilized to strengthen the nation building process.
+MyGov, which was launched by the hon’ble Prime Minister recently, is an innovative initiative envisioned to build effective engagement of citizens in Governance through ICT intervention. Through this, the government aims to encourage active citizen participation to enable good governance, by seeking ideas, suggestions and contributions up to grass root level in the process of nation building. For the very first time in the history of India, a platform has been set up for the citizens across the country to join and share expert thoughts, ideas and suggestions in the areas related to various policies, programs, schemes etc.
+National Informatics Centre has been entrusted with the responsibility of the Platform’s Design, Content and Technical Management, besides the activities related to Platform Promotion and Handholding with Departments.
+“A Democracy Can’t Succeed Without People’s Participation and this Participation Should not be Limited Only During Elections, ‘MyGov’ Empowers the People of India to Contribute Towards Surajya”. - Hon’ble Prime Minister Shri Narendra Modi
+COMPONENTS OF MyGov
+MyGov platform is based on a ‘3D’ approach; meaning, citizens can DISCUSS, DO and DISSEMINATE. The platform enables these through various interest groups as well as Creative Corner and Open Forum.
+Groups
+Interest Groups are based on themes that the government feels need immediate attention. To start with, there are nine groups on the platform – Caring for the Specially Abled, Clean Ganga, Girl Child Education, Clean India, Skilled India, Digital India, Green India, Incredible India and Job Creation. Each group consists of online and on-ground tasks that can be taken up by the citizens. There are also discussions on the topics of interest within a group. Citizens can express their views on the above mentioned topics through these discussion forums. Citizens have to join a Group of their interest to participate in completing a task or post comments on discussions. As of now there is a limit of 4 groups that a citizen can join to ensure that there is meaningful & effective contribution from everyone.
+Tasks
+Citizens can volunteer for various tasks in a group and submit their entries. Once approved, these tasks can be shared by the contributor and also by other members on MyGov. These tasks are then reviewed by other members and experts. Approved task earn credit points. Interactive elements like tracking time spent volunteering and “credits” earned help in making the process interesting.
+Discussions
+Citizens can join discussions within groups to share or express their views, ideas, and thoughts with the help of pictures, videos, documents, etc. on policies as well as on matters of national interest and collaborate on key areas of development and governance. Some of the best ideas and suggestions will straight away reach the Hon’ble Prime Minister of India.
+Creative Corner
+From time to time, government institutions need inputs on branding related aspects of their initiatives like designing banner/logo, suggesting a creative punch line or a name for an initiative. There may also be specialized activity needing creative input such as proposing a design for a mobile application. Creative corner gives a platform for Government institutions to launch contests for inviting such inputs. Prizes and incentives may also be announced to the winners to encourage participation. The citizens can showcase their innovative side and also leave an imprint on India’s history. Each member of MyGov is automatically a member of this Creative Corner for participation.
+Open Forum
+Open Forum is a special section for discussing issues of national importance. The topics discussed here transcend all the groups due to their scope and importance and require wider participation and discussion among members of MyGov. Each member of MyGov is automatically a member of the Open Forum and can join the various discussions.
+MyGov: CITIZEN’S PERSPECTIVE
+Join as a contributor
+Citizens can register on MyGov.nic.in to participate. Details such as name, email id etc. are required at the time of registration. Optionally the registrants are asked to indicate the kind of skills they have and the issues on which they may like to provide inputs. As per its privacy policy, personal information volunteered on this site is not shared with any third party for commercial campaign. Users can log in through their used ID and password or through OTP delivered to their email id or mobile number.
+Once a user logs in, various modes of engagement mentioned above are available. A dashboard is also available to the user to track the activities performed by him/her. User can earn credit points by completing the profile details, posting views on discussions, completing tasks volunteered for and sharing ideas and viewpoints of others on social media. Incentives based on credit points will be announced in due course. Periodically, selected volunteers/achievers can get to meet and present their views directly to the Hon’ble PM of India.
+MyGov: DEPARTMENT’S PERSPECTIVE
+MyGov is primarily created for the Government departments and institutions to pursue their citizen engagement initiatives. Institutions can form or create interest groups based on various causes and initiatives taken in each sector the government. NIC is providing complete support to the departments and institutions who want to leverage the process of engaging the citizens.
+Within each group, discussions on relevant and significant topics can be initiated. The discussions can help government institutions understand viewpoints of the citizens and gather feedback on policy issues.
+Citizens can also be involved in online and on ground tasks through the platform such as writing research documents, concept notes, field reports, taking photographs/ videos, compiling policy measures etc. Besides crowdsourcing of ideas and suggestions, through ‘Tasks’, the institutions can also perceive success stories, best practices and problem identifications specific to sector, region, communities etc.
+Effective citizen engagement helps in strengthening the cause of democracy leading to good and efficient governance. MyGov Platform enables citizens from all walks of life to participate in discussion on different subjects of national interest. They can also contribute by performing tasks published by different ministries and departments. We at NIC are overwhelmed with the response of citizens as well as Government departments on this platform and are striving towards making it comprehensive, scalable and simple to use platform.
+Other facets of the platform are the Creative Corner and Open Forum, which gives institutions and bodies an opportunity to organize contest for creative inputs on upcoming initiatives or initiate discussions on specific theme/issue in their respective subjects and carrying national relevance.
+BENEFITS
+Understand the viewpoint of citizens and gather feedback
+Take ideas and contribution from the masses through various ‘tasks’
+Identify talent and expertise, which can be garnered towards the success of projects and initiatives
+Achieve the objective of ‘Good Governance’ by implementing the best ideas
+MyGov SUCCESS MILESTONES
+The Department of Financial Services was the first government body to make use of the ‘Creative Corner’ of MyGov by calling for entries to create Logo, Name and Tagline for its Financial Inclusion Scheme. This has received an overwhelming public response and over 7000 entries were received within a short stipulated period of time. From the shortlisted entries, the logo symbol, the name: ‘Pradhan Mantri Jan Dhan Yojna’ and the tagline: ‘Mera Khata Bhagya Vidhata’ were finalized. The Prime Minister awarded the winners at a special event held at New Delhi.
+Through the ‘Creative Corner’, two contests were conducted successfully to design e-Greetings for the Independence Day and Teachers’ Day. Over 3000 entries were received for Independence Day contest while Teachers’ Day contest received nearly 1300 entries. The hon’ble Prime Minister has sent the selected e-cards to citizens on the eve of Independence Day. Hon’ble Minister for MHRD used a selected e-card to send greetings to the citizens on the Teachers’ Day.
+The Open Forum for the PM’s Radio Address held at MyGov had a splendid response and have received about 4000 inputs within a week time.
+FUTURE
+The MyGov had a humble beginning and now spearheads to a larger mission of evolving into a one-stop centre for citizen engagement to enable good governance. A number of Groups, Tasks, Discussions and new segments for innovative public engagements are envisaged in the due course of time. The platform would also be used as a knowledge repository of insights on various subjects from the sharpest and brightest minds of the country. The likely new features to be included are:
+Opinion Polls and Surveys - to gather public opinion on specific issues concerning policies, programs and schemes of the government. These can also be used to assess the quality and efficiency of services, effectiveness of implemented schemes by government at various levels.
+Knowledge Repository – to store important documents for ready reference by various stakeholders.
+Dashboards – designed for departments of government, senior management and citizens. Metrics of participation, popularity, citizen profile would be made available through the dashboards.
+Further, for easy management, authorized government personnel will be given rights to create various public consultation activities. The platform will also enable departments to organize specific consultations with various domain experts.

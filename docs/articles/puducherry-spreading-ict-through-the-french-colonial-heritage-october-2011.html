@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puducherry: Spreading ICT through the French Colonial Heritage — Informatics October 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/october-2011/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/october-2011/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/october-2011/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/october-2011/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2011.html">October 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Puducherry: Spreading ICT through the French Colonial Heritage</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the UT</div>
+          <h1 class="article-title" data-pagefind-meta="title">Puducherry: Spreading ICT through the French Colonial Heritage</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By S Rajasekaran; S Sivanandam &bull; pp. 17–20</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2011.html">October 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The Union Territory of Puducherry is a unique place and it is a blend of spiritual aura, French colonial heritage, Tamil culture and the cosmopolitan flair of many nationalities in a small but varied town. The inherent ambience of “Pondy”, as it is fondly called, becomes most evident in the oldest part of the town which flanks the seashore Boulevard. Puducherry has Colonial buildings, some of which trace back to the 18th century, lined along a grid of straight clean streets and house the French institutions, private homes and businesses.</p>
+<p>The National Informatics Centre, Puducherry was established way back in 1989. Since then, NIC is instrumental in bringing about the IT culture in Puducherry government through its constant efforts and with introduction of latest cutting edge technologies.</p>
+<p>VIBRANT COMPUTERISATION ACTIVITIES AT PUDUCHERRY Network and Hardware Infrastructure: NIC Puducherry has a sound infrastructure having an array of 16 rack mount servers and 6 TB SAN capacity support. It has 2 redundant 45 MBps links to NIC HQrs from RAILTEL and BSNL along with 1GBps link up to Bangalore. All the Three Districts are connected through 34 Mbps Links with NIC Puducherry. NIC is the implementing agency for Pondicherry State Wide Area Network (PSWAN) providing 12 vertical and 326 horizontal links.</p>
+<p>VATSoft: VATSoft is an online, user-friendly system developed for commercial tax Department, Puducherry to cater to its back office workflow needs and online service delivery based on Karnataka model. It is a workflow based application incorporated with the prevailing business rules in the Puducherry VAT act and rules. It is a single window system for returns processing, e-Payment of sales tax, registration processing, statutory forms for submission and cancellation, acknowledgement, MIS reports, audit selection assignment processing, inspection processing, penalty collection, etc.</p>
+<p>VATSoft system has conspicuously changed the functionality of the Department by way of improved tax administration resulting in increased revenue collection. It is implemented in all the four regions and has brought transparency in the VAT administration.</p>
+<p>PDS for Civil Supplies and Consumer Affairs: The ration cards of Puducherry UT are digitized and the issue of PDS commodities are monitored through web enabled system. The complete list of ration cards, its member details and the related services are also available online. Smartcard based ration card is in the pipeline and to achieve this objective, the ration card data is handed over to a system integrator for verifying and capturing biometrics and photo through enrollment camps. The complete PDS chain comprising of allocation, distribution and consumption are updated in an online system.</p>
+<p>Assembly Elections-2011: NIC Puducherry had designed online system to collect the employee details from all government Departments as per the guidelines of CEC for pre-poll activities. The randomization process of polling personnel allocation as well as EVMs for booths are the two major activities. Allocation of polling personnel to polling stations is as per the norms defined by CEC. All validation checks for both processes are done as per the schedule of Election Department, Puducherry. Necessary appointment orders for individuals and all other reports required are generated through the system.</p>
+<p>The system helps in the collection and dissemination of time wise votes polled, booth wise votes polled, constituency wise and region wise voting turn out. On the counting day, the booth wise votes secured by each candidate after consolidation is disseminated round wise, constituency wise and party wise positions.</p>
+<p>Public were able to get the round wise lead positions, party wise tally and results including Karaikal, Mahe and Yanam online.</p>
+<p>CIPA for Police Department: CIPA is a MMP designed by NIC for the computerization of police station activities. It is implemented fully across the UT covering 38 Police Stations. Nearly 150 police personnel are trained to use CIPA at various levels. A web based MIS on CIPA data is available.</p>
+<p>e-Pathiram: e-Pathiram is a workflow based automated system covering the entire registration process at the Sub Registrar offices. It provides transparency in valuation of property and ensures accurate calculation of stamp duty and registration fees to be paid to the Government. It has the facility to capture and store the biometrics of executants and claimant. The registered documents are scanned and archived thereby eliminating the manual process of writing index registers and maintaining the document copies. A website is also available for getting the Guideline Registration value (GLR).</p>
+<p>The documents are tagged by a registration number facilitating easy encumbrance search. The Department is able to return the registered document on the same day itself.</p>
+<p>Transparency in Transport Department: SARATHI and VAHAN are the major mission mode projects of Govt. of India being implemented in all RTO offices across the country. In Puducherry, the SARATHI and VAHAN is implemented with local customization in the two RTO offices and two unit offices. The complete RTO related activities are automated with the implementation of SARATHI and VAHAN. The biometrics of the applicant is captured and stored through SARATHI and is printed on the Driving Licence.</p>
+<p>The State Register and National Register created from the RTO databases is used widely by the Transport Department and the Police Department for searching vehicles based on specific criteria.</p>
+<p>Birth and Death Information System (BDIS) for Local bodies: BDIS software help the local bodies to register the births and deaths in the respective commune panchayats /municipalities. The certificates are issued across the counter in less than two minutes eliminating the inordinate delay. The MIS related reports are generated through the system.</p>
+<p>A 40 digit security code is printed at the bottom of birth and death certificates to ensure authenticity. A web application developed by NIC is used to check the genuineness of the birth/death certificates issued through Puducherry Municipality from anywhere.</p>
+<p>Property / House Tax assessment and Collection details monitoring System : This is a web enabled online system for the accurate assessment of property. It acts as a channel of dissemination for the property assessment particulars, demand details and tax payment particulars to the public. The Department can view the demand, collection and balance till date for any municipality or commune Panchayat. It is automated for a drill-down analysis up to an individual assessment. The computerized receipt of payment is issued to the public.</p>
+<p>It has reduced the manual preparation and compilation time drastically and has brought the transparency in the demand generation and tax collection process. The delivery of services to public by the Department has been speeded up.</p>
+<p>Old Age Pension Payment monitoring System: This system is for maintaining the payment particulars of nearly 90000 Old Age / Widow and Destitute Pension for Women and Child Department. It provides the pivotal information about the pensioner's detail, payment details and other stoppage details to the Department.</p>
+<p>It has reduced the manual entry time drastically and has brought in transparency in the pension payment process. It facilitates instant information delivery to public by the Department.</p>
+<p>Differently Abled Persons Pension Payment monitoring System: This system is for maintaining the payment particulars of approximately 19000 differently abled persons Pension for Social Welfare Department. It provides the information about the pensioner's detail, payment details and other stoppage details to the Department.</p>
+<p>Acquittance for beneficiaries and other MIS reports to the Department are generated every month.</p>
+<p>Finance Portal of Govt. of Puducherry: The finance outlay and expenditure are monitored online with the help of this portal. By linking Treasuries with Budget and Planning, Sector/Scheme/Department wise outlay vs. expenditure is seen online. Also, Letter of Credit (LOC) projects like PWD and Port are updating the data directly in the portal.</p>
+<p>At any point of time the Government can ascertain the performance of expenditures. The reports are used in plan review meetings, around 100 graphical analysis and 25 reports are generated from the system.</p>
+<p>eSalary - Online Centralized PayRoll system : Directorate of Treasury (DAT) and 400 DDOs of Govt. of Puducherry are using this online Payroll accounting System from its 4 regions and salary for nearly 20000 employees is being prepared through this software every month. It facilitates the online payroll process viz. preparation of pay bills, schedules etc. Non official recoveries are also taken care by the package while preparing the acquittance and Pay slips by the cashiers.</p>
+<p>It also has functionalities for DA arrear processing, bonus processing, IT calculation and related reports etc. Individual employee can see his/her personal details, GPF and pay particulars over the net. It supports Electronic Clearance System (ECS) for payment of individual salary, DA arrear, bonus payments etc.</p>
+<p>Modernization of Prisons: As a part of modernization of prisons, the roster management system for randomizing the posting of warders at different locations is taken care by the system. A visitor management system is also developed to capture the visitor's information with photograph. A web enabled prisoner's monitoring system to capture the details of inmates is also implemented. Video conferencing setup is established to connect the courts and the prisons to avoid the movement of prisoners for producing to remand extension. The visitors are monitored through the system.</p>
+<p>Centralized Admission for Hr. Secondary Course: The centralized admission software facilitate Education Department to admit students of higher secondary course in Government Schools, based on the marks obtained in 10th std. The allotment of students in each School as per the availability of seats and student's merit in each category (GEN, OBC, MBC, SC) including special Categories like Ex-Servicemen, Physically Handicapped, Sports, Freedom Fighters is done by the system.</p>
+<p>Allotment order to individual student and other MIS reports for Department are generated. Vacancy position display modules provides the parents and students the latest group wise vacancy positions available in schools.</p>
+<p>Recruitment Software for Govt. of Puducherry: This software was developed for pre and post recruitment examination activities. All the government recruitment process at Puducherry makes use of this software with few modifications as per the selection criteria. A web site has been designed to publish the results to bring transparency in the examination process.</p>
+<p>ReALCraft : The project Registration And Licensing of Fishing Craft for Fisheries Department is implemented by Department of Animal Husbandry, Dairying &amp; Fisheries through National Informatics Centre (NIC) on a turn-key basis.</p>
+<p>Hub for Hardware testing activities: Another major activity being carried out at NIC, Puducherry is the acceptance testing of computer systems and peripherals for various purchase orders placed by NIC and NICSI, New Delhi with vendors viz. ACER, LENOVO, HCL, and WIPRO housed at Puducherry.</p>
+<p>PSWAN - THE NETWORK BACKBONE OF PUDUCHERRY State Wide Area Network (SWAN) has been identified as an element of the core infrastructure for supporting the e-Governance initiatives. Puducherry has four regions which are geographically far off. So PSWAN is a boon which inter connects these remote areas to the main hub thereby helping the government in it's e-governance initiatives.</p>
+<p>NIC is the implementing agency for this prestigious project of establishment of PSWAN Network as DIT, Puducherry has opted for NIC Model. PSWAN consists of 12 Vertical PoP s and 326 Horizontal Offices. SHQ - 1 No. at Chief Secretariat Puducherry DHQ - 3 Nos. each at Karaikal, Mahe and Yanam BHQ - Puducherry (5 Nos.) - Saram Complex, Villanur, Ariyankuppam, Madagadipet, Bahour Karaikal (3 Nos.) - Tirunallar, Kottucherry&amp; T.R.Pattinam</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="integrated-missions-accounting-system-october-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Integrated Missions Accounting System</span></a><a class="article-nav-link next" href="contribution-of-nic-to-government-of-bihar-in-the-field-of-ict-october-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Contribution of NIC to Government of Bihar in the field of ICT</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

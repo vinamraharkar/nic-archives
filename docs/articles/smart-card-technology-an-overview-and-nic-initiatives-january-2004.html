@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Card Technology-An Overview and NIC Initiatives — Informatics January 2004</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2004"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2004/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2004/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2004/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2004/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2004.html">January 2004</a><span class="breadcrumb-sep">&rsaquo;</span><span>Smart Card Technology-An Overview and NIC Initiatives</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">E GOV INITIATIVES</div>
+          <h1 class="article-title" data-pagefind-meta="title">Smart Card Technology-An Overview and NIC Initiatives</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By S.K.Sinha, NIC HQ &bull; pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2004.html">January 2004</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">In this issue, we feature the technology behind Smart Cards which has heralded a new dimension in the area of security of distributed systems, personal identification and payment applications.</p>
+<p>Plastic cards are a way of life in most developed countries. They are fast gaining momentum in the developing world too. Whether it is for certificate of identity, e-Purse, or Credit/Debit purposes, plastic cards have revolutionized the way business is performed in our day-to-day life. They have been in use for a long time in the form of Magnetic Strip Cards. However, magnetic strip technology has inherent security problems due to the un-intelligent nature of the card, which is basically a digital medium containing data in encrypted form. In that respect it is no different than a normal floppy disk, except with the difference in data writing format and devices. Smart cards have heralded a new technology that has tremendous potential for enhancing the security of distributed systems, for personal identification and payment applications.</p>
+<p>ž| The Technology : A smart card is a credit card-sized, tamper-resistant security device that offers functions for secure information storage and information processing that rely on VLSI chip technology. A smart card contains a secure microprocessor chip embedded in the plastic card (Fig.1). The chip can implement an Operating System (OS) with a secure file-system, and the OS has the capability to compute cryptographic functions, and actively detect invalid access attempts onto the card file system. With proper application of file system access rights, a smart card can be safely used by multiple, independent applications. A smart card is distinguished from a magnetic strip card (e.g., typical credit card), and laser optical cards, as the latter have no VLSI circuitry and Operating System and thus no active security procedures and no built-in tamper-resistance. Anyone with an appropriate card reader can read whatever is on the card.</p>
+<p>ž| Information Storage : Smart Card file system, which is implemented over the E2PROM (Electrically Erasable Programmable Read Only Memory) of microprocessor chip, contains hierarchical file system, with MF (Master File) at the top, DF (Dedicated File), and EF (Elementary File) as various entities in the hierarchy (Fig3). Data elements are grouped and stored in EF, which is the bottom level entity. Dedicated files (DF) are like directory files of conventional File Systems containing DF’s and EF’s. Dedicated Files are also the entities hosting all files related to one single application (viz. Driving License, Electoral ID Card, PAN Card etc), and therefore are also termed as Application Files. MF is top level Dedicated File. All kind of files i.e. MF, DF and EF can be configured for their security parameters (conditions) for various operations (Read, Modify, Delete) on their headers. Definable security conditions may be PIN verification, Key Authentication etc.</p>
+<p>Reading and writing, information onto the card is carried out by the device called Smart Card reader. Since Smart Card is a passive device in itself, it draws power supply and clock from the smart card reader. Through a predefined set of protocols, communication is established between the Computer(PC) and Smart Card through the Smart Card reader.Standard set of API’s are available under Windows and other Operating Systems to integrate Smart Card capabilities into different software applications. Smart Card, which has the capability of a miniature computer, communicates with the PC to perform different operations on Smart Card data.</p>
+<p>?| Smart Card Security : Smart cards are the most secure devices to store small piece of information, which technologically makes it possible to impose desired security conditions/rules for accessing the required information. Following are the Security Mechanisms which Smart Card provides. a. PIN Verification: PIN is like a password, which is securely stored in the Smart Card. Any specific Smart Card functionality (e.g. Performing Money Transaction, requesting for e-Service delivery), can be bound with the successful PIN verification. If PIN verification fails, built-in mechanism on the Smart Card disallows the functionality to get invoked. After three or four unsuccessful attempts Smart Card OS blocks the PIN usage and thereby protecting the valuable Smart Card resources. b. Key based Authentication: Key based authentication is the biggest security strength of Smart Card, due to which they are considered to be most secure devices as compared with other cards (Magnetic, Optical etc.). Keys are typically used for cryptographically securing data on Smart Card, with the help of strong on-chip encryption algorithms like 3DES or RSA. Through challenge-response mechanism and encryption and decryption through the corresponding keys, two secure devices (with one or both as Smart Cards) can negotiate to authenticate each other (Fig 4). And this is the methodology through which a person proves his identity, what he claims to be, by possessing one of the keys, securely stored on his card. The authentication process can be based on symmetric keys (Master Key-Derived Key) or asymmetric keys (Public Key-Private Key). Smart Card technology provides the security against direct access to keys, and makes it possible that all kinds of security operations are performed internally on the chip, without sending keys out of the card. This enhances the security to a great extent. The Smart Card chip (Microprocessor), is strong enough to run various security related complex algorithms using keys internally.</p>
+<p>?| Smart Card and PKI : PKI technology greatly depends on the security of the private key of the individual. Compromise of private key can lead to the failure of trust environment created for the security of cyber world. Smart Card technology helps implement this in following ways, i. Secure storage of individual’s private key, inside the Card. ii. On-Card generation of private key-public key pair. iii. On-Card generation of digital-signature. iv. On-Card encryption and decryption of data. All the basic data/information security characteristics i.e. Authenticity, Integrity, Confidentiality and Non-repudiation can be ensured through above Smart Card PKI security mechanisms.</p>
+<p>?| Smart Card for proof of Identity : Identity fraud is a growing problem world wide ; specially in the context of the current world scenario. Whether it is the question of secure border control or delivery of citizen services to right person, ensuring the proof of identity becomes a matter of vital interest. Present form of ID are not secure enough or foolproof to stop the identity fraud. Almost every thing which can be printed can be faked. Terrorists regularly use fake passports to cross the world boundaries. Smart Cards with biometrics having digital signature of issuer authority can effectively provide the fool proof mechanism to prove the identity of a person is what he claims to be. Using PKI technology on Smart Card, Identity Data of individual with his biometrics on the card can be digitally signed by an issuer certified by Trusted Certification Authority. Field verification process is performed to check for the following.</p>
+<p>?| Card is Authentic : Authenticity of card is established through challenge response mechanism between the secret key (Private key) stored on the card, and public key, which is available to the interface device (typically a simputer or a hand held terminal), off-line or on-line. A limited version of off-line CRL (Certificate Revocation List) can also be stored on these devices, as per requirement of PKI process. CRL can be synchronized time to time with the one available with Certification Authority.</p>
+<p>?| Identity of card holder is authentic : First the digital signature of the issuer authority which are stored on-card are verified through off-line or on-line verification process as explained above. Then the stored bio-metrics of card holder are matched with the one captured live at the point of verification. Since the stored bio-metrics are the same which were captured when card was issued and are the part of data which is digitally signed, matching with live capture, authenticates the identity of the person.</p>
+<p>?| Smart Card for delivery of Citizen Services : Smart Card technology can enhance the speed and authenticity of the process of efficient delivery of G2C services. Efficient delivery of services requires readily available proof-of-identity, authentic transaction history and entitlement details. In Indian context they may be services like ration card, passport, Land Records, Old age pension, different kind of subsidies and support in rural sector including health and education etc. All these kind of services require the on-site/field verification of proof of identity, entitlement details of beneficiary and application specific data. One of the biggest benefits of usage of smart card for these kinds of services is that, it makes it possible to provide authentic application specific data from the individual’s card at the place of business transaction, which otherwise would have been achieved only through creating an efficient data communication link and connecting to the central Service Database at some remote location. Therefore it not only eliminates the need of a vast data communication link across the country with very large number of nodes, but also its availability in all the places where service is being delivered.</p>
+<p>?| Delivery of Services through Web : With the advent of Internet and World Wide Web, delivery of information/ data to masses has become extremely easy just by publishing it over the web. But there are many situations under which the information service which is required to be delivered through internet, is private/ confidential to the person for whom it is meant to be. This kind of situation makes it essential to first establish the identity of the person remotely through internet. Once it is established that the remote user is a citizen who is genuine subscriber of the service, only then internet/network delivery is made for the required service. Smart Card technology provides the fool proof mechanism of remote authentication/ verification of the person through internet, in conjunction with PKI and biometrics technologies. Delivered information can also be written safely on the individual’s Smart Card for future use. Few examples of this kind of services are, e-Vote casting over web, Web submission of Income Tax returns, Delivery of Railway/Airlines Ticket, Road tax payment and delivery of receipt etc.</p>
+<p>?| Smart Card and Access Control : Smart Card technology provides very safe and convenient way of controlling and restricting the access of individuals to the critical infrastructure of Government or any other organization. Based on the sensitivity, a building or infrastructure can be categorized into multi tier levels of desired security, and divided into security zones. Access to these zones is regulated through Smart Card Reader controlled electronic/electromagnetic door locks. Smart Card and the Card holder is authenticated by these readers and the access privileges written on the card are read by the readers to control the release of the lock. Security mechanism can be enhanced by including smart card assisted biometrics verification. By carefully designing the entry and exit log, the movement of individuals can be tracked for later security analysis. This system can also be used in an organization or educational institution for attendance monitoring and punctuality analysis.</p>
+<p>?| Smart Card based Network Access Control and in-transit data security: Current password based security for network log-on has weaknesses due to the vulnerability of passwords being stolen while keying-in or through a malicious program recording the key depressions on the background and passing-on the stolen log-on details to a rogue server. Smart Card based remote authentication comes handy to effectively eliminate this problem of network security which can be implemented for Secure Intranet or Virtual Private Networks (VPN). Smart Card technology can also be effectively used for network data confidentiality and data authenticity. Data confidentiality is implemented by on-card encryption and decryption of in-transit data between sender and receiver, through robust encryption algorithms implemented on the Card chip. Data authenticity can be implemented by digitally signing the data with sender’s smart card and transmitting data along with digital signatures. Received data with signatures can be verified for integrity and authenticity by verifying digital signatures through sender’s public key.</p>
+<p>?| Smart Card technology for e-purse and stored value : Smart Card technology offers a most promising way of storing digital money and conveniently transacting it for small business transactions. Several payment systems world wide either use smart cards today or have announced plans to do so in the near future. For security reasons, current credit card payment systems have made on-line connectivity mandatory for business transactions. This hugely increases the operational cost for the systems where amount of money per transaction is relatively smaller. For the payment systems where transaction amount is smaller, Smart Card based e-Purse system provides a secure, reliable and inexpensive solution. As an e-Purse, smart card stores an actual balance of money, as secure data. e-Purse system on smart card provides functionality of crediting and debiting the balance, after authenticating the cards mutually. Money can be credited on seller’s card and debited from buyer’s card, in an off-line mode, with the help of an off-line smart card terminal. Both the cards can load and unload balance from their bank account, by visiting a bank which provides this service. This concept of e-Purse transaction can also be successfully applied in automatic vending machines, like milk vending, tea/coffee vending machines etc where seller’s card can be fixed inside the vending machines, and accumulated digital money collected in a desired frequency.</p>
+<p>NIC Initiatives in Smart Card Technology ž| Smart Card in Transport Sector : Ministry of Road Transport and Highways, in conjunction with few State Transport Authorities, took up the project of nation wide introduction of Smart Cards for Driving License (DL) and Vehicle Registration Certificates (RC). NIC was entrusted by the Ministry to help and provide its services as consultant for the complete project, which comprises, v Development of Smart Card Technology Standards for interoperability across the Nation. v Development and deployment of Symmetric Key Infrastructure for Smart Card Security. v Development of Smart Card interface software with back-end Vahan (For RC) and Sarathi (For DL) softwares. v To establish a Smart Card Compliance Certification body, to test and certify the compliance of smart cards with evolved national standards, for the various products brought into market by different industry players.</p>
+<p>a) Development of National Standards for Transport Sector : For any technology to work with compatibility across the country, it is essential that all the deployment agencies (States) follow same technology standards for their technology enabled delivery of service (in this case Smart Card based DL and RC). NIC led a team of professionals, domain specialists, academia and industry players, to evolve a technology standard for Smart Cards to be used for DL and RC, for interoperability across the Nation. Various standards which were evolved are, v SCOSTA (Smart Card Operating System for Transport Applications) v DL and RC related on-chip Card Data Layout v Smart Card Hardware specifications v Hand Held Terminal Application Specifications v Key Management System</p>
+<p>b) Development of Symmetric Key Infrastructure : Security of data against fake duplication/ generation and prevention of road offences are the two major reasons for introduction of smart card technology for DL/RC. Smart Card security mainly banks upon the proper design of the Key Management System and its safe deployment. Symmetric Key based security was considered to be most suitable for field authentication of DL/RC and on-card booking of road offences at the field (Fig 6).</p>
+<p>c) Smart Card interface software with back-end : For performing various process operations in RTO office, interface software for Smart Card is required to read and write DL/RC data from the chip e.g. Personalization and issuance of DL and RC cards at RTO, addition of more vehicle classes in DL Card, Modifying the Road Tax data in RC Card, Permit issuance etc. A standard software has been developed to take care all these business processes.</p>
+<p>d) Smart Card Compliance Certification body : With the authorization from the Ministry of Road Transport and Highways, NIC has established a Smart Card lab, for testing and certification of Smart Cards brought about by industry players for supplying to deployment agencies. Smart Card brands, certified by this body can only be issued as DL and RC Cards in the country.</p>
+<p>ž | Access Control System at NIC Headquarters : After establishing sophisticated infrastructure for Communication and Cyber security monitoring and Control at NIC Headquarters, and also after establishing Digital Signature Certification Authority, NIC HQ has become a critical infrastructure for Government. Due to this sensitivity, NIC has established a Smart Card based access control system at NIC HQ building. Smart Cards have been issued to all employees as well as regular and occasional visitors for entry into the building. Access privileges have been defined in each card for visiting to various bays. For more secure zones, biometric verification has been made a precondition for access. All entry and exits points are being recorded to trace the movement.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="message-january-2004.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message</span></a><a class="article-nav-link next" href="karnataka-the-silicon-state-of-india-january-2004.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">KARNATAKA – the Silicon State of India</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

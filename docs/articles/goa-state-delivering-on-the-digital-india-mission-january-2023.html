@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOA State: Delivering on the Digital India Mission — Informatics January 2023</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2023"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/january-2023/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/january-2023/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2023/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/january-2023/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2023/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2023/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2023/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2023/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2023.html">January 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>GOA State: Delivering on the Digital India Mission</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">GOA State: Delivering on the Digital India Mission</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By A.K. DADHICHI &bull; pp. 16–21</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2023.html">January 2023</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Nestled between the Arabian Sea and the Western Ghats, the picturesque state of Goa is rapidly transitioning itself into a digital giant. It has adopted all nine pillars of the Digital India Programme with a particular focus given on Broadband Highways, eGovernance, and eKranti. It is one of the first states to provide a Statewide area network (SWAN) through the Goa Broadband Network (GBBN) and connected all State Government Departments with the State Intranet. On eGovernance and eKranti, it has taken significant steps in ushering the State to era of Digital Governance.</p>
+<p>NIC Goa State Centre first began as the North Goa District Centre in 1984. Later in 1994, this District Centre was merged with an analogous state-run Goa Computer Centre to form its current form. Since then, the State Centre has become indispensable to the State Government. Its state-of-the-art Data Centre is instrumental in hosting many of the State Governments turn-key projects and websites.</p>
+<p>With the arrival of COVID-19, contactless services became the need of the hour. NIC Goa State Centre raised to the occasion by digitising many citizen-centric services, especially online payment through e-Challan Payment Gateway. Its offerings like e-Pagaar20 helped in transferring NPS data to NSDL in record time thus resulting in huge savings for State. Portals like NGDRS, Online Marriage Registration, Births &amp; Deaths, GEMS reduced citizen footfalls at the department offices. Systems like iRAD laid a step towards quick and responsive government agencies. Portals like Dharani and Bhunaksha made land details transparent to the public.</p>
+<p>ICT Initiatives in the State NIC Goa has implemented a number of projects in the state. Some of the latest projects are highlighted here</p>
+<p>Accounts Online Project This project has been conceptualised, developed, and implemented by NIC Goa for the Directorate of Accounts (DoA) Goa, which is analogous to the Pay and Accounts Office for Goa. The State Centre has been working on this eGovernance project since 1993. In the early 90’s, UNIX-based systems were implemented, but as technology advanced, the Centre has endeavoured to keep the eGovernance program in DoA up to date. Some of the major systems in DoA in the recent past are highlighted below:</p>
+<p>e-Challan Payment Gateway (PG) (https://echallanpg.goa.gov.in) e-Challan Payment Gateway is an online payment portal for services offered by Goa State Government Departments. It sits in between the department websites / citizens and the Partner Banking Gateways like a bridge. Thus, saving the user department from the hassle of integrating the portals with banks. Moreover, by doing so, it makes the accounting easier. It has received numerous awards, including the CSI-NIHILENT 2018 Award in the Project category. Advantages of the Initiatives 75% of receipts are received in online mode 40+ departments are offering online payment services 400+ services are available</p>
+<p>Fig 3.1: ePagaar Homepage</p>
+<p>e-Pagaar20 (http://10.190.22.11/epagaar20) ePagaar is a Government payroll system with a difference. It captures the employee deductions like GPF / NPS / Employee Advances like HBA, MCA, etc. at source and transmits them to DoA for further processing of salary bills. The auto posting of deductions happens in the respective sections of DoA. It has been live since January 2020. Owing to the success of the project, it was mentioned in the State Assembly by Hon’ble Chief Minister of Goa on 29th July 2021. Advantages of the Initiatives All salary data is captured at source GPF/NPS/Advances data is auto posted NPS data can be uploaded to NSDL by the 5th of the subsequent month resulting in huge saving for the Government All 520 DDOs and 40,000 employees are onboarded</p>
+<p>e-Kuber integration with RBI DoA has long been using the SBI Gateway for disbursing payments, however, one needs to pay a hefty fee per transaction. The e-Kuber system of RBI provides a fast and free system to disburse payments. The system was developed by the State Centre for State Treasury to generate payment files, automatically upload them, and process all notifications provided by RBI. This system has been live since December 2022. Advantages of the Initiatives Waive off hefty charges for using SBI e-Payments system as RBI does not charge anything, thus saves government money Beneficiary accounts get credited faster Receives notifications by the end of the day from RBI while it used to take several days with SBI</p>
+<p>PFMS Integration with National Portal Through this system the DoA is able to update expenditures made on Central schemes by the State Government department so that it can be reflected on the National PFMS portal. This aids in better monitoring of funds to beneficiaries by the Government of India.</p>
+<p>Fig. 3.2: Process Flow of VLT &amp; EA System</p>
+<p>Goa State Excise Management System (https://goaexcise.goa.in) Goa State Excise Management System (GEMS) is a G2B initiative by the Department of Excise, aimed at achieving good governance and paper-less office using ICT tools. It is a workflow based application which provides an end-to-end solution to the business community, facilitating issuance of licences and permits for import / export of liquor in the State, anytime and anywhere, with just one click. It also monitors revenue collection for the State. Apart from this, the system manages complete workflow on the basis of payment of excise duty right from raw materials, blending, bottling, warehouse and dispatch. An Inbuilt facility to generate eChallan based on excise duty with online payment is provided. It can send SMS / emails alerts to the client about the status of application at each stage. Thus, significantly improved the relationship between the Business Community and the Department of Excise. Advantages of the Initiatives Minimise physical interaction Reduced the application processing time from 10 days to 30 minutes Monitor online revenue collection Fee calculators for calculating excise duty and auto-generation of eChallan Integration with eChallan PG for easy transactions</p>
+<p>Fig. 3.3: GSUDA Application for Property and Solid Waste Management Homepage</p>
+<p>Property Registration (https://ngdrsgoa.gov.in) National Generic Document Registration System (NGDRS) is a workflow based system for Registration of Properties with online application and online payment services. The system caters to the entire registration process in a faceless, paperless manner with options for property valuation, fee calculation and online payment of Registration Fees, etc. Citizen need to visit only once at the time of final registration stage to Sub-Registrar Office for capturing biometrics and photo which is mandatory from identity and security point of view. Advantages of the Initiatives Citizens empowerment through Digital India Program facilitates easy and transparent registration process on the first come and first serve basis 2% commission is charged by stamp vendors. Now because of digital payments this money is saved (annually almost 6 Crores are saved) Registration of Deeds is available on DigiLocker Data Analytics for decision and policy making is available One Nation One Registration Interoperability is made possible</p>
+<p>VLT &amp; EA System To ensure safety of women and children while travelling in public transport, the Ministry of Road Transport &amp; Highways, Government of India through Central Motor Vehicle Rules (CMVR) in 2016 made it mandatory to install Vehicle Location Tracking (VLT) Device and Emergency Alert (EA) Buttons in all Public Transport (Carriage) Vehicles (Four wheeled or higher, passenger carrying vehicles), with effect from April 2018. Accordingly, VLT &amp; EA System has been implemented in Goa by the NIC Goa State Centre in collaboration with the NIC Uttarakhand State Centre. As of now a total of 11080 devices have been installed and activated on taxis. Similarly, a total of 66 devices have been installed and activated on state-run buses. https://gavlts.goa.gov.in/IS16833/ (An IS 16833 Complaint Solution for Taxis with Fare meter integration) https://gavlts.goa.gov.in/AIS140/ (An IS 140 Complaint Solution for Buses)</p>
+<p>Integrated Road Accidents Database (https://irad.parivahan.gov.in) Road accidents in India have increasingly become a matter of concern claiming lives and causing injuries to many. Hence with a view to accurately identifying accident spots and taking corrective steps, the Ministry of Road Transport &amp; Highways, Government of India has decided to develop a database of road accident spots under the project Integrated Road Accident Database (iRAD). iRAD generates various types of insights by analysing the collected road accident data across the country through implementation of data analytics technique. It represents the analysis output through Monitoring &amp; Reporting Dashboard and Analytics Dashboard for easy understanding and decision making by the Authorities Concerned for formulation of new policies and strategies. It aims to enhance the road safety i.e. ‘Safe Road for All’ in India as the nodal agency to roll out the service, the UT Centre has been engaged in knowledge transfer through training and workshops to various stakeholder departments, including Police, Transport, Health and Highways/PWD Departments. Advantages of the Initiatives Reduces response time of Police and Health departments in case of road accidents Improves road safety by identifying and rectifying black spots</p>
+<p>Births and Deaths Registration (https://rbd.goa.gov.in/) This application is developed for the Directorate of Planning, Statistics &amp; Evaluation (DPSE), which is the Chief Registrar for Birth and Deaths in Goa. The Birth and Death registration application is used by the department and its all stakeholder organisations, including Panchayats, Municipalities and Goa Medical College to facilitate Birth and Death registration. As of now, 8 lakh Birth and 7 lakh Death records have been made online through this system.</p>
+<p>Municipal Administration Software (https://goaulbservice.gov.in) Municipal Administration Software (MAS) has been designed and implemented for all the Municipal Councils / Corporations in Goa with a view to ensure timely delivery of various end-to-end online services to the citizens through web-interface. MAS has various software modules such as Registration of Births &amp; Deaths, House Tax Collection, Rent Collection, Issuance of Trade Licences and Signboards, Accrual Based Double Entry Accounting System and Counter Services for the citizens for online tax payments. The software has also been integrated with UMANG platform wherein essential municipal services have been provided to the citizens. It has drastically reduced the footfalls at Municipal Offices. Earlier citizens had to wait in long queues to pay their taxes, but now the same can be done online, from the comfort of their homes.</p>
+<p>GIS Application for Property and Solid Waste Management (https://geo.nic.in/gsuda) This project developed by NIC Delhi, GIS Division and revolves around geo-tagging of Solid Waste and Property assets within the jurisdiction of the Urban Local Body (ULB). It aims to provide better decision making capabilities for ULBs. Thus, better management of Solid Waste collection. It has three components Android App wherein authorised users are able to login through their registered mobile number and can carry out GIS editing along with geo-tagged images for various point layer assets by user Location / GPS. Web GIS portal wherein citizens are able to view the maps using standard GIS tools and ULBs can validate Solid Waste and Property Point Assets, which can be added, edited or deleted on the map using the mobile app. Real Time Mechanical Sweeping Vehicle Tracking System through which the vehicles carrying solid waste can be tracked. This system is bundled with the Web GIS portal.</p>
+<p>Bhunaksha (https://goaulbservice.gov.in) Originally a product of NIC-HQ for Cadastral Maps management, Bhunaksha has been heavily customised by the State Centre by adding several new features. It has several detailed data layers. Like Dharani, it is a workflow based solution. Recently Bhunaksha has been enabled for Unique Land Parcel Identification Number (ULPIN) and other advanced tools for single and multiple plot management. Both Dharani and Bhunaksha are integrated with each other and each of them share RoR and Maps data to important projects like PM-GatiShakti, Mathrubhumi, OneMap Goa and many state departments. Through a public portal, citizens can view their RoRs and Cadastral Maps of their land parcels. It also serves as one stop destination for a host of important reports and statistics. Advantages of the Initiatives Eliminates scope for middleman and scams by providing free viewing of RoRs and Maps Helps to prevent land grabbing and other disputes by swiftly blocking hundreds of land parcels</p>
+<p>Goa Marriage Registration (https://reg.goa.gov.in) Marriage registration is one of the most important tasks connected to a wedding. Marriages are registered in the State of Goa under the Code of Civil Registration irrespective of their religions. Marriage Registration offers a juridical status to the marriages under the law. Marriage could be proved by the certificate of marriage issued by the Civil Registrar. In order to improve upon the existing system, the State Centre developed and implemented a complete workflow based system at the behest of the Registration Department of Goa. The Goa Marriage Registration Portal carries out the functions of the Registration Department and digitally processes the application from start to end. The portal also helps the department in better revenue collection, reduction in paper usage, minimise visit to the department and ensures quick services delivery. Over time, the Portal has developed a comprehensive repository of marriages and divorces records along with a complete demographic profile of the State’s population along with data on births. This data helps in planning for the growth of the population and forecasting of government services and expenditures. This data also shed light on women and aids in stopping juvenile marriage. Advantages of the Initiatives Application Processing time has been reduced drastically Verification of Groom and Bride has been relegated to nearby Taluka Centres Issues Digitally Signed Marriage Certificates Intervenes and Stops Juvenile marriages</p>
+<p>Fig. 3.4: Goa Marriage Registration Homepage</p>
+<p>Dharani (https://dslr.goa.gov.in) Dharani deals with management of both rural and urban Record of Rights (ROR). It aims to bring transparency and swiftness in services provided by the Revenue Department. Dharani has two parts for managing Urban (Property Card) and Rural (Form I &amp; XIV) Land Records. It is used by the Director of Survey and Land Records (DSLR) and Revenue Department authorities to carry out various functions related to management of Land Records. It facilitates online mutation of land records and is integrated with the Property Registration System, which facilitates automated mutation once the property is registered. Dharani complies with all the guidelines issued under the National Land Records Management Programme (NLRMP) of Government of India, and is a prime reason behind making Goa as the first state to have complete computerised land records.</p>
+<p>Society Registration (https://societyreg.goa.gov.in/) Society Registration is an online workflow based web application developed for the District-Registrar Offices (DRO) Goa. Through this web app, citizens can submit the application for Society Registration. After approval, they can download certification directly from the web app itself. It has drastically reduced the application processing time and quantified the verification process for any deduplication in name.</p>
+<p>e-BIS (http://goabudget.gov.in) e-BIS (eBudget Information System) is an online system for budget estimates and finalisation. It is an intra-government system, where budget requirements are entered by departments and later approval from Finance department, receives the required budget. The system has provision for Budget Planning, Online Budgeting, Budget Estimation at different levels, Budget Finalization, Schemes Creation, Budget Allocation and Distribution, Re-appropriation, Surrender of Funds, Supplementary Demands and Dashboard for Budget. For last four years, this system has been used for presenting the paperless budget in the Goa State Assembly.</p>
+<p>eFiling of Court Cases (https://efiling-mh.ecourts.gov.in) eFiling system enables electronic filing of legal papers. Using efiling, cases (both civil and criminal) can be filed before the High Courts and District Courts. The system is aimed at promoting paperless filing and saving time and cost by adopting technological solutions. The State Centre has upgraded the old system. With the new system, advocates can rectify defects and shortcomings in eFilings through online mode. Once defects are cleared, registration number will be allotted to the case. This helps the lawyers to file the case before the appeal period. Recently, a Justice Clock is also installed in the New High Court Premises. It broadcasts the Disposal and Pendency of the Court Case along with other relevant details.</p>
+<p>GST/RBI Memorandum of Error The activity of GST Memorandum of Error (MoE) comprises comparing the data collected from GSTN Council and RBI, then intimating the RBI of discrepancies if any by way of a MoE. To fast track this process, the State Centre has developed this system to generate the MoE so that timely reconciliation of GST data can take place at the Commercial Taxes Department. Advantages of the Initiatives The Directorate of Accounts and Department of State Taxes get to know the actual SGST collection on a daily basis from the Account Statement provided by RBI Auditors get the monthly Account Statement Ledger provided by RBI Banks involvement in ecosystem with RBI facilitates a channel to obtain confirmation of GST payment discrepancy scenarios</p>
+<p>Fig. 3.5: Process flow for GST/RBI MoE Application</p>
+<p>Goa State Scholarship Portal (http://schemesdtw.goa.gov.in) The portal is developed to facilitate the transfer of scholarship funds to the individual student from Department of Tribal Welfare. The portal provides end-to-end digitization from the point of filling online applications till the payment Channel. It also has provision for filing online grievances. As of now, it provides the support for following three schemes: Pre-Matric Scholarship Scheme (for ST Student of Class V to X) Gagan Bharari Shiksha Yojana (for ST Students of Class XI till Post-Graduation) Merit Based Scholarship Scheme (for ST Students who have secured at least 50% marks in Class X or XII)</p>
+<p>e-Cooperative Management System (https://coopgoa.gov.in/) Department of Cooperation, Goa ensures that Cooperative Societies are organised and managed on the lines of the basic cooperative principles for the promotion of the economic interests and welfare of the people. In order to aid the activities of the Department, NIC Goa has developed and implemented software for monitoring of the cooperative societies. The system includes Online Services for Registration of Societies, Renewal, Returns Filing, Audit Report Submission, Online Payment, MIS Reports, etc. It facilitates the Department in Digital Signing of documents using e-Sign and sending documents through secureGov email. A complete 360 degree profiling of legacy data of Registered Societies is also uploaded to the system.</p>
+<p>Fig. 3.6: Goa Budget Homepage</p>
+<p>Important Events Organised NIC Goa provided full technical and VC support for the Office of Hon’ble Prime Minister of India, Shri Narendra Modi during his state visit for inauguration of Mopa International Airport and other events in In December 2022.</p>
+<p>Accolades CSI NIHILENT Award 2018 for eChallan Payment Gateway CSI SIG eGovernance Award of Excellence 2020 Gems of Digital India 2020 Award for Goa Excise Management Systems</p>
+<p>Way Forward NIC Goa State Centre has a key role in bringing digital governance to the state. All through COVID, the Centre has provided relentless support to the Government. With exciting new projects such as eOffice in the pipeline, it is hoped that the fruitful partnership between the State Centre and the State Government will continue to reap benefits for the Government, Business and Society at large.</p>
+<p>Other Central / State Projects NIC Goa State Centre has also implemented several high impacting National level projects in the State. Listed below are some of them:</p>
+<p>Project: Vahan and Sarathi; Purpose: Vehicle and Licence Registration and it’s Management; Associated Department / Ministry: Department of Transport, Government of Goa; Type: G2G, G2C, G2B Project: GePNIC; Purpose: Tendering and Auction process; Associated Department / Ministry: Department of Information Technology, Government of Goa; Type: G2B Project: ePDS; Purpose: Food Grain Distribution and Ration Card Management; Associated Department / Ministry: Department of Civil Supply, Government of Goa; Type: G2C Project: SPARROW; Purpose: APAR management for IAS/ IPS/ IFS/ Goa Civil Service; Associated Department / Ministry: Government of Goa; Type: G2G Project: Immigration, Visa Foreigner Registration and Tracking (IVFRT) / Online Indian Citizenship / Prior Reference Check; Purpose: Immigration and Visa issuance and it’s Management; Associated Department / Ministry: Department of Immigration; Type: G2C Project: Interoperable Criminal Justice System (ICJS) - e-Forensics / Police / e-Prosecution / e-Court / e-Prison; Purpose: Complete Management of Crime and Control Tracking Network System; Associated Department / Ministry: Department of Police, Forensics, Prosecution, Court, Govt. of Goa &amp; Ministry of Home Affairs, Government of India; Type: G2G Project: Arms Licence Issuance System; Purpose: Issuance of Arm Licence and it’s Management; Associated Department / Ministry: District Magistrate, Government of Goa &amp; Ministry of Home Affairs, Government of India; Type: G2G Project: e-Sanad; Purpose: Online Attestation and Apostille of Documents; Associated Department / Ministry: Regional Passport Office (Ministry of External Affairs); Type: G2C Project: CONFONET; Purpose: Consumer Protection; Associated Department / Ministry: Consumer Forums at District, State and National Level &amp; Government of Goa; Type: G2C Project: Access &amp; Benefit Sharing System; Purpose: Conservation of biodiversity, sustainable use of its bio components and equitable sharing of the benefits arising out of the utilization of biological resources; Associated Department / Ministry: Goa State Biodiversity Board; Type: G2G, G2B Project: Case Information System; Purpose: Registration of cases, preparation of Causelists, publishing of orders &amp; judgments; Associated Department / Ministry: District Courts and High Court; Type: G2G, G2C Project: e-Samiksha / e-Pragati; Purpose: CM level schemes monitoring; Associated Department / Ministry: Government of Goa; Type: G2G Project: Online Consent Management and Monitoring System; Purpose: To implement various pollution control laws in State; Associated Department / Ministry: Pollution Control Board, Government of Goa; Type: G2B Project: VatSoft; Purpose: Collection and monitoring of Value Added Tax (VAT) and Central Sales Tax (CST) on Liquor and Petroleum Products.; Associated Department / Ministry: Department of Commercial Taxes, Government of Goa; Type: G2B Project: Goa Panchayat Services; Purpose: Registration of Births &amp; Deaths, House Tax &amp; Light Tax Collection, Lease Rent Collection, Issuance of Trade Licences etc.; Associated Department / Ministry: Directorate of Panchayat Raj, Government of Goa; Type: G2B</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="chandigarh-ut-digital-infrastructure-as-a-utility-to-every-citizen-january-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Chandigarh UT: Digital Infrastructure as a Utility to Every Citizen</span></a><a class="article-nav-link next" href="digital-india-awards-ceremony-january-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Digital India Awards Ceremony</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

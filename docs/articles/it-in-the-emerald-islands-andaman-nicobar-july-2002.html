@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT in the Emerald Islands Andaman &amp; Nicobar — Informatics July 2002</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2002"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/july-2002/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/july-2002/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/july-2002/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/july-2002/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2002/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2002/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2002/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2002/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2002.html">July 2002</a><span class="breadcrumb-sep">&rsaquo;</span><span>IT in the Emerald Islands Andaman &amp; Nicobar</span></nav>
+        <div class="article-header">
+          
+          <h1 class="article-title" data-pagefind-meta="title">IT in the Emerald Islands Andaman &amp; Nicobar</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Anubha Goyal &amp; Gautam Gupta, NIC Andaman &amp; Nicobar Islands &bull; pp. 19–24</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2002.html">July 2002</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The NIC, Andaman &amp; Nicobar Islands UT unit was setup in the year 1988. This UT unit provides total informatics services to Andaman &amp; Nicobar Administration, Central Government Departments and other organisations. NIC Port Blair has taken up various projects in different Departments . The nature of projects vary from designing simple Personnel Information system for Personnel Wing of Secretariat to complex projects like computerizing the entire Budgetary and Work Allocation System for APWD. Apart from developing software, services are also extended to interested departments for providing training to Government officials so that they can effectively use computers in carrying out their official work. In addition to email and Internet service, videoconferencing facility is also provided to the administration.</p>
+<p>The Background</p>
+<p>The beautiful Islands of Andaman &amp; Nicobar islands are located at Bay of Bengal in an area of 8,249 sq.kms and at a distance of around 1200 kms from Calcutta, Visakapatnam and Chennai. This Union Territory has two Districts namely Andaman and Nicobar. Andaman District has Two Sub-Divisions and Six Tehsils and Nicobar District has Two Sib-Divisions and Three Tehsils. Since pre-historic times, these islands were the home of aboriginal tribes. But the first settlement by the British took place in 1789, which was later abandoned in 1796. The second settlement was basically a penal settlement, taken up in 1858, after the First War of Independence, followed by the settlement of convicts, Moplahs, some criminal tribes from Central and United Provinces, refugees from erstwhile East Pakistan and Sri Lanka as well as ex-servicemen. Major Projects</p>
+<ol class="article-list">
+<li>Seat Allotment System for A &amp; N Administration (Education)</li>
+<li>Accounts &amp; Budget System for Pay &amp; Accounts Office</li>
+<li>Budget &amp; Works Monitoring System for Andaman Public Works Department</li>
+<li>Public Distribution System for Civil Supplies</li>
+<li>Court Cases Monitoring System for All Departments of A &amp; N Administration</li>
+<li>Govt. Guest House Allotment System for Tourism Department</li>
+</ol>
+<p>Seat Allotment System Implementation for Directorate of Education</p>
+<p>Since Union Territory of Andaman &amp; Nicobar Islands does not have any Engineering/Medical Colleges and lacks facilities for training in some specific fields of technical education, the Ministry of Human Resource Development (Department of Education) reserves seats in Professional/Technical/Non-Technical Courses at the level of degree and diploma in the institutions approved by All India Council for Technical Education (AICTE) for Andaman &amp; Nicobar Islands. The Andaman &amp; Nicobar Administration allocates these reserved seats to the candidates who have studied in Andaman &amp; Nicobar Islands. To make the seat allocation more efficient and effective and to avoid the complaints of dissatisfaction from the public, the administration has introduced the computerization for the allocation of seats and institutions. National Informatics Centre, Andaman &amp; Nicobar Unit has developed the software system which meets the requirements of the administration to make the allotment process transparent to the students as well as parents in order to avoid any duplication and malpractice. This software has been successfully running from 1992 onwards. Allotment process has been made transparent. The Lt. Governor lauded this project by saying &quot;The software package developed by NIC Port Blair for allotment of seats to various medical and engineering and other technical institutions was instrumental in completing the complicated seat allotment process in time, in a transparent manner&quot;</p>
+<p>Training Programmes</p>
+<p>National Informatics Centre, A&amp; N UT Unit has been conducting training programmes for the officials of administration as well as central government departments. NIC is providing training for the purpose of developing computer awareness and to spread information technology culture in government departments. Training for central Govt. &amp; administration are held round the year as described in training calendar, on computer awareness &amp; introduction to Information Technology, Office Tools, E-mail &amp; Networking etc Special Training programmes on request from departments have been taken up for the</p>
+<p>Panchayat Secretaries Police personnel ANIIDCO &amp; ANFPDC personnel</p>
+<p>All the courses are being offered free of cost. The course material is also provided. The course contents have been carefully designed to meet the emerging needs of the users in order to make optimum use of computing facilities. At the end of each training programme, strengths and weaknesses of the course are discussed and participants' feedback is taken. Improvements based on their feedback are incorporated in the subsequent courses. NIC is conducting tests and issuing certificates.</p>
+<p>IT Culture in Panchayats</p>
+<p>As per the 73rd Amendment of constitution, 67 Gram Panchayats, 7 Panchayat Samities and 1 Zilla Parishad started functioning from Oct. 1995. Two five-day training programmes in computer awareness and office automation were conducted for 67 Panchayat Secretaries. The knowledge of computers imbibed by Panchayat Secretaries during the training programme would contribute towards computerization of Gram Panchayat in all the islands of Andaman &amp; Nicobar. The participants, came from panchayats starting from the northern most tip of Andaman i.e. Diglipur to the southernmost tip of Nicobar i.e. Campbell Bay. The training programme was widely appreciated. The Panchayat Secretaries are the key functionaries of the Panchayat because they can guide the people of the area about networking with the outside world. The role of computers and connectivity is more important to these islands because of their remoteness and the shortage of transport and communication facilities.</p>
+<p>Payroll software has been implemented in the Directorate of Panchayat and Zilla Parishad. Budget and Expenditure Monitoring System has been implemented in the Directorate of Panchayat and Zilla Parishad. The data of total 75 PRIs i. e. 67 Gram Panchayats, 7 Panchayat Samities and 1 Zilla Parishad is being maintained. This interlinking of Panchayati Raj Institutions would be a major step to spread Information Technology culture in the islands, which is one of the main objectives of NIC.</p>
+<p>Video Conferencing in A &amp; N islands</p>
+<p>A major land mark was achieved by the A &amp; N Islands UT Unit of NIC when the Lt. Governor, A &amp; N Islands launched the Video Conferencing Setup for the Andaman &amp; Nicobar Administration on 25th July, 2001. He had a talk with Director General, NIC, New Delhi, over VC. The Lt. Governor lauded the efforts of NIC for moving one step further in the IT Sector and said Video conferencing will enable the Administration to cut down unnecessary travelling and speed up the decision making process.</p>
+<p>The Lt. Governor later wrote the following to Dr. N. Vijayaditya &quot;It was a pleasure to inaugurate the videoconferencing facility and have a videoconference with you. I am hopeful that this facility would prove to be of immense use to these islands especially considering their remoteness&quot;.</p>
+<p>There have been a number of video conferences held after its set up. A few among them are the video conference held between MANAGE, Hyderabad and Officials and Scientists of CARI, Agriculture, Registrar of Cooperative Societies, Fisheries and Animal Husbandry; Chief Secretary and Secretary (IT), A&amp;N administration with DG(NIC) to discuss plans for implementation of IT policy in these islands; Officials from Directorate of Agriculture with NIC Officials on AGMARKNET implementation. Senior officials and working staff of the Directorate of Accounts and Budget also attended training on PAO2000 software over VC. Apart from this, the NIC officials at A&amp;N UT unit have been attending, over VC, the training programmes and seminars held regularly at NIC Headquarters.</p>
+<p>VC-with DAMA</p>
+<p>Recently Video Conferencing with DAMA Modem has also been successfully installed in NIC, A&amp;N UT Unit with a brief talk between SIO, A &amp; N UT Unit and VC Division, NIC (HQ). SCPC uses a dedicated bandwidth whereas DAMA uses bandwidth on demand by multiple users. With SCPC, connectivity is through New Delhi whereas with DAMA, the sites on INTELSAT are connected to each other directly. The other sites in India on INTELSAT, using DAMA facility, are Pondicherry, Goa and Ranchi. Those sites on PANAMSAT have to be connected through New Delhi. VC through DAMA at Port Blair was demonstrated to the Japanese delegation in a function at NIC Headquarters, New Delhi.</p>
+<p>Workshop on BioMedical Research and Internet</p>
+<p>NIC, A &amp; N UT Unit, in collaboration with the MEDLARS division, NIC Headquarters, New Delhi has organized a workshop on &quot;Biomedical Research and Internet&quot; on the 11th and 12th of August, 2001. This workshop was organized to impart knowledge to the doctors and medical researchers of Port Blair about this facility of NIC. Directorate of Health Services appreciated the step taken by NIC, UT Unit .</p>
+<p>Web Services</p>
+<p>The objective behind launching a website for any department is to keep the citizens informed and updated about the various activities and functions of the department thereby ensuring transparency and e-governance. Departments in A&amp;N administration requested NIC to develop their websites to promote IT culture. With the launch of these websites NIC A&amp;N UT unit made it possible for the rest of the world to be more aware and familiar with this Paradise on Earth, which is known as &quot;Kala Pani&quot;. The following websites have been launched</p>
+<p>A &amp; N ISLANDS WEB SITE (http://www.andaman.nic.in)</p>
+<p>This is the official web site of the Union Territory of Andaman &amp; Nicobar Islands. This website contains detailed information about virgin natural beauty of A &amp; N Islands like rich variety of flora and fauna, location, distance from mainland, climate, details of the indigenous Tribes and their culture, the famous tourist places of these islands, accommodation facilities, transport facilities and cuisines. Complete administrative setup, citizen charter of almost all the departments of A &amp; N administration with forms for utilities have been provided so that the general public can access the information from anywhere without going to the concerned department. Online booking facility for the guest houses run by A &amp; N Administration is also available. In his letter of appreciation, Lt. Governor wrote:</p>
+<p>&quot;Website is comprehensive, illustrative, informative and user friendly. The website would go a long way in disseminating information and promoting tourism in these islands&quot;.</p>
+<p>Apart from the websites hosted at New Delhi, there is a local web server with URL 'www.and.nic.in' at Port Blair, which hosts the electoral roll of Andaman and Nicobar Parliamentary Constituency, telephone directory and citizen's help desk. It is also used for hosting the departmental websites before they are finally hosted on New Delhi server.</p>
+<p>A &amp; N POLICE WEBSITE (www.and.nic.in/police)</p>
+<p>The official website of Andaman &amp; Nicobar Police was formally inaugurated by the Chief Secretary, A &amp; N Administration, Dr. R.Padmanabhan on 22nd January 2002 at Police Head Quarters, Port Blair.</p>
+<p>Shri. Manish Kumar Aggarwal, Superintendent of Police, Nicobar District in his brief presentation thanked NIC for the co-operation in launching the website. The website gives information about history, mission, citizen's charter, forms, crime trends, immigration, island communication and services like fire service and tourist police.</p>
+<p>LABOUR WEBSITE</p>
+<p>This is the official website of Department of Labour, Employment and Training. The website explains the various procedures involved in obtaining licences, registration, lodging complaints/ claims, enforcing Labour Laws and payment of Workmen's Compensation in respect of Labour Commissioner's office. All the utility forms prescribed under various Acts/ Rules are readily available in the website and can be downloaded even without approaching the office. The relevant statutory provisions have been quoted for their enlightenment as well as for verifying the correctness of the procedures. This website also highlights the various functions of Employment Exchange and Industrial Training Institute.</p>
+<p>Electoral Roll computerization</p>
+<p>The entire voters' list of Andaman &amp; Nicobar Islands Parliamentary Constituency comprising three lakh voters in 370 Polling Stations have been put up the net. People can log on the site to check if one has been correctly listed on the electoral rolls. The district administration has computerized electoral roll in the year 1995. This is the first time it has been published on the net with the help of NIC, Port Blair. Voters can search their name in the desired Polling Station by selecting the locality in which they reside.</p>
+<p>Internet Services</p>
+<p>Internet services have been provided to the central government offices and offices of Andaman &amp; Nicobar Administration using Local Area Network and Dial up connection through the SCPC VSAT installed at Secretariat Complex. So far, 30 dial up connections have been provided including those at Raj Niwas. 100 nodes of the Secretariat and neighbourhood offices viz. Directorate of Tribal Welfare, High Court, District Court, Directorate of Information Publicity and Tourism, District Administration etc. have been provided with Internet connectivity through LAN.</p>
+<p>For further information, please contact State Informatics Officer, NIC, A&amp;N UT unit Room No. 11, Old Pradesh Council Bldg Secretariat Complex, Port Blair - 744 101 Tel: 03192-32733 Email : sio@and.nic.in, andaman@hub.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="kerala-god-s-own-country-on-the-path-to-progress-july-2002.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">KERALA: God's Own Country On the Path to Progress</span></a><a class="article-nav-link next" href="bio-medical-information-services-of-nic-for-the-medical-professionals-july-2002.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Bio-medical Information Services of NIC for the Medical Professionals</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

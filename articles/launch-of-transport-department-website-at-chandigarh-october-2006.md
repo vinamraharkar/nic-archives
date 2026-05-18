@@ -1,0 +1,12 @@
+---
+title: "Launch of Transport Department Website at Chandigarh"
+publication: "Informatics"
+issue_date: "October 2006"
+pages: [23, 24]
+author: "Vivek Verma"
+section: "Happenings"
+---
+
+## Launch of Transport Department Website at Chandigarh
+
+His Excellency Gen. (Retd) S.F. Rodrigues, PVSM, VSM, the Governor, Punjab and Administrator, U.T. Chandigarh launched the website, http:// chdtransport.gov.in of the Transport Department, Chandigarh Administration. The Adviser to the U.T. Administrator, Sh. Lalit Sharma, the Home Secretary cum Secretary, Transport, Sh. Krishna Mohan, Deputy Commissioner, Sh. R.K. Rao, SIO Sh Ajay Rampal, Chief Engineer and Chief Architect were present along with other dignitaries. The Website of the Transport Department, U.T. Chandigarh is informative as well as is equipped with certain dynamic features. The complaints/ grievances module introduced in the website aims at making the system transparent and efficient resulting in quick disposal of queries and issues of the general public. One can check the status of the complaint/grievance lodged in the office online only, without any need to come to the office. The services provided in the website by the Transport Department (R&LA and STA) have been given in detail focusing on forms/documents to be filled which can be downloaded, procedures to be followed, requisite fee to be paid, timings of the office as also the time of delivery of the Driving License, Registration Certificate etc. Further, the administrative set-up of the Transport Department, U.T. Chandigarh, Traffic Rules, Acts and Notifications and Frequently Asked Questions are also provided for the facility of the public. The section on ‘What’s New’ provides details about any new rule, notification facility etc. for information of the general public The module on Registration Details (for vehicles registered since 1994) aims to provide the relevant details to a person who furnishes the information regarding the vehicle number and the chassis number. This will be of immense help to the traffic police, the office and to the people who are interested in knowing certain details for verification purposes. This would also help in providing the relevant information relating to hit and run cases, vigilance cases and theft cases etc. whenever required. Information regarding Theft cases of stolen vehicles and International Driving Licenses issued by the R&LA Office has also been provided to ensure assistance to the police and traffic personnel as also the general public.

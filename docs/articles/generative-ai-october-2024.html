@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generative AI — Informatics October 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/october-2024/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/october-2024/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/october-2024/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/october-2024/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/october-2024/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2024.html">October 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Generative AI</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">In Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">Generative AI</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By V. Uday Kumar &bull; pp. 20–24</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2024.html">October 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Generative AI is experiencing unprecedented growth and adoption across diverse industries, fundamentally transforming organizational operations and the landscape of creativity and innovation. This technology, rooted in advanced machine learning algorithms, leverages vast datasets to autonomously generate original text, images, audio, video, and even more complex outputs. It goes beyond mere automation—generative AI enhances human capabilities, reshaping workflows and pushing boundaries in productivity, customer service, product design, content creation, research, and even data synthesis.</p>
+<p>The skills and knowledge required to work with generative AI have become crucial in the modern workforce as businesses increasingly invest in tools and platforms to boost creativity, streamline efficiency, and drive competitive advantage. With applications across sectors like healthcare, finance, media, and education, professionals with expertise in generative AI are now pivotal in optimizing operations and developing transformative solutions.</p>
+<p>A cornerstone of this evolution is the Transformer architecture, a neural network model that has shifted the paradigm of natural language processing and AI model efficiency. Transformers excel at interpreting language context, understanding not just the meaning of individual words but also their relationships within entire phrases and sentences. Unlike older models that process information sequentially, Transformers analyze all parts of an input simultaneously, making them faster, highly scalable, and well-suited for parallel processing on GPUs. This simultaneous approach has facilitated the emergence of foundation models like GPT, BERT, and others, which serve as adaptable, general-purpose models that can be fine-tuned for specific tasks.</p>
+<p>Generative AI techniques are diverse, with each model family serving distinct functions. GANs (Generative Adversarial Networks), for example, have proven adept at creating hyper-realistic images by pitting two networks against each other in a “creative rivalry,” whereas VAEs (Variational Autoencoders) are well-suited for data compression and synthesis, generating smooth data representations that are invaluable for tasks like anomaly detection and recommendation systems.</p>
+<p>These models do not serve as one-size-fits-all solutions. Instead, their impact lies in carefully integrating them into tailored applications that fit specific industry needs. For instance, while Transformers have revolutionized text and language-based applications, GANs have unlocked new levels of visual realism for media and entertainment industries, and VAEs are proving valuable in healthcare for generating synthetic patient data to advance medical research while safeguarding patient privacy.</p>
+<p>Generative AI holds the potential for profound industry shifts, not only enabling businesses to innovate at scale but also empowering them to discover new possibilities and operate more inclusively and effectively. As these models continue to evolve, so too will the breadth of generative AI’s applications—ushering in a future where creativity, innovation, and efficiency intersect, reshaping the digital world in remarkable and unforeseen ways.</p>
+<p>What’s AI/ML and Deep Learning?</p>
+<p>Artificial Intelligence (AI) refers to a broad set of technologies that empower machines to perform tasks traditionally requiring human intelligence. Two significant subfields within AI—Machine Learning (ML) and Generative AI—have particularly gained attention for their transformative capabilities.</p>
+<p>AI and Machine Learning</p>
+<p>Artificial Intelligence (AI): AI involves simulating human-like intelligence in machines, enabling them to think, learn, reason, solve problems, understand natural language, and interpret sensory information. This broad concept underpins many advancements that are reshaping industries today.</p>
+<p>Machine Learning (ML): ML is a specialized subset of AI that focuses on creating algorithms capable of making data-driven predictions. Rather than being explicitly programmed for each task, ML models use statistical methods to identify patterns in data and improve performance over time. Common use cases include recommendation engines, fraud detection systems, and predictive analytics.</p>
+<p>Deep Learning</p>
+<p>Deep learning, a sophisticated subfield of ML, uses artificial neural networks with multiple layers to analyze and interpret complex data. These deep architectures excel at tasks like image and speech recognition, as they can autonomously extract features from raw data without the need for manual feature engineering. This automation has led to significant advancements in fields requiring pattern recognition and data analysis.</p>
+<p>Generative AI</p>
+<p>Generative AI, a subset of AI that often utilizes deep learning, is dedicated to creating new content that mirrors the data it has been trained on. This includes the generation of images, videos, text, and audio that are novel yet bear a resemblance to the original input data. Models such as Generative Adversarial Networks (GANs) and Variational Autoencoders (VAEs) are specifically designed to learn and replicate the patterns within input data distributions, producing creative outputs that are both innovative and contextually relevant.</p>
+<p>Evolution of Generative AI</p>
+<p>Early 1950s: Foundations of Machine Learning and Neural Networks</p>
+<p>Generative AI has its roots in the early days of machine learning and deep learning research. In 1952, Arthur Samuel created the first machine learning algorithm, designed to play checkers, which laid the groundwork for self-improving programs and introduced the term “machine learning.” Shortly after, in 1957, Frank Rosenblatt, a psychologist at Cornell University, developed the Perceptron. This was the first “neural network” capable of learning, consisting of a single layer of perceptrons with adjustable weights and thresholds. Although the Perceptron demonstrated some learning capabilities, it struggled with more complex tasks due to its limited architecture, ultimately stalling progress in the field.</p>
+<p>1960s–1970s: The Rise of Early AI Programs and Pattern Recognition</p>
+<p>During the 1960s, AI research expanded to include early generative applications. In 1961, Joseph Weizenbaum developed ELIZA, a program that used basic natural language processing to emulate a Rogerian psychotherapist, marking a breakthrough in conversational AI. ELIZA used pattern matching and substitution methodologies to simulate empathetic responses, a foundational concept for later chatbot development. In parallel, computer vision and pattern recognition research gained traction, with Ann B. Lesk, Leon D. Harmon, and A. J. Goldstein advancing facial recognition technology in 1972. Their study, “Man-Machine Interaction in Human-Face Identification,” identified 21 unique markers (such as lip thickness and hair color), establishing a framework for automatic facial recognition systems. In 1979, Kunihiko Fukushima proposed the Neocognitron, the first deep-learning neural network with a multilayer, hierarchical structure designed for visual pattern recognition, particularly for handwritten characters. This architecture inspired later convolutional neural networks (CNNs), laying the groundwork for advanced image recognition.</p>
+<p>1990s: The Impact of Gaming and Graphics Processing on AI Development</p>
+<p>The gaming industry inadvertently accelerated generative AI advancements in the 1990s, particularly through the development of high-powered graphics cards. With Nvidia’s release of the GeForce 256 in 1999—the first GPU capable of advanced graphical computations—researchers found that GPUs could efficiently process neural networks, speeding up AI training. The parallel processing power of GPUs soon became indispensable in AI research, particularly for tasks that required large-scale data processing and complex pattern recognition.</p>
+<p>2000s: Smarter Chatbots and the Rise of Generative Networks</p>
+<p>The early 2000s saw the emergence of more sophisticated virtual assistants, starting with Apple’s release of Siri in 2011 as the first digital virtual assistant capable of executing voice commands. Meanwhile, in 2014, a landmark advancement came with the introduction of Generative Adversarial Networks (GANs) by Ian Goodfellow. GANs consist of two neural networks—the generator and the discriminator—that work in tandem to produce highly realistic images, videos, and audio by learning from real-world data. GANs have since been used extensively in creative fields, from deepfake technology to digital art.</p>
+<p>2018–Present: The Transformer Architecture and Modern Generative AI</p>
+<p>The Transformer architecture, introduced in 2017, marked a significant leap in natural language processing and generative AI. Unlike recurrent neural networks (RNNs) and long short-term memory (LSTM) models, Transformers analyze all parts of an input simultaneously rather than sequentially. This parallel processing approach, combined with self-attention mechanisms, enables Transformers to capture intricate language nuances. Google’s BERT (Bidirectional Encoder Representations from Transformers), developed in 2018, exemplifies this advance, allowing deeper contextual understanding in natural language tasks. BERT is widely used for applications such as search engine optimization, chatbots, virtual assistants, sentiment analysis, and topic classification.</p>
+<p>In 2022, OpenAI introduced ChatGPT, a generative language model built on Transformers, marking a turning point in the field. Powered by large language models, ChatGPT demonstrated unprecedented capabilities in conversational AI, handling tasks such as writing, research, coding, and creating realistic multimedia content. ChatGPT’s abilities have expanded AI’s reach across industries, from customer service and content creation to research and education. Despite its transformative impact, generative AI models like ChatGPT face scrutiny over “hallucinations”—the generation of plausible but incorrect information—a limitation researchers are actively working to address.</p>
+<p>The Future: Generative AI as a Core Pillar of Innovation</p>
+<p>Generative AI continues to evolve, promising to reshape industries by enabling more intuitive user experiences, automating complex tasks, and unlocking creative potential. The trajectory from early machine learning algorithms to today’s advanced generative systems illustrates an accelerating pace of innovation, with each decade building on previous breakthroughs. As generative AI tools become more accessible and refined, they are poised to empower a new era of creativity, productivity, and exploration across every sector.</p>
+<p>Recent Advancements</p>
+<p>Language Processing</p>
+<p>Natural Language Processing (NLP) is a core branch of artificial intelligence that focuses on the interaction between computers and human language. Generative AI has significantly advanced NLP applications, enabling systems to understand context, compose coherent language, and hold meaningful conversations.</p>
+<p>Generative AI models, such as GPT, excel in producing coherent and contextually relevant content. NLP in generative AI is crucial for recognizing the nuances of spoken or written language. These NLP tools enhance generative AI’s ability to comprehend user inputs and process human language, generating appropriate and meaningful responses or content.</p>
+<p>NLP is a transformational technology that improves human-computer interaction across a range of applications. From chatbots to virtual assistants, NLP facilitates seamless communication between humans and machines, making it a vital component of the digital world. As technology evolves, NLP’s capabilities will continue to expand, paving the way for more sophisticated applications in fields like healthcare, finance, and education.</p>
+<p>Various Models Available in the Market</p>
+<p>Several generative AI models have emerged, each with unique capabilities. Known for their ability to generate large amounts of written content, LLMs (Large Language Models) are highly versatile and can handle tasks ranging from text generation to language translation on a broad scale. Examples include Google’s Gemini, GPT-4, Claude Opus, and Llama3.</p>
+<p>OpenAI’s GPT (Generative Pre-trained Transformer): This model excels in natural language processing tasks like text creation, summarization, and translation.</p>
+<p>• GPT-1: Launched in 2018, this was the first large-scale model, laying the groundwork for future advancements. • GPT-2: Released in 2019, it featured increased scale and enhanced capabilities. • GPT-3: Introduced in 2020, it demonstrated the ability to produce human-like text. • GPT-3.5: Released in 2022, it offered improved context generation and text editing features. • GPT-4: Launched in 2023, it can process both text and images, offering better reasoning and contextual understanding.</p>
+<p>Multimodal Models</p>
+<p>These models accept various input types, such as text and images, to generate versatile outputs like text, images, and audio. Examples include DALL-E, Midjourney, and Stable Diffusion.</p>
+<p>• OpenAI’s DALL-E: Generates images from textual descriptions, showcasing the ability to create visual content from language input. • Stable Diffusion: A widely used model for generating high-quality images based on text prompts. • Gemini: Developed by Google, this multimodal architecture can process context, images, audio, and video. • Project Astra: An ongoing Google project focused on creating AI agents that enhance NLP, complex reasoning, and productivity tools.</p>
+<p>Neural Radiance Fields (NeRFs)</p>
+<p>A powerful generative AI tool for creating 3D imagery from 2D images. NeRFs are increasingly used in virtual reality, computer graphics, and related fields.</p>
+<p>RAG (Retrieval-Augmented Generation)</p>
+<p>RAG combines retrieval-based techniques with generative models to improve the generation process. It retrieves data from external databases or publications to provide more accurate and relevant responses. This approach leverages real data to enhance the reliability of generated content.</p>
+<p>Coding and Generative AI</p>
+<p>Generative AI is rapidly being integrated into software development processes. Tools like GitHub Copilot use generative models to assist developers by suggesting code snippets based on comments or existing code. This helps improve coding efficiency and reduce errors through context-aware suggestions.</p>
+<p>Generative AI is transforming software development by automating coding tasks, fostering creativity, and boosting efficiency. It uses machine learning models to generate new content, including code, based on patterns found in existing datasets. Here are some key effects of generative AI on coding and software development:</p>
+<p>• Quality Control: Generated code may not always meet quality or security standards, requiring human review and validation before deployment. • Dependence on Data: The effectiveness of generative AI relies heavily on the quality and diversity of the training data. Poor data quality can lead to subpar outcomes. • Ethical Considerations: Like any AI system, generative AI must address ethical concerns, such as intellectual property rights and biases in generated outputs.</p>
+<p>Indian Scenario</p>
+<p>AI and generative technologies are rapidly gaining traction in India, with applications spanning sectors like healthcare, banking, education, and entertainment. Startups are using generative AI for content creation, automating customer service, and implementing customized marketing strategies. The government is also encouraging programs that promote AI research and development.</p>
+<p>Many people in India have used ChatGPT, a chatbot developed by OpenAI, which is built on large language models (LLMs). These models interpret and generate content using massive datasets, primarily trained on English data worldwide. However, several Indian companies are taking a different approach. They are developing regional and Indic language models, both large and small, to cater to the linguistic diversity of the country. Smaller language models require fewer but more specialized datasets, which are easier to source locally.</p>
+<p>Key players in this space include Bhavish Aggarwal’s Krutrim, Tech Mahindra’s Indus project, AI4Bharat’s Airawat series, Sarvam AI’s OpenHathi series, CoRover.ai’s BharatGPT, and SML India’s Hanooman LLM series.</p>
+<p>Other notable generative AI initiatives in India include The Nilekani Center at AI4Bharat, Sarvam AI, Project Vaani (a collaboration between AI and Robotics Technology Park at IISC and Google), Ozontel (cloud-based communications), and Swecha Telangana at the Indian Institute of Information Technology-Hyderabad, among others.</p>
+<p>NIC &amp; MeitY Initiatives</p>
+<p>The Ministry of Electronics and Information Technology (MeitY) has initiated the implementation of a ‘National Programme on AI,’ which includes four main components: Data Management Office, National Centre for AI, Skilling on AI, and Responsible AI. The ‘IndiaAI’ framework complements this program by providing a focused and comprehensive approach to address specific gaps in the AI ecosystem. As one of the largest Global South economies leading the AI race, India has been appointed as the Council Chair of the Global Partnership on AI (GPAI), securing more than two-thirds of first-preference votes.</p>
+<p>IndiaAI’s mission-centric strategy emphasizes bridging gaps in AI infrastructure, including compute resources, data availability, financing, research, innovation, targeted skills development, and institutional data management. This comprehensive approach is crucial for maximizing AI’s impact on India’s progress.</p>
+<p>To further strengthen its AI capabilities, India is establishing multiple Centres of Excellence, developing a national dataset platform, setting up a Data Management Office for governance, and exploring design approaches for indigenous AI chipsets. Moving forward, MeitY plans to establish a compute center with 10,000 GPUs, providing 40 Exaflops of computational power and approximately 200 PB of storage. The focus will be on prioritizing AI use cases in Governance, Agriculture, Health, Education, and Finance.</p>
+<p>Centre of Excellence in Artificial Intelligence (NIC Initiatives)</p>
+<p>NIC took a significant leap in advancing AI in governance by establishing the Centre of Excellence in Artificial Intelligence in 2019. This pioneering initiative aims to explore, develop, and implement AI applications specifically tailored to enhance public services and governance structures in India. At its core, the center focuses on model building in critical areas such as Image and Video Analytics, Speech Synthesis and Recognition, and Natural Language Processing, each geared toward creating solutions that streamline citizen services and improve administrative efficiencies.</p>
+<p>To make AI accessible and scalable for various government agencies, NIC launched AI as a Service (AIaaS) on its Meghraj Cloud in January 2021. This service allows agencies to tap into AI capabilities without needing to develop or manage complex infrastructure. Here is a comprehensive overview of NIC’s key AI initiatives that are driving transformation in Indian governance:</p>
+<p>• AI - Manthan: A versatile platform for creating, training, and testing AI-based deep learning models. It simplifies the model development process, making it easier for developers to design effective solutions.</p>
+<p>• AI - Tainaatee: An inference testbed specifically designed for deploying models created in AI – Manthan. Once models are trained, Tainaatee allows them to be tested for real-world deployment, ensuring that they are production-ready. This testbed optimizes model performance for practical applications in government projects.</p>
+<p>• AI - Tippanee: Annotation tools and services essential for building reliable AI models. AI – Tippanee provides a suite of tools for tagging, labeling, and preparing data, which is a crucial step in the machine learning process, especially in supervised learning scenarios.</p>
+<p>• AI - Satyapikaanan (Face Recognition as a Service - FRAAS): Satyapikaanan offers API-based face recognition and liveness detection services. This technology has enabled numerous e-governance applications, such as:</p>
+<p>• Life Certificate Verification for pensioners in Meghalaya. • Faceless Services in Regional Transport Offices (RTOs) for convenient public service access. • Attendance Tracking for skill development trainees under the Ministry of Minority Affairs.</p>
+<p>• AI - ParichayID: An API service dedicated to verifying and matching form details accurately. This tool helps in validation processes where user-submitted information must be cross-checked for accuracy and completeness, supporting initiatives that require secure and verified data submissions.</p>
+<p>• AI - VANI (Virtual Assistance by NIC): VANI encompasses chatbots, voicebots, and transliteration tools, provided via the Meghraj Cloud. As a highly adaptable AI service, VANI has been instrumental in supporting multiple government projects:</p>
+<p>• NIC has deployed 20 chatbots, including for services like eWay-Bill and iKhedut (a portal for farmers), some of which offer multilingual support. • Additionally, eight bilingual voice support services, including for PM-Kisan and PM-Kusum, serve diverse citizen groups, enabling more inclusive access to government services across multiple states and ministries.</p>
+<p>• AI - Vividh: A customizable AI application development service that also supports compute-only requests. Vividh is responsible for various specialized projects, such as:</p>
+<p>• SwachhAI, an automated toilet seat detection tool, supporting sanitation efforts under Swachh Bharat Urban. • Cognitive Search Tools for motor accident claim cases within eCourts, making case information retrieval faster and more efficient for legal and administrative personnel.</p>
+<p>• AI - Prabandhan: A comprehensive framework for managing the lifecycle of AI models, including retraining, backup, infrastructure scaling, and disaster recovery. Prabandhan ensures that AI systems are not only functional but also sustainable, allowing continuous updates to keep models relevant and effective as data and requirements evolve.</p>
+<p>BHASHINI Initiative</p>
+<p>BHASHINI aims to break language barriers, making digital services accessible in local languages using voice-based technology. Launched in July 2022 by Honorable PM Shri Narendra Modi under the National Language Technology Mission, BHASHINI provides translation services for twenty-two scheduled Indian languages. Key features include automatic speech recognition, neural machine translation, text-to-speech conversion, language detection, and voice activity detection. This initiative holds the promise of bridging both linguistic and digital divides, empowering every citizen to engage with technology seamlessly.</p>
+<p>Challenges of Generative AI</p>
+<p>Despite its immense potential, generative AI faces several significant challenges:</p>
+<p>• Hallucination: Generative models often rely on patterns from training data without real-world validation, producing outputs that may seem plausible but are incorrect or nonsensical. These AI hallucinations, particularly prevalent in large language models (LLMs), undermine the reliability and trustworthiness of AI systems. While generative AI can present content that appears factual, it often lacks true understanding, and inaccuracies in training data exacerbate this issue. Furthermore, generative AI can easily create misleading content, such as fake news and deepfakes. Since models are designed to generate convincing outputs even without a factual basis, all AI-generated content should be independently verified for accuracy.</p>
+<p>• Bias: Bias in AI arises from systematic favoritism embedded in AI systems, leading to skewed outcomes or uneven treatment. This issue can manifest in critical areas like hiring, lending, criminal justice, and healthcare. As AI becomes more integrated into decision-making processes, it is crucial to identify and address these biases to ensure fairness and equity.</p>
+<p>• Limitations: Despite rapid advancements, AI technology still has fundamental limitations that restrict its effectiveness across various fields. Understanding these constraints is essential for developers, businesses, and policymakers to make informed decisions about AI adoption and deployment.</p>
+<p>• AI Privacy and Regulation: The widespread use of AI raises serious privacy concerns, necessitating comprehensive legal frameworks to protect personal data. As AI systems become more common, individuals, organizations, and regulators must be aware of the implications for data privacy and establish robust safeguards.</p>
+<p>• Carbon Footprint: Training generative AI models requires substantial electricity, contributing to significant carbon emissions. For instance, training ChatGPT-4 is estimated to consume between 51,772 and 62,318 megawatt hours of electricity, resulting in CO2 emissions ranging from 1,035 to 14,994 metric tonnes. These environmental impacts vary based on the geographical location of data centers. To put this into perspective, a 3,000-mile round-trip flight from London to Boston produces roughly one metric tonne of carbon dioxide.</p>
+<p>• Copyright &amp; Ownership: Generative AI often produces content that mimics or summarizes existing material, sometimes without the original creators’ consent. This raises issues of copyright, intellectual property, and ownership, especially given the lack of clear legal guidelines in this evolving field. Users should exercise caution and avoid feeding copyrighted or sensitive personal information into AI tools, as such data could be absorbed into training datasets and misused in unintended or unethical ways.</p>
+<p>Way forward</p>
+<p>To use generative AI responsibly, it is essential to:</p>
+<p>• Prioritize Ethical Considerations: Ensuring transparency in model training methods and proactively addressing biases is crucial for ethical AI development.</p>
+<p>• Pursue Cross-Disciplinary Collaboration: Advancing toward real Artificial General Intelligence (AGI), where machines demonstrate human-like cognitive abilities across diverse tasks, will require continuous research and collaboration across various fields.</p>
+<p>In summary, while generative AI holds the promise to transform numerous industries, its long-term success will depend on addressing challenges through strong ethical standards.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="east-singhbhum-jharkhand-empowering-governance-through-digital-innovation-october-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">East Singhbhum, Jharkhand: Empowering Governance through Digital Innovation</span></a><a class="article-nav-link next" href="pm-usha-portal-enhancing-higher-education-in-the-light-of-nep-2020-october-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">PM-USHA Portal: Enhancing Higher Education in the light of NEP 2020</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

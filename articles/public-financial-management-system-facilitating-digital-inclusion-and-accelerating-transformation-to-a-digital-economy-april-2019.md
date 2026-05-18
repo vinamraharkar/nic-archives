@@ -1,0 +1,190 @@
+---
+title: "Public Financial Management System Facilitating digital inclusion and accelerating transformation to a ‘Digital Economy’"
+publication: "Informatics"
+issue_date: "April 2019"
+pages: [21, 22, 23, 24, 25, 26, 27, 28]
+author: "DIPANKAR SENGUPTA (Sr. Technical Director & HoD), SANJAY AGARWAL (Secretary, Dept. of Agriculture Cooperation and Farmers Welfare, Government of India), ARVIND PANAGARIYA (Professor of Economics, Columbia University, Former Vice Chairman, NITI Aayog), NAGESH SHASTRI (Deputy Director General, National Informatics Centre)"
+section: "In Focus"
+---
+
+## Public Financial Management System Facilitating digital inclusion and accelerating transformation to a ‘Digital Economy’
+
+In his budget speech, on 28th February 2011, the then Finance Minister stated that the year 2011-12 would be a transition towards a more transparent and result-oriented economic management system in India. The government would take major steps in placing the administrative procedures concerning taxation, trade, tariffs and social transfers on electronic interface, free of discretion and bureaucratic delays. In furtherance of these objectives and in compliance with the provisions of the IT Act, along with other related laws and recommendations made by the Reserve Bank of India (RBI), the Public Financial Management System (PFMS) established itself as a safe, secure, efficient and robust payment platform for the Government of India. The system enabled the successful delivery of payment services from Government Treasuries and Programme Implementing Agencies (PIA) to beneficiaries’ accounts. The accountability of public funds is very important and hence, there is a need for the executive, legislature and audit branches of the government, in addition to citizens, to access all financial transactions.
+
+The system has expedited direct payments from paying units to citizens, government employees, contractors and other entities receiving payments and facilitated paperless transaction in a secure environment. It has also helped reduce overall cost and promote green banking. The digitally signed e-pay orders are processed by the accredited banks to credit the beneficiaries’ accounts through a bouquet of electronic payment instruments such as Intra Core Banking Solution (ICBS), National Electronic Fund Transfer (NEFT), Real Time Gross Settlement (RTGS), Aadhaar Enabled Payment System (AEPS) and National Automated Clearing House (NACH).
+
+Objectives
+Electronic payment products, which over the years have metamorphosed into NACH, AEPS and NEFT/ RTGS, have ushered in new ways of payment processing. With technology being one of the major enablers, the need for a secure and efficient payment system started taking shape so as to enable faster payment delivery to beneficiaries and agencies in far-flung areas where conventional modes of payment such as cheques and drafts consume time. Such a system would facilitate transaction wise prompt reconciliation and near real-time settlements. Benefits envisaged included convenience and privacy, efficiency in transactions, lowering of transaction costs, just-in-time availability of funds, reduced cost of carry and reduction of leakages. With over 1,38,000 bank branches enabled for e-payments, it provided an opportunity to transact electronically for government payments cutting across geographic divides.
+
+The Ministry of Finance has taken a big leap forward, with PFMS emerging as one of the largest financial management systems in the world, critical in bringing about transformational accountability and transparency in financial management and promoting good governance.
+
+PFMS, conceived as an online transaction system, enabled Direct Benefit Transfer (DBT) and other payments directly to the bank accounts of beneficiaries. This system rolled out by the office of the Controller General of Accounts, Ministry of Finance, with the National Informatics Centre (NIC) as its IT partner, proved to be a game changer.
+
+Background behind the initiative
+Under the traditional system of the government, paying units were drawing cheques, cash and demand drafts or in some cases, ECS (by issuing a lump sum cheque in the name of the accredited bank, along with the list of beneficiaries) for payments to be made, which had its own share of inherent drawbacks.
+
+••Not completely integrated processes
+••Separate payment and reporting systems
+••Difficult to enforce validation
+••Multiple data capture and control points
+
+••Hierarchical chain of PIAs through which the Government of India’s funds flow to the grass-roots level
+••Long payment process life cycle from Drawing & Disbursing Officer (DDO) to Pay and Accounts Officer (PAO) to Bank and final credit to the beneficiary's account (average about 20-22 days)
+••Payment through drawing a cheque had to go through a 13-stage time-consuming workflow.
+••Transaction wise reconciliation was not possible.
+
+The Government of India decided to expedite payments from central paying units directly to all recipients’ accounts. This would accelerate the adoption of other e-services, due to their efficiency and ease-of-use, by all the Government Ministries and Departments, which was already a declared objective of the government. By moving to electronic payments, the Ministry of Finance expected to usher in increased transparency and promote good governance in the public sector.
+
+With tremendous growth made by the banking sector in the past decade in improving their payment and receipt systems through Core Banking Solutions (CBSs), coupled with exponential growth in the telecom sector, the desire to leverage them for effecting prompt payments through electronic means had become even more relevant. Triggers contributing to the kick-starting of the e-payment initiative were:
+
+••Monumental growth made by the banking sector in the past decade – over 1,38,000 branches spread over 25,000 geographical locations on the Core Banking System
+••Window of opportunity for the government to improve efficiency of its payment functions – leveraging progress made by Reserve Bank of India (RBI), National Payments Corporation of India (NPCI) and various agency banks with products such as NACH, RTGS and NEFT
+••Unprecedented growth in penetration of telecom services enabling the linking of geographically spread entities. India's telecom network is the second largest in the world with over 1.17 billion mobile phone users having a tele-density of 92.98% (2017).
+••Digital security standards and advanced IT tools for safer transactions and faster processing
+
+Addressing governance and ease of doing business issues, the Finance Minister, in his Union Budget, 2016-17 speech, emphasised on good governance with special focus on process reforms, IT-enabled government processes etc., and bringing transparency and efficiency in government procurement of goods and services. Since then, several policy interventions have been made for enhancing digital financial transactions in the government sector as well as in regular commerce. The Ministries and Departments have been steadily moving to electronic payments since 2012. Currently, 98% of the cash outflows to vendors, beneficiaries and agencies are happening through the e-mode.
+
+The successful operationalisation of electronic transfer of funds to a large number of beneficiaries of this magnitude, under the scheme PM-KISAN by PFMS, with superb leadership, outstanding teamwork, excellent analysis of data for decision-making, creating new systems required for operationalisation and implementation within a very short timeline, is a historic achievement of PFMS, which has further reinforced the Digital India initiative of the Government of India. The NIC-PFMS team has made a stellar contribution to the process completing the activities in a record time.
+SANJAY AGARWAL
+Secretary
+Dept. of Agriculture Cooperation and Farmers Welfare
+Government of India
+
+The present digital governance initiatives provided an opportunity to fully leverage IT based solutions, coupled with modern banking channels, for seamless payment integration from capturing budget allocations and claims, processing of sanctions by Programme Division, and generation of bills (invoices) by spending units to the treasury for payment. Such a system enhances transparency and responsiveness by providing tracking of the bill at every stage of payment up to the final credit into the recipient’s account. The end-to-end secured solution would reduce costs for both government and third parties, thereby enhancing ease of doing business.
+
+Public Financial Management System Concept and Framework
+The primary focus of the Government of India has been to streamline the flow of funds to PIAs, almost in detriment to other financial management issues. Factors that affect the flow of funds in social welfare schemes are the government approval processes, a large number of implementing units including Panchayati Raj Institutions (PRIs), various intermediate levels that the funds have to flow through, and the physical mode of transfer. While the creation of state and district level PIAs in many projects has addressed the issue of across several schemes. Time lag between release and expenditure builds up float in the system, which has a ‘carrying cost’, estimated to be in excess of ₹ 100 billion ($1.4 billion).
+
+Initiative by the Government of India
+PFMS emerged as a programme of the Department of Expenditure in the Ministry of Finance, with the objective to establish a real time Decision Support System for Central Sector and Centrally Sponsored Schemes of the Government of India. With the recent restructuring of the existing Centrally Sponsored Schemes (CSS) and Additional Central Assistance (ACA) into 66 schemes (inclusive of 17 flagship programmes), PFMS was poised to track almost ₹ 5 trillion ($70 billion) under these schemes. PFMS, conceptualised as an IT tool for Programme Division, enabled the registration of PIAs, disbursement of money using DBT, programme implementation, and tracking of funds. With consistent value additions and enhancement of features, PFMS, today, has traversed, beyond its vision to include budget and treasury management, along with several other public financial management functions.
+
+The successful roll-out of PFMS has transformed programme implementation, money transfer, and tracking of funds. PFMS now caters to most functions of an online Integrated Financial Management System, viz. budget management, payment and receipt functions, government banking arrangement (agency banks and RBI), accounting and reconciliation of transactions.
+
+Objectives
+PFMS was started as a pilot project approved by the government in 2010 for four flagship schemes to be implemented in a few states. Appraisal of results facilitated the transition of PFMS into a central scheme for XII Plan period during the financial year 2013-2014. In 2014, the scope expanded to include end-to-end digitisation of government accounts and inclusion of all government treasury functions of receipts and payments. In 2013-2014, PFMS was mandated for DBT payments in all major welfare programmes of the government. In 2017, extension of PFMS was granted until the end of XIV Finance Commission award period i.e. 31st March 2020 to:
+••Facilitate sound public financial management for the Government of India by establishing a comprehensive payment, receipt & accounting network.
+••Provide a management platform for welfare schemes, a database of PIAs, integration with CBS of banks and state treasuries and tracking of funds to the lowest level for better monitoring, review and decision support.
+••Bring in effectiveness and prudence in public finance management through better cash management, real-time resource availability and utilisation across schemes, better scheme management, reduced float and direct payment to beneficiaries.
+
+Two additional important columns of this infrastructure are Public Finance Management System (PFMS) and Unified Payments Interface (UPI). PFMS is an end-to-end solution for processing, tracking, monitoring, accounting, reconciliation, and reporting of financial flows into and out of the central government. It constitutes a unified platform for tracking releases of financial flows and their utilisation down to the last mile. Through the banking system, it connects the Central Government financial flows digitally to State Governments, businesses and even households.
+It was on the strength of this system that recently Shri Narendra Modi, Hon’ble Prime Minister, could transfer Rs. 2,000 each to bank accounts of 10 million farmers under PM-KISAN scheme with a few clicks of a mouse. Today, government transfers can be initiated from PFMS and can directly flow to bank accounts of State Governments, vendors and individuals with no intervention whatsoever by banks.
+ARVIND PANAGARIYA
+Professor of Economics
+Columbia University
+Former Vice Chairman, NITI Aayog
+
+Key features
+Programme Implementing Agency (PIA) Registration
+PIAs (viz. Statutory Bodies, Trusts, Registered Societies, Autonomous Bodies, State Government Institutions, Local Bodies etc.) receiving funds from the Government of India – registration on PFMS for monitoring of their bank balances and tracking of fund flow.
+
+Treasury (PAO) computerisation - Online Payments, Receipts and Accounting of the Government of India
+It facilitates budget entry, payments, compilation of accounts, bank reconciliation and authorisation of funds to departments for the supply of goods and services, execution of works etc.
+
+Bank Interface
+PFMS – CBS interface is operational with 248 banks, India Post and RBI to facilitate pre-validation of beneficiaries and agencies’ bank account details for e-payments.
+
+Direct Benefit Transfer (DBT)
+It facilitates every Department/ Ministry to transfer funds electronically to beneficiaries (individual or institution) through NACH/ AEPS of NPCI. Major external applications integrated include MNRE-GASoft, MCTS, AwasSoft, NSAP, NSP, OMMAS, Geo-Reach, PDS system and Priasoft.
+
+Expenditure management and fund utilisation (EAT)
+PIAs use the EAT module for transferring funds/ advances to lower level agencies and e-payments to vendors and beneficiaries.
+
+Interface with State Treasuries
+It enables tracking of funds transferred from Central Ministries to States, starting from the initial release, with the PFMS – State Treasury Interface, implemented for all 36 States/ UTs.
+
+Non Tax Receipt Portal (NTRP)
+It provides a one-stop window to citizens/ corporates/ other service seekers for making online deposits of non-tax receipts due to the Government of India by using credit card, debit card or through net banking of any of the banks integrated with seven Payment Gateway Aggregators. This portal, integrated with most of the applications of the Government of India Departments/ Ministries, facilitates online collection of their receipts.
+
+Technology Stack
+The Government of India’s financial management platform, PFMS, driving reforms and initiatives, monitoring programmes in the social sector and tracking funds at Central and State levels, is the technology backbone to ensure that the funds disbursed by the government under various schemes are spent as per their intended purpose and reach the intended beneficiaries.
+
+The PFMS technology stack consists of a three tier architecture with (a) the User Interface Layer, (b) the Data Processing Application Layer running on Microsoft .NET 4.7 and (c) the Database layer on Microsoft SQL Server 2016. The external systems interface Integration and Batch processing layer run on the middleware Microsoft Biztalk Server 2016. Based on Service Oriented Architecture (SOA), PFMS is deployed on a private cluster/ cloud in the NIC Data Centre. Key usage statistics are:
+••20 TB Database Size (average growth - 26 GB per day)
+••3,486,559 Registered Users (login IDs)
+••Average daily log-in of 166,857 users on website
+••Peak Concurrency of 15,632 users
+••70% (peak) and 45% (average) CPU Utilisation
+
+PFMS Digital Payment Ecosystem
+
+PFMS – Bank Interface: Changing Landscape for Value Delivery
+The interface designed to integrate with banks uses standards applicable to host–to–host (H2H) integration using Secure File Transfer Protocol (SFTP) and PKI based digital signature for ensuring security, authenticity and integrity. The system creates and manages the database of bank SFTP servers, the data exchange formats, business rules, data mapping options, metadata for data integration scenarios: account validation, bank account transaction details, full payment cycle and reconciliation.
+
+Bank & External System Integration
+Generation of XML to be sent to Bank SFTP
+PFMS middleware polls the OLTP database after fixed intervals, fetches data and processes it for XML generation with a polling frequency varying from 5 minutes to 6 hours (configurable based on priority and demand) for applications related to payment file generation, sending account validation and payment response to external systems and many other applications.
+
+PFMS has made a direct and significant contribution to the Digital India initiative of the Government of India by enabling electronic payment and receipts for Ministries/ Departments. PFMS is unique in the sense that the financial reporting and the implementation of schemes go hand in hand due to its interface with banks. PFMS has secure integration with all the major banks for the exchange of data both ways. Electronic payment into the accounts of agencies and beneficiaries has also been successfully implemented. Electronic payment is done for account holders of banks as well as post offices. PFMS is a vital link and game changer in the implementation of DBT schemes, amply demonstrated recently during transfer of funds to PM-KISAN beneficiaries.
+NAGESH SHASTRI
+Deputy Director General
+National Informatics Centre
+
+File once generated, is pushed to SFTP location of banks/ external system and the delivery status is marked in PFMS OLTP database. For every application, for each bank/ external system, the receive location contains SFTP login details, path from where the file is to be picked and the polling interval is pre-configured. Depending on these parameters, PFMS SFTP adapter polls the SFTP location for any new files waiting for consumption by PFMS at pre-defined polling intervals varying from 5 minutes to 15 minutes. The file once consumed is deleted from SFTP folder.
+
+Consumption of XML from Bank/ External System SFTP
+The banking system interface’s purpose is to effect payments, track and monitor the financial transactions pertaining to fund disbursement under different social welfare schemes on a real time basis and to facilitate:
+••Sharing and validating bank account details of PIAs.
+••Capturing events and behavioural attributes of agencies as captured by the bank and use them for effective and efficient management of transaction related services.
+••Updating bank branch master details.
+••Providing metadata for maintaining desired level of data quality and consistency.
+••Pre validating beneficiary/ vendor accounts for payments.
+••Completing the cycle of reconciliation of transactions between bank and PFMS and provide integrity checks.
+••Resolution mechanism to avoid repetitive cycles.
+
+The payment ecosystem has established a changed landscape for value delivery, automating end-to-end payment transaction life cycle and moving to the next level of standards by adopting ISO messages for a common system. A new paradigm for reconciliation with prompt response of transaction status is now established. With this, the next generation solution for a payment ecosystem is now built and a model of integrated information is created. Major features of the payments system include:
+••Integration options through SFTP, web services using open standards for platform independence
+••Account Validation – Returns KYC details of account holder with the bank
+••Agency accounts transaction details – For tracking daily balances and transaction reconciliation
+••Payment products – Print Payment Advice (PPA), Digital Signature Certificate (DSC) based authorisation and adoption of ISO 20022 for electronic data interchange
+••Handling of high priority and routine bulk payments
+••Management of high volume of DBT payment transactions with broader time window for NEFT/ NACH with banks/ NPCI and supporting banks to upgrade and standardise their payment system
+••Risk management through business rules and controls
+••Government treasury (PAO) transaction reconciliation, settlement and accounting through e-Scrolls
+
+Account Validation
+PFMS validates each recipient, getting fund from government agencies, and assigns a unique beneficiary/ vendor ID. The Account Validation Request xml file after generation is sent to the bank’s SFTP location. The bank validates the account number and returns Name(s), Indian Financial System Code (IFSC), type of account, Aadhaar, PAN and Address. On receiving the validation response, PFMS generates the beneficiary ID and shares it with the external system initiating the request. Account validation is also available through web service for 18 banks.
+
+Payment Processing
+Payment requests from 35 external systems (including the PFMS UI) are processed for integrity and authenticity of DSC signed files. The payment files (File Transfer Order) generated, for both DSC (agency signed files/ server signed files) and PPA (Print Payment Authority) are sent to the banks’ SFTP location, which are then picked up for payment. The banks in turn process response files, viz. ACK/ NACK, Initiation (Debit Response), Success/ Reject/ Hold (Credit Response) and Scrolls (PAO Payments). The Credit Status received is shared with External Systems and PFMS UI for reconciliation and re-initiation for failed transactions.
+
+To ensure that the processing of File Transfer Orders (FTOs) and its payments are completed within a maximum of T+2 days (‘T’ being the day on which it is received by PFMS), the PFMS payment system follows a protocol, a typical example of which is shown in the Figure 6.
+
+The Banking Integration Universe
+The unique value proposition of PFMS is a result of its integration with Core Banking Systems of almost all major banks in the country. 248 banks have been integrated with PFMS (September 2018), which include Nationalized Banks (20), Regional Rural Banks (54), Private Sector Banks (15), Co-operative Banks (98) and others (61), with a unique capability to push online payments to any beneficiary/ vendor.
+
+A summary of the daily average volumes processed by the payment ecosystem of PFMS during February 2017 is as below:
+••FTOs from external system processed: 70,136 with 2,498,668 beneficiaries
+••PPA batches processed: 25,246 FTOs
+••PAO batches processed: 71,694 FTOs
+••Account validation batches processed: 30,365 with 1,492,147 beneficiaries
+
+••A record amount of ₹ 716.3 billion ($9.95 billion) was transacted through PFMS on 28th March 2018, with the number of transactions peaking at a historic high of 9,819,026 processed in a single day.
+••A staggering 34,297,084 number of payment sanctions (2.216 billion transactions) have been processed through PFMS since inception (FY 2009-2010), totaling an amount of ₹ 59.6 trillion ($851 billion).
+••During the last three years, 1.2 billion DBT transactions have been recorded amounting to ₹ 2.69 trillion ($37.4 billion) for 44 Central Sector Schemes and 354 State Schemes made by about 15,000 agencies.
+
+Benefits and Major Achievements
+Considering the diversity and multiplicity of channels through which money is spent/ transferred (including through DBT), PFMS is designed to serve the pertinent need of establishing a common electronic platform for complete tracking of fund flows from the Central Government to a large number of PIAs, both under Central Government and the State Governments till it reaches the final intended beneficiaries. PFMS, thereby enables real time monitoring of disbursements and utilisation of funds, which in turn, provides a sound Decision Support System across Ministries and Departments of the Government of India as well as all the State Governments and Union Territories. The efficiency brought out in the management of public funds through PFMS had a cascading beneficial impact on the management of State Government public finances as well as provided an efficient delivery of public services to the States. PFMS reflects the true spirit of co-operative federalism with Centre and State Governments, combining their efforts in improving public finance management for ultimate public good. It has helped improve programme/ financial management, reduced float in the financial systems by enabling ‘just-in-time’ releases, and ensuring better cash management with direct reduction of interest cost to the government. The scheme envisaged to promote transparency ensures that benefits reach the last mile. PFMS:
+••Provides a financial management platform for all schemes.
+••Facilitates the creation of a centralised database of all recipient agencies.
+••Facilitates integration with core banking solution of banks handling funds of the Central Government.
+••Facilitates integration with State Treasuries for efficient and effective tracking of fund flow to the lowest level of implementation for schemes of the Central Government.
+••Provides information across all schemes/ implementation agencies in the country on funds utilisation, which will lead to better monitoring, review and decision support to enhance public accountability in the implementation of schemes.
+••Facilitates effectiveness and economy in Public Finance Management through better cash management for transparency in public expenditure.
+••Provides real-time information on resource availability and utilisation across schemes.
+
+PFMS has seen an exponential increase in transaction volumes, which is evident from the statistics cited above. Amount transacted on PFMS also rose from ₹ 1.75 billion ($24.3 million) in 2013-2014 to ₹ 10.24 trillion ($142.3 billion) in 2017-2018. As more and more users come on board, a multi-fold increase in the growth in terms of load and scalability is expected. PFMS has successfully handled 1.86 billion payment transactions totaling ₹ 46.7 trillion ($657.7 billion) since its inception, out of which, 600 million transactions (about 30%) totaling ₹ 23.05 trillion ($324.6 billion) (about 50%) have been effected during the fiscal 2018-2019 alone.
+
+DBT through PFMS, transferring subsidies/ benefits directly to citizens into their bank accounts, is a path-breaking reform, which has altered the landscape of the government programme implementation with reduction of leakages and elimination of ghost beneficiaries. Its aim to timely transfer benefits to citizens by bringing efficiency, transparency and accountability in the government system has brought immense relief to the poor and the needy strata of the Indian society. PFMS has successfully processed in excess of 1.79 trillion DBT transactions, involving total DBT payments of ₹ 3.94 trillion ($55.5 billion) since its inception. Almost 40% - 45% of these transactions were successfully effected in the calendar year 2018 alone. Currently, the total number of DBT beneficiaries being serviced by PFMS is in excess of 180 million. The implementation of PFMS has helped the system to manage and maintain huge data that the government could now leverage using machine learning and AI tools to develop a more scientific approach in payments of social welfare benefits to citizens. The actual status of utilisation of funds by a myriad of PIAs of the Central and State Governments is now monitored to ensure that the benefits reach the intended beneficiaries. The Finance Minister has reiterated that PFMS has the capability of providing real-time information on resource availability, flows and actual utilisation. Some of the acknowledged benefits reaped are:
+••The Uttar Pradesh State Government has claimed a saving of ₹ 5.2 billion ($72 million) using PFMS for social assistance pension payments.
+••An estimated ₹ 100 billion ($1.39 billion) is the annual gain to the Centre from PFMS platform integrated with state treasuries, quoted a press release by the Government of India.
+••A Niti Aayog press release by its CEO Shri Amitabh Kant, informed that the linkage of Aadhaar and DBT has helped government save close to ₹ 830 billion ($11.5 billion). PFMS has been a very efficient and effective tool for the monitoring of government funds.
+
+PFMS has started facilitating the implementation of the government’s ambitious PM-KISAN Yojana, which would involve an estimated additional 12-13 crore beneficiaries at a ten-year outlay of ₹ 750 billion ($10.7 billion). This involves a massive exercise of coordination with multiple stakeholders including the Ministry of Agriculture and the agency banks for achieving the objective. The first tranche of about ₹ 2,000 was successfully credited to the bank accounts of the first lot of 1.01 crore (over 10 million) small and marginal farmers on 24th February 2019, with the formal launch of the scheme by the Hon’ble Prime Minister.
+
+Way Forward
+Considering the diversity and multiplicity of channels through which money is spent/ transferred (including through DBT), PFMS serves the pertinent need of establishing a common electronic platform for complete tracking of fund flows from the government to a large number of PIAs, both under Central and State Governments till it reaches the final intended beneficiary. Digital India Programme, launched in 2015, has accelerated the development of a strong foundation of digital infrastructure and expanded the internet access to about 481 million subscribers. Promotion of a digital payments ecosystem is its natural extension and has the potential to transform India's economy by digitisation of financial transactions and to move towards a cashless (or less cash) economy. The DigiDhan mission is a focused initiative of the government by establishing a robust, secure and inclusive pan-India digital payments ecosystem. PFMS on its own has made over 593 million so far during the current fiscal and is providing a big impetus in the realm of government payments towards accomplishing this objective.
+
+This is, however, just the tip of the iceberg. India is in a sharply accelerating “take-off” phase of its digital journey. In the near future, PFMS is targeted to scale up to over 4 million PIAs carrying out 10 million transactions per day. India is poised for the next phase, the creation of tremendous economic value and empowerment of millions, as new digital applications permeate and transform a multitude of activities at a national level.
+
+Acknowledgement
+The Controller General of Accounts with the National Informatics Centre (NIC) as its technical partner in 2009 conceived the PFMS application. It is through the untiring efforts of the Indian Civil Accounts Organisation in driving this initiative, along with scientists of NIC that PFMS has become a landmark e-Governance application.

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geographical Information System (GIS): Bridging the Information Gap — Informatics January 2005</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2005"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2005/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2005/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2005/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2005/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2005/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2005/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2005/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2005/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2005/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2005.html">January 2005</a><span class="breadcrumb-sep">&rsaquo;</span><span>Geographical Information System (GIS): Bridging the Information Gap</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Special Feature</div>
+          <h1 class="article-title" data-pagefind-meta="title">Geographical Information System (GIS): Bridging the Information Gap</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Dr. Vandana Sharma, NIC HQ &bull; pp. 4–6</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2005.html">January 2005</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Competitiveness, due to globalization has caused remarkable changes in the planning approach for developmental processes at every level. Convergence of various technologies has become the need of the hour. Geographical Information System (GIS), which basically handles spatial data in the form of maps, pictures, Global Positioning System (GPS) and integrates them with non-spatial data, is one such technology that finds application in every area without exception. GIS is potentially a technology bridging the gap between MIS and ground reality.</p>
+<p>Remote Sensing and GIS division of NIC has come a long way since its inception as a division in 1996, with its constructive, visionary and sustained effort to provide GIS technology, a place of prominence in day to day governance.</p>
+<p>Spatial Information</p>
+<p>The spatial information originates from geographical representations such as maps and pictures taken from satellites or aerial photography. With rich tradition of mapping, a large number of maps today exist with different organizations across the country at various scales right up to specific cadastral survey number. The practice of using these maps, however, follows traditional methods. A major constraint with analog form of maps arises from its rigid format which prohibits the use of data in different ways. Also, overlay of maps is either not feasible or is a complicated process.</p>
+<p>There is also enormous wealth of spatial information in the country through pictures taken from aerial and satellite based platforms. A number of satellites spanning around the globe provide spatial digital data for various needs such as meteorology, land resources etc with very high resolution imageries providing minute details of the terrain. Utilization of such data requires geo referencing of images through maps developed with accurate geographical control points. The spatial data development, hence, has to consider use of maps generated by survey procedures and update of the same using emerging technologies.</p>
+<p>Advent of digitization of maps has revolutionized the cartographic representations. Here, the main advantage lies in the flexibility of representation, with layers of map, a capability that allows interactive experimentation, editing and overlays.</p>
+<p>The emphasis from map making in recent years has shifted to spatial digital database derived from precise navigation, imaging satellites, aircraft and transactional database. As technology incorporates ease of data manipulation and resolves complexities, GIS has been making tremendous impact in business.</p>
+<p>Major Issues</p>
+<p>Increased demand of spatial data has raised many issues. Some of them are as under:</p>
+<p>• Development of data through digitization must consider accurate base maps, quality assurance models, quality standards and completeness with compliance. • A seamless multilayered spatial database at the national level can only be developed through partnership. • A systematic approach is required with increasing volume of data for higher spatial, spectral and temporal resolutions. • Implementation of GIS at the national level needs to consider issues that include Intellectual Property Rights (IPR), ownership rights, disclosure agreements, legal and security issues.</p>
+<p>Spatial Data Infrastructure (SDI)</p>
+<p>The use of spatial data with GIS technology is a challenge because of a number of associated issues. This has evolved the concept of Spatial Data Infrastructure (SDI) which is comparatively a recent phenomenon. An SDI is a type of information community that can be defined by its members (providers, experts, practitioners/users), their capabilities (services, information resources), a shared vocabulary (semantics), shared conventions (endorsed standards and specifications) and communication facilities that promotes interaction (portals, catalogues, meta-data). The development of enterprise architecture to encompass organizational processes (for example, functions and data in support of planning and decision-making requirements for holistic development of the country in mission mode) is a useful methodology to build rationale and opportunities for interaction between organizations to apply geospatial data and services.</p>
+<p>Global Scenario</p>
+<p>‘Worldwide Geographic Network’ is a rapidly emerging reality. Global Spatial Data Infrastructure (GSDI) and Global Information Infrastructure (GII) are proposed to be carrying all types of information, spatial or non-spatial, voice or video. The Open GIS model envisages to synchronize Geo processing technology with the emerging information technology standards, based on open systems, distributed processing and component ware frameworks to facilitate interoperability through common specifications over Internet/Intranet. The ‘Pluggable Computing Model’ provides conceptual framework that positions the Open GIS specifications in the broad context of Information Technology.</p>
+<p>National Spatial Data Infrastructure (NSDI)</p>
+<p>There is sufficient emphasis on development of National Spatial Data Infrastructure (NSDI) in India. Initiatives taken up by the Government of India reflect the greater role of spatial or geographic information using GIS technology and associated services in emerging ICT technology trends. NSDI envisages the convergence of various spatial information sciences and technologies, using information systems, networks around common spatial data exchange standard, linking all data sources and producers, users and planners. The National Map Policy, to this effect, is shaping up steadily to meet the demands on effective use of spatial data.</p>
+<p>Role of NIC in NSDI</p>
+<p>NSDI framework conceptualized at Department of Science &amp; Technology (DST) envisages the participation of spatial data users and producer organizations like Department of Space (DOS), Survey of India (SOI), Geological Survey of India (GSI), Forest Survey of India (FSI), National Bureau of Soil Survey &amp; Land Use Planning (NBSS&amp;LUP), and so on. However, it is important to realize that for countrywide preparation of GIS maps, NIC’s role becomes critical on account of its presence in around 600 districts in India. NIC is also recognized as one of the ten organizations to undertake digitization of SOI topomaps vide Govt. of India O.M. dated 13/07/1998. With ICT infrastructure including NICNET and host of operational databases in different sectors, NIC today is best positioned for grass-root delivery of GIS as a decision support system for the services to facilitate E-governance.</p>
+<p>NIC-SDI</p>
+<p>Recognizing the benefits of spatial data in bridging the information gap, NIC is sparing no efforts in bring ing the concept of SDI to reality. The RS &amp; GIS division at NIC is equipped with the required infrastructure to create and process spatial information. State-of-the-art software available include ArcInfo, MapInfo, ArcIMS, ArcSDE, AutoDesk MAPGUIDE, SPANS for vector based applications and EASI/PACE PCI Works, ENVI for image processing activities. The services of dedicated servers of advance configuration with multiple processors mounted on Storage Area Network (SAN) are available round the clock on network. The division is also equipped with supercomputing facility PARAM Padma.</p>
+<p>In-house software development</p>
+<p>In-house software development program is supported in parallel for the products such as GISNIC, IPSNIC and GeoNIC, not only to understand the philosophy of new products as they are launched in the market but also to provide a low cost solution to meet the training needs in various sectors. As the use of GIS started growing in different areas of application, the diversification of the division to incorporate raster GIS processing capabilities was realized. Software development was carried out using Open Source concept with initiatives at NIC Tamil Nadu and Kerala State Units. A desktop solution at district level has been worked out by MP State Unit with the product ‘e-Suvidha’.</p>
+<p>IPSNIC: An in-house software product for Satellite Data Processing</p>
+<p>Raster/vector based GIS solutions:</p>
+<p>Combination of spatial and non-spatial databases using GIS techniques helps in improved decision making by providing a view of the geographical distribution of data. Visualization is a new form of representation which not only gives powerful perception but also has the capability to display volumes of data on a single page. This is seen as a new language which can be understood by all irrespective of language barriers.</p>
+<p>A number of GIS based products have been conceptualized by RS &amp;GIS Division in various sectors keeping in view the needs of different user department s, especially in creating thematic maps on various parameters from MIS databases and extracting information through strong query builder. The different map compositions based on MIS data are gaining special attention. GIS applications have been developed in watershed development programs, optimizing routes for high voltage transmission lines, the transportation of materials in and out of an industry, clustering of sugarcane areas based on distance, proximity to road network etc, thereby enhancing the production efficiency of any industry. In its primary stage, GIS is seen as a value addition to MIS. The basic functionalities like tool tip, identification of feature details, Clipping the desired area based on selection, Query data base, Buffer creation, Zoom based labeling etc provide novelty solutions. A nationwide project on ‘GIS Based Emergency Planning and Response System, in case of chemical disaster in Major Hazard Industries’ has been recently completed for four states and in progress for rest of the country.</p>
+<p>MAH Project - GIS Modeling for Toxic Release Dispersion by Wind</p>
+<p>The system has successfully integrated spatial, non-spatial data with complex chemical modeling interfaced through industry standard products. The product has a direct link to grass root problems as catastrophe caused by chemical leaks in Bhopal in December 1984.</p>
+<p>National Spatial Data Base (NSDB)</p>
+<p>Creating a national level spatial database is an evolving process. The process is compounded by unavailability of maps of known references. A known reference means a point having known latitude and longitude values. Further, the frequent increase in the number of districts and blocks by political/administrative decision add to the complexity. Anyway, whenever it happens, the data related to it have to be collected.</p>
+<p>NSDB -A Pioneering effort towards Creation of National Spatial Database</p>
+<p>NIC has taken an initiative in this direction jointly with various sectors and has accumulated spatial data. A number of NIC state units that include Maharashtra, Chhatisgarh, Assam, Punjab, Karnataka, Haryana and Goa have extensively contributed in development of data at village levels. National Spatial data base includes a number of themes such as administrative boundaries up to block levels, village locations, rail/ road network etc. Natural resource mapping covers layers like soil, rivers, drainage, catchments area, vegetation, forests etc.</p>
+<p>Web GIS</p>
+<p>Dissemination of GIS data and functionality has traditionally been restricted due to analytical complexity, the size and format of data sets and the limitations of network bandwidth. Web-based Geographic Information System (Web GIS) is a process designed to present spatial information with a friendly interface and the end user needs only a web browser to query, access, display and analyze GIS dataset. This greatly reduces fragmented and compartmentalized workflow and increases efficiencies. Web services makes GIS cheaper by dramatically altering the cost-benefit ratios of GIS implementation when assessed against user accessibility. Considering the ever-growing demand of dissemination of Spatial Data and security concerns, a state-of-the-art GIS Web Server Infrastructure has been set up at NIC Headquarters, in a secured SAN environment. Recently Web based NSDB application access has been made available to all NICians after approval from the Ministry of Defense. A few point to point GIS web services have been set up in specific sectors as under;</p>
+<p>• Web GIS application for Coastal Zone (CZM), Basic Environmental Database (ISBEID) and Project Tiger for Ministry of Environment and Forest • Schemes monitoring system for DWCD, Ministry of HRD • Web Based GEO-FARMS for IFFCO • A GIS Portal for National Spatial Data Infrastructure (NSDI).</p>
+<p>Web GIS for Integrated Coastal Zone Management</p>
+<p>Dedicated efforts and standardization at every step has made it possible today, to access the multiple GIS services at NIC through a common interface. Accessing services through OGC compliant Web Mapping Services at international level may be feasible shortly.</p>
+<p>To conclude, it is important to note that GISism of Governance may provide a common platform where various sources may converge for some time and disperse in their respective domains to be converged again and again for better coordination and planning.</p>
+<p>Some of the achievements of the GIS division:</p>
+<p>• Special Achievement in GIS (SAG) Award by ESRI USA at SanDiego, USA on 9th August 2004. • Best Poster Award presented on open GIS by NIC Tamil Nadu State Unit during the GSDI–7 Conference 2004 held at Banglore . • Publication of technical work in IJITM and European Geosciences Union magazines. • One of the winners in the Best Paper category for ‘Emergency and Environmental Planning for MAH Industries in Maharastra using GIS’ at ESRI User Conference, New Delhi in December 2004. • Participation at GSDI-6 at Budapest, Hungary, Map Asia at Bangkok, Nepal and other international GIS workshops.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="message-from-the-union-minister-january-2005.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message from the Union Minister</span></a><a class="article-nav-link next" href="delhi-revolutionizing-our-lives-with-technology-january-2005.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">DELHI : Revolutionizing our lives with Technology</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

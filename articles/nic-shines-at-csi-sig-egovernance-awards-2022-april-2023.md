@@ -1,0 +1,17 @@
+---
+title: "NIC shines at CSI-SIG eGovernance Awards 2022"
+publication: "Informatics"
+issue_date: "April 2023"
+pages: [46, 47]
+author: null
+section: "Accolades"
+---
+
+## NIC shines at CSI-SIG eGovernance Awards 2022
+
+NIC and its teams working across various projects and technologies throughout the country have won multiple awards under different categories at the 20th Computer Society of India - Special Interest Group (CSI-SIG) eGovernance Awards 2022, which were recently held at Delhi Technological University, New Delhi on the eve of Saturday, 25th March, 2023.
+CSI-SIG eGovernance Awards is a series of awards instituted by the Computer Society India to recognize the contributions towards eGovernance by the State, Departments, Districts and Projects. Under the Central Projects category, NIC Pune Software Development Unit received the Award of Appreciation for MP Farm Gate App. Likewise, NIC Uttar Pradesh has won the Award of Appreciation for ( / f) UPREAT-OJDS (Uttar Pradesh Real Estate Appellate Tribunal - Online Justice Delivery System) and NIC Rajasthan has received the Award of Excellence for Rajasthan Agriculture Statistics (RajAS) portal. NIC Pune Software Development Unit received the Award of Excellence for the (a) National Generic Document Registration System (NGDRS), while NIC eTaal Division and NIC Quality Assurance and API Infrastructure Management Division earned the Award of Appreciation for the (b) eTaal 2.0 application and (c) NIC API eXchange Platform (NAPIX), respectively.
+Moving to the states, NIC Himachal Pradesh received five awards in different categories, including the Award of Excellence for (d) Works MIS Web Application for Jal Shakti Vibhag, the Award of Appreciation for its PSCSoFT (Public Service Commission Software for Transformation) and Himachal Pradesh Real Estate Regulatory Authority – MIS, and the Award of Recognition for HPAPPP (Himachal Pradesh Agriculture Produce Procurement Portal) and HP Large Dams Safety Analysis MIS.
+Similarly, NIC Chhattisgarh won the Award of Excellence for its ground-breaking education app, NICler, while its sister state centre, NIC Madhya Pradesh, has won Award of Excellence for (e) GeoReach (Geomatics based Rural Roads Enterprise Application for Connecting Habitations), and Award of Appreciation for MP Farm Gate App. Likewise, NIC Uttar Pradesh has won the Award of Appreciation for (/ f) UPREAT-OJDS (Uttar Pradesh Real Estate Appellate Tribunal - Online Justice Delivery System) and NIC Rajasthan has received the Award of Excellence for Rajasthan Agriculture Statistics (RajAS) portal.
+In addition, NIC Bihar has won (g) the Award of Excellence for Jal-Jeevan-Hariyali Abhiyan Portal of Bihar and the Award of Recognition for the Post Matric Scholarship Portal of Education Department. Similarly, NIC Punjab has won the Award of Excellence for Invest Punjab Business First Portal. NIC Jharkhand received the Award of Recognition for (h) Jharkhand electronic Government Receipt Accounting System (JeGRAS). NIC Haryana bagged awards for Haryana (i) Online Release Orders and Billing System and Comprehensive Integrated Suite in different categories.
+Furthermore, NIC Karnataka has won the Award of Recognition for (j) GST Prime under State Government category. NIC Manipur has won Award of Recognition for (k) LouchaPathap, e-GRAS Manipur and eOffice Manipur. Finally, under the District category, NIC Hardoi received the Award of Appreciation for (l) Sampada application.

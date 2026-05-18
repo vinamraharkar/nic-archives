@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Endeavouring Digital Transformation for Effective Governance — Informatics October 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/october-2024/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2024/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/october-2024/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/october-2024/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/october-2024/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/october-2024/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2024.html">October 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Endeavouring Digital Transformation for Effective Governance</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Endeavouring Digital Transformation for Effective Governance</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Edited by KAVITA BARKAKOTY &bull; pp. 10–15</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2024.html">October 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Founded in 1985 as one of NIC’s four Regional Centres, NIC Odisha was designated as the State Centre in 1998. It has since played a crucial role in driving e-Governance and ICT growth in Odisha, continuously evolving to meet increasing digital service demands. With advanced technologies like AI, data analytics, cybersecurity, cloud, and mobile computing integrated into governance, NIC Odisha is positioned for a transformative leap. The establishment of the National Data Centre in Bhubaneswar has further energized of NIC Odisha ICT initiatives.</p>
+<p>ICT Initiatives in the State</p>
+<p>Bhu-Arjan https://larrmsodisha.nic.in</p>
+<p>Bhu-Arjan is a sophisticated, web-enabled application designed to comply with the Right to Fair Compensation and Transparency in Land Acquisition, Rehabilitation, and Resettlement (RFCTLARR) Act, 2013, and Odisha RFCTLARR Rules, 2016. Engineered for efficiency, it automates the full spectrum of land acquisition processes, from Social Impact Assessments (SIA) to Rehabilitation, Resettlement, and Grievance Redressal.</p>
+<p>Adopted by 12 departments of Govt. of Odisha, BHU-ARJAN integrates seamlessly with Bhulekh for accurate land records and Property Registration for precise plot valuations. Its automated award calculation and family tree creation tools enhance accuracy, ensuring rightful beneficiaries are included in R&amp;R processes. The platform also features a robust Grievance Management module, enabling citizens to submit concerns related to land acquisition and R&amp;R anytime, anywhere.</p>
+<p>To date, BHU-ARJAN has generated error-free cost estimates totaling ₹628 crore for acquiring 47,000 acres of land across 527 projects, covering 2,254 proposals and 319 Terms of Reference (TOR), making it a transformative tool in Odisha’s land acquisition and resettlement landscape.</p>
+<p>GePNIC https://tendersodisha.gov.in/</p>
+<p>As a founding state of GePNIC, Odisha’s State Mission Team and Procurement Cell, in collaboration with NIC Odisha, drives continuous improvements to the platform. NIC Odisha, aligned with the state’s goals, provides a comprehensive eProcurement solution through GePNIC. Recent advancements include integration with the Works &amp; Accounts Management Information System (WAMIS) for seamless pre- and post-tender activities. Currently, integration with NeSL for electronic Bank Guarantees (eBG) is underway, simplifying Bank Guarantee submissions.</p>
+<p>To ensure objectivity in tender selection, an automated technical evaluation system is being implemented via the Contractor Database Management System (CDMS). An online e-Agreement process between bidders and departments is also in development process, further boosting efficiency and transparency in eProcurement.</p>
+<p>e-Detection https://vahan.parivahan.gov.in/eDetection/#/login</p>
+<p>The e-Detection system addresses non-compliant vehicles operating without valid Motor Vehicle (MV) documents—such as tax, fitness, insurance, PUC, permits, and overloading violations. By leveraging Toll Plaza data, it automatically generates e-Challans for defaulters under the “One Nation One Challan” policy. Cross-referencing data with the Vahan database, the system identifies fake vehicles with incorrect number plates, enhancing enforcement precision. Key features include defaulter tracking, vehicle classification-comparisons, and automated e-Challan issuance, all of which contribute to increased state revenue.</p>
+<p>This system reduces manual errors in challan issuance, strengthens transport regulation compliance, minimizes road accidents, and eliminates fake challans for improved transparency. It lightens enforcement officials’ workload, reduces traffic congestion, and promotes an efficient, and paperless process. Currently active in Odisha, Chhattisgarh, and Bihar, e-Detection has proven effective in flagging non-compliant vehicles and issuing e-Challans. Planned enhancements include API data sharing, mobile app development, weigh-in-motion technology for overloading detection, and integration with databases like GST, Mining, and e-Waybill.</p>
+<p>Overall, e-Detection is a powerful tool for enhancing road safety, ensuring transport law compliance, and streamlining enforcement operations.</p>
+<p>e-Abkari https://stateexcise.odisha.gov.in</p>
+<p>e-Abkari is a comprehensive supply chain management system for regulating spirits, mohua, molasses, alcoholic beverages, and essential narcotic drugs within the state excise sector. It minimizes public health risks from illicit distribution and ensures robust revenue collection from excisable goods. Initiated under the Business Reforms Action Plan (BRAP), e-Abkari has transformed excise operations through digital automation, earning full adoption by stakeholders and marking a significant shift to efficient, technology-driven governance.</p>
+<p>e-District https://edistrict.odisha.gov.in</p>
+<p>The e-District application, developed on the ServicePlus “low-code, no-code” platform, powers over 73 configurable services across 14 departments in Odisha, tailored to departmental needs since December 28, 2019. It has processed over 31.9 million applications with 31.5 million completions, depositing ₹266.7 million into the government account, reflecting its efficiency. A dashboard enables real-time monitoring, ensuring robust performance oversight across stakeholder levels.</p>
+<p>e-Panchayat Sabha https://panchayatsabha.odisha.gov.in/</p>
+<p>e-Panchayat Sabha is a digital workflow-based solution designed to streamline and enhance the meeting processes at the Gram Panchayat (GP) level. By providing a digital interface, it strengthens the governance through effective monitoring and implementation of development schemes and social welfare initiatives.</p>
+<p>The mobile application complements this system, enabling GP officials to manage meeting tasks and allowing stakeholders access to meeting information and documents anytime, anywhere. Successfully deployed across all 6,794 GPs in Odisha, e-Panchayat Sabha has become an essential tool for improved transparency and governance at the grassroots level.</p>
+<p>SATHI https://seedtrace.gov.in</p>
+<p>SATHI (Seed Authentication, Traceability, and Holistic Inventory) Portal enables seamless digital oversight of seed production, quality certification, and precise distribution. Built on a scalable microservice architecture, it supports independent, efficient operations across 20 states, including Rajasthan, Punjab, and Maharashtra. Developed by NIC Odisha, SATHI establishes a National Seed Grid, enhancing transparency and trust in the seed supply chain, empowering farmers nationwide.</p>
+<p>e-Counselling</p>
+<p>e-Aushada serves as a centralized portal for e-Counselling is a web enabled service provided to academic Institutions/Universities across the state for examination management, counselling and admission services for admission into UG and PG courses. The application is deployed for Odisha Joint Entrance Examination (https://ojee.nic.in), Swami Vivekanand National Institute of Rehabilitation Training and Research (https://admission.svnirtar.nic.in/) and Directorate of Medical Education and Training, Odisha (https://dohodisha.nic.in/).</p>
+<p>e-Office</p>
+<p>Since 2015, Odisha has steadily expanded e-Office, initially launched by the Commercial Taxes Department and now deployed across departments, directorates, corporations, educational institutions, and districts. Jagatsinghpur district leads nationally, digitizing file management in all 325 offices down to the Gram Panchayat level, a model now adopted by other districts.</p>
+<p>The Centre for Modernising Government Initiatives (CMGI) procured 23,000 user licenses, supporting e-Office adoption in 1,117 offices across 86 departments and institutions. NIC Odisha has been instrumental in extending e-Office to 16 pan-India institutes under BRIC and DBT, AIIMS Bhubaneswar, SVNIRTAR, and soon to IIT Bhubaneswar, IISER Berhampur, NISER Bhubaneswar, and the Institute of Physics, Bhubaneswar.</p>
+<p>e-Granthalaya</p>
+<p>e-Granthalaya is an Integrated Library Management Software developed in NIC for Automation and Networking of Indian Libraries. The current version of the software is 4.0 – a Cloud Ready Application. It provides a web-based data entry solution with a centralized database for cluster of libraries. More than 230 libraries have on boarded e-Granthalaya in Odisha including Harekrushna Mahatab State Library, Utkal University (Parija Library) and Kanika Library, Cuttack.</p>
+<p>DAMPS https://dampsodisha.nic.in/</p>
+<p>DAMPS (Disaster Assistance Monitoring &amp; Payment System) aims at availability of quality services to each disaster affected victims in terms of ex-gratia payment to families of deceased persons. The solution is to ensure that the financial assistance given to the Next of Kin (NOKs) / victims should reach them in timely, hassle free and transparent manner, transferred directly to their bank accounts. DAMPS is implemented in 30 districts of Odisha covering 317 tahsils and more than 2,400 Revenue Inspector (RI) Circles serving a wide range of people.</p>
+<p>e-Gazette</p>
+<p>To implement provisions under Section 8 of the I.T. Act, 2000, the Government of Odisha has introduced e-Gazettes aimed at reducing delays and improving accessibility for both the public and official users. This initiative minimizes printing needs, promotes paperless and environment friendly practices, and significantly reduces government expenses. The Odisha e-Gazette platform is designed for publishing various government notifications, regulations, and announcements. An Extraordinary Gazette is published as needed, while a Weekly Gazette is published every week.</p>
+<p>NeVA</p>
+<p>The National e-Vidhan Application (NeVA) is a Government of India initiative to digitize state legislatures. Since 2021, the Odisha Legislative Assembly (OLA) has pioneered this by adopting digital presentations for the state budget and Governor’s Address on NeVA. Modules like List of Business, Question/Reply, Committees, and Digital Library are also active, enabling same-day uploads of replies and reports, significantly reducing paper usage. Due to significant digital transformation achieved the OLA by adopting NeVA, it received the CSI-SIG e-Governance Award for 2021-22.</p>
+<p>ODRN Portal https://odrn.nic.in/</p>
+<p>Odisha Disaster Resource Network (ODRN) is a Web-GIS application developed for resource mobilisation for Disaster Management. The application helps the administration to mobilize various Human Resources, Equipment and Infrastructure, those are available at various locations during all stages for Disaster Management i.e. Mitigation, Preparedness, Response, and Recovery. The application helps in creating Disaster Management Plan at various levels i.e. State Level, District Level, Block Level, Gram Panchayat Level and Village Level.</p>
+<p>IWCRCM https://industrialwaterod.nic.in/</p>
+<p>IWCRCM (Industrial Water Consumption &amp; Revenue Collection Monitoring) is an integrated platform for streamlined water billing and payments, serving large industries, MSMEs, mines, commercial and drinking water suppliers. Since 2019, it has enabled seamless payments via IFMS, with transparent billing for efficient financial management. The platform manages registration, meter reading, billing, and MIS report generation. Equipped with IoT sensor-based readings and an OCR-based water meter app enhanced by machine learning, it minimizes manual errors. A dashboard provides insights into consumption, allocation, and billing.</p>
+<p>To date 1,213 industries are registered, generating water fees of ₹4,418.88 crore. Current allocations include 793.135 cusecs for surface water, 178.243 cusecs for groundwater, and 940.682 cusecs for irrigation. The system also supports online water allocation through the e-Jal Abantan platform.</p>
+<p>Agricultural Assets Mapping https://gisodisha.nic.in/agriassets/</p>
+<p>Agricultural Assets Mapping is a Web-GIS application developed for the Directorate of Agriculture &amp; Food Production, under the Department of Agriculture &amp; Farmers’ Empowerment, Government of Odisha. It serves as a platform to integrate various schemes managed by the Directorate, combining both spatial and non-spatial data. This system integrates information from five key schemes: Jalanidhi, Soura Jalanidhi, River Lift, Farm Mechanisation, and Pest Management. It also incorporates administrative data such as the boundaries of states, districts, blocks, gram panchayats, villages, and their headquarters, along with base maps like NIC Street Map, NIC Satellite Imageries, NIC Terrain Map, ESRI Street Map, ESRI Satellite Imageries, and Bing Maps. All data and information are accessed and updated in real-time through API integration.</p>
+<p>GCMS https://gcms.tpodisha.com</p>
+<p>The GCMS web and mobile applications, developed with the Ministry of Panchayati Raj, Government of India; Panchayati Raj &amp; Drinking Water Department, Govt. of Odisha; NIC, and Tata Power, make Odisha the first state to integrate NIC’s eGramSwaraj application with billing system. This integration allows 6,794 Gram Panchayats to easily pay electricity bills online, streamlining payments for PRIs and improving DISCOM tracking. Odisha’s success has inspired the Ministry of Panchayati Raj, Govt. of India to encourage other states to adopt similar integrations with their DISCOMs.</p>
+<p>DEPMOS https://depmodisha.nic.in</p>
+<p>The DEPMOS (Directorate of Export Promotion and Marketing - Online Services) platform provides a single window for MSME registration, application scrutiny, and issuance of EPM certificates. Key services include application submission for registration, renewals, rate contracts, and delivery tests. It offers seamless, end-to-end workflow for DEPM and MSME units across Odisha, with integrations to the CMS portal for ORTPSA service monitoring and IFMS for online fee payments.</p>
+<p>AIM https://diodisha.nic.in/</p>
+<p>The Administration of Incentives for MSMEs (AIM 2.0) streamlines incentive access for MSMEs, crucial drivers of rural economic growth, by automating processes and facilitating G2G and G2B interactions. This single-window platform manages MSME registration, application scrutiny, IFMS online payments, and document uploads across 31 DICs. Integrated with the Central Monitoring System (CMS) for tracking ORTPSA services, AIM 2.0 enhances support for inclusive growth within rural communities.</p>
+<p>Investigation and Prosecution Management System https://vipms.odisha.gov.in</p>
+<p>The application provides a web interface for managing vigilance cases, from FIR entry to trial and judgment. Key modules include charge sheet filing, investigations, witness examinations, statement recording, seizure management, case diaries, and report preparation. It streamlines communication among Vigilance, Prosecuting, and Investigating Officers, as well as SPs, DIGs, IGs, and the Department Director. Pre-formatted forms capture data at every stage, generating essential registers and reports.</p>
+<p>Kaushal Panjee https://kaushalpanjee.nic.in/</p>
+<p>Kaushal Panjee is a web and mobile tool for registering beneficiaries in the Deen Dayal Up-adhyaya Grameen Kaushalya Yojana (DDU-GKY) and RSETI programs, targeting unemployed rural youth aged 18-35 for skill development. Launched nationwide in October 2017, it has registered 5,125,118 candidates, with 1,933,319 enrolled in training, 1,760,169 trained, and 1,146,672 placed across sectors.</p>
+<p>LRMS https://lrmsodisha.nic.in</p>
+<p>The Land Records Management System (LRMS), or eMutation, is a flagship initiative by the Government of Odisha to deliver efficient, transparent, and citizen-friendly land services. Built on a transaction-oriented framework, LRMS supports real-time land transactions with automated Form-3 and Form-4 downloads, reducing manual input. It employs rule-based algorithms to initiate land mutation cases, seamlessly integrated with the state’s e-Registration platform for synchronized updates. Revenue officials can securely access sale deeds online, ensuring data confidentiality and integrity with biometric authentication for updating Records of Rights (RoRs).</p>
+<p>Hosted at NDC Bhubaneswar in hybrid cloud mode, LRMS is accessible to Tahasildars and Addl. Tahasildars over MPLS, with Revenue Inspectors connecting via web VPN.</p>
+<p>ePauti https://odishalandrevenue.nic.in</p>
+<p>This web-based application enables citizens to pay land revenue online anytime, anywhere. Launched on August 15, 2019, by the then Hon’ble Chief Minister Shri Naveen Patnaik, it integrates with Odisha Treasury’s iFMS 2.0 for seamless online payments. Key features include automatic Tenant Ledger updates for each fiscal year, digitization and auto-generation of Revenue Inspector office registers, and Business Process Re-engineering, reducing registers from 16 to 9 as per the Board of Revenue. The system-generated payment receipt holds full legal validity for citizens.</p>
+<p>Jala Abantan https://waterallocationod.nic.in/</p>
+<p>Launched in 2020, Jala Abantan enables online water allocation for sectors including commercial, public health, rural water supply, sanitation, railways, and ports. The platform offers real-time, basin-wise water availability updates and integrates with the treasury payment gateway for smooth fee processing. Automated SMS and email notifications keep applicants informed, while a dashboard and real-time tracking enhance transparency in the allocation process.</p>
+<p>EnergySoft https://eicelectricityodisha.nic.in</p>
+<p>EDSoft is a robust system enhancing electricity duty (ED) collection in Odisha by creating a comprehensive consumer database, calculating duty, enabling e-payments, and tracking arrears, exemptions, and export grants. The platform ensures transparent, efficient billing and duty collection for Captive Power Plants (CPP) and Independent Power Producers (IPP). Integrated with the treasury payment gateway, EDSoft facilitates seamless online ED payments, streamlining financial processes.</p>
+<p>PARIVESH</p>
+<p>PARIVESH (Pro-Active Responsive facilitation by Interactive and Virtuous Environmental Single-window Hub) is a web-based, role-specific workflow application designed for the online submission and monitoring of proposals seeking Environment, Forest, Wildlife, and CRZ clearances from Central, State, and District authorities. The platform automates the entire proposal lifecycle, enabling new submissions, edits, updates, and real-time status tracking at each workflow stage.</p>
+<p>Farm Mechanization Automation System https://odishafarmmachinery.nic.in</p>
+<p>Farm mechanization is pivotal for boosting productivity and reducing manual labor in agriculture. The automated subsidy system developed by NIC Odisha leverages Aadhaar-integrated IRIS and fingerprint scanners to authenticate beneficiaries, eliminating human intervention from application to permit generation. This ensures direct disbursement of funds to farmers’ bank accounts, enhancing transparency and efficiency.</p>
+<p>Innovations include validating the farmer’s bank account for purchasing, implements and cross-checking tractor registration via the Parivahan portal. The integration of NPCI’s e-Rupee is underway to streamline dealer transactions further. This initiative has garnered multiple awards, including CSI-SIG’s “Award of Recognition” and the National e-Governance Silver Award, underscoring its transformative impact on farm mechanization.</p>
+<p>Simultaneous General Election-2024</p>
+<p>Being IT Nodal Officers for SGE-2024 in the districts, DIOs of NIC Odisha handle all the IT related management of election activities in their respective districts under the aegis of NIC State Centre, Odisha. They performed the following critical activities with at most transparency, sincerity and impartiality way:</p>
+<p>• Daily reporting on violation of Law and Order and Model Code of Conduct • Deployment of Polling Personnel, Police Personnel to conduct poll and Counting Personnel for counting of votes polled • Booth Information System &amp; Control Room Monitoring • Strengthening Cyber Security Awareness in Electoral Processes • Implementation of all ECI ICT solutions for conduct of free and fair election.</p>
+<p>NSAP</p>
+<p>NSAP is an umbrella scheme of Ministry of Rural Development, Govt. of India. At present, it comprises of five sub-schemes namely • Indira Gandhi National Old Age Pension Scheme (IGNOAPS) • Indira Gandhi National Widow Pension Scheme (IGNWPS) • Indira Gandhi National Disability Pension Scheme (IGNDPS) • National Family Benefit Scheme (NFBS) and Annapurna Scheme.</p>
+<p>NSAP covers the persons who are below the poverty line (BPL) category. Persons who don’t come under BPL status can also get benefits under NSAP provided they should be certified by the Sub Collector based on their income and other criteria.</p>
+<p>CoEAS-AppSec Bhubaneswar</p>
+<p>Centre of Excellence in Application Security (CoE-AppSec), Bhubaneswar having a mandate for ensuring complete security of Web Applications, Mobile Apps, APIs and their hosting infrastructure for aligned states including Odisha, has been undertaking security audit of Applications, ensuring that a secured version of application goes live in the NIC cloud environment. The following table lays down the figures on security testing in different stages in regard of digital assets of NIC Odisha during the period of January-September, 2024.</p>
+<p>At the same time, Vulnerability Assessment (VA) and Penetration Testing (PT) were undertaken for sites/ applications in production environment and 11 new PT tickets were raised/ escalated with respect to NIC Odisha for mitigation of security exposures. 4 tickets were closed.</p>
+<p>Important Events organized</p>
+<p>Cuttack Baliyatra Utsav-2023</p>
+<p>Baliyatra, celebrating Odisha’s ancient maritime links with Southeast Asia, was held at Silk City Cuttack from November 27 to December 4, 2023, drawing nearly 5 lakh daily visitors. NIC Odisha, in partnership with the District Administration, showcased essential citizen services and cyber safety tips at their pavilion. Interactive displays, e-service facilities, and a quiz on e-governance engaged visitors, complemented by a brochure detailing NIC’s offerings.</p>
+<p>NIC Odisha’s Tech Expo, 2024</p>
+<p>On May 9, 2024, NIC Odisha hosted a Tech Expo featuring 20 pioneering technologies, from self-driving frameworks and LoRA nodes to AR/ VR applications. Highlights included AI-driven databases, blockchain with BigchainDB, IoT demos, RISC-V processors, and more. The expo presented innovations in quantum computing, RPA, 3D printing, and advancements in space tech, marking a vibrant tech showcase.</p>
+<p>Accolades</p>
+<p>Bhoomi Samman Award-2023</p>
+<p>Odisha was honored as the Best State in the nation for Digital India Land Records Modernization, with 19 districts achieving 100% DILRMP objectives. Hon’ble President Smt. Droupadi Murmu presented the award on July 18, 2023, at Vigyan Bhawan.</p>
+<p>Digital India Award-2022: e-Abkari</p>
+<p>The e-Abkari Project received the Digital India Award for Ease of Doing Business, presented by Hon’ble President Smt. Droupadi Murmu and Union Minister Shri Ashwini Vaishnaw. The award was accepted by Shri Sushil Kumar Lohani, IAS, and team.</p>
+<p>36th Technology Sabha Excellence Awards-2024</p>
+<p>The e-Detection System, e-Panchayat Sabha, and BhuArjan were awarded in the ‘Enterprise Applications’ category for their excellence in digital governance.</p>
+<p>CEO, Odisha Felicitates DIOs</p>
+<p>For outstanding IT support during the 2024 General Election, all DIOs were honored by CEO Odisha, Shri Nikunj Bihari Dhal, IAS , on June 28, 2024, for their roles in enabling smooth election operations.</p>
+<p>Way Forward</p>
+<p>NIC Odisha drives impactful collaborations with academia, industries, and private sectors, focusing on cutting-edge research, sustainability models, infrastructure scaling, crowdsourced solutions, and capacity building. Key initiatives include Blockchain integration for secured land records and certificate verification and various AI driven applications like pest surveillance for agriculture, multi-lingual chatbots for Transport and eDistrict, face analytic services for ePrisons, text summarization, report interpretation and intelligence building in Cyber Security, etc. These efforts aim to enhance data security, foster innovation and improve efficiency.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="empowering-haryana-through-digital-innovation-october-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Empowering Haryana Through Digital Innovation</span></a><a class="article-nav-link next" href="mahesana-gujarat-a-new-digital-technology-horizon-of-the-north-gujarat-october-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Mahesana, Gujarat: A New Digital Technology horizon of the North Gujarat</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

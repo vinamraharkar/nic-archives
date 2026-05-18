@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajasthan State: Bringing the Government closer to citizen — Informatics October 2021</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2021"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2021/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2021/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2021/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2021/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/october-2021/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2021.html">October 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>Rajasthan State: Bringing the Government closer to citizen</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Rajasthan State: Bringing the Government closer to citizen</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Tarun Toshniwal, Amit Agarwal &bull; pp. 4–8</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2021.html">October 2021</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">NIC Rajasthan plays a vital role in implementing major e-Governance projects in the state. Playing a crucial role, it has been instrumental in creating innovative ICT solutions which have not only eased the life of common citizen but have also improved efficiency within the government. In addition to core infrastructure for networks, VC and mini cloud, NIC Rajasthan has established comprehensive solutions like IFMS, PCTS, Shaladarpan, PDS etc., and their integration with different applications has made it possible for the government to function seamlessly and provide continued services. The princely state of Rajasthan is the largest state of the country in terms of geographical area, and is comprised of 33 districts, 352 blocks and 46,000 villages. This is also the border state of India neighbouring Pakistan. The state has a mix of rural and urban population with a literacy rate of 66%. NIC started its operations in Rajasthan in the year 1988. To provide services to various important government entities, NIC established its offices in State Secretariat and in every District Collectorates. It has also established its project offices with many departments and institutions at Jaipur. NIC has established its communication network at secretariat and districts. All 33 district Collectorates have been connected with high speed network. In addition more than 100 institutions have been extended network connectivity from NIC. A regional Centre of Excellence for Application Security (RCOEAS) has also been established at Jaipur, which is catering to ensure application security for applications developed by NIC teams in seven states. The state of Rajasthan has taken major strides towards implementing e-Governance systems. NIC Rajasthan has been key technology partner of Rajasthan Government in development and implementation of many innovative and successful systems. The Integrated Financial Management System (IFMS), Pregnancy &amp; Child Tracking System (PCTS), Asha Soft, PDS computerisation, Pehchan, Works Management, Integrated Shala Darpan, Apna Khata, ePanjiyan, Social Security Pension System and many IT based DBT schemes are among very successful projects. NIC Rajasthan’s team is very enthusiastic and always ready to take new challenges. I am happy to note that Informatics October 2021 issue is specially showcasing the e-governance initiatives by NIC in Rajasthan. I congratulate and wish success to the entire team and look forward to many more e-governance initiatives by NIC. AKHIL ARORA, IAS Principal Secretary, Finance &amp; Medical Government of Rajasthan ICT Initiatives in the State Integrated Financial Management System (IFMS) https://ifms.raj.nic.in Financial Management of the state is taken care of by Integrated Financial Management System (IFMS), developed by NIC. IFMS is a complete suite of numerous applications related to finance, covering budget, payments, expenditure, receipt, works management and accounting. The system now provides for presentation of paperless budget in the Assembly, which saves almost 50 Lakh papers every year. Online Budget estimation and preparation has saved huge efforts and time which is distributed online to all DDOs. DBT for social security pensioners has saved Rs.300 Crore every year. The state government presents its accounts to the AG, digitally, including all vouchers. This saves 2.5 crore papers every year and the efforts and money in preparation of copies. Integration with eKuber of RBI saves more than Rs. 100 Crore to the government. Aadhaar enabled Social Security pension system has stopped duplicate payments. The Social Security Pension and Salary system of all employees is completely auto processed without any manual intervention. This has substantially saved the efforts involved in salary and pension processing and has improved service delivery. All A &amp; F sanctions for works are prepared and issued online with a capping of available budget. Since Budget control has been implemented for treasuries, the possibility of excess payment has been eliminated. Civil Pension for all the employees is also automated. Various modules of IFMS have been integrated with numerous applications of other departments. The eGRAS system used for government receipts has been integrated with 42 banks. IFMS provides real time data of all receipts and expenditure to all stake holders. It is supported by mobile apps for various functions. Tarun Toshniwal Dy. Director General &amp; SIO tarun.toshniwal@nic.in Amit Agarwal Sr. Technical Director amit.agarwal@nic.in Apna Khata https://apnakhata.raj.nic.in Apna Khata is implemented as part of DILRMP for Land records computerization across the state in all tehsils and all villages. Digitally signed Record of Rights can be obtained from Apna Khata portal by making online fee payment. This has eased the process of obtaining RoR which are also given with the khasra map. The citizen is also provided with the facility to submit online application for mutation. The entire process flow for mutations is online which can be accessed through mobile as well. Apna Khata portal shares land records information with property registration portal, crop insurance, Raj Kisan, Jan Soochna, eMitra and many other portals. ePanjiyan https://epanjiyan.nic.in ePanjiyan is the online portal for property registration. Integrated with Apna Khata, the system provides for auto mutation of the property at the time of registration itself. All the 539 Sub Registrar Offices of the state are using the portal which provides for online assessment and payment of stamp duty. Excessive stamp value if any is also refunded online. ePanjiyan Mobile App facilitates on the sport verification of the property by Sub Registrar offices. The system also provides interface for property registration at the offices of Urban Local bodies which issue the land holding PATTAs. More than 60 Lakh property registrations have taken place through the system. The citizen can take prior appointments on the system. It also provides facility for anywhere registration which gives lot of convenience to the citizen. PCTS https://pctsrajmedical.raj.nic.in Pregnancy and Child Tracking System (PCTS) has become government’s arm for delivering services related to reproductive and child health programmes of medical department in Rajasthan. The system is used in providing services related to ANC, delivery, PNC, sterilisation, immunisation, child health, mother’s health, institutional infrastructure management etc. It provides for name based tracking of pregnant women and their children. Large scale process re-engineering had seen a successful implementation of the project which covered every government health institution. Today ANMs use PCTS mobile App for first-hand information updation from field. PCTS has also bagged National eGovernance Award among other recognitions. The system has been integrated with RCH portal of GoI. With excellent mechanisms for monitoring of individuals, it has been used by Rajasthan government as an effective tool for bringing down Maternal and Infant mortality and improving immunisation and institutional delivery. Integrated with large number of applications, today birth certificate is also provided through PCTS app as it is integrated with Pehchan portal. e-Governance in Rajasthan has steadily evolved. With a focus on improving public services delivery, many projects have been implemented harnessing technology. The state has also created IT infrastructure reaching down to the remotest of villages. In this journey of growth, NIC has played a pivotal role in development and implementation of major applications which have given end-to-end solutions to the citizen and the government. Moving with the ever-changing technology and creating new IT enabled facilities, NIC team has collaborated very well with the state government because of which applications developed by state government could be integrated with national portals. It is a pleasure to note that Informatics October 2021 issue is focusing on e-governance initiatives by NIC Rajasthan. I would like to appreciate the efforts and spirit of NIC Rajasthan, and wish them success in their future endeavours. ALOK GUPTA, IAS Principal Secretary, IT&amp;C Government of Rajasthan AshaSoft https://ashasoft.raj.nic.in AshaSoft is the one stop solution for the ASHAs (Accredited Social Health Activist) posted anywhere in the state. Facilities includes, performance measurement and Direct Benefit Transfer (DBT) for ASHAs for services provided in 48 activities, Online sanctions by each MoIC (Medical Officer In charge), Payments released by CMHOs using his digital signatures. This Software has also been shared with few other states. Since the performance on each parameter can be monitored through the system, the system has resulted in substantial improvement in service delivery. Online JSY, Rajshree and ShubLaxhmi Payment System (OJAS) https://ojspm.raj.nic.in OJAS is the DBT system for online payments for beneficiaries of various government schemes related with welfare of women and children such as JSY, RAJSHREE &amp; SHUBHLAXMI. All payments of JSY are done online within 48 hours of discharge from hospital. So far approximately Rs. 1820 crore have been transferred to the bank account of more than 1 crore beneficiaries using the system. Integrated System for Monitoring of PCPNDT Act (IMPACT) https://pcpndt.raj.nic.in The system helps in effective implementation of PCPNDT Act. Since the system provides powerful surveillance mechanism, it has successfully contributed in curbing girl child foeticide in the state. it has also helped to improve sex ratio at birth in Rajasthan. Online record of every sonography of each pregnant woman is maintained online. Presently the system Covers all 3790+ registered sonography centres (Government and private). Records of more than 2.5 crore sonographies is available online. Integrated ShalaDarpan https://rajshaladarpan.nic.in ShalaDarpan is a comprehensive portal for information related to students, teachers and infrastructure of government schools. This covers all 66 thousand government schools with online information of 91 Lakh Students, 4.5 Lakh Teachers / Staff. The portal caters to various tasks, such as school admission, student academic performance, result preparation, Student Transfer Certificate, Pre-Post Matric Scholarship distribution, State Board Exam Management (5th &amp; 8th standards), Staff recruitment, posting, joining and relieving, Staff Leave &amp; Attendance. With the help of the system, the state has been able to rationalise the deployment of teachers which has resulted in availability of concerned subject teachers in every school. The system is also used for online Annual Performance Report (APR), ACP (Annual Career Progression) of all teachers. The system works as the back-bone for the education department in Rajasthan. All major beneficiary schemes for students are administered through ShalaDarpan. Private School Portal https://rajpsp.nic.in Integrated portal for Private Schools of Rajasthan State working as bridge between private Schools and School education department. The portal provides facilities for RTE admissions including Online application, lottery and school allotment, Generation of installment wise automated Claim bill of verified students and Claim reimbursement in School’s Bank Accounts, More than 8 Lakh students have been benefitted so far. Payment to participating schools is made online. GyanSankalp https://gyansankalp.nic.in This is an online platform for CSR funding, donations and voluntary contributions to raise funds for the schools in Rajasthan. Funding is accepted under various categories such as Support a Project, Donate to a School, Mukhyamantri Vidyadaan Kosh, Adopt a School, etc. More than Rs. 219 Crores have been collected through this portal with the help of around 2.2 Lakh supporters for supporting around 60+ thousands Government school in the state. Tax exemption receipt is generated through the system. Donor may propose / create a project to support any number of selected schools. OASYS (Online Assembly System) for Rajasthan Legislative Assembly https://rlaquest.raj.nic.in OASYS is a workflow-based system for transaction of information between hon’ble members, assembly secretariat, government departments and citizen. All questions and motions are submitted online, after scrutiny the notices are served online to concerned departments, which again reply online along with all annexures. The system has helped in saving a substantial amount of time, effort and paper. more than 1 Crore paper sheets are saved every year. The system is also used for publishing and searching Assembly proceedings online. Starting from the year 1952, proceedings of all houses are available online. The system has been shared and replicated with other states as well. eMulakat for Prisoners eMulakaat is implemented under ePrisons project for all Jails of Rajasthan. The system facilitates jail inmates to communicate their family members by video call at home. Approximately 1.25 Lakh eMulakat sessions have been conducted for prison inmates in various jails of Rajasthan. Quarantine Tracker for COVID Quarantine Tracker is a mobile based system which is useful in monitoring of quarantined persons. The mobile app tracks the movement of the person who are quarantined and are advised isolation. It provides a monitoring mechanism which ensures that the patient/ person does not move to any other place during the quarantine period and generates alerts for administration. Quarantine Tracker has been implemented in districts. Rajasthan High Court https://hcraj.nic.in Technical services in the judiciary by NIC Rajasthan have been immensely useful for a large section of the society. From High court to District courts, NIC has extended its services at all levels. The Case Information System (CIS 3.1) facilities for Case Filing, Scrutiny, Cause List and Order Preparation available on portal. This has been integrated with National Judicial Data Grid. Case Status, Orders and Judgments are available in public domain. More than 15 lakh judgments of High Court and 10 lakh judgments of subordinate courts are available online. Facility of display board within the court campus and its integration on mobile app is also quite useful for advocates. The Rajasthan High Court mobile app also provides quick access to cases repository which also facilitates advocates and litigants to maintain their case diaries in the mobile app. Vehicle Location Tracking System, (VLTS) for ambulances https://vlts.parivahan.gov.in/rj VLTS is a real time application for vehicle tracking integrated with National and State Emergency Response System. The system has been implemented for ambulance tracking in Rajasthan. All ambulance vehicles are fitted with VLT device and PANIC button. The system provides for alert dashboard and real time tracking of vehicle status. Public Distribution System (PDS) https://food.raj.nic.in A complete supply chain-based system of Public Distribution has been implemented in Rajasthan with end-to-end computerization. All Ration Cards (2.06 Crore) are digitized in the state. Aadhaar seeding is done for 95 % NFSA cards. One nation one card scheme has been implemented in the state. Citizen can apply online for ration card through any eMitra kiosks. Allocation from State HQ to FPS is based on real time information of beneficiaries and stock position at FPS. The system facilitates monitoring of supplies, truck challans, lifting from FCI Godowns, delivery at FPS and receipt acknowledgment by FPS dealers through mobile based service. The system has helped the state in minimizing leakages from the PDS cycle. Civil Registration System, Pehchan https://pehchan.raj.nic.in Unified portal for Birth, Death and Marriages Registration in Rajasthan, is the single source of truth for all civil registrations in the state. Used by all 12,500 Registrars and 3000 Sub registrars (Government Hospitals, CHC / PHC), the system is also accessible to 1,600 private hospitals and 80,000 eMitra kiosks. A citizen can also apply online either through the web portal or Pehchan mobile app. Digitally Signed Certificates are generated and delivered to citizens. All certificates have QR code implementation which is useful for insurance agencies and citizens for authentication. So far about 2.27 crore Registrations have been done on the portal. Pehchan is integrated with applications of Medical &amp; Health, Settlement, Palanhar Scheme, Aadhaar and Jan Aadhaar, etc. No manual certificate is being processed in the state. Rajasthan Business Register https://br.raj.nic.in Business Register Portal is used for the online registration of Business enterprises and NGOs of Rajasthan. It has been made mandatory in Rajasthan to register on portal for Organized and Unorganized sector. The registration process is having no manual intervention. The system facilitates the government to keep an eye on new business activities and NGOs in the state and it can be an useful tool for the government for planning. Public Health Engineering Department https://phed.raj.nic.in NIC is computerising PHED department for Work flow based A &amp; F sanction generation, Monitoring of physical and financial progress of projects, Photographs of work at site can be viewed online, Online stocks of Division stores, Requisition from divisions, Supply order &amp; receipt online, Water quality test reports (Chemical, Bacteriological, Residual Chlorine, etc.), Alerts for water impurities. Integrated Works Monitoring System (IWMS) https://rdprwms.raj.nic.in The system is implemented for rural development department. All civil works are carried out under various schemes using this system. Starting with work proposal, administrative, technical and financial sanction, the system is used for monitoring work execution on regular basis. UC and work completion certificates are also generated with the system. More than 1.3 Lakh works have been sanctioned and monitored through the system, so far. With geotagging, the system also has the facility to upload period photographs from project site. It has been useful in ensuring timely completion of works. Rajasthan Electricity Regulatory Commission https://rerc.rajasthan.gov.in NIC Rajasthan has developed Case Information System for the commission in which advocates, organisations and citizen may register online for case filing. Petition may also be filed online with the requisite fee payment. A web portal for the RERC is also been developed and hosted by NIC Rajasthan. eNagar Suite This is an integrated Suite of applications for local bodies. The citizen can apply online for land and property mutation, building permission, 90 A conversion, Community centre booking and sale permission. The system also comprises of Document Scanning system, e-engineering and e-Auction of properties, online accounting, file monitoring, online lottery, court cases monitoring, citizen care centre etc. The system is implemented in few districts. Online delivery of such citizen services has improved transparency and efficiency and has saved lot of hardships for the citizen. Regional Centre of Excellence for Application Security (RCEoAS) RCoEAS has been established at Jaipur to cater to application security requirements of applications developed by NIC. The centre caters to eight states viz ; Rajasthan, Gujrat, Maharashtra, Goa, Daman &amp; Diu, Dadra &amp; Nagar Haveli, Madhya Pradesh, Lakshadweep. The centre audits web applications, APIs and mobile applications of these states. It regularly conducts penetration testing in production environment to improve security posture of NIC. NICCI Chatbot Service https://niccicms.raj.nic.in NICCI is the smart Chatbot developed by NIC Rajasthan as a generic service, which can be plugged in any portal without any programming. Using proximity rules, bot rules, and language rules NICCI looks for maximum weighted reply. It is also voice-enabled where a user can seek assistance by speaking to the Bot. NICCI is enabled with interfaces in English and Hindi language. NICCI is also equipped with a user friendly Content Management System (CMS) for knowledge enhancement. It is implemented with many portals which also includes portals of other states. D-Flow- The enterprise Framework for Data Management https://dflow.raj.nic.in D-Flow is an innovative and generic e-governance tool from NIC Rajasthan. The application is extremely useful in cases where data is to be collected from large number of cascaded field locations either on an ad hoc basis or as a regular schedule. The system permits user at any level to create its own data collection form, name it and circulate it to any number of users for data collection. The form can be scheduled for reporting on one time basis or any frequency of collection, such as one time / weekly / monthly / annually etc. The user is also given the facility to attach scanned sheets which can be merged automatically while compiling the data forms received from various users. Presently implemented in Rajasthan Police department for approximately 2000 users ranging from state level users to the police station level. It is a generic application which can be used by any department without the need of coding and can be rolled out immediately. Core Infrastructure NIC Rajasthan is well equipped with state-of-the-art digital infrastructure to cater to exhaustive needs of the state. More than 5000 NICNET nodes have been established in the state which includes State Secretariat, Collectorates, other government offices and educational institutions etc. HD Video Conferencing facilities have been established in Secretariat, High Courts principal seat Jodhpur and Jaipur Bench, all 33 District collectorates and 35 District Courts. More than 15,000 NIC email accounts are maintained. NIC also maintains more than 100 web portals / applications of Rajasthan state. To cater to the computing requirements, NIC mini cloud has also been established. NIC has also extended its support at state data centre. High speed connectivity has been extended to large number of user departments and educational institutions like IIT Jodhpur, IIM Udaipur, AIIMS Jodhpur, MNIT Jaipur as well as RSDC and RSWAN. Other Important Projects Project Name Implementation Status eTransport Implemented in State eHospital Implemented in AIIMS Jodhpur and National Institute of Ayurveda, Jaipur Sandes Implemented in PHED and DoIT&amp;C Jeevan Pramaan Implemented and integrated with eMitra e-Prison Details of 22 Lakh old inmates and 21,000 current inmates captured. About 9000 eMulakaat done. e-Procurement More than 1 Lakh tenders floated every month. Saar Implemented for 80 Departments Index of Industrial Production (IIP) Implemented in the State and index generated Price Statistics in Rajasthan (PSR) Implemented in all Districts and Krishi Upaj Mandi Samitis Rajasthan Agriculture Statistics (RaJAS) Implemented in all districts RAJPOSHAN Implemented up to block level in all districts. Media Management System Implemented for DES and NIC Rajasthan DREAMS Implemented for Police, Revenue, Transport and Medical department for all field units of these departments in Rajasthan E-Office Implemented at Rajasthan Legislative Assembly Important Mobile Apps App Name Users Shala Samblan Government Budget Rajasthan Citizen, Government Civil Registration System, Pehchan Citizen Rajasthan Business Register Citizen Pregnancy &amp; Child Tracking System (PCTS) Government Rajasthan Legislative Assembly Hon’ble MLAs, Media and Citizen RajFood Government Rajasthan High Court eservices Citizen, Advocates e-Gras Citizen eCounsellingAssistant Citizen Arogya Sathi Citizen, Government i-Lens Government e-SAJAG Citizen, Government Accolades NIC Rajasthan has won many national and state awards for its projects. • National e-Governance Award for Pregnancy and Child Tracking System (PCTS) • National e-Governance Award for OASYS (Online Assembly System) • National e-Governance Award for Asha Soft • CSI awards for PCTS App, Price Statistics portal, Civil Registration System, Business Register, Gyan Sankalp portal, Integrated Shala Darpan • GEMS of Digital India Award for excellence in e-Governance in the field of Finance Sector • Various other awards such as Skoch Award, Manthan Award, e-India, e-World, eGov Rajasthan also been conferred to different projects of NIC Rajasthan Way Forward • Development of AI based systems for the applications related to the sectors of Finance, Medical and Education • Development of Data Analytics • Development of mobile applications to help implement m-Governance • Transition to micro services based architecture in major applications For further information, please contact: STATE INFORMATICS OFFICER NIC Rajasthan State Centre 8318, NW Block, Secretariat Jaipur, Rajasthan - 302 005 Email: sioraj@nic.in, Phone: 0141-2227992</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="tamil-nadu-state-a-pioneer-in-digital-governance-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Tamil Nadu State: A Pioneer in Digital Governance</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

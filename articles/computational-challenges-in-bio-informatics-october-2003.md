@@ -1,0 +1,36 @@
+---
+title: "Computational Challenges in Bio-Informatics"
+publication: "Informatics"
+issue_date: "October 2003"
+pages: [17]
+author: "Dibakar Ray, NIC HQ"
+section: "Technology Update"
+---
+
+## Computational Challenges in Bio-Informatics
+
+The definition of bioinformatics is not universally agreed upon. The most authoritative one by Biomedical Information Science and Technology Initiative(BISTI) (http://www.bisti.nih.gov/) at National Institute of Health is - “Research, development or application of computational tools and approaches for expanding the use of biological, medical, behavioral or health data, including those to acquire, store, organize, archive, analyze or visualize such data”. From a computational perspective the goals of bioinformatics are :-
+? Analysis and interpretation of various types of biological data including nucleotide and amino acid sequences, protein domains and protein structures.
+? The development and implementation of tools that enable efficient access, use and management of these data sets.
+? The development of new algorithms and statistical methods to assess relationships among members of large data sets.
+What makes bio-informatics relevant and such an important topic is its many practical applications in different areas of biology and medicine like creating new drugs, discovering cures for genetic diseases, improve diagnosis of disease, detect genetic predispositions to disease, create drugs based on molecular information (smart drugs), cloning threatened species, creating new biomaterials for military and civilian applications, and creating high-yield and disease-resistant crops to feed the world’s growing population. Biotechnology, being the thrust area of research, is producing genomic data at an exponential rate. This growth in data along with its increasing complexity has thrown quite a few challenges. From computer science perspective challenges in bioinformatcs can be divided into number of areas, of which we will discuss about data management and organisation, data mining, high performance computing, and algorithms.
+
+?| Data Management and Organisation
+In the early years handling of bioinformatics data used to be carried out by individual research groups. With advent of new automated experimental methods, which are increasingly generating enormous amount of data, storing and organising these complex data were made responsibility of national and international initiatives. Initially these databases were simple flat files, however increasingly relational databases are being used for better performance. Web interface has become an integral part of such databases for retrieval and analysis of the content of the database. The challenges in the field of data management and organization can be grouped as -
+? How to incorporate data and annotation emerging from different sequencing centers into a searchable resource, providing a single, robust point of access and a user friendly interface, with extensive links to relevant resources and databases under development elsewhere.
+? How to integrate genomic data with existing and future experimental result related to genome mapping, gene expression, protein function, protein-protein interactions, metabolic pathways etc. in both graphical and text based formats.
+? How to establish a database that can incorporate sequence information from other related species.
+? Providing web based access, email-based access in order to ensure full access to the sequence and related resources to all regardless of geographic location.
+Development of whole genome database of malaria causing Plasmodium falciparum(http://plasmodb.org) is an attempt to answer such challenges and can provide valuable guidance in future developments.
+
+?| Data mining
+As mentioned earlier high-throughput techniques and functional genomics generate large amounts of data. This ever-growing amount of data requires not only sophisticated tools for storage and retrieval but also tools for analysing and interpreting content hidden in it which is not immediately intelligible. Data mining techniques are being used to discover new, previously unknown and hidden patterns in large data set, and to represent and interpret those patterns in a human intelligible way. The common data mining tools are clustering, classification, dependency modeling, and regression, but more advanced techniques are required to identify different and unknown structural patterns. The fields of Natural Language Processing, logic, artificial intelligence, ontologies are being used more and more to find meaningful information from this flood of data.
+
+?| Software development and Algorithm
+Researchers in bioinformatics generally prefer to develop software tools required for their very specific area of research. Generally speaking , algorithms used in such programs are often found to be too simplistic and not optimised. Most of the cases they need modification in some way or other to fit into the structures and requirements of problems of other researchers. The data processing logic in these software are typically written using conventional programming languages (e.g., C , Fortran or Java) for the basic algorithms and scripting languages like Perl are used as the glue between the different components. Such an approach leads to logic that is extremely difficult to modify. This situation calls for application of better software development strategy and software engineering methodologies in developing bioinformatics software. Yet another challenge in development of bioinformatics software tool is algorithm development. Special problems in the area of bioinformatics is that programs are very computationally intensive, so development of better algorithms in terms of resource requirements are a great challenge. Areas where better algorithms are a pressing necessity are sequence alignment, protein structure prediction, protein function prediction, protein protein interactions etc.
+
+?| High performance computing
+Many biomedical problems like microarray gene expression data analysis, multiple sequence alignments, genetic network, biochemical network, protein-protein interactions, phylogeny reconstruction, genetic linkage analysis, protein structure prediction, etc, require computationally intensive numerical operations on a large data domain. They take an enormous amount of computational time and make it impractical to solve them on uniprocessor or multiprocessor based computers. Parallel computing can be applied to solve those numerically intensive biomedical problems. Among number of available architectures, Linux-based Beowulf clusters are providing a high-performance and inexpensive alternative solution. Beowulf cluster is built primarily out of commodity hardware components, interconnected by a private high-speed network. Setting up and fine tuning such clusters requires considerable effort and expertise in operating system and communication. Developing programs which can harness power of parallel processing is also a considerable challenge.
+An inter disciplinary and systematic approach is necessary to overcome these challenges and develop better and efficient tools for bioinformatics which will help the country in a long way to fight against disease and hunger.
+
+For further information, please write to dibakar@hub.nic.in

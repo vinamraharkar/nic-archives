@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile e-Governance Services — Informatics July 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/july-2011/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/july-2011/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/july-2011/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2011.html">July 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Mobile e-Governance Services</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Technology Update</div>
+          <h1 class="article-title" data-pagefind-meta="title">Mobile e-Governance Services</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By VS Raghunathan, R Ramesh &bull; pp. 29–31</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2011.html">July 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Mobile e-Governance services is an integration technology. It best demonstrates its value when integrating heterogeneous systems because it supports many kinds of programming languages, run times, and networks. When there is a need to connect applications from incompatible environments, the stage is set for Mobile e-Governance services. Edited by R. Gayatri The mobile computing environment poses several challenges to those who offer services in terms of operating system, browser environment, connectivity, Geo-reference, security etc. The services that are offered over the mobiles can be classified into online and offline services. Online services are synchronous and demand continuous connectivity. Offline communications are asynchronous and use the connectivity whenever available. The mobile browser based services are online and connects to the website and services that are offered on internet. SMS, One-Time-Password (OTP) etc. are offline services. Open-X-data, mobile client programs such as midlets, android applications, iPhone applications etc. can be programmed to work both online and offline. SMS The text messages such as SMS is being used in variety of ways to confirm to the user about the service availability, status of the service, credit/debit details, service acknowledgments, reference links etc. The citizen application can incorporate SMS interface through a local modem or through the SMS gateway. The local modem solutions are limited in terms of message handling, queuing, scalability, maintainability, both push and pull handling etc. Open source solutions such as Kannel SMS gateway solutions have been implemented at the collectorate, high-court level by NIC in many states. The preferred way of incorporating SMS services is through the SMS gateway and NIC offers the SMS gateway solution. NIC facilitates SMS traffic between all service providers and mobile subscribers, including mission-critical messages, SMS for enterprises, content delivery etc.. Considering SMS messaging performance and cost, as well as the level of messaging services, SMS gateway provides aggregators or SS7 providers. The Central or State Government department can register themselves with NIC SMS gateway and integrate the push/pull messages as per requirement in their applications. This has been extensively used in variety of applications at the central and state level with the technical support from NIC. VS RAGHUNATHAN Senior Technical Director, NIC Chennai raghunathan.vs@nic.in R RAMESH Technical Director, NIC Tamil Nadu rramesh@nic.in ONE TIME PASSWORD One-time password (OTP) is a password that is valid for only one transaction or authentication session and expires after the defined time period. OTP is not vulnerable for reply attacks as they are not valid after the short period defined. OTP has open standards like HOTP (HMAC-based One Time Password algorithm; IETF-RFC 4226 ) from Initiative For Open Authentication (OATH). TOTP (Time-based One-time Password Algorithm; IETF-RFC) an extension of HOTP to support time based moving factor. This is also from OATH. OTP technology can be used in combination with the usual password based authentication to provide strong authentication, in this case two factor authentication. Mobile-OTP is a free Open Source based &quot;strong authentication&quot; solution for java capable mobile devices like phones or PDAs. The solution is based on time synchronous one time passwords. It consists of a client component and a server component. The mobile client generates one time passwords by hashing the following items using MD5: the current epoch-time in a 10 second granularity the 4-digit PIN that a user enters a 16-hex-digit secret that has been created when the device was initialized (Init-Secret) When entering a PIN, the mobile client displays the first 6 digits of the MD5-hash. This is the One Time Password. The One Time Password can be verified by the server, as the server also knows the current time, Init-Secret and PIN of the user. To compensate time differences, the server will accept passwords from 3 minutes in the past to 3 minutes in the future. In addition, different time offsets can be specified for each user on the token and/or the server. Each password will be accepted only once. After 8 successive failed authentication attempts a user gets locked out. Authentication is based on two factors: a PIN known by the user and the Init-Secret stored on the mobile device. Applications implementing OTP can thwart authentication token reply attacks and password sniffers. ONLINE MOBILE SERVICES Online mobile services are mostly enabled through the mobile enabled web-sites. The guidelines for development of rich and dynamic mobile web applications can be obtained from http://www.w3.org/TR/mwabp/. The basic principles of mobile web applications recommended by W3C are Set Users Free Ensure the user is informed about use of personal and device information Enable automatic sign-in Offer users a choice of interfaces Don't change focus when dynamically updating page sections Design for flexibility Design for multiple interaction methods Ensure text flows Prefer server-side detection where possible Use client-side detection when necessary Use device classification to simplify content adaption Support a non-JavaScript variant if appropriate Remember web principles Replicate local data Ensure consistency of state between devices Do not execute unescaped or untrusted JSON data Use fragment Ids to drive application view Spare the network Use transfer compression Cache resources by fingerprinting resource references Cache AJAX data Minimize external resources Avoid redirects Exploit mobile-specific features Make telephone numbers click-to-call Consider mobile-specific technologies for initiating web applications Use the meta view-port element to identify the screen size Use appropriate client-side storage Optimize response time Aggregate static images into a single composite resource (sprites) Include background images inline in CSS Keep DOM size reasonable Minimize perceived latency Optimize for application start-up time MOBILE CLIENT PROGRAMS: Mobile client programs need to use the best practices recommended by W3C for online applications. However there are few challenges while offering the client programs they are Multiple platforms, Mobile specific variations for features and limitations, Client-side version management and deployment. Care should be taken when implementing mobile web services because only a subset of the API is supported by the mobile Web services specification The Mobile client has to be developed for multiple platforms such as Nokia's Symbian, Google's Android, Apple's iOS, RIM's BlackBerry OS, Microsoft's Windows Phone, Linux, HP's webOS, Samsung's Bada, Nokia's Maemo and MeeGo. Java Platform, Micro Edition, or Java ME, is a Java platform designed for mobile phones (especially feature phones) and set-top boxes. Java ME was formerly known as Java 2 Platform, Micro Edition (J2ME). Java ME technology consists of three elements namely configurations, Profiles and optional packages. The configuration for small devices (less capable) are called Connected Limited Device Configuration (CLDC) and for more capable devices the configuration is known as Connected Device Configuration (CDC). It is always preferable to have the client programs which needs less revisions on the client side as frequent updates on the client side is not recommended. This can be achieved by consuming services for every requirement from the server-side so that the variants are managed at the server-side instead of altering the client-program. Preferably REST services can be used. If the client needs to be secured, a client serialization with the IMEI (International Mobile Equipment Identity) number of the device is recommended so that the client program does not work on other devices. Mobile client programs can be written for both online and offline use. Open source solutions such as openXdata for data collection is widely used which supports low-cost mobiles, includes visual designer and supports multimedia and GPS. Location based services are possible using the GPS data. One can start downloading from http://www.openxdata.org/demo and start experiencing this solution on their low-cost mobile. Only requirement is the Java enabled mobile and GPRS/3G connectivity. This is widely used for location based survey/activity record needs. In the offline mode the application can collect data and the data can be send to the server using SMS or via Internet using a Desktop intermediate. Continuous network coverage is not required for offline applications. As the mobile camera can be used for multiple requirements, the client programming based on the camera are numerous. One such open source solution is the 2D barcode reader. The encoded data in the 2D barcode which can carry more than 8K of data using the open standard 2D bar codes such as QR Code, DM Code and PDF417 can be decoded using the mobile bar code readers which are freely available for downloads. This can be used for variety of anywhere, anytime services where the encoded data can point to an URL containing the information that is required. The URL can be open URL for public information such as status of service request and the URL can carry server side authentication for private data such as individual health records, financial transactions etc. MOBILE BANKING Using IMPS (Inter-Bank Mobile Payment Service) one can send money instantly from the savings bank account using one’s mobile number along with a 7 digit MMID (Mobile Money Identifier) number. To receive funds one has to generate MMID. In order to transfer money using IMPS the user has to follow the following steps Use the client application provided by the service provider and select Transfer Funds option Enter 10 digit mobile number, 7 digit MMID and the Amount and confirm Follow the authentication method used by the service provider and the money is transferred instantly The SMS will inform the transaction status. One can transfer upto Rs. 50,000 as this is encrypted method as per RBI regulations The same facility is available over SMS instead of the client program where the limit is Rs 5,000 as per RBI regulations LOCATION BASED SERVICES (LBS) The idea of location based services has been catching up for the past few years. Location is a very important data point when it comes to mobile computing, and your lat/long coordinates and even what direction you are facing and what particular object you're looking at are important parameters for your searching. This solution can be used in fleet management, tracking, optimised routes, current status of movement, inventory movement within campus/factory etc. Every smartphone company these days wants to offer you something that would couple you with your nearby cellphone towers, local resources and people in your immediate area. When the Government Service Centres such as nearest CSC, Post-Office, Police Station, Hospital, RTO office, Taluk Office, Collectorate are available as spatial layers with point features for individual locations, Location based Services become more useful on the move. The LBS can answer the queries such as how far, where, route, direction with added public transport facilities to reach the service or the utility centre. Google's 'What's Nearby' is a location-based search that's part of an updated Google Maps app on Android devices, and soon to be available on the web-based Google Maps on other devices What it does is to simply give you a list of the ten closest places (restaurants, shops, points of interest) that are near your location. While doing the search the voice enabled query or search is also enabled using Google's 'Search by Voice' feature Mobile client programs can also carry out search based on the pictures taken from a location. 'Google Goggles' is a picture-based search tool, wherein you can take a picture of something and have Google return search results based on it. This could be good to identify something you don't recognize, or learn more about something you do.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="cuf-n-custom-font-embedding-technique-for-web-july-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Cufón: Custom Font Embedding Technique for Web</span></a><a class="article-nav-link next" href="gadchiroli-embracing-ict-in-the-tribal-district-july-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Gadchiroli: Embracing ICT in the Tribal District</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

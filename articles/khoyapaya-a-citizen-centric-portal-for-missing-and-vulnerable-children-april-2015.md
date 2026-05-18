@@ -1,0 +1,16 @@
+---
+title: "KhoyaPaya: A Citizen Centric Portal for Missing and Vulnerable Children"
+publication: "Informatics"
+issue_date: "April 2015"
+pages: [16]
+author: "PADMAVATHI VISWANATHAN, C. J. ANTONY, NALINI S. NAUTIYAL"
+section: "E-Gov Products and Services"
+---
+
+## KhoyaPaya: A Citizen Centric Portal for Missing and Vulnerable Children
+
+Children are the most vulnerable section of our society and are observed as the easy and soft target of criminals and perverts. The worst among the atrocities encountered by children are trafficking, kidnapping and sexual abuse. Despite the law enforcement agencies does their best to safeguard the children from such inhuman acts; the sad reality is that a large number of kids go missing every year. Statistics reveal that one child goes missing every eighth minute in our country. The law enforcement bodies are bound by the law and are doing the best to prevent such acts and are committed to take immediate action once identified. Unfortunately, delay invariably creeps in due to completion of formalities by parents before the formal lodging of complaint, as per the law, it is mandatory to immediately file FIR in case of a missing child. Government focused on the need for an alternate solution in the form of web-centric channel. This is the genesis of KhoyaPaya- a citizen-centric portal for missing and vulnerable children.
+KhoyaPaya is an online portal by the Government of India for reporting and tracing missing children. Envisaged as a people centric and collaborative portal, KhoyaPaya is an online interface for parents of the missing children to lodge and find details. This is a platform to register and provide information regarding a missing or sighted children, without waiting to complete the formal legal procedures. After quick moderation, the information would be made open for public view. The portal facilitates to search the database of the children by matching the attributes of the lost/sighted child. This is to drastically reduce time for the relevant information to reach the parents. Though KhoyaPaya is not a substitute for any existing system or statutory bodies to track the missing children, it would enable the parents in possibly locating their missing child in an alternate and effective way of public participation.
+The platform is being developed as National Portal for Lost and Sighted Children – an Early Harvest Program under “Digital India”. Developed using state of the art Open source technologies such as J2EE frameworks, Postgre SQL, Linux et al, KhoyaPaya portal is hosted on NIC cloud. Mobile app for uploading details of sighted children has also been developed for android-based phones. Development of apps for other platforms is also underway.
+Reporting of missing and sighting of children through Interactive Voice Response System (IVRS) is also proposed.
+Standard operating procedures for the portal are under way and a team of moderators will be deployed to ensure that the uploaded content is as per the portal usage policy. Additional features such as natural language processing tools and facial recognition tools will be integrated with the portal in the near future. It is also proposed to link the system with other systems at a later stage through web services.

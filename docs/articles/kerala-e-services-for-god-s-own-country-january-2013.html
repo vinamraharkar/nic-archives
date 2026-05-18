@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerala - e-Services for “God’s own Country” — Informatics January 2013</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2013"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/january-2013/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2013/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2013/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2013/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2013/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2013/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/january-2013/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2013/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2013/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2013.html">January 2013</a><span class="breadcrumb-sep">&rsaquo;</span><span>Kerala - e-Services for “God’s own Country”</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Kerala - e-Services for “God’s own Country”</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By R. GAYATRI, DR. K. S. RAMAN, ASHA VARMA.K.C, DR. K.M. ABRAHAM CFA &bull; pp. 30–32</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2013.html">January 2013</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">INTRODUCTION IT in Governance has been the key to enhancing the Kerala State's thrust on citizen access to government services. The State has also led the world in the Free and Open Source movement by being the first state in the world to openly declare its affinity to FOSS. NIC Kerala has played a significant role in the implementation of e-Governance in the State. Some of the significant e-Governance Projects developed and deployed in the State are as follows: E-District A project that has won the prestigious CSI-Nihilent award for e-Governance in 2012, it provides Government services to citizens through Common Service Centers (CSC). The project seamlessly delivers services to public by automation, integration and boldly making changes in processes through Business Process Re-engineering. Services currently covered are mainly public related like : Certificates issued from Taluk / Village Offices, local bodies, PDS services, RTI services, Grievance and complaints, Utility Payments, Payments to Motor Vehicle Dept and Revenue court cases. Certificate services from Revenue department have been implemented in two pilot districts. About 12 lakh services have been provided as on date. hsCAPnic This is for the Centralized Seat Allotment Process for Higher Secondary Courses. There are about 1500 higher secondary schools with about 40 different combinations. The eligible candidates need to give single application form for applying in any one of the schools in the district, with his options in the order of preferences. The sequence of activities includes preparation of rank list for each school and each course. Allotment process will be done based on the seat availability, community reservation, rank and the options filed by the applicants. Allotment memo can be printed by the applicants. e-Transport (http://www.keralamvd.gov.in) In Kerala, 100% computerization of the Department is achieved in all 65 RTOs and Sub RTOs SRTOs including RTO- National Sector, 19 Check-posts and Office of State Transport Authority. All RTOs/ SRTOs and STA are connected to the SDC (State Data Centre) through KSWAN. Building the State Register, National Register, citizen services through AKSHAYA centres, e-payment, Intelligent Enforcement Automation, and Dash Board etc are some key achievements in the Motor Vehicles Department. Realcraft It is a workflow-based online application for registration of the fishing vessels working along the Indian coast for better coastal security .It is presently operating in 164 locations and has brought details of around 3 lakhs fishing vessels and fishermen into one national database. Fishing vessel owners, coast guard, navy, coastal police; fisheries department , MPEDA, insurance agencies, state and union ministries are benefitted out of this. E-procurement GePNIC has been implemented in Kerala PWD, PMGSY, 60 PSUs and KSEB. Around 2000 tenders worth 1200 crores have been successfully submitted &amp; processed. 1000 staff of various departments and PSUs and 1500 bidders have already been trained. e-Office e-Office has been launched in Kerala State Planning Board and Spices board Ernakulum . The first e-Office implementation in the State of Kerala was inaugurated by Hon. Chief Minister of Kerala Sri. Oommen Chandy in the Planning Board on 6th November 2012. FMPDS (Food grains movement Monitoring for effective Public Distribution System) Sh.Anoop Jacob, Minister for Food, Civil Supplies &amp; Registration launched a Citizen centric M-Governance Project, at Alappuzha on 20th November 2012. It empowers the ration card holders by providing the lifting details of ration commodities as SMS when the Whole Sale Dealers lift the items from FCI godown and Ration Dealers lift the items from Whole Sale Dealers. The ration card holders can register their mobiles through www.civilsupplieskerala.gov.in. The lifting details entered by officials are automatically transmitted as messages to the registered mobile numbers. e-Hospital for Ayurveda Kottakkal Ayurveda College, the first ayurvedic hospital in the country which has implemented the e-Hospital project with the help of NIC Agarthala since August 2012. The key features of e-Hospital@NIC are provide an integrated solution for hospital and clinical needs. EMLI (Effective Management of Letter of Credit Issuance) A web based application for automating the Issuance of Letter of Credit (LoC) based on the bills submitted by the work executing departments. On an average, 30,000 bills are being submitted every year from 220 division offices of various departments. Letter of Credits for nearly 2000 Crores are being issued every year using the application. Examination Management Systems (EMS) It is a comprehensive Examination Management System developed for handling various examinations conducted by GOK. About 4 lakhs candidates appear every year in these examinations under various schemes. The system handles all activities like candidate registration, result processing, result publication and certificate generation. Examinations covered in EMS are SSLC, THSLC (Technical High School Class X), A-Level (Class X Equivalency Examination), DHSE (Plus 2 / Higher Secondary), Vocational Higher Secondary, TTC (Teachers Training Course), KGTE (Kerala Government Technical Examination). XLN implementation (eXtended Licensing Node) developed by NIC-Gujarat has been implemented for Drugs Controller Department, GOK. The software automates all activities related to retail drugs sales licenses, drug testing etc. The main benefits include SMS alerts to stop sales of non-standard quality drugs tested in lab, stopping sales of banned drugs and transparency. SAND It has bagged the CSI Nihilent award of appreciation under project category in 2011 . It is an application developed by NIC Thrissur that helps the district administration to control and distribute the quantity of river sand that can be lifted from various mining points in an organized and neutral manner. More than one lakh citizes are benefited with sand available to them at Government rates. Network Operations &amp; Data Centre Network Operations &amp; Data Centre (NODC), with 24 x 7 operations and support, has been established at NIC Kerala State Centre for strengthening the network and services to user departments. The network is connected to the MPLS enabled National Network Backbone with a 2.5-10 GBPS bandwidth and the 14 District Centres are connected with 34-100 MBPS. 2/8/34 MBPS leased line network with 200 WAN nodes has been established in Kerala which includes High Court, NITC, Lakshadweep, Post Offices, BOI, DGFT, PAO, PQS and LAN with VLANs of around 750 clients. NIC Kerala has a Data Centre with 40 high end servers including 10 co-located servers and SAN storage, hosting websites and applications of user departments. Mail services, Anti Virus Support, Update and security services are also being provided. Studio based Video Conferencing services with High Definition VC systems at State Centre and Training Centre, EVCS (Executive Video Conferencing System) facility at NIC District Centres, Chief Secretary’s office and CPMG office are being extensively used. 46 institutes, including 6 NMEICT links, are connected to National Knowledge Network (NKN) in Kerala. Web services NIC Kerala provides hosting support on Linux &amp; Windows platform. Around 70 websites are hosted and maintained. The other activities are result publishing, VPN support for districts websites, Security auditing using Appscan, coordination of security auditing with CERT-IN empanelled auditors for the applications developed by NIC Kerala, development of CMS based websites. RA set up in NIC Kerala A Registration Authority office for NIC CA is functional in NIC Kerala State Centre, Thiruvananthapuram from July 2011 onwards. Around 2200 Digital Signature Certificates in SmartCards/USB tokens have been issued as on date, mainly for projects like e-District, e-Procurement and e-Office. Ten SSL certificates were also issued during the period. Approximately 240 renewal of Digital Signature Certificates were also done. The other significant e-Governance projects undertaken by NIC Kerala: l Blood Donors Online Directory (http://blooddonors.gov.in) at Kollam district l e-Disbursement of National Family Benefit Scheme at Kasaragod district l e-Campus<em>Suite for the Kottakal ayurverda college, Malappuram district l Gazetted Entitlement Portal for Accountants General office Kerala l GAINPF (Government Aided Institutions Provident Fund System) l FREES -a “single window scheme” where citizens have the opportunity to pay all the taxes and other dues to Government l Guest House management system for Kerala House, New Delhi l RR ONLINE for the monitoring of Revenue recovery activities of the district administration l Service And Payroll Administrative Repository For Kerala (SPARK) l Professional College seat allotment system l Integrated Scholarship Management System l Treasury Information System l Assurance Implementation Desk (AID) for monitoring of assurances given by ministers on the floor of Legislative Assembly. l Implementation of Central Projects like MGNREGA, SECC, AGMARKNET, NADRS, WAKF, MCTS It gives me immense pleasure to know that Informatics in the forthcoming issue is focusing on the e-governance initiatives in the state of Kerala. The Government of Kerala could implement various e-governance projects like Professional College seat allotment system, Integrated Scholarship Management System, SPARK (Personnel and Payroll management System), Treasury Information System, DC</em>Suite, e-procurement etc. with the technical support from NIC Kerala state centre. I take this opportunity to place on record the work done by NIC Kerala State unit officials in making the e-Governance initiatives in the state successful. I wish all readers a very Happy and Prosperous New Year.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="chhattisgarh-state-on-a-mission-with-a-vision-january-2013.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Chhattisgarh – State on a Mission with a Vision</span></a><a class="article-nav-link next" href="open-schooling-system-that-touches-changes-the-lives-of-millions-january-2013.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Open Schooling System That Touches &amp; Changes the Lives of Millions</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

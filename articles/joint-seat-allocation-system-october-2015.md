@@ -1,0 +1,34 @@
+---
+title: "Joint Seat Allocation System"
+publication: "Informatics"
+issue_date: "October 2015"
+pages: [20, 21, 22]
+author: "PRATIK SHRIVASTAVA and PROF. (DR.) PV BALAJI and MOHD. ANWAR KHAN"
+section: "E-Gov Products and Services"
+---
+
+## Joint Seat Allocation System
+
+Joint seat allocation to government funded technical institutes based on three independent entrance examinations using multiple ranks is a watershed event in engineering admissions in India. The aim was to prevent candidates from holding on to multiple offers of admission till the very last minute resulting in vacant seats.
+
+Admission in academic institutions is a colossal process considering the fact that every year a large number of aspirants vying for admission in the institute and field of their choice. New institutions are added every year to compensate for the rising demand. However the competition for most sought-after branches and institutes remains tough. This is why it is all the more important to adapt a transparent and efficient process.
+
+The idea on Web Based Counselling for admission was evolved first time in 2003 when Ministry of Human Resource Development took an innovative step and decided to implement online off-campus and on-campus counselling for admissions in NITs.
+
+In the academic year 2015-16 e-Counselling System has been implemented in the several Universities and Counselling Boards including JoSAA 2015 for IITs and NITs, CSAB for NE-UT States JEE Advanced 2015, JEE Main 2015, AIPMT 2015, Hotel Management, Chandigarh, Delhi, Gujarat, Haryana, Punjab, Odisha, Uttarakhand, UP and West Bengal.
+
+As on today 5504 institutes participated in e-counselling, 7,81,362 seats were offered under various reservation categories. A total of 21,65,324 candidates registered and 3,08,322 seats (40%) were allotted. In the government institutions picture was much better with 1,59,929 seats were offered out of which 1,20,867 (75%) seats were filled.
+
+JOINT SEAT ALLOCATION SYSTEM FOR IITs AND NITs:
+Joint seat allocation to government funded technical institutes based on three independent entrance examinations using multiple ranks is a watershed event in engineering admissions in India. The aim was to prevent candidates from holding on to multiple offers of admission till the very last minute resulting in vacant seats. An attempt was made in 2013, but the launch had to be “aborted” when the countdown was close to 0.
+
+In retrospect, this attempt was destined to be aborted since there were no business rules nor was there any algorithm. At around the same time, Prof. Yashodhan Kanoria (Alumnus, IIT-B) wrote to Prof Khakhar (Director, IIT-B) suggesting the use of the deferred acceptance (DA) algorithm for joint seat allocation and offering his expertise. Prof Kanoria is an expert in the area of “stable matching”. The efforts gathered momentum in the latter half of 2014 with the Joint Implementation Committee of JEE (Advanced) 2015 comprehensively documenting the business rules, and the Technical Committee (constituted by the Ministry of HRD) adapting the deferred acceptance algorithm to these business rules.
+
+In the education sector, this is perhaps the most complex set of business rules for which DA algorithm has been used. Full credit goes to the Technical Committee for taking into account preferential allocation for DS (defence services) category, allocation for preparatory programs, de-reservation of seats, supernumerary seats for foreign nationals, home state/ other states/ all India quotas, partial penalty for failure to produce valid category certificates, etc. The DA algorithm forms the crux of joint seat allocation.
+
+Implementing the algorithm was indeed a great challenge since (i) there was absolutely no scope for any error, (ii) there was no data to test the software and (iii) had to think of, and code for, every possible eventuality. Hence, there were two independent implementations of the algorithm: one by the National Informatics Centre (NIC) in C# language and another by IIT Kanpur (in C++). Both implementations were closely supervised by Prof. Sharat Chandran (IIT-B) and Prof. Surender Baswana (IIT-Kanpur). The e-counselling and admission division of NIC has been providing seat allocation service to a large number of clients, including NITs, for several years now. This rich experience helped the technical committee to suitably modify the DA algorithm to make it compliant to the business rules. At IIT Kanpur, two students of B.Tech, CSE (Utkarsh Patange and Ashok Kumar) were involved in this project.
+
+There were a few other firsts: IIT Bombay, as the nerve centre of JEE (Advanced) 2015 as well as joint seat allocation activities, introduced the concepts of (i) automated and end-to-end validation of seat allocation and (ii) use of synthetic data. Three teams, one each from IIT Madras, IIT Kharagpur and IIT Guwahati took up this task: they independently generated synthetic data – this included both hand-crafted data for checking all the “specialities” of business rules as well as large data sets. These teams introduced “input sanity checks” as a mandatory step. Special algorithms were designed for generating large synthetic datasets. In addition, each team checked the correctness of input data and validated seat allocation for compliance with each and every business rule. In essence, two teams allotted seats independently, and three other teams independently matched and validated seat allotments just to ensure that allotments are fair and error-free. This entire exercise of joint seat allocation is a massive success considering that a large number of individuals from various agencies set aside their personal and professional commitments and worked together for the larger common good. There were no violations of any business rules, timelines were adhered to and the entire operation – from framing business rules to successful admission – was pulled-off within a short span of 9 months! The success of this truly team effort stands out in a country like ours where most often the limelight is focussed on individuals for things they have done or even not done!
+
+ONLINE PORTAL (http://josaa.nic.in)
+Counselling websites are high transaction websites. The challenge posed was to design an online portal which will be capable of allowing 1.3 million prospective candidates to register and fill-in their choices with a span of just 5 days! Robust backend infrastructure on NIC’s Meghraj Cloud was utilised to run this system. The fact that 38 different ranks were used for choosing the institutes and courses and allocating the seats shows the complexity of JoSAA software. 34,074 seats were offered in 184 unique academic programmes across 86 institutes. 31,015 seats are filled including all premium seats. 1.43 lakhs candidates registered and filled 1.5 crore choices. 45 Reporting Centres were set up for document verification and admission.

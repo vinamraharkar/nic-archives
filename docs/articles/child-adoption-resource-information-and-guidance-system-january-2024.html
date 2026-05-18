@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Child Adoption Resource Information and Guidance System — Informatics January 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/january-2024/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2024/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2024/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/january-2024/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2024/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2024/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2024/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2024/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2024/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2024.html">January 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Child Adoption Resource Information and Guidance System</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">eGov Products &amp; Services</div>
+          <h1 class="article-title" data-pagefind-meta="title">Child Adoption Resource Information and Guidance System</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Edited by MOHAN DAS VISWAM &bull; pp. 29–31</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2024.html">January 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">CARINGS is a web-based monitoring system designed to facilitate transparent and child-friendly adoption processes across the nation. It accelerates smooth adoptions, improves transparency, ensures accountability of implementing agencies, nurtures stakeholder networks, and maintains a national database for informed policymaking and research. The latest version, 3.2 of CARINGS, was released in November 2022 and is accessible on CARA’s official website: https://cara.wcd.gov.in.</p>
+<p>CARINGS plays a pivotal role in effectively executing, overseeing, and evaluating the national child adoption program in compliance with the evolving Adoption Guidelines set by the Government of India. Its significant impact is widely recognized across various levels and has garnered international appreciation for its innovative approach to adoption initiatives. In line with the Hague Convention on Protection of Children and Cooperation in Respect of Inter-country Adoption, 1993—of which India is a contracting State-CARINGS adheres to both international protocols and national laws.</p>
+<p>NIC serves as the technology partner responsible for implementing the comprehensive adoption process using the CARINGS system, a role it has fulfilled since 2011. This platform caters to approximately 511 Specialized Adoption Agencies, 735 District Child Protection Units, 5960 Child Care Institutions (CCIs), and 35 State Adoption Resource Agencies within India. Moreover, it facilitates connectivity for international entities such as the Central Authorities of other contracting countries, foreign accredited bodies, and Indian Diplomatic Missions Abroad, enabling seamless interaction with CARA.</p>
+<p>CARINGS (Child Adoption Resource Information and Guidance System) portal is an e-governance system on adoption designed, developed, deployed and maintained by the National Informatics Centre. It ensures transparency in the adoption process, increases accountability of implementing agencies, creates a network of stakeholders and maintains a national database to enable effective policy making and research. CARINGS provides online monitoring of the adoption and post-adoption process by Central Adoption Resource Authority (CARA) at central level and state government level.</p>
+<p>Contributors: Timothy Dkhar Dy. Director General &amp; HoG tdkhar@nic.in Kamini Kapil Sr. Technical Director &amp; HoD kamini@nic.in Chandkiran Chhoker Scientist - C chhoker.chandkiran@nic.in</p>
+<p>Features</p>
+<p>CARINGS offers the following key features:</p>
+<p>Transparency in Adoption Processes: CARINGS is designed to bring transparency to every stage of the adoption journey. It ensures that the adoption process is clear, accessible, and understandable for all involved parties, including prospective adoptive parents (PAPs), adoption agencies, and authorities.</p>
+<p>Minimization of Adoption Delays: One of its primary objectives is to streamline the adoption process, minimising unnecessary delays that could arise due to administrative bottlenecks or inefficiencies. By offering a centralised platform, CARINGS aims to expedite the procedural aspects of adoption.</p>
+<p>Empowerment of Prospective Adoptive Parents: CARINGS provides comprehensive information and resources to prospective adoptive parents, enabling them to make well-informed decisions throughout their adoption journey. This empowerment ensures that PAPs have access to the necessary details and support required for the adoption process.</p>
+<p>Database Analysis for Policy Decisions: By accumulating and analysing adoption-related data, CARINGS offers intelligent insights to policymakers. This analysis aids in making informed and effective decisions related to adoption policies, ensuring that they are well-aligned with the needs and trends observed within the adoption landscape.</p>
+<p>Online Monitoring at Central and State Levels: The system allows for real-time monitoring of the adoption and post-adoption processes, both at the central and state government levels. This monitoring ensures compliance, efficiency, and accountability across all stages of adoption.</p>
+<p>Comprehensive Database for Policy Planning: CARINGS serves as a centralised repository for adoption-related information. It amalgamates data from various adoption agencies and child care institutions, facilitating diligent policy planning based on accurate and comprehensive information.</p>
+<p>Establishing Connections between Agencies and Institutions: The platform fosters linkages between adoption agencies and child care institutions, aiming to create a comprehensive database of children without parental care. This connectivity expedites the process of finding suitable families for these children, ensuring they are placed in nurturing environments promptly.</p>
+<p>Profiling for Better Matching: CARINGS allows for detailed profiling of both children in need of adoption and prospective adoptive parents. This feature aids in better matching, ensuring that children are placed in homes that suit their needs, and prospective parents find children who fit well within their family dynamics.</p>
+<p>Assistance and Status Tracking for Adopting Parents: The system provides relevant information and facilitates easy tracking of the adoption process for adopting parents. It ensures they are well-informed about the status of their application, thereby reducing anxiety and uncertainty during the adoption journey.</p>
+<p>Technical Specifications</p>
+<p>CARINGS is developed using Visual Studio .NET Framework and Microsoft SQL Server for the database. It utilises technologies like JavaScript, HTML, and CSS and is hosted on Amazon Web Services (AWS).</p>
+<p>Software Architecture</p>
+<p>The software architecture of CARINGS serves as a centralised portal facilitating the adoption process involving three key stakeholders: Prospective Adoptive Parents: Individuals seeking to adopt children. Children Available for Adoption: Information about children legally available for adoption is captured and managed within the system. Adoption Agencies: Responsible for overseeing and completing the adoption process.</p>
+<p>Figure: CARINGS Software Architecture.</p>
+<p>The system captures information about children legally available for adoption (OAS children). It initiates a social investigation to locate their biological parents. If the biological parents cannot be found, the children are declared legally free for adoption. Subsequently, a Medical Examination and Child Study report are processed through the online system. These children are then referred online to Prospective Adoptive Parents who have registered on the portal and are waiting for clearance via their Home Study Report.</p>
+<p>Upon finding a suitable match, the child is placed for adoption, and the system maintains a post-adoption follow-up record for a duration of two years. The recent launch of CARINGS 3.2 aligns with the business rules of the New Adoption Regulations 2022 and the amendments of HAMA 2021, particularly focusing on inter-country adoption.</p>
+<p>Impact</p>
+<p>Identifying and Addressing Delays: The online adoption process aids in identifying delays across different levels, enabling the system to address and rectify gaps efficiently.</p>
+<p>Timely Decision-making via Data Analysis: Data analysis capabilities empower timely and informed decision-making regarding adoption-related matters.</p>
+<p>Registration of Adoption Agencies: CARINGS facilitates the seamless registration of adoption agencies, ensuring a comprehensive network for adoption processes.</p>
+<p>Online Registration for PAPs: The system allows PAPs to register online for domestic adoption, streamlining the application process.</p>
+<p>Centralised Adoption Application Reception: CARA serves as the central hub for receiving adoption applications, streamlining the application management process.</p>
+<p>Early Placement of Special Needs Children: The system prioritises the placement of special needs children, expediting their adoption process.</p>
+<p>Online Post-Adoption Follow-up: CARINGS maintains an online post-adoption follow-up system, ensuring ongoing support and monitoring after the adoption process.</p>
+<p>Adoption via Linkages: Establishing connections between adoption agencies and child care institutions facilitates the adoption of children without parental care.</p>
+<p>Priority to Domestic Adoption: The system ensures priority to domestic adoption, promoting a focus on placing children within the country.</p>
+<p>Additionally, since its inception in 2010, CARINGS has facilitated over 46,618 in-country adoptions and more than 6,142 inter-country adoptions, demonstrating its significant impact on facilitating successful adoptions both nationally and internationally.</p>
+<p>Figure: CARINGS Stakeholders (International: AFAA, EMBASSY, CA, IDM, VISA Dept; National: MWCD, CARA; State: MWCD, SARA, SCPS; District: DM, DCPU, CWC, JJB; Ground: CHILD, PAP, SAA, CCI, CWO).</p>
+<p>Way Forward</p>
+<p>CARINGS operates with the overarching mission to encompass every CCI across the country, striving to reach and identify every child eligible for adoption. The core objectives focus on broadening the pool of adoptable children and simplifying the adoption process. The initiative is geared towards the comprehensive identification of adoptable children—be it orphans, abandoned, or surrendered—within all CCIs across districts. It ensures a meticulous legal process in accordance with the Juvenile Justice Act 2015, involving the Child Welfare Committee (CWC) to declare these children legally free for adoption. Moreover, CARINGS aims to establish seamless connections between CCIs and the nearest Specialized Adoption Agencies within the system. This linkage facilitates the compilation of detailed profiles including essential reports such as the Child Study Report, Medical Examination Report, and legal status as declared by the CWC. Ultimately, these efforts streamline and expedite the adoption procedures for these children.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="revolutionising-agricultural-quality-control-january-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Revolutionising Agricultural Quality Control</span></a><a class="article-nav-link next" href="empowering-proactive-governance-through-integrated-solutions-january-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Empowering Proactive Governance through Integrated Solutions</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

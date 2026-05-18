@@ -1,0 +1,27 @@
+---
+title: "NIC @Digital India Week 2022: Catalyzing New India’s Techade"
+publication: "Informatics"
+issue_date: "July 2022"
+pages: [20, 21, 22, 23]
+author: null
+section: "Infocus"
+---
+
+## NIC @Digital India Week 2022: Catalyzing New India’s Techade
+
+The Hon’ble Prime Minister Shri Narendra Modi inaugurated the eighth edition of Digital India Week, with the arching theme ‘Catalyzing New India’s Techade’ at Mahatma Mandir Convention and Exhibition Centre, Gandhinagar, Gujarat on 4th July 2022.
+During the programme, he launched multiple digital initiatives aimed at enhancing the accessibility of technology, streamlining service delivery to ensure ease of living and giving a boost to startups. He also announced the first cohort of 30 Institutions to be supported under the Chips to Startup (C2S) Programme.
+Hon’ble Chief Minister of Gujarat Shri Bhupendra Patel, Hon’ble Minister of Electronics & IT, and Communication, Shri Ashwini Vaishnaw and Hon’ble Minister of State for Electronics & IT and Skill Development & Entrepreneurship, Shri Rajeev Chandrasekhar alongside several people’s representatives were among those present on the occasion.
+Addressing the congregation, the Hon’ble Prime Minister gave a glimpse of continuously modernising India in the 21st century. He stated, “Through Digital India, India has exemplified how revolutionary the correct use of technology is for the growth of humanity.”
+The Hon’ble Prime Minister emphasised on the role of new and emerging technology during recent times and said that the power that Digital India has created in the country in the last eight years has helped India a lot in combating the Coronavirus pandemic. He pointed out, “We have transferred thousands of crores of rupees to the bank accounts of crores of women, farmers, labourers of the country at a single click. With the help of One Nation One Ration Card, we have ensured free ration to more than 80 crore countrymen … We have run the world’s largest and most efficient covid vaccination and COVID relief program. Through our Cowin platform about 200 crore vaccine doses have been administered and certificates given.”
+The Hon’ble Prime Minister expressed the hope that Digital India Campaign will keep on adding new dimensions to itself and will keep serving the citizens of the country.
+
+Shri Ashwini Vaishnaw, Hon’ble Minister of Electronics & IT, stated: "In the past eight years, the Digital India program, which was once critiqued for its lofty goals, is now dubbed as the growth driver behind the New India. It has transformed the digital landscape of our country, proving that our digital products and services can transgress beyond economic barriers and empower the citizens equally. These digital products and solutions in terms of scale of implementation and management are unparallel to any analogous digital offerings anywhere in the world. They are scalable, secure and democratic and NIC has played a crucial role behind their evolution."
+
+Shri Rajeev Chandrashekhar, Hon’ble Minister of State for Electronics & IT, stated: "Saare Jahaan Se Achha Digital India Hamara. The world has now come to realise the technological prowess of our country and many countries enviced the interest for collaboration with our institutions from both public and private sectors alike. Among them, NIC is leading the pack. From IndiaStack to High Performance Computing, digital products and services by NIC are redefining the digital terrain of our country. These digital services have created a unique opportunity to enhance transparency, improve governance and bring democracy closer to people."
+
+Dr. Rajendra Kumar, Additional Secretary, MeitY, stated: "NIC has played a significant role in managing the expectations created by the Digital India program both within and outside the country. Since its launch, the Digital India Program was always seen through a critical lens, but the Digital Govt. Solutions by NIC have helped the Government to mitigate those criticisms. These Digital Govt. Solutions have architected the vision of New India and embraced a path of technology, which led to path of transformation across all sectors of the economy and society. As we enter the second phase of the Digital India program, we hope NIC will continue to assist the Government in bringing Governance to Citizens."
+
+Shri Alkesh Kumar Sharma, Secretary, MeitY, stated: "We are standing at the cusp of a monumental change and the National Informatics Centre, being the technological brain of the Government, is at the middle of this change. The Digital Government Solutions by NIC, from healthcare to finance, has played a pivotal role in bridging the digital divide empowering beneficiaries, bringing transparency and saving a vast sum of public money with the support of State/UT governments. These services will continue to define the digital phenomenon of our country and enable governments for more inclusive development."
+
+Shri Rajesh Gera, Director General, NIC, stated: "Digitisation is not an end, but a means to an end. At NIC, our objective is to use digitisation as a means to improve the living standards for citizens of our country. We are focused on developing digital solution that can harness the power of internet and mobile telephony, thus, improving access to public services. Moving ahead, NIC will continue to work on digital products that not only bridge the social gap, but ease the life of common citizens."

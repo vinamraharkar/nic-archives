@@ -1,0 +1,25 @@
+---
+title: "MIS on Direct Benefit Transfer (DBT)"
+publication: "Informatics"
+issue_date: "April 2013"
+pages: [6, 7]
+author: "A.K.Chanana, Mini Malik"
+section: "E-Gov Products and Services"
+---
+
+## MIS on Direct Benefit Transfer (DBT)
+
+The machinery of all Government Departments now depends on ICT to transform Government business and services to meet people’s expectations for better services. Every department is putting in its best efforts to build capability in government to meet people’s need and deliver improved services and with this vision in mind, the software application ‘DBTMIS’ has been designed, developed and implemented by the local NIC unit at the Planning Commission.
+With the Aadhaar rollout covering almost 20 crore people and rapidly growing to 60 crores, and along with the National Population Register doing the other half, it is possible to move to a system of transferring cash benefits directly to the people in need. To rollout the implementation of a seamless electronic Aadhaar based cash transfer system for transfer of cash benefits to beneficiaries, a scheme on ‘Direct Benefit Transfer’ has been launched from 1st January, 2013. It endeavors to rapidly rollout cash transfers across the country for as many government schemes and benefits as possible within the next one year.
+Cash Transfer is a program that transfers cash directly, especially to poor households, with or without conditions. The purpose of a cash transfer could be:
+• To provide a monetary benefit for a specific purpose or use - such as for education through a scholarship, healthcare through a medical assistance program, and so on.
+• Direct income support – such as old age income support, unemployment assistance through unemployment benefit schemes etc.
+A decision was taken in the meeting of the National Committee on Direct Cash Transfer held by Hon'ble Prime Minister that Direct Benefit Transfer (DBT) will be rolled out from 1 January 2013 in 43 identified districts to ensure that benefits go to individuals' bank accounts electronically, cutting down delays and diversions. Cash Benefits are transfered to individuals through Government schemes. These include – (a) Scholarships – Merit, SC, ST and OBC scholarships, sports & cultural scholarships etc. (b) Pensions – These include old age pensions, pensions for destitute, women etc. (c) Income support of other types – unemployment allowances, other benefits for the poor. (d) Wage Payments – such as through MGNREGS (e) Health Benefits – through National programs like the Rashtriya Swasthya Bima Yojana (RSBY), etc. Making the transfer electronic and linking it to Aadhaar will ensure accuracy and easy traceability to individuals.
+Map depicting states and districts where DBT has been rolled out till date
+OBJECTIVES
+To facilitate quick decision-making, it was decided to establish a web-based application to monitor and manage the periodic review on statistics of beneficiaries, number of beneficiaries having UIDs and bank account details etc. The MIS provides online entry module to update requisite information from their locations. It also provides online entry module to nodal officials of 26 schemes pertaining to 08 Ministries/ Departments to update. The MIS can be accessed at the URL http://pcserver.nic.in/dbtmis.
+To make the program successful, Planning Commission organized several video conferences with the Chief Secretaries/Finance Secretaries of the participating States and DMs/Collectors of the districts to assess preparedness for commencing the rollout. At the field level, Ministries implementing scheme were asked to firm up and digitize databases, completing Aadhaar enrolment for all beneficiaries, ensuring bank accounts etc.
+IMPLEMENTATION & UTILIZATION
+As on date, this National level project is being monitored at highest level. The application is operational for updating this web-based MIS online from 43 Districts locations and also by 26 Nodal officers dealing with 26 schemes from 08 Ministries/Departments. Updation is going on daily basis. Monitoring the status of fund transferred via Aadhaar bridge and other statistics about beneficiary details is a regular feature resulting in successful online updation of the MIS. This program helps every citizen to understand the grass-root realities and how Government programs need to be monitored and enhanced in order to bring them in line with the aspiration of every citizen.
+The DBTMIS has been appreciated by the Deputy Chairman and the Secretary, Planning Commission and other higher officials. The MIS helps to view the status of implementation and generates various reports in real time.
+The MIS application is a collective effort made by the local team at NIC – Planning Commission Unit in developing web-based software application in .NET environment. Government launched the DBT based on the financial/work-flow of the scheme so that the beneficiary gets benefit through Aadhaar payment bridge. There are three different types of user interfaces depending on the privileges of the user-id.

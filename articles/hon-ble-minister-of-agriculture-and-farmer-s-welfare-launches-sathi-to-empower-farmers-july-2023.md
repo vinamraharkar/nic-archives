@@ -1,0 +1,18 @@
+---
+title: "Hon’ble Minister of Agriculture and Farmer’s Welfare launches SATHI to empower farmers"
+publication: "Informatics"
+issue_date: "July 2023"
+pages: [41]
+author: "Informatics News Desk, NIC-HQ"
+section: "In the News"
+---
+
+## Hon’ble Minister of Agriculture and Farmer’s Welfare launches SATHI to empower farmers
+
+As a part of the Digital India Initiative, the Hon’ble Minister of Agriculture and Farmers’ Welfare, Shri Narendra Singh Tomar, has launched the Seed Authentication Traceability & Holistic Inventory (SATHI) portal. This state-of-the-art, technology-based platform developed by NIC is set to transform the way farmers access seed certification, traceability, and inventory management services across India.
+SATHI signifies a comprehensive solution that encompasses the entire seed life cycle spanning multiple generations. Through its automated features, this pioneering portal facilitates seamless management of the seed supply chain, starting from production and certification, all the way to licensing, inventory control, and sales conducted by certified dealers to seed growers. Crucially, it guarantees complete transparency and traceability of seeds, empowering farmers with greater control over their agricultural operations.
+At the heart of the SATHI portal lies the remarkable GIS reports based on the Bharat Map Interface. This cutting-edge functionality provides farmers with geographical insights into their seed-related activities, enabling them to make informed decisions and optimise resource allocation. Additionally, the portal offers a wallet service, allowing farmers to efficiently handle their financial transactions associated with seed procurement and sales.
+A major highlight of the SATHI portal is its offline-friendly and device-agnostic mobile application, designed to bridge the digital divide and ensure accessibility for farmers in all corners of the country. Farmers can leverage the portal’s features without internet connectivity or limitations based on the type of device they possess, democratising access to critical information and services.
+Quality assurance is paramount in the seed industry, and the SATHI portal takes this into account with its integrated quality inspection module. This feature empowers farmers to conduct thorough quality checks during the inspection process, ensuring that only top-notch seeds are distributed. Furthermore, the portal generates system-generated sample slips based on processed verification data, streamlining the process of forwarding samples to seed testing laboratories for comprehensive analysis.
+The services provided by the SATHI portal cater to various stakeholders within the seed ecosystem. Seed Producing Agencies can effortlessly apply for registration or track the status of their applications under the respective Seed Certification Agencies in different states. Similarly, Seed Processing Plants can conveniently apply for registration or verify their existing status. Businesses aiming to obtain Seed Dealership Licences can easily submit applications or keep track of their progress. Moreover, farmers can readily download field inspection reports uploaded by quality inspectors and trace crucial details of seeds, including their origin and destination, along with associated quality certificates.
+With the launch of the SATHI portal, the Indian agricultural sector witnesses a momentous leap towards digitization and streamlining of seed-related processes. This initiative promises to empower farmers with unprecedented access to information, enhanced transparency, and heightened efficiency within the seed supply chain.

@@ -1,0 +1,12 @@
+---
+title: "ACCESS: Wisconsin"
+publication: "Informatics"
+issue_date: "January 2011"
+pages: [38, 39]
+author: null
+section: "International e-Gov Updates"
+---
+
+## ACCESS: Wisconsin
+
+Wisconsin Department of Health Services (DHS) created a new service deliv-ery for its social service benefit programs by developing ACCESS, an integrated, web-based, multi-lingual self-service por-tal. The portal is user friendly enabling users in receiving and managing social service benefits. It also enables citizens to determine if they are potentially eligible for various social services programs. They can check the status of their benefits through individual accounts, apply and renew for benefits via an online applica-tion, and report changes to their informa-tion. ACCESS enables community part-ners to assist customers in applying for and maintaining their benefits. Citizens can access to the various pro-grams of this web based application any-time. The system has been influential in raising awareness among the citizens regarding the various programs that are available for them. It has increased the member participation in various social service programs by simplifying the process to apply for and retain services and by reducing the stigma associated with applying for and receiving public assistance. ACCESS provides services to all low income people including children, youth, men, women and seniors equally irrespec-tive of the age, gender, origin, physical or mental disabilities. For the welfare of the citizens, various programs have been designed to cover people of all ages and groups. When citizens apply for some or all of these programs online, based on the information provided by them in their application, the web pages are customized to collect only the relevant information that are required to determine their eligibility in those programs. Thus, it is has also simplified the data collection and made it easy for the citizens to apply for programs online. The simple and very easy to use website has given a positive experience to the citizens. The website is also accessible to physically disable people. ACCESS consists of 8 primary modules: Am I Eligible; Check My Benefits; Apply for Benefits; Report My Changes; ACCESS for Partners and Providers; ACCESS Fee Payment; Renew My Benefits; HNA/HMO Selection. Interactive features are customer-oriented e.g. "Am I Eligible" section of the portal is self-learning and provides short inter-active guidance for all.

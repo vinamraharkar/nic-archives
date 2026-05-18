@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andhra Pradesh: Treading on Technology Path — Informatics January 2006</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2006"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2006/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2006/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2006/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/january-2006/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2006/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2006/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/january-2006/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2006/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2006/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2006.html">January 2006</a><span class="breadcrumb-sep">&rsaquo;</span><span>Andhra Pradesh: Treading on Technology Path</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">State in Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">Andhra Pradesh: Treading on Technology Path</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By K Rajasekhar, NIC Andhra Pradesh &bull; pp. 7–9</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2006.html">January 2006</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Andhra Pradesh, situated in the southern part of the country is the fifth largest state with an area of 2,76,754 sq. km, accounting for 8.4 % of India’s territory. The state has the longest coastline (972 km) among all the states in India. NIC State Centre was established in Andhra Pradesh in the year 1986 and since then, it has been rendering informatics services to all the sectors of socio-economic development. Major activities of NIC in the state can be broadly categorised as: • Creation of ICT infrastructure at state Headquarters and all the districts, • Analysis, design, development and deployment of informatics solutions, • Capacity building by organising training programmes, • Research and innovation in evolving low cost ICT solutions/products to address the information management problems of the government departments.</p>
+<p>Major Projects:</p>
+<p>€| Rural Development and Agriculture e-Panchayat: It is an application suite that cater to the requirements of all stake holders at the village level i.e. rural masses, elected representatives and the officials of Panchayati Raj departments, etc. It is a low-cost ICT solution at gross roots level that ensures digital inclusion. An e-Panchayat workshop was held at West Godavari Collectorate Meeting hall on 25th Nov’2005. 29 Panchayat Sarpanches, Secretaries, Executive Officers of Mandals and Divisional Panchayat officers participated in this workshop. Sh. B Ramanjaneyulu, Joint Collector, Sh. C S R Prabhu, DDGl &amp; SIO, NIC Hyderabad, Sh. M Rama Rao, District Revenue Officer and others attended the workshop.</p>
+<p>PRED RWS MIS Project: NIC Andhra Pradesh has developed this project for workflow automation of the Panchayati Raj Engineering Department and Rural Water Supply Sector, Govt. of AP as part of the Rajiv Gandhi National Drinking Water Mission. This software handles all the major activities of the PRED and RWS such as Work Proposals, Estimates, Water Quality Management, Contractor Management, Work/Project Monitoring, Fund Accounting, Asset/Stock Management and Complaints Monitoring.</p>
+<p>Agriculture Department: NIC Andhra Pradesh has designed and developed web portal and MIS for the state’s Commissionerate of Agriculture. It also helps the Agriculture Department in analysis of decision support tool for the farmers to suggest crop wise, soil specific inputs.</p>
+<p>Agmarknet: The NIC State Centre coordinates and organises regular training programmes for the implementation of Agmarknet project in the state.</p>
+<p>Animal Husbandry and Dairy Development Department: Development of MIS for the implementation of Gopal Mitra scheme (Artificial breed improvement programme).</p>
+<p>Commissionerate of Rural Development Department, Govt. of AP: Web based Financial Accounting Software for DRDAs has been developed.</p>
+<p>Karshak Mitra: Design and Installation of Karshak Mitra, a total supply chain management solution for the farming community has been done.</p>
+<p>€| Finance and Accounts CARD (Computerization Administration of Revenue Department): With the help of NIC, all the registration offices in the state have been computerized, resulting in more accountability and efficiency in rendering services to the citizens.</p>
+<p>Stock &amp; Financial Accounting System: This system has been developed and implemented for Andhra Pradesh State Civil Supplies Corporation. About one lakh vouchers have been entered and the staff of the corporation has been trained in using it.</p>
+<p>Office of the Accountant General (Pension): Pension Management and Information System has been implemented at the AG office (pension) for the automation of pension related activities.</p>
+<p>Integrated Finance &amp; Accounts System for UoH: Various modules under this project have been implemented such as work allocation, budget allocation, inward module, PF module, classification of Account Heads, etc. The following modules have been developed and handed over for implementation:</p>
+<p>• Student Challan Module • Valuables Register Module • Pension Module • Pay Roll Module IMPAcT – (Integrated Management System of Pay &amp; Accounts and Treasuries.): • Base Application is implemented at PAO, Hyderabad and STOs at Rang Reddy District Treasury. • Fly-Leaf module has been developed and integrated with the base application. The module is under testing.</p>
+<p>Zilla Parishad – PF: PF Accounting System for Zilla Parishads was taken up by NIC Andhra Pradesh and ledger maintenance has been developed for Ranga Reddy district and hosted on the web, which enables more than 8000 teachers/officials to print their GPF statements locally.</p>
+<p>Payroll: Maintenance and implementation of Standardisation Payroll Package for more than 500 government departments has been done.</p>
+<p>€| Judiciary A.P. High Court &amp; Administrative Tribunal: A LAN comprising 65 nodes has been established and automaton software for the following activities of the Tribunal has also been developed: Case Filing, Causelist Generation, Case Status Information, Suit Registers, statistics of pending and disposed cases. A website has been developed and hosted for providing information about AP Administrative Tribunal. In addition to this, a SMS based case information system has also been developed and implemented. Development of SMS package for the AP High Court causelists has also been completed. At the City Civil Court also, automation software has been implemented for the registers of original suit, original petition, first appeals, etc.</p>
+<p>€| Health Directorate of Medical Education, Govt. of AP: NIC Andhra Pradesh has designed Sanjivani, a statewide web-based MIS for the Directorate of Medical Education to benefit the children suffering from heart ailments. A Doctors Information System has also been developed along with a website to implement anti-ragging policies and orders of the state government.</p>
+<p>Sir Ronald Ross Institute of Tropical Diseases: Implementation of WHO ICD 10 codes for the medical records management module of e-Hospital.</p>
+<p>Health Department: Design, development and maintenance of the state health portal on behalf of the department of Health Medical and Family Welfare as well as implementing the provisions of the Right to Information Act for the department.</p>
+<p>Institute of Preventive Medicine: Registration and Implementation of the investigations module at Institute of Preventive Medicine.</p>
+<p>€| Examination and Results Andhra Pradesh Public Service Commission: The NIC State Centre has helped APPSC in implementing automation application that facilitates in processing the results of various recruitment examinations, generation and publication of e-hall tickets for all the recruitment tests, e-recruitment, automation of selection of candidates based on preferences, reservation rules, availability of jobs, etc. NIC Andhra Pradesh has supported the development and maintenance of the APPSC portal. Interactive Voice Response System has also been developed for announcing the examination centres to the APPSC candidates.</p>
+<p>Results Publication: NIC Andhra Pradesh has designed and developed a website for declaring the results of various examinations held in the state.</p>
+<p>€| Other Projects: Government Food Labs: Development of MIS for reporting the results of investigations of the food samples received from various producers.</p>
+<p>e-Nagarpalika: It is an informatics solution to manage the urban local bodies.</p>
+<p>State Consumer Forum: A website has been developed and hosted for State Consumer Forum and District Consumer Fora.</p>
+<p>Civil Supplies Department: Public Distribution System (PDS) software for allotment of essential commodities and offtake of commodities by Fair Price Shops has been implemented in Circle-V of Hyderabad district.</p>
+<p>AP Legislative Assembly: Question Monitoring Information System has been developed and implemented for the AP Assembly. A package for MLA hostel administration has also been developed, which will take care of the accommodation, administration and accounts of the MLA hostel. A pension package (for the MLAs) and Assembly Library package has also been developed and implemented.</p>
+<p>Land Records: Monitoring/Implementation of LRMIS Mutation Workflow and Crops Module has been undertaken by NIC in more than 1120 mandals of the state. As part of this, the LRMIS website was redesigned and developed. The whole application works in a three-tier environment i.e. client, common gateway server and service provider. This helps in making the system safer and minimises the possibility of hacking. This application will be used at e-Seva centres for issuing land related certificates and accepting the mutation requests for registering change of ownership. Additional modules to generate pattadar passbook and to capture registration data online is being added in the application.</p>
+<p>Elections Database: NIC Andhra Pradesh has designed, developed and hosted the website of the state’s Electoral office and has also developed a query based system to search for electors’ database. A SMS based voter information system has also been developed along with an online voters’ registration system based on WAP, for the State Election Commission. Both the applications have been successfully demonstrated to the Sate Election Commissioner.</p>
+<p>ISO – QMS: QMS was initiated at NIC State Centre in order to enable certification process of ISO 9000:2001. QMS standards documentation has been implemented for all projects of the State Unit. Internal Audit was conducted successfully.</p>
+<p>Environment Protection Training and Research Institute, Govt. of Andhra Pradesh: NIC Andhra Pradesh has designed and developed n-tier based project wise financial management information system, human resources management system and bibliographic information system for the Environment Protection Training and Research Institute. A website with dynamic content about the natural resources and ecology of the Eastern Ghats has been developed by NIC Andhra Pradesh.</p>
+<p>Andhra Pradesh Marketing Federation: A web portal has been developed and launched for the Andhra Pradesh Marketing Federation to enable daily transaction of data from the procurement centres to the state headquarters.</p>
+<p>Tribal Welfare Department: NIC Andhra Pradesh helps in mapping of the educational institutes and Tribal Welfare Hostels on the digital maps of the ITDA areas for tribal development in the state. It has also helped in analysis, design, development and implementation of rule based Transfers Counselling Information System for the teachers of educational institutes working under the Tribal Welfare Department of the state. Girijan Mithra, a supply chain management solution to market the forest produce of the tribal people has also been designed and implemented by NIC Andhra Pradesh.</p>
+<p>GISTNIC: The project developed by NIC Andhra Pradesh facilitates updation of the bi-lingual online catalogue of Sanskrit manuscripts as well as provides information services to students, citizens and knowledge workers. Through Rajiv kiosks at the e-Seva centres, the GISTNIC services are being delivered to masses in the state.</p>
+<p>Home Department: Design and development of ‘Jail Bazaar’ software for online selling of the products made by the jail inmates.</p>
+<p>Urban Utility Mapping: Organising workshops, preparation of action plans, mobilisation of existing inventory, organising training programmes for the utility agencies in coordination with the Urban Utility Mapping Team, NIC headquarters.</p>
+<p>Geographic Information System: Preparation and updation of the Health Infrastructure maps for all the 23 districts of Andhra Pradesh for Health Medical and Family Welfare department. Mapping the infrastructure in the ITDA areas for the Tribal Welfare department. Mapping the high mast lights, dust bins, bus shelters, etc in the municipal area of Hyderabad.</p>
+<p>7th All India School Education Survey has been executed successfully as per the national level schedule in coordination with the NIC headquarters, NCERT and the State SSO.</p>
+<p>PLI system: Maintenance support and database recovery.</p>
+<p>I &amp; PR Department: Design and development of software packages for different sections of Information &amp; Public Relations Department has been carried out.</p>
+<p>Vigilance Commission: Enhancing Vigilance Cases Tracking System and its implementation. Design and development of Note Monitoring System for Commissionerate of Inquiries (now integrated into Andhra Pradesh Vigilance Commission)</p>
+<p>Training: Organising regular training sessions on DOP&amp;T, DOL, MS office, etc. for state and central government officials. Application oriented and basic computer training programmes are also conducted</p>
+<p>€| Communication Infrastructure: Hyderabad-Delhi Connectivity: A 16 mbps BSNL leased circuit connects Hyderabad to NIC Headquarters, New Delhi. An exclusive 34 mbps link connects Disaster Recovery Site through Power Grid Corporation leased circuit. A 16 mbps BSNL link acts as a standby to the DR link.</p>
+<p>Gateway Connectivity: NIC Andhra Pradesh State Centre, Hydrabad has a 14 mbps VSNL Internet Gateway connection (to be upgraded to 34 mbps shortly). The Internet Gateway at Delhi acts as a standby route to this connection providing full redundancy.</p>
+<p>User Interface: An ISDN PRI Interface supports the dial-up users in and around Hyderabad. ISDN based dialup services have been provided to City Civil Court, Central Administrative Tribunal and Geological Survey of India. The following departments are connected with leased circuit of different bandwidth: AP High court (64 kbps), Regional Passport Office, Hyderabad (256 kbps), Regional Passport Office, Vizag (256 kbps), RGI Census (128 kbps), Bureau of Immigration (64 kbps), Inspector General of Police, State crime records (128 kbps), MNIC Centre, Medak 2 mbps (Under Commissioning stage).</p>
+<p>E-mail, DNS &amp; Web Hosting Services: An exclusive Mail Server has been installed in Hyderabad with about 2,000 accounts. It supports state and central government departments as well as various web services</p>
+<p>NICNET Terrestrial Back Bone: NIC Hyderabad is the central network node catering to the network requirements of Tamilnadu, Karnataka, Maharashtra, Assam and Kerala on E1 links as part of the NICNET Terrestrial backbone. Currently the following links are active: Bangalore (4 mbps, Main link), Chennai (4 mbps, Main link), Trivandrum (4 mbps, Main link), Mumbai (2 mbps, Standby link), Guwahati (2 mbps, Standby link)</p>
+<p>Video Conference Facility: Satellite based and ISDN based Video Conferencing facility is available in the state along with a mobile Video Conference facility.</p>
+<p>District Connectivity: All the 23 district headquarters in Andhra Pradesh and the 4 special centres at Vijaywada, Rajahmundry, Tirupathi and Kuppam are provided with NICNET VSAT nodes. Three phone RAS has been provided at all the district centres for dialup user interface.</p>
+<p>Internet Data Centre: NIC, APSC has Internet Data Centre (IDC) for providing services to various State and Central Government Departments. The IDC is equipped with a state of the art Storage Area Network (SAN) that provides increased system availability and greater accessibility to data due to high-speed connectivity. It has a scalable flexible architecture that efficiently meets future growth requirements.</p>
+<p>Disaster Recovery Centre: NIC, APSC has a Disaster Recovery Centre for the National Data Centre at NIC Headquarters, Delhi. The Disaster Recovery Centre is set up to ensure that when disasters occur at the primary centre, the core services continue to operate.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="india-gov-in-the-national-portal-of-india-january-2006.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">‘india.gov.in’: The National Portal of India</span></a><a class="article-nav-link next" href="vadodra-ict-for-masses-january-2006.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Vadodra : ICT for Masses</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

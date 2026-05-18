@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Register Of Citizens In Assam: ICT’s Role In Implementation — Informatics October 2016</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2016"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2016/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2016/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2016/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2016/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2016/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2016/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2016/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2016/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2016/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2016.html">October 2016</a><span class="breadcrumb-sep">&rsaquo;</span><span>National Register Of Citizens In Assam: ICT’s Role In Implementation</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Spotlight</div>
+          <h1 class="article-title" data-pagefind-meta="title">National Register Of Citizens In Assam: ICT’s Role In Implementation</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Shri Prateek Hajela, IAS &bull; pp. 5–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2016.html">October 2016</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The National Register of Citizens in the State of Assam has been one of its kind exercise in the country and aims to touch the lives of all the citizens in Assam. The task had long been deemed impossible, but the National Informatics Centre (NIC) has risen to the challenge and done commendable work... writes Shri Prateek Hajela, IAS Edited by RUBAIYAT UL ALI The issue of illegal immigration in Assam has been a long-standing and extremely emotive issue. It is suspected that Assam hosts a large number of illegal immigrants which makes this issue extremely sensitive as a section of the public perceives a threat of deportation. As a result, updating the National Register of Citizens (NRC) in the state of Assam (as per the directions of the Hon’ble Supreme Court of India) has been the most extensive citizen-engaging exercise undertaken in any Indian state, perhaps the first of its kind even globally. There is no precedent or model for the NRC update process anywhere. The processes of Census, National Population Register (NPR), and Intensive Electoral Roll Revision have some similarities but the dissimilarities are huge. Considering the volatile nature of the issue, the NRC update was considered almost an impossible task. NRC IN A NUTSHELL NRC update seeks to determine the citizenship of each resident by tracing linkage of every person up to the cut-off date of 24th March (midnight) 1971, as mandated by the Citizenship Act of India, through submission of any of a prescribed list of documents issued up to that date. Applications were called from each household and on receipt, multistage verification involving house-to-house visit, back-end verification of documents received with Application Forms, family tree matching etc. started. For the development of transparent and efficient systems to implement the sensitive and challenging job of NRC Update, large scale IT deployment became inevitable. The NRC updating project in Assam has set a new benchmark in residents’ data collection, processing and management of the data so collected, document scanning, digitization, etc. Development of over 20 large bespoke software applications, over 2,500 digitization hubs and a state-of-the-art Data Centre, and extensive manpower involvement (involving over 30,000 government officers and 10,000 contractual/ outsourced staff) are amongst the countable milestones of the project. SOFTWARE APPLICATIONS DEVELOPED FOR NRC</p>
+<ol class="article-list">
+<li>Digitized Legacy Data Development (DLDD)</li>
+<li>Offline Application Form Receipt (e-Form 1)</li>
+<li>Online Application Form Receipt</li>
+<li>Offline-Online Application Form Receipt</li>
+<li>Document Segregation and Meta-data Entering (DOCSMEN)</li>
+<li>Digitization of Field Verification Result (e-Form 2 FVR)</li>
+<li>Map based display of performances at district/ circle/ NSK/ village level</li>
+<li>Correction of e-Form 1 data (e-Form 2X)</li>
+<li>Verification Teams' Report Generation</li>
+<li>Computerized Family Tree-Manual Family Tree Match (e-Form 3)</li>
+<li>Combined Verification Report (CVR) generation (e-Form 4)</li>
+<li>Recommendation of Circle/Tehsil Officer on claim of applicants</li>
+<li>Approval of Deputy Commissioner/ District Collector/ District Magistrate on claim of applicants</li>
+<li>Software for transliteration of data digitized in English to Bengali and Assamese.</li>
+</ol>
+<p>LEGACY DATA- THE GAME CHANGER As per statutory requirement, the NRC authorities had to publish copies of NRC 1951 and Electoral Rolls of all years up to March 24, 1971 (collectively named as Legacy Data). Easy accessibility of these documents was the key to ensuring effective public engagement in the process. The NRC authority decided to digitize and develop data from 6.26 lakh pages of legacy documents available across the state in poor and illegible condition to make it easily searchable in Assamese, English and Bengali. 2.01 crore records were digitized from such documents, and were assigned a Unique “Legacy Data Code”. All 6.26 lakh pages were then converted into images and assigned unique image IDs and linked to each of the 2.01 crore records for preserving the database and establishing a unique identity of records. This data was published in the public domain. Issuing of 77 lakh Legacy Data Codes in 2500 NRC Seva Kendras and 68 lakh through the web in a period of 6 months proved to be the game-changer in NRC update as 95% of the applicants submitted Legacy Data as supporting document to prove their claim for inclusion in NRC. As the arrangement of documents and filling up of Application Forms was to be done by the applicants themselves, various innovative methods were deployed such as the creation of a fictitious family of Chandra Sarma to demonstrate via print/ TV ads, video tutorials, leaflets, etc. on how this family arranges documents and fills up the Application Form. A 24x7 205 seats-based call centre-based helpline was set up which recorded 1 million calls in a span of 7 months from its operation. The result of such concerted efforts was witnessed in an overwhelming response from the public with the receipt of 68.23 lakh Application Forms with 6.6 Crore supporting documents in a span of 3 months starting from June 2015 and ending on August 31, 2015. OFFICE VERIFICATION- CONQUERING THE UNKNOWN AND HOW! The toughest part of the project, verification, is a multistage process involving house-to-house verification and document verification that involves comparing documents submitted, with the backend available with issuing authorities of such documents. Each of the 6.6 crore documents such as Electoral rolls, land records, birth certificates, university certificates, passports, etc. belonging to about 3,344 different categories of issuing offices, in addition to over 71,710 schools, had to be sent to its issuing offices to check the authenticity of such documents. A huge specialized mechanism equipped with the best of IT-based work-flow management system was developed to send the documents to the offices from where the document was issued. The software, named “DOCSMEN – Document Segregation and Meta-Data Entry” was used for feeding information about the documents such as destination, document code, metadata and then slicing as per document details for electronic sending to various destinations inside and outside Assam. FIELD VERIFICATION- EVERY HEAD COUNTS The process of field verification through a house-to-house visit of over 68 lakh applicants was also made systematic through computerized generation of a pre-filled single-page report named Verification Teams Report (VTR) using digitized Application Form data. The result of Filed Verification was captured in Yes/ No format in the VTR, and digitized at the NSK. The Family Tree technique, which is the backbone of the NRC process, is used to find out if the Legacy Data published by NRC authority has been misused by any imposter. Imposters often “adopt” a person in whose name legacy document is available and then get linkage documents prepared accordingly to establish this relation. As the Legacy Data has been digitized and each record is assigned a unique number, it is possible to find out a list of users of one particular Legacy Data and then cross check this computer-generated list with actual family members declared beforehand in a form named “Manual Family Tree”. COMPLEX SYSTEM OF COMPILATION OF RESULT AND REFERRALS The verification process being multistage, poses a requirement for developing a complete performance report card to display the performance of each applicant across parameters such as house-to-house verification, document backend verification, family tree match result, matching of photo submitted in the Form with the actual person etc. to enable taking the final call on his/her eligibility for inclusion. Consequently, software has been developed for generating Combined Verification Report. The Local Verifying Authority shall mark his recommendation against each member based on the combined report, and pass it on to the District Verifying Authority for his final decision. Manual referral of crores of applicants would have taken years and as such sophisticated software has been designed to address this requirement. DIGITIZATION NRC project involves digitization of 2.01 crore legacy data, 68 lakh Application Forms covering 3.3 crore residents’ data, 31.26 crore metadata of each of the 6.63 cores documents under DOCSMEN software, etc. 2,500 NRC Seva Kendras (NSKs) located across the state, each equipped with 2 operators is the hub of all digitization work. Three (3) Data Entry Centres are also set up in Guwahati equipped with 1,500 operators for undertaking guided data entry and quality checking of data digitized in the field. Around 9,000 data entry operators have been used for digitization work. DATA TRANSMISSION A huge volume of data, to the tune of 127.78 TB, has been transmitted, out of which 81.15 TB has been transmitted from the field level to the State Data Centre and 46.63 TB from the State Data Centre to the field using multiple media such as third party media (pen drive/ hard disk), FTP (File Transfer Protocol), internet/ MPLS. THE TEAM NRC A unique model of project management structure was developed for Team NRC, which is headed by State Coordinator, NRC who is a Government officer of the rank of Commissioner &amp; Secretary, and to lend him able support a diverse group has been put in place that comprises senior Government officials from Assam Civil Services, retired Government officials, consultants to provide technical and transaction advisory services, contractual project professionals to support statutory officials and supervise day-to-day functioning of the project, outsourced data entry operators, and a systems integrator. BREAKING NEW GROUNDS IN PROJECT MANAGEMENT Successful implementation of a multistage, and data and process intensive project such as NRC lies in efficient supervision and micromanagement. A Map-based display of colour coded and easy-to-read data on all parameters such as in form receipt, office/ field verification completion, VTR availability, the status of digitization, etc. was developed for analysis of abnormal occurrences as well as for updated status of performance. Daily dashboards were sent to districts via messaging apps and email, to keep them abreast of their performance. IN THE MEDIA &amp; ACCOLADES Apart from stealing the limelight in North East India, NRC has become a talking point even in the main-stream media, being featured in articles published in The Week Magazine, Economics &amp; Political Weekly, and in dailies such as The Indian Express, The Economic Times and Hindustan Times. The NRC Assam Project bagged First prize (National level) in the &quot;Digitizing India&quot; Awards instituted by CNBC-TV18 and Cisco, and adjudged as the best project in the category &quot;Digital Innovation in Citizen Services (eGovernance)&quot;. The project NRC roped the Best Project of Wipro (System Integrator of NRC project) in India and Middle East region in 2015-16 out of over 30,000 other such projects. THE WAY AHEAD It was not in the distant past when the whole exercise of NRC Update was laughed off as a sure formula for failure. Doubts on the exercise became stronger after the Barpeta debacle. But things have changed for the NRC. The phenomenon can best be described in the words of French poet Victor Hugo: “Nothing can stop an idea whose time has come”. With a positive attitude, systematic process re-engineering and innovative technology deployment, NRC has reached unprecedented levels of success and is set to rise even higher. For further information, please contact: ASHOK KAUL Technical Director National Data Centre Division, NIC Hqrs CGO Complex, Lodhi Road, New Delhi 110003 Email: akaul@nic.in Phone: +91-11-24305764</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="message-by-secretary-meity-october-2016.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message by Secretary, MeitY</span></a><a class="article-nav-link next" href="the-secretary-meity-s-visit-to-nic-october-2016.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">The Secretary (MeitY)’s Visit to NIC</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

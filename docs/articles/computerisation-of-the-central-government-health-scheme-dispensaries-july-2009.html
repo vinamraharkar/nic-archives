@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computerisation of the Central Government Health Scheme Dispensaries — Informatics July 2009</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2009"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2009/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2009/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2009/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2009/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2009/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2009/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2009/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2009/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2009/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2009/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2009/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2009/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2009.html">July 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Computerisation of the Central Government Health Scheme Dispensaries</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">Computerisation of the Central Government Health Scheme Dispensaries</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2009.html">July 2009</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Central Government Health Scheme provides comprehensive health care to the families of Central Govt. Employees , Pensioners , MPs &amp; Ex. MPs, Judges of Supreme Court of India and High Court of Delhi , etc., in 24 Cities including Delhi/NCR through 248 Allopathy Wellness Centres and polyclinics , AYUSH dispensaries , units and Laboratories. CGHS provides OPD consultation (including Specialist), provision of medicines, hospitalisation at Govt. and empanelled private hospitals and laboratories. There is also a provision for reimbursement. CGHS caters to about 32 Lakhs beneficiaries all over India.</p>
+<p>Central Government Health Scheme (CGHS) provides OPD facility through the Dispensaries (Wellness Centres) and first aid posts to the Central Government Employees and Pensioners, MPs, Ex-MPs, Judges of Supreme Court &amp; High Courts, Journalists, etc. It also provides referral facility to its members in specialized hospitals &amp; diagnostics centers authorised by CGHS for IPD treatments and diagnostics purposes respectively.</p>
+<p>Excerpt of the letter from the Joint Secretary Sh. Vineet Chawdhry, IAS, Ministry of Health and Family Welfare The Central Government Health Scheme caters to approximately 32 lakhs beneficiaries across 24 cities. The operations in CGHS Delhi have been totally computerized with the help of NIC. The use of IT has benefited operations of CGHS in terms of MIS, inventory management, monitoring of claims etc. A plethora of data is now available to the CGHS for planning its operations in a more scientific manner. We have been greatly enthused and encouraged by the success of Computerisation in CGHS Delhi. Computerisation of other cities is under way and over the next one year, CGHS will perhaps be the biggest health network in the country.</p>
+<p>It is aimed at providing computerised environment for registration, prescription, issue of medicines, indents, stores, lab etc, there by improving the quality of health services and minimize the overall service delivery time to the CGHS beneficiaries in a typical Wellness Centre (OPD) environment. The provision of inter-Wellness Centre movement of patients has been made possible using this system, which facilitates a patient of X Wellness Centres to get serviced in Y Wellness Centres in case of emergency with issue of medicines and updating the history of medicines issued on the central server. The transparent system enables the CGHS to take timely decisions on inventory management, patient management etc using various MIS and statistical reports.</p>
+<p>Other modules are being added from time to time and it is targeted to have end-to-end computerised solution for all CGHS functions in near future to come. The system has been adopted well by the doctors and the staff of the Wellness Centres. The hand holding is the crux for the successful computerisation. The crucial support and training while the live operation is on, becomes very important. The very support makes the system work with doctors and the staff adept to the new environment fast.</p>
+<p>The users once they realize the benefits generated out of computerisation, and seeing the live operations of the system, build confidence in them and that makes thing work. Two well trained supporting staff (DEO) has been provided in the first year in each Wellness Centres to hand hold the system and provide critical support in case of problems. The DEO strength has been reduced to one per Wellness Centres after one year of operation.</p>
+<p>The software application has been designed in such a way to make it scalable. Supported by the NIC Data Centre, security and back-up are part of it.</p>
+<p>Diagram showing Leased line and broadband network used in CGHS</p>
+<p>Project Highlights: The CGHS Computerisation has following features — Average daily patient attendance is over 17500 which get online treatment — Over 68.17 lakh patients have been registered in online CGHS Wellness Centres since January 2008 till date (21/05/09). — About 400 doctors write prescriptions online per day. — Over 800 users including doctors access the online system per day. — Web Based application (http://cghs.nic.in) — Open Source environment with Redhat Linux Clients — Development environment used : PostgreSql / Java technologies — Only Allopathic system is covered currently — Pharmacist distributes medicines to patients online — Store keeper issues the medicines to the pharmacy counter based on online stock availability — Stocks of the Medicines in the Wellness Centres gets updated at real time basis when Medical Stores depot (MSD) supplies the medicines online — The Authorised Local Chemist of the Wellness Centres checks the indent status online and starts preparing the patient wise medicines and supplies the medicines next day. — The lead time of indented medicines from Local Chemist came down from 4 working days to 1 day, with no manual work at the Wellness Centres for preparation of indents. — MSD of the CGHS checks status online of the stocks of the Medicines in the Wellness Centres and takes necessary actions to supply the same online — Inter-Wellness Centre facility introduced to facilitate patients to get medical help in any of the CGHS Wellness Centres with records maintained on the central server. — Introduction of ICD-10 codes for the diseases in the doctors' prescription module — Facilities of permission to pensioners for treatment/diagnostic tests in the authorised hospitals/labs of CGHS — Online Authority letter to the patients for urgent supply of emergency medicines from the MSD / Local Chemist — Beneficiary plastic card is under printing with a barcode facility. About 5 lakh plastic cards have been distributed so far. — Each Wellness Centre has i. An MLDN connectivity with 2 MBPS Leased line as primary and broadband as backup has been implemented in all Wellness Centres in Delhi. ii. LAN Nodes with Manageable / Un-Managed Switch iii. Desktop Clients and printers for every Doctor &amp; Paramedic staff in the Wellness Centres iv. UPS with 2 hours backup in the Wellness Centres</p>
+<p>Leased Line as primary Link Broadband as Backup</p>
+<p>Benefits observed/expected from the computerisation — Full transparency in the entire process in the Wellness Centres — Integrating modules such as Local Chemist, Medical Stores Depot making it more transparent — Reduced time for preparation of Indents for the Local Chemist, as it's instantly available. — MSD sees the stocks of the Wellness Centres online and supplies the medicines to the Wellness Centres as soon as the Wellness Centres indents online. Wellness Centres receives the MSD indents online and the stock gets updated online. — Patients' history is maintained. Subsequent visits to the Wellness Centres by the patient provide help to the attending doctor diagnose the problem more effectively. — Printing of indent report at the Wellness Centres is not required. Local Chemist brings the print-out along with the indented medicines — The indents are available next day instead of 4 working days when manual operation was in place. — The overall servicing time for a patient in the Wellness Centres has been significantly reduced. — Doctors and other staffs in the Wellness Centres have learnt the online system to prescribe medicines online — The ICD-10 codes will help in diseases profiling of the patients</p>
+<p>The Pilot Project</p>
+<p>The Pilot Project was successfully completed in the CGHS Wellness Centre, Laxminagar, New Delhi and the Wellness Centre is fully computerised since January 2006. The average no. of patients per day is 675 in the Wellness Centre. Subsequently the VIP Wellness Centres were taken for computerisation viz. North Avenue &amp; South Avenue, which are also working successfully since October 2006.</p>
+<p>Excerpt from the Joint Director Dr. S.V Ramakrishna , CGHS Computerisation of CGHS Wellness Centres has already helped to make the operations user friendly and transparent. Indented medicines are available in 24 hrs; Data in terms of Quantity and number of medicines prescribed is accurate and easily accessible making demands and inventory management more easy; provided option to procure in bulk the more commonly indented medicines at a competitive discount; opportunity for access to Wellness Centres any where in India though individual Plastic Cards.; provided a launch pad for better planning and implementation in future including a possible e-procurement. In addition beneficiaries have access to information including tracking of medical claims. Thus Computerisation helped / CGHS to make system more user friendly and transparent and given a new image to CGHS.</p>
+<p>Phase-I covering all the Wellness Centres in Delhi/NCR</p>
+<p>The first phase of the project was covering all the CGHS Wellness Centres (allopathic) in the Delhi/NCR region. The highlights of the phase-I are as below;</p>
+<p>— 84 Wellness Centres are fully online with all modules functioning as on today. — Three Wellness Centres (one each) in Bangaluru, Allahabad &amp; Pune have also been online since July 2008. — Doctors and para-medical staff are taking the computerisation in the right spirit — Zonal Offices, CGHS-HQ, MSD &amp; 3 First Aid Posts have also been covered for computerisation.</p>
+<p>Plastic cards to individual beneficiaries in Delhi/NCR</p>
+<p>The CGHS family cards are being replaced with plastic cards to each beneficiary. The bar-coded plastic cards will be used by beneficiaries to get the CGHS benefits. This will facilitate the beneficiary to use the same plastic card irrespective of his/her transfer from one Wellness Centre to the other Wellness Centre in the same city or other cities (when the plastic cards will be ready outside Delhi/NCR). So far over 5 lakh plastic cards have been printed and distributed to the CGHS Wellness Centres for further distribution to the CGHS card holders. The individual plastic cards will make the process more effective with the introduction of Barcode Scanners which will be used in the Wellness Centres soon for dispensing the medicines.</p>
+<p>Doctor Module for Specialists to see the patients of all the nearby Wellness Centres</p>
+<p>The specialist module helps in prescribing the treatment to beneficiaries of nearby Wellness Centres. The same has been implemented in the Poly Clinic of Kasturba Nagar 1 Wellness Centres in Delhi. The medicines are dispensed from the respective Wellness Centres of the beneficiary based on the specialist's prescription and indented medicines are visible to the Authorised Local Chemist (ALC) of the concerned Wellness Centres. The visit of the beneficiary is limited only to collect the medicines from his/.her respective Wellness Centres and it also helps in reducing the load of patients in the Wellness Centres.</p>
+<p>On the similar lines CGHS wings of Ram Manohar Lohia Hospital and Safdarjang Hospital in Delhi are being planned for computerisation, which will be implemented in the coming months.</p>
+<p>Phase-II covering 102 Wellness Centres in 6 locations outside Delhi/NCR is proposed to be covered.</p>
+<p>These locations are Mumbai, Pune, Nagpur, Chennai, Kolkata and Hyderabad.</p>
+<p>The site preparation, LAN, supply &amp; installation of Hardware &amp; UPS is completed in all Wellness Centres. The connectivity in all these Wellness Centres is under implementation. 6 Wellness Centres in Nagpur and 2 Wellness Centres in Kolkata are made fully online in May 2009. Online registration is also happening in 20 Wellness Centres of Kolkata &amp; Nagpur. It is expected to computerise all the remaining Wellness Centres in coming months.</p>
+<p>Phase-III covering 87 Wellness Centres in 17 locations outside Delhi/NCR is proposed to be covered</p>
+<p>The remaining 87 Wellness Centres and offices in other locations (17 nos) are being covered in the phase III. The LAN, Hardware, UPS and MLDN connectivity will be completed in coming months.</p>
+<p>Data entry of all the index cards of the beneficiaries across these 17 cities is completed.</p>
+<p>Additional features under implementation in coming months</p>
+<p>— Module for the Zonal Offices to process the claims of beneficiaries. Individual Claims submitted by the pensioners towards treatment in un-recognised hospitals are submitted in the Wellness Centres. The Wellness Centres after acceptance of the claim sends it for approval and processing by the Zonal Office. The Zonal office scrutinizes the claims bill and approves for payment or rejects the same. The payment is made by the Pay and Accounts office of CGHS though ECS. Similarly bills of Local Chemists are also processed by the Zonal Office for payment. Patients will be able to track their claim status online using Claim Reference Number.</p>
+<p>— Module for the Central Government Departments to manage CGHS for their employees This module includes online permission to the employee for diagnostics tests / treatment in the authorised diagnostics centers / private hospitals of CGHS. The Claims submitted by the employee, for settlement by the department will also be online.</p>
+<p>— Module for the authorised diagnostics centers / private hospitals of CGHS This module includes the online permission to the beneficiary by the Wellness Centres / department for treatment in the authorised diagnostics centers / private hospitals for various diagnostics tests / procedures as advised by the specialist doctors of the Government Referral Hospital. The authorised diagnostics centers / private hospitals will provide the necessary treatment as per the permission granted and will submit the Claims for settlement.</p>
+<p>— Computerise CGHS Wellness Centres in other systems of medicines such as Ayurveda, Homeopathy &amp; Unani.</p>
+<p>— Family Welfare functions in the Wellness Centres</p>
+<p>Since the implementation of the computerisation of CGHS, there is a significant increment in service delivery and transparency and has drawn the attention of everybody.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-july-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="nlrmp-an-integrated-approach-to-land-and-property-management-july-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NLRMP : An Integrated Approach to Land and Property Management</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

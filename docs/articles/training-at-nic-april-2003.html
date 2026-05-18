@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRAINING AT NIC — Informatics April 2003</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2003"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/april-2003/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/april-2003/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/april-2003/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/april-2003/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/april-2003/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/april-2003/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/april-2003/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/april-2003/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/april-2003/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2003/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2003/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2003.html">April 2003</a><span class="breadcrumb-sep">&rsaquo;</span><span>TRAINING AT NIC</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Feature</div>
+          <h1 class="article-title" data-pagefind-meta="title">TRAINING AT NIC</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Dr. S.K Jain, NIC HQ &bull; pp. 4–12</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2003.html">April 2003</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">In order to keep abreast of latest technologies and tools and to make use of Information Systems developed by NIC in various sectors, special emphasis is laid on users’ training. NIC realizes the importance of ICT training as key to the successful implementation of computerization projects and the E-Governance initiatives.</p>
+<p>NIC is known all over the Country for its training services in the field of ICT. Training at NIC has proved to be immensely beneficial for the personnel at Ministries and Govt Departments at all levels in bringing about cultural and attitudinal change with regards to computerisation. From awareness creation among senior officers, to routine programming and operational training of the staff at working level, NIC’s training facilities encompass all kinds of courses for government functionaries.</p>
+<p>The Headquarters</p>
+<p>The Training Division at NIC HQ provides a strong platform for upgrading professional knowledge/ skills of NIC professionals, who in turn play a leading role in integrating state-of-the-art technologies in the working of various ministries/ departments. NIC offers immense training opportunities in well planned and professionally managed training courses, not only on various computer related topics, both in English and Hindi, but also on the application of IT in key sectoral areas. Department of Personnel and Training, and Department of Official Language are sponsoring some of these courses. Besides, NIC also takes up number of customized courses catering to the specific training needs of an organization - Government Departments, Autonomous Bodies, Public Sector etc. on request and chargeable basis.</p>
+<p>State/ Union Territory Units</p>
+<p>The training activities have also been extended by State/UT Units. Full-fledged training facilities have been set-up at many of the State Unit Headquarters and these facilities keep on augmenting. The State Units offer additional courses to meet the local training requirements. Some of the State Units also organize programmes sponsored by Department of Personnel &amp; Training. Many of the State Units offer programmes in Hindi including some of the programmes sponsored by Department of Official Language.</p>
+<p>District Centres</p>
+<p>The District Centres also impart training as part of on-going projects.</p>
+<p>LBSNAA, Musoorie</p>
+<p>In addition, NIC has also set-up a specialized training centre at Lal Bahadur Shastri National Academy of Administration, Mussoorie, to cater to the training needs of regular recruits of Indian Administrative Services.</p>
+<p>Types of Training Programmes</p>
+<p>NIC training activities are broadly classified as Government Informatics Training Programme for the end-users, Technology Update Programmes for NIC professionals and Customised programmes for the Corporate Sector.</p>
+<p>Government Informatics Training Programme</p>
+<p>The following categories of training programmes are offered for the benefit of officials from the Government Ministries/ Departments from Central Government and State Governments including some programmes for the Corporate Sector.</p>
+<p>Executive Development Programmes</p>
+<p>This series of programmes is meant for middle and senior management of Ministries /Departments. These are being organized for creating awareness about Information and Communication Technology (ICT) and realising the potential of ICT for working towards E-Governance initiatives of the Government.</p>
+<p>Office Productivity Tools</p>
+<p>These programmes are meant for working level officials of Government Ministries / Departments for imparting necessary skills in Windows based office productivity Government tools and Linux Open Office Suite. Advanced courses on Windows based Office Productivity Tools have also been introduced keeping in mind the growing needs of the users.</p>
+<p>DoP&amp;T Sponsored Programmes</p>
+<p>The Department of Personnel &amp; Training sponsors a number of programmes in Utilisation of IT Tools in Government for potential trainers identified by various Ministries / Departments to aid the process of computer literacy in respective Ministries/ Departments. This year the focus has been on new training areas i.e. e-Governance where a number of programmes/ workshops are being planned.</p>
+<p>Sectoral Development Programmes</p>
+<p>Sectoral programmes focus attention on Ministry/Department specific Application packages &amp; Information Management Tools developed by NIC.</p>
+<p>Computer Programmes in Hindi</p>
+<p>These training programmes are for promoting the use of Hindi in computers for preparing documents &amp; processing data. An advanced computer programme in Hindi has been introduced this year. Some of these programmes have been sponsored by Department of Official Language (DOL).</p>
+<p>Technology Update Programmes for NIC Professionals</p>
+<p>In order to keep NIC professionals up-to-date in emerging technologies, training programmes/ seminars are offered in the following broad technology areas - Linux, Networking, Windows 2000, Web Technologies, OOP, Databases, Application Development, GIS, Software Engineering and E-Governance.</p>
+<p>Customized Programmes for the Corporate Sector</p>
+<p>As part of corporate training, NIC has been conducting a number of customized training programmes for the benefit of various organizations - Government Departments/ Autonomous Bodies/ Public Sector on request and payment basis. The charges for such training programs depends on the topics, duration and the batch size (maximum 25 participants). These programs are tailor-made as per the training requirements of the user organizations. Requests for customized programs may be made to the training In-charge by giving the details regarding topics to be covered, duration and the number of people to be trained.</p>
+<p>IT Learning Centres</p>
+<p>The Training Division at HQ had undertaken a pilot project in collaboration with Department of Personnel &amp; Training in successfully setting up IT Learning Centres at Ministry of Personnel. Similar activities were also initiated at the Department of Consumer Affairs and Rashtrapati Bhawan.</p>
+<p>Spectrum of Technologies Covered</p>
+<p>The training programmes offered by NIC covers a wide spectrum of technologies both for the end-user and the NIC professionals which are being listed below.</p>
+<p>Operating Systems</p>
+<p>Windows 2000 Linux</p>
+<p>Office Productivity Tools</p>
+<p>MS-Office 2000 Leap Office Open Office Suite</p>
+<p>Data-base Technologies</p>
+<p>SQL Server MYSQL MS-Access</p>
+<p>Application Development Programming Tools</p>
+<p>Visual Basic C++ J2EE XML PHP</p>
+<p>Networking</p>
+<p>LAN Wireless Networking Mobile Computing</p>
+<p>Internet/ Intranet Technologies</p>
+<p>Software Engineering</p>
+<p>Software Quality Standards Software Project Management Software Configuration Management</p>
+<p>GIS &amp; Image Processing</p>
+<p>Network &amp; Internet Security</p>
+<p>Digital Certification</p>
+<p>MEDLARS</p>
+<p>Biomedical Research &amp; Internet On-line Searching of Bio-medical Databases</p>
+<p>Utility Mapping</p>
+<p>State-of-the art Training Infrastructure</p>
+<p>• Most modern training facilities including well designed class rooms, state-of-the-art computer labs having internet connectivity for providing hands-on training. • Networked Client Server architecture with multiple operating systems - Windows 2000/ LINUX. • High speed Satellite based Internet connectivity • Multi-media Videoconferencing and DirecPC broadcasting facility • Variety of software tools and e-learning/ tutor packages</p>
+<p>Training Division Website</p>
+<p>The Training Division at New Delhi has a dedicated web site (http://training.nic.in) with the following components :</p>
+<p>• Information about training services of HQ as well as State Units • Publishing of Courseware • Bulletin Board for exchange of ideas • e-Learning packages • Information of nominations of NIC professionals for Seminars / Conferences • Information on in-take of Student Trainees, which NIC takes from various academic institutes</p>
+<p>Teaching Faculty</p>
+<p>NIC Training Division has its own permanent faculty drawn from leading professional institutions and having years of training experience. The faculty keep themselves up-to-date on the emerging technologies while working and using latest technologies. Subject experts from NIC support groups and guest faculties are also invited wherever it is necessary.</p>
+<p>Training Methodology</p>
+<p>Over the years, NIC has perfected the art of introducing new technologies successfully. It makes use of the state-of-the-art audio visual equipments, computer based tutor packages and well designed work books. The teaching methodology comprise lecture cum live demonstration, discussions followed by practice sessions or field visits. Extensive use of case studies and group projects are being made to facilitate adult learning. The man-machine ratio is kept 1:1 during practice sessions.</p>
+<p>• Course Material Preparation/ Distribution</p>
+<p>Well designed work-books on Windows and office productivity tools including e-mail has been prepared in-house and printed copies are available to all the state units to facilitate adult learning. In addition standardized course material for other courses has been very well designed which may include lecture notes, reference material, in-house compiled workbooks, assignments and project work. The course material gets updated from time to time in accordance with the latest version of software. In order to share the course material with other state units, it has been published on the Training Division Website.</p>
+<p>• Course Evaluation/ Feed-back Analysis</p>
+<p>At the end of each programme, strength and weaknesses of the course are discussed and participants feedback is taken. Their feedback is being implemented in the subsequent courses. Feedback is also received from the ministry through NIC officers. It has been observed that participants who have been trained in these programmes are being used in the implementation of Information Systems developed by NIC very effectively. Many of the new courses are being introduced as a result of the feedback received from HoDs and the participants.</p>
+<p>The Training Division at New Delhi is also planning to initiate web-cast of lectures from the training division halls in the near future.</p>
+<p>e-Learning Initiatives</p>
+<p>NIC fully realizes the potential of e-Learning technologies. It has taken the initiative of assessing e-learning products for use within the organisation. This would make vast amount of e-learning materials available on the intranet/ internet to all officers of NIC.</p>
+<p>Accolades…….</p>
+<p>This what some of the participants say about our training programmes….</p>
+<p>• Network setup in the lab is excellent • Faculty is excellent and technically very well competent • Way of teaching using PowerPoint presentation was excellent • I am impressed by warm and cordial environment of Training Division • Faculty response was very good to clear all doubts. • Training division faculty has put extra efforts to make the participants understand the concept of application development through a programming language. • Excellent and very well designed work books for hand on sessions. This type of structuring, you will not get in the books available in the market</p>
+<p>The average rating received from the participants on the overall quality of the courses organized by NIC calculated on a scale of 4 is given below :</p>
+<p>Course    Course Teaching Practical    Usefulness Classroom Computer Overall Structure material Faculty Orientation of course Facilities facility Impression 3.50         3.60        3.57           3.39           3.62            3.81          3.78           3.56</p>
+<p>Training Statistics for some NIC Centres during the past year (April 2002-March 2003)</p>
+<p>NIC Centre           No. of Courses    No.of Participants NIC HQ                        77                 1611 A&amp;N                           21                  236 Andhra Pr                     44                  886 Assam                         42                  906 Chattisgarh                   26                  450 Chandigarh                    42                  432 Goa                           22                  382 Gujarat                       33                  976 J&amp;K                            2                   65 MP                            42                  723 Maharashtra                   45                 1112 Orissa                        13                  225 Sikkim                         5                  136 Tamil Nadu                    122                1479 Uttaranchal                    25                 500 West Bengal                    29                 456 Total                         548                9669</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link next" href="international-conference-on-sustainable-agriculture-april-2003.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">INTERNATIONAL CONFERENCE on Sustainable Agriculture</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

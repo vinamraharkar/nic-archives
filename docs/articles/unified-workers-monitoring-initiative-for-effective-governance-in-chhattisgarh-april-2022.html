@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh — Informatics April 2022</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2022"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/april-2022/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/april-2022/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2022.html">April 2022</a><span class="breadcrumb-sep">&rsaquo;</span><span>Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Interview</div>
+          <h1 class="article-title" data-pagefind-meta="title">Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Satyesh Kr. Sharma &bull; pp. 32–33</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2022.html">April 2022</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">An exclusive interview with Shri Alex V. Paul Menon, IAS, Labour Commissioner, Chhattisgarh, on receiving National eGovernance Gold Award from DARPG, Govt. of India for Unified Labour Portal (on various paradigms along with challenges faced during implementation of Unified Labour Portal) Sir, Hearty Congratulations. Please throw some light on Government service delivery steps taken during the COVID pandemic by the Labour department. Labour Department, being the nodal authority for welfare of workers, was supported by NIC Chhattisgarh with various online applications for effective management of movement of migrant workers. eShramik Aawa Gaman Application and Call Centre Helpline Module facilitated migrants to travel, finding relief camps and monitor their complaints. The Rojgar Sangi Mobile App, along with Chhattisgarh State Skill Development Authority portal, facilitated skilled job seekers and employers to get registered and be connected based on the skillset mapping. You took over the charge of Labour department after the first wave of the COVID pandemic. After joining the department, what was your initial observations with respect to eGovernance? While the above discussed technology solutions were developed as a part of the response to the COVID-19 pandemic, they also led to increased technology adoption by the department, workers, contractors, and boards alike, many of whom were not active technology users earlier. However, data of different boards (Labour Welfare Board - LWB, Unorganised Workers’ Welfare Board - UoWB, and Building and other Construction Workers Welfare Board - BoCWB) existed in silos. Family was not used as the base for registration of labourers, resulting in data duplication and inflation of database. Then Sir, you thought about Unified workers portal. What is your vision for the initiative? Yes, along with departmental officers, NIC and consultants of PMU, we had a number of brainstorming sessions and formulated the vision statement. The vision statement is – “to design and implement an evidence-based comprehensive and foolproof social security framework for labourers and their families in the state of Chhattisgarh by ensuring suitable policy frameworks, budgetary support and implementation mechanisms that provides ease of doing business to employers as well as ease of working with due compliances to labour legislations.” The vision statement was further supported by eleven mission statements. Great, you have not only thought about eGovernance intervention, but also how it can be sustained through implementation mechanism, policy framework, and budgetary support. Can you please discuss on the mission statements related to ICT intervention? Out of eleven mission statements, four mission statements were directly linked to ICT intervention. First, to create and maintain a credible database of labourers and their families; Second, comprehensive Ease of Doing Business (EoDB) online systems to manage the affairs of the department; Third, conducting a detailed analysis of existing schemes, design new schemes and suitably modify existing schemes based on an evidence-based scheme redesign approach and fourth to create a comprehensive budgetary support system for implementation of the intended social security benefits. Know the Workers. Policy Framework. Capacity Building. Implementation Mechanism. Have budgetary Support. Social Security Schemes. What was your plan for developing a credible database of labourers? We planned to create a unified database that can be seamlessly operated by different boards and moved between them as per the entitlements. First, the registration questionnaire was revised to include questions that would give the department a 360-degree understanding of the labourer’s lives, thus, throwing light on their various vulnerabilities. The questionnaire included critical information fields on education, wage rates, landholding, migration and workplace. Secondly, the registration process was made available both online and offline via NIC-developed mobile application that could be used in areas with no connectivity. Thirdly, the registration format was changed to make family-based. Fourthly, we used the time-tested, Aadhaar-based PDS database (which is also maintained by NIC) to identify unregistered labourers. Finally, we have simplified the data entry process by ensuring that 75% of all questions have dropdown options. What benefits you expected from these initiatives? All of these steps had multiple benefits. We were now collecting more comprehensive information on labourers, which helped us with evidence-based policy design. Secondly, information once provided to the department did not need to be provided again, meaning the department would collect far lesser information from labourers at the time of scheme applications. Thirdly, the reach and availability of the Labour Department portal was greatly expanded via the agnostic mobile application. Next, the new database created by the department automatically prevented duplicate entries. Fifth, the department was able to streamline its efforts to ensure that all unregistered labourers were now registered. By analysing the number of unregistered labourers in each district, we were able to set specific targets and mobilise our district teams to carry out this work. May I request you to throw some light on the special migration module developed. Yes, the questionnaire was created specifically to help register and track the movements of migrant workers into and out of the state. The Labour Department tied up with the Department of Rural Development (Panchayat Sachivs) and the Department of Urban Affairs and Development (Ward Moharrirs) to maintain a live, updatable register of migrant workers. This database was synced to the larger registration database to once again ensure that information that was already with the department was not collected unless necessarily. Through this system, Chhattisgarh will be able to track migration trends, and work with the destination states to ensure that its labourers continue to receive scheme benefits even while migrating. With increase in number of workers your targeted beneficiary will be more and for that you would require more budgetary support. How do you look at that aspect? You may be aware that the main source of budgetary provision comes as cess from establishment and factories. The cess collection from Building and other Construction Workers Welfare Board - BoCWB is around 150 crore now. There is lack of system for calculation or assessment of cess. We are now targeting to increase the cess collection to 450 crore. For this we also need to increase the registration of establishments. There are different registration systems for different kind of establishments and factories under different Acts, Rules and Boards leading to loopholes in the registration system. We are targeting to increase establishment registration under LWB to increase from 6420 to 15,000. What are the steps being taken towards this? We are developing Unified registration and licensing system with support of NIC for all establishments / factories across new labour codes. Integrated systems will avoid data mismatches and reduce harassment and duplication. Unified Annual Returns is being planned to monitor compliance and auto renewals. This will facilitate ease of compliance for establishments and tracking of labour entitlements. Auto renewal of licences would happen on furnishing of annual returns and online payment of licence fee. You were talking about Scheme Redesign based on analytics platform. Would you elaborate on this please? As of now there are 68 schemes under which workers can avail benefits. All these schemes have been made online. However, there are various problems that plagued the system. Firstly, the workers need to be aware about all schemes and benefits available to them. Secondly, a lot of the schemes were designed many years ago – there was no guarantee that the benefits provided under these schemes addressed the current needs and problems of the workers. Thirdly, the application process under the schemes (specifically the documentary requirements) were complicated, and workers often got stuck at this stage. (68 Schemes covered under various Boards) So, to address the above issues, we decided to analyse the data available to us. Based on a five years trend and time series analysis of the beneficiaries and the data, we are now focused on designing four schemes - Death and Disability, Maternity Benefits, Severe Illnesses and Scholarships. Finally, we are also working on moving towards a system of automated entitlement tracking and benefits disbursal. Under this system, the Labour Department will tie up with other state departments to proactively track important life events / triggers such as birth, education, pregnancy, injury and death, and automatically provide benefits to labourers when any such trigger event takes place. That’s a great idea. Under your leadership Labour department of Chhattisgarh has achieved 100% reforms under Ease of Doing Business. Yes, under comprehensive Ease of Doing Business there are 102 reform points. All points have been complied. It covers Single Online Window System, Labour Regulation Enablers, Inspection Reform Enablers, Compliance Inspections under different Acts, Registration and Renewal under different Acts, Licence and Renewal of licences under different Acts, License for contractors, Approval of plan and permissions. You have also done process reengineering for different processes. Reengineering governance processes, under Unified Registrations &amp; Licences for all Acts, Rules and Boards, we have reduced eight existing forms to just one form. Towards developing system for ease of compliance for establishments and tracking of labour entitlements, existing 91 registers have been reduced to two registers only. Centralised online system to track workers health and ensure assistance to the workers is being developed. This will track accidents to ensure receipt of workers entitlements and compensation. Finally, an Online Grievance Redressal system is being developed which would facilitate Choice centres to fill application form on behalf of workers. Labour Inspectors can approve this from their panel. We are grateful to you for sharing your vision with us. Before concluding would you like to share any important point you have in mind. I would like to thank Dr. AK Hota, DDG &amp; SIO, Chhattisgarh, Shri Satyesh Kumar Sharma, TD and HoD, Shri Saurabh Dubey, Scientist-C, Smt. Jyoti Sharma, Scientist-B and their team, Shri SS Painkara, Dy. Labour Commissioner, Labour Department for taking the initiatives ahead. I have a vision to develop Enterprises Architecture (EA) in the Labour Domain. You see, several stakeholders like Health, Education, Urban Development, Tribal development, Industry, ESIC and EPFO need to be integrated to track the establishment registration, entitlement tracking and automated benefit disbursal. Enterprise architecture (EA), so developed, can proactively and holistically lead enterprise responses to disruptive forces by identifying and analysing the execution of change towards desired vision and outcomes. I would like to request NIC to extend support towards this. Chhattisgarh is being among the first few states across the country to adopt such eGovernance application in labour domain is certainly a positive message for the government and citizen. Thanks a lot Sir.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="bagalkote-karnataka-marching-towards-digital-india-with-ict-solutions-april-2022.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Bagalkote, Karnataka Marching towards Digital India with ICT Solutions</span></a><a class="article-nav-link next" href="ivani-ai-enabled-image-video-analytics-by-nic-for-effective-efficient-egovernance-april-2022.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">IVANI AI enabled Image &amp; Video Analytics by NIC for effective &amp; efficient eGovernance</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

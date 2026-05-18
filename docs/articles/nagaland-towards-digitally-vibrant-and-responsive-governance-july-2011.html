@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nagaland - Towards Digitally Vibrant and Responsive Governance — Informatics July 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/july-2011/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/july-2011/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/july-2011/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/july-2011/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2011.html">July 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Nagaland - Towards Digitally Vibrant and Responsive Governance</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States/UT</div>
+          <h1 class="article-title" data-pagefind-meta="title">Nagaland - Towards Digitally Vibrant and Responsive Governance</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Kezungulo Medikhr &bull; pp. 19–22</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2011.html">July 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Nagaland is largely mountainous with hilly topography throughout and the highest peak being Saramati (3841 metres). Many rivers cut through the mountainous terrain, like sharp swords slicing through rocks. Nagaland being a land of myths and festivals, has been officially named as ‘Land of Festivals’. Life and culture is interwoven. Festival is a part of culture and most of these festivals revolve round agriculture. The state is rich in flora and fauna and about one-sixth of the area is under the cover of tropical and sub-tropical evergreen forests. Edited by Prashant Belwariar Visit to the state website makes one realize how deep ICT has percolated with multitude of information and services it host for the common man. Its richness and professionalism takes a visitor by surprise as it gives a subtle indication of commitment of the state for adopting ICT and promoting e-governance towards the goal of a transparent and responsive administration. NIC NETWORK &amp; INFRASTRUCTURE NIC, established itself at all the eleven district Centres and the state capital - Kohima has been the pioneer of ICT activities in the state, is connected with 45 Mbps Leased Line. Secretariat LAN with structured OFC backbone supports 350 Nodes extending up to the main secretariat building. It also has a RF connectivity covering 40 State Government Directorates using Speed LAN Modems. The Executive Video Conferencing System (EVCS) at Chief Secretary Office and DGP Office provides effective audio-visual communication. At the District level, 2 MBPS Lease Line connects seven districts while the remaining four districts namely, Mon, Kiphire, Peren and Longleng are connected by DVB VSAT. 34 MBPS Lease Line for Dimapur, Phek, Tuensang, Mokokchung and Wokha connectivity are under progress. Wimax connectivity is available at five Districts - Kohima, Dimapur, Mokokchung, Wokha and Phek. Video Conferencing: The fourteen Video Conferencing studios in the state connects all the 11 District Hqrs, Nagaland House New Delhi, Chief Minister's Residential office and Chief Information Commission Office, Kohima. The Multi Conferencing Unit (MCU) installed at State Centre provides smooth and seamless connectivity especially during monthly review of various schemes over VC setup. KEZUNGULO MEDIKHRU State Informatics Officer NIC Nagaland sio-ngl@nic.in T.Y. SANGTAM Senior Systems Analyst NIC Kohima tysangtam@nic.in Data Centre: NIC Data Centre at Kohima is equipped with 3TB SAN system with three nos. of Blade Server enclosures having 13 Blade Servers, and 11 Rack servers. Several applications such as Weather Information System, Village Profile, Online Hardware Inventory Management System, Sarathi and Vahan for Transport Department, File Tracking System, Windows update services, MS SQL 2005 &amp; 2008 server, Oracle 10g, Postgesql, Project Management Software, SAN Management System software, centralised Anti-virus soft-ware and Network management soft-ware had been hosted which provides necessary support and services. CICs: With the establishment of 52 Community Information Centres, one each at all the block headquarters, the rural people were the first to benefit from the extensive use of communication facility and ICT based services. It was mainly through CIC that the rural people came to know and learn about the ICT facility and its advancements which also served the aim of bridging the digital divide. E-GOVERNANCE APPLICATIONS Major ICT Projects implemented are: Inner Line Permit Computerisation Under the Eastern Bengal Regulation Act of 1873 and Government of Nagaland Notification NO.REV/T-9/91, any person who is not a local inhabitant and desiring to cross the Inner Line into Nagaland is required to have Inner Line Permit (ILP). ILP Cells were established by the government of Nagaland at all the Deputy Commissioner's Offices and Nagaland House located in different parts of the country. A Monitoring Cell was set up in the office of the Commissioner, Kohima where each ILP Cell submit reports pertaining to issue of ILPs and action taken against defaulters on a fortnightly basis. NIC Kohima developed ILP Management System which has been implemented at the eight districts except the newly created three and at Nagaland House Kolkata. Upgraded online ILP computerisation is set for launch this year. Impact State administration can effectively monitor ILPs issued, renewed, defaulted etc. Revenue earned from ILP registration and renewal has grown manifold. State authorities can get various kinds of reports in required format. Different types of analytical reports can be generated from the system. WEATHER INFORMATION SYSTEM (WIS) The climate of Nagaland varies at short distance which is mainly due to the terrain features. The department of Soil &amp; Water Conservation is responsible for maintaining and collecting the daily weather report from its meteorological stations in differ-ent parts of the state at varying altitude. Presently 14 (fourteen) 2nd Class Meteorological Stations are fully functioning including 1(one) under the Indian Meteorological Department, with its headquarter at Pune. Based on the requirement of the department, a web based application - Weather Information System was designed, developed and hosted by NIC, Nagaland State Centre. The data is fed by the department from 14 Meteorological Stations in different parts of the state which can be accessed at http://wis-ngl.nic.in/genwis/ Objectives and its Impacts: To collect daily weather data such as rain-fall, temperature, relative humidity, wind speed and direction, barometric pressures, etc. and provide data to user agencies. Crop weather watch. Climatic data is a major parameter for soil classification in soil Survey. Right selection of crops, plants species best suited to climatic conditions. For designing and construction of engineering structures. Data banks for monitoring environment changes like rainfall behaviour, global warming, occurrences of natural calamities. EMPLOYMENT EXCHANGE COMPUTERISATION An online application developed and hosted by NIC Hqrs, New Delhi provides G2G, G2C and G2B services pertaining to the vacancies of the government departments and business organization. Employers can search the availability of qualified and suitable candidate(s) from the database. The job seekers can register their name on-line and search the availability of vacancies in various government departments and other organisations. The application is functioning at the Regional Employment Exchange, Kohima and District Employment Exchange, at Dimapur. TRANSPORT COMPUTERISATION Vahan &amp; Sarathi software for Registration of Vehicles and Driving Licenses respectively has been installed and commissioned at all the eight licensing and Registration authorities in the state. At present the Driving Licenses and Registration of vehicles document are issued as Smart Card SCOSTA compliant from six locations. The Smart Card printing and issuance is being done in-house by the transport department. The State Consolidated Register and the State Register has been prepared at the NIC Data Centre. Citizen services through the National Transport Web portal is under progress. Election Support: NIC Nagaland has been actively involved in giving support to the election process for the Lok Sabha as well as the Legislative Assembly. The randomization software of Polling Officials is successfully implemented. Technical support for Online Election Trends and results for all the districts were provided during the elections. State electoral roll database has been hosted and Photo Electoral Roll management Systems (ERMS) is in progress. K.T. SUKHALU IAS, Secretary Government of Nagaland Since its inception in 1989 the National Informatics Centre, Nagaland has been working very close with the State Government in promoting and providing Informatics &amp; Communication Technology (ICT) services. NIC has successfully implemented various ICT projects in the State and has been instrumental in changing the work culture of the government employees. NIC, Nagaland has provided Network connectivity to all the Districts. Video Conferencing facility, computerization of Passport Cell, Inner Line Permit computerization, computerization of Driving licence and vehicle registration, Arms licence computerization, Agriculture Produce centre computerization. The role of the NIC in the General State and Lok Sabha Elections processes is also highly commendable. The effort put in by NIC, Nagaland in improving ICT services to the people is highly appreciated and I wish them the best as they continue rendering effective and successful ICT services to the citizens of Nagaland Common Integrated Police Application (CIPA): Computerisation of the police station activities like registration, investigation, prosecution, reports etc. are covered under the project. The Project is functioning at Kohima district which was inaugurated by the Hon'ble Chief Minister. OTHER MAJOR ACTIVITIES Village Profile: A web based searchable comprehensive database on village profile is available to the citizens through the URL http://nagaland.nic.in. National Social Assistance Programme (NSAP): Under the National Social Assistance Programme - Old Age, Widow &amp; Disability Pension Scheme are implemented in the state. The pensioner details are uploaded on the site http://nsap.nic.in and is available online to the citizen. Personal Information Systems (PIS): Web based PIS software is functioning at the State Secretariat since 2005. Passport Cell Computerisation: The state Passport cell was setup at Nagaland Civil Sect Home Department to facilitate the collection of new applicants for Passport of the state. Rural Development : Software was developed for monitoring the progress of centrally sponsored schemes. It was implemented for MGNREGA (52 Blocks) and BRGF (5 Districts) project. Block Backwardness Index for Planning Department required for planning process is also monitored. Library Computerisation: Library Automation solution from NIC implemented at the Assembly Secretariat and JNV schools in Nagaland. Training imparted to various state department and the State Library officials. AGMARKNET Project: Computerisation of Agricultural Produce Marketing Centres in the state was taken up in phase manner and 15 APMCs were successfully covered. Tele Education: Tele Education facilities was set up at all the Govt Higher Secondary Schools having Science Stream including Kohima Science College and three private schools in Dimapur. Training: NIC has been actively involved in the state training programmes. Guest Faculty lectures are given by NIC Officials on e-Governance Training Programme conducted by state Departments. With the support of the state Government in implementing the ICT tools and applications, NIC Nagaland looks forward to a better and digitally governed environment to provide better services to the citizen. For further information KEZUNGULO MEDIKHRU State Informatics Officer NIC Nagaland State Centre Nagaland Civil Secretariat Complex Nagaland Kohima - 797001 0370 - 2270022 / 2270023 sio-ngl@nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="user-rating-for-web-resources-july-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">User Rating for Web Resources</span></a><a class="article-nav-link next" href="rajasthan-a-journey-to-excellence-in-ict-in-government-july-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Rajasthan: A Journey to Excellence in ICT in Government</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

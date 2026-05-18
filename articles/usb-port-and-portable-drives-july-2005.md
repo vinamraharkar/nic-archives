@@ -1,0 +1,20 @@
+---
+title: "USB Port and Portable Drives"
+publication: "Informatics"
+issue_date: "July 2005"
+pages: [17]
+author: "Dipankar Ghosh, NIC Siliguri"
+section: "Technology Update"
+---
+
+## USB Port and Portable Drives
+
+Most of the Computers available nowadays are equipped with USB ports. USB stands for Universal Serial Bus and is a hardware interface for low speed peripheral devices. The USB ports have a very versatile utility and they support wide ranging hardware types like Web or Digital cameras, Scanner, Printer, Modem, key board, mouse etc. A very exciting attribute of USB ports is that many types of Portable Hard Drives and storage devices can be attached with it. The peripheral devices are attached to the computer via USB cord, which has two types of ports i.e. A-type and B-type. A-type ports are thin rectangular in shape. The B-Type port is at the end of the Peripheral Devices, and connects it to the USB port of the computer.
+Previously USB 1.0/1.1 was used which had data transfer rate of 1.5 Mbps to 12 Mbps. With the advancement of technology USB 2.0 is now being used that has data transfer rate of 480 Mbps. A unique feature of the USB port is that by using USB Hub, more than 125 peripheral devices can be attached to the computer simultaneously. USB 1.0/1.1 uses total 12 Mbps of bandwidth for fast speed devices and USB 2.0 uses total bandwidth of 480 Mbps for such devices. Otherwise, there is also a facility that allows sharing of total bandwidth between all the devices, which are attached to different USB ports and or USB Hub of the computer.
+The low power required by the USB device is supplied by the USB port of the computer itself, enabling many peripherals to operate without the added need for an AC power adapter or extra power supply unit.
+A special feature that makes USB port very user friendly is the Hot Swap Capability. Hot Swap Capability allows the devices to be plugged in to the computer without shutting it down. Another advantage of the USB devices is that most of them are plug and play i.e. no driver software is required to initialize them for Operating Systems Win-2000 and above and Win-XP.
+
+| Portable Hard Drives
+Portable Hard Drives are external storage drives that are plugged in to USB port. These devices are very handy and are easy to carry along. A very wide variety of the portable storage devices are available in the market depending on their physical size and data storage capacity. The dimension of these drives generally range from 1.5-3.5 inches in length, 1-1.5 inches wide and 0.30-1.0 inches thick. Some of the portable drives available nowadays are Pen Drive, Key Chain Drive, Thumb Drive, Wrist Watch Drive, Mini Vault etc. The capacity varies from 8 MB to 2 GB and even up to 250 GB. Some latest outside-the-box peripherals have storage capacity up to a whopping 400 GB or more. These drives enable external data storage and convenient transportation and sharing of large, critical data files. Simply connect the device to any PC USB port and instantly gain access to vast gigabytes of data. With hot-swap capability, one can plug and play without rebooting or opening the computer. This has made storing and sharing of presentations, digital movies, photographs, music, games and back-up data very simple and easy. The latest portable drives are ideal in speed and size and are designed to take advantage of USB 2.0 speed, with data transfer rates up to 40 times faster than USB 1.1 devices. In addition, these devices are backward compatible with PCs and peripherals equipped with USB 1.1 ports. Moreover, some manufacturers have launched portable drives with strong password protection facility for data security. The Portable USB drives are suitable and easy to use for people who regularly work on more than one PC that are not connected via network. Students in large institutions or people in an office who need to transfer large amount of data regularly from one computer to another find these portable drives a boon for their work.
+
+For more information, please mail to wbslg@hub2.nic.in

@@ -1,0 +1,36 @@
+---
+title: "“Poverty leads to illiteracy-Literacy removes poverty”"
+publication: "Informatics"
+issue_date: "July 2012"
+pages: [28, 29, 30]
+author: "Shri Santosh Kumar Sarangi"
+section: "Guest Column"
+---
+
+## “Poverty leads to illiteracy-Literacy removes poverty”
+
+Conversation with Shri Santosh Kumar Sarangi, IAS, Commissioner-cum-Secretary to Government, ST & SC Development and Minorities & Backward Classes Welfare Department, Govt. of Odisha, on successful implementation of PRERANA - “Post-Matric Scholarship Registration Release And Network Automation” for ST/SC/OBC/SEBC and Minority students.
+WHY DID YOU NAME THE PROJECT AS ‘PRERANA’?
+SKS: To reinforce and stimulate the students desire for Higher Education with online scholarship programme to larger community and farthest corner possible, we have seen that the programme acted as an inspiration / motivation to the students with wider participation, thus the name “PRERANA”.
+HOW THIS PROJECT AIMS IN MEETING THE OBJECTIVE OF GOVT. OF ODISHA
+SKS: Being second largest ST populated state our mandate was for all-round development where education plays the central and most important role. With faster online disbursement of scholarship funds by DWOs and directly crediting to the account of the Students of weaker society (ST/SC/OBC/SEBC and Minority students) there certainly has been reduction in dropout rate because of lack of financial strength, awareness etc. This was one of the major deterrents for the slow progress of the state at large and was a reason to ponder about.
+WHO ARE THE MAJOR STAKEHOLDERS? WILL YOU KINDLY BRIEF US ON THE WORK FLOW OF THE PROCESS INVOLVED?
+SKS: The eligible student registers online with the ID to be used throughout his career. The verified form is transmitted online by the Institute to the DWOs who on further verification generates demand/bill and through treasury bank the online disbursement of scholarship is made directly to the student’s bank account.
+SO THIS MEANS GOVERNMENT PROCESS RE-ENGINEERING MUST HAVE BEEN A CHALLENGE FOR YOU AND WHAT MODEL YOU HAVE INCORPORATED.
+SKS: Certainly, the challenge was overcome through Team work. We could transform the legacy process to a completely automated one. The earlier manual process of receiving applications, manual verification, making thousands of bank drafts and their processing and the inherent risks of non transparency have been completely done away with. This is a G2G and G2C model of e-Goveranance.
+SIR, PL. TELL ABOUT PROGRAMME IMPLEMENTATION STRATEGY AS IT IS A CUSTOMARY IMPRESSION THAT GOVERNMENT TRANSFORMATION / CHANGE MANAGEMENT IS DIFFICULT TO ACHIEVE.
+SKS: To prevail over the govt. process bottlenecks & redundancies, we carried out statewide sensitization programmes for govt. officials and for colleges/institutions. Publicity in print & electronic media, guidelines & quick reference manuals, Video Conferencing (VC) with minority community leaders & other all-round effort and process mapping etc. were put in place for the success of the project. District Informatics Officers of NIC took a lead role in the districts and their proactive support to DWOs/ Institutions /students proved to be a major contributing factor for our success.
+PL. TELL US SOME PROCESS TRANSFORMATIONS AND TANGIBLE AND INTANGIBLE BENEFITS.
+SKS: A record no of 206471 applications received with increased student base applying for the scholarship was our delight. Through SMS services, status at various stages is being communicated. In a way we are fulfilling our objective of providing Social Justice to the needy in a more effective way thus the Government Transformation. With impressive reduction in man hours, reductions in number of DDOs are the tangible benefits and marked improvements.
+WHAT ARE THE KEY CHALLENGES / FACTORS RELATING TO THE MAJOR ROADBLOCKS THAT YOU HAVE FACED?
+SKS: Apart from Change Management Strategies dealing with the process and the people, Capacity building measures were also undertaken with computers and net connectivity to DWO. IT Kiosks / Citizen Service Centers (CSCs) were also brought in for further facilitation and consolidation. Apprehending slow turn initially Institutions were given facility to upload on behalf of the students, which later proved to be a major success.
+YOU HAVE MENTIONED THAT THE PROJECT HAS FULFILLED STATE’S OBJECTIVE TO GREATER EXTENT. WHAT IS YOUR NEXT PLAN OF ACTION?
+SKS: Yes, certainly it has. We expect that our endeavor to assist the students for their better education prospects would definitely lead to more qualified students which would directly/ indirectly have an impact on our society. I have full faith on the system and convinced with its outcome. Believing the concept of ‘Kaizen’ for continuous development and improvement we stand now to make it a more robust and successful product with additional features. Simultaneously, the team is on the job for simplification and streamlining of a no of key areas like Online Payment and extension to Pre-Matriculation scholarship distribution level.
+IT SEEMS YOU HAD A DEDICATED TEAM TO ACHIEVE THIS LEVEL OF SUCCESS?
+SKS: I give credit to all stakeholders who have come forward for its success. I extend heartfelt thanks to my departmental officers, DWOs, the Nodal officers of the institutions, banks in the disbursement process etc. I appeal to the students to use the system for more effectively for the benefit of all. Every project has certain key people without whom the project materialization would be difficult. I sincerely express my thanks to Shri S.K Panda, SIO OSU, Shri A.K Hota, TD, Shri D. K Mandhata, Scientist-D, Shri Siba Prasad Dash, Scientist-C, of NIC, Odisha State Unit and Shri Sunil Jain, TD, Shri Sanjay Garg, Scientist-C from NIC Madhya Pradesh who have contributed significantly and made this project a success. The team has been involved right from Process Re-engineering to Software development and customization and throughout the entire Programme Implementation.
+WHAT IS THE OVERALL FEELING AND YOUR WORDS TO SUMMARIZE THE EFFORTS PUT IN.
+SKS: I express my sincere gratitude to our Honb’le Chief Minister Shri Naveen Pattanaik who has taken personal interest and launched the project on 01st Oct’ 2011. The G2G and G2C project impressed Hon’ble Cabinet Minister, Tribal Affairs, Govt. of India, Shri V. Kishore Chandra Deo, during his visit to review the SSD & BCW Dept. on 06/11/2011 with an assurance of ‘PRERANA’ roll out in all the states nation-wide certainly invites a great deal of pleasure and satisfaction.
+EWORLD-2012 AWARD FOR THE BEST INITIATIVE FOR ELECTRONIC DELIVERY OF SERVICES (EDS)
+This Top to Bottom leadership for a genuine cause and the bottom to top sincerity showed by all workers in the ‘PRERANA’ team was recognized and the project was awarded for the “Best initiative for Electronic Delivery of Services” at eWorld 2012 Forum organised by ELETS, at New Delhi in June 2012. This is certainly a feather in our cap and we are to a long journey with our Endeavour.
+As the name implies ‘Prerana’ - means inspiration or stimulation, the project would certainly act as a catalyst for further consolidations; go ahead and in facilitating for our objective of providing more and more ICT based e-Governance services for a better society.
+Interviewed by: Shri Nihar Ranjan Biswal, Scientist-D, NIC- Odisha.

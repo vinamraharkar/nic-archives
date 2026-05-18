@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maharashtra: Connecting People and Government — Informatics July 2010</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2010"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/july-2010/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2010/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2010/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/july-2010/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2010/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2010/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2010/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2010/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2010/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2010/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2010/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2010/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2010.html">July 2010</a><span class="breadcrumb-sep">&rsaquo;</span><span>Maharashtra: Connecting People and Government</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States/UT</div>
+          <h1 class="article-title" data-pagefind-meta="title">Maharashtra: Connecting People and Government</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Moiz Hussain, Punam Gupta &bull; pp. 21–24</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2010.html">July 2010</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The word Maharashtra, the land of the Marathi speaking people, appears to be derived from Maharashtri, an old form of Prakrit. Located in the north centre of Peninsular India, with a command of the Arabian Sea through its port of Mumbai, Maharashtra has a remarkable physical homogeneity, enforced by its underlying geology. It's one of the leading industrial states of the country and is popularly known as the 'Economic Capital' of India. Today, the state is giving its people every opportunity to raise above all odds and thereby the Government of Maharashtra is using IT as the best medium to upgrade its citizens with the contemporary world.</p>
+<p>NIC Maharashtra State Centre, Mumbai is assisting Government of Maharashtra in major e-Governance and office automation projects by using latest state of art computer software and hardware technology.</p>
+<p>Network operation and Data Centre at Mumbai</p>
+<p>The then Hon'ble Chief Minister of Maharashtra Sh. Vilasrao Deshmukh inaugurated the Secured Computer &amp; Communication Network and Data Centre fore-Governance in Maharashtra State in 2005. This center, having storage capacity of 10 Terabyte, provides website hosting, Internet and Email services to Mantralaya and District LAN users. It also provides Dialup facility to government departments.</p>
+<p>Dr. B.K Gairola, DG, NIC with NIC Mumbai</p>
+<p>Home page of NIC Maharashtra website</p>
+<p>NIC Maharashtra State Portal &amp; district websites: The NIC, Maharashtra web portal http://maharashtra.nic.in provides all information related to NIC and its operations in Maharashtra. It acts as a ready reference of all projects undertaken by NIC Maharashtra State Centre. It also has search, download and feedback options to facilitate the users, while the websites of 35 districts provide insight into the district wise details of IT initiates in the respective districts. The information pertaining to property card and electoral rolls are also displayed on these websites.</p>
+<p>Food and Civil Supplies information system-MAHAFOOD: MAHAFOOD is a web-based application which automates the various stages of movement of food grains. The data entered at different locations are summarized and consolidated to provide an E-governance solution for effective decision making and monitoring the progress of monthly allotment, lifting, off take and distribution of essential commodities under various schemes. URL is http://mahafood.mumbai.nic.in</p>
+<p>LMIS (Land Records Information System): The Land Records Computerisation undertaken by NIC, Mahrashtra has been extended to all the tehsils. It basically consists of two components LMIS, which is used for incorporating mutations and distribution of 7/12 extracts to Khatedars and PCIS (Property Card Information System), which is used for taking mutation distribution of Property Cards through the City Survey Offices (CTSOs) and Taluka Inspector of Land Records (TILR).</p>
+<p>Hon'ble CM, Sh. Ashok Chavan inaugurated the village common service center for distribution of 7/12 extract to khatedars on 25th May, 2010 at Mudkehd tehsil Nanded District. State level register of 7-12 extract record is created on the website http://mahabhulekh.mumbai.nic.in for providing the printed information of Record of Rights and property card to the citizens and other stakeholders through common services centres.</p>
+<p>Hon'ble Chief Minister Sh. Ashok Chavan inaugurating the CSC at Nanded</p>
+<p>Status Information Management System by NIC- SIMNIC</p>
+<p>SIMNIC is a web-based application http://mahasim.nic.in which acts as a single window for online data collection in dynamically created formats from remote field offices of government departments. It is available in 10 Indian languages.</p>
+<p>Lokayukta Automation System- LAS: LAS is a workflow application for the Office of Lokayukta and Upa-Lokayukta, Government of Maharashtra. It enables registration of complaints regarding allegations and grievances and helps the Lokayukta office in monitoring &amp; redressal of these grievances. It also facilitates monitoring &amp; referencing related to the complaints and general letters.</p>
+<p>Indian Administrative Service Personnel Information System-IASPIS: IASPIS is a web-based application which automates the various matters related to service book of IAS personnel. It is used for generation of executive and civil list and to provide instant and up-to-date information regarding service matters to all members of administrative services.</p>
+<p>Panchayat Portal: Web content, http://panchayat.gov.in, has been created on for 33 Zilla Panchayats, 357 Tehsil Panchayats and, 44000 Village level Panchayats of Maharashtra. The application facilitates online updation of content through Internet.</p>
+<p>Accounting system for Panchayats-Priyasoft: Priyasoft is implemented in the Finance Department of Zilla Parishads and the Panchayat Samittees. It is designed to help the departments in their day-to-day accounting processes, including bills processing, reports consolidation, grant watch etc. It generates various monthly, quarterly annual reports &amp; cheque slips related to Finance Department.</p>
+<p>State level register of transport department of Maharashtra: As part of the computerization programmme for the vehicle registration and driving license system at 45 RTOs, a state level register is being setup at the NIC Data center at Mumbai using the VPN over broadband connectivity between Mumbai and RTO offices for the updating the content.</p>
+<p>Court Cases Automation System (CCAS) and Adjourned Cases Enquiry System (ACES): CCAS and ACES are developed for the Office of Chief Presenting Officer, Maharashtra Administrative Tribunal (MAT), Mumbai. These systems facilitate Government Offices and employees to obtain the status of their pending cases over Mantralaya Intranet and Internet. The detailed information of a case such as case no., type, year of filing etc., are maintained in CCAS and the status may be enquired in web-enabled ACES by giving any Case no., hearing date, applicant name and department name. ACES is available at http://www.matmumbai.nic.in.</p>
+<p>e-Governance for Directorate of Cotton Development Mumbai under DACNET Project</p>
+<p>Under DACNET project, a portal is developed for Directorate of Cotton Development Mumbai to disseminate information related to cotton (which is a Nodal Crop for this Directorate) to the different stakeholders like farmers, state agriculture department, extension personnel, NGOs, Ministry of Agriculture etc. The URL of this portal is http://dacnet.nic.in/cotton . An application has also been developed for monitoring the progress of Centrally Sponsored Intensive Cotton Development Programme (ICDP) under Mini Mission-II of Technology Mission on Cotton in the country.</p>
+<p>Apart from these many other IT initiatives have been undertaken in collaboration with different departments of the state -  CM Secretariat Information system has been designed and implemented for managing CM Relief fund, CM office VIP reference monitoring and File Movement. These are successfully operational since last 5 years.</p>
+<p> Utility Mapping Project for Mumbai City is successfully completed and five utility agencies have been connected to Muncipal Corporation of Mumbai data centre for providing base map of Mumbai City.</p>
+<p> Certificate Issuing and Monitoring System (CIMS) has been developed for issuing various certificates like SC, ST, Senior citizen etc. issued by the Mumbai City District Collectorate Office. It includes status and search facilities.</p>
+<p>Initiatives launched in 2010  Employment Guarantee Scheme-MAHEGS: an application system to computerize the progress of works under farm pond development as part of Employment Guarantee Scheme of Government of Maharashtra, which is launched with a view to provide employment to all unskilled job seekers in the rural area.</p>
+<p>Inauguration of State level workshop on AGMARKNET</p>
+<p> Maharashtra IFS officers information System-Mahaifs : A web based application System is being created for Maharashtra IFS officers.</p>
+<p> Executive VC systems network being implemented for Director General of Police and Chief Secretary office and 35 districts of Maharshtra.</p>
+<p> Setting up of National Knowledge Network PoP at Mumbai and its connectivity to IIT Mumbai, BARC and TIFR.</p>
+<p> Fishnet information system for the coastal districts: The system is being implemented in 6 coastal districts of Maharashtra for providing fishing vessel registration and fishing licenses.</p>
+<p> Pregcare information system for monitoring of health during pregnancy at Nanded district.</p>
+<p> IVRS based grievance redressal system at Jalgaon district.</p>
+<p> Medical Admission Counseling at Mumbai for the All India Medical Admission.</p>
+<p> Post Graduate &amp; Under Graduate Medical Admission Counselling: ICT support by NIC Maharashtra in Feb-March &amp; June 2010. NIC Maharashtra has set up the Infrastructure &amp; provided the network connectivity between the counselling centre at All India Institute of Physical Medicine &amp; Rehabilitation Centre, Govt. of India Mumbai &amp; Counselling centres at New Delhi, Chennai and Kolkatta. Network connectivity is provided via leased line, satellite network and ISDN lines for accessing the central application at New Delhi.</p>
+<p>Inauguration of State level workshop on AGMARKNET</p>
+<p>Computer training and workshops</p>
+<p>Training cum video conference room of NIC Maharashtra State Centre is well equipped with audio-video aids. Computer training programmes are conducted on NIC Application Software, Office Automation tools and Web Based Technology. NIC projects developed for various State/ Central Government departments are demonstrated during every training programme. Practical training is also imparted to all the participants during these programmes.</p>
+<p>State Level workshop for the consumer forum network (CONFONET) of 43 locations, Agmarknet workshop for the 350 APMC officers and CIPA workshop for the 430 Police station level officers are conducted successfully.</p>
+<p>Awareness programme for NYKS Volunteers at Chandrapur</p>
+<p>To involve the rural youth in nation building activities and to develop such skills and values in them with which they become responsible and productive citizens of a modern, secular and technological nation Nehru Yuva Kendra Sangathan has selected 30 volunteers for 15 taluka. NIC district centre in coordination with district coordinator NYKS Chandrapur arranged one day technology awareness program for new volunteers on 16 Jun 2010 under the guidance of State Informatics Officer,NIC, MHSC, Mumbai ,</p>
+<p>Total 30 volunteers participated in two batches. They were briefed about various National as well as State Level projects and schemes and portals and MIS thereof. Email basics and use of Email was demonstrated to them. Email IDs were created for few participants and they interestingly learned this communication mode. Demonstration of data entry for the details of volunteers at http:// yas.nic.in/nyc/login.asp was also shown to NYKS staff.</p>
+<p>The objective of this Workshop was to show current E-Governance initiative by state and central government and trend thereof and to motivate volunteers to use latest technology in their noble service to the citizens.</p>
+<p>NYKS Demonstration at NIC Chandrapur</p>
+<p>Web Services</p>
+<p>Web services for hosting of website in Govt. Data Centers at Delhi and Mumbai is provided to more than 100 departments. Maharashtra Publicity Directorate, Nuclear Power Corporation and Maharashtra Police website are the prominent online applications running over NICNET.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="manipur-adding-another-jewel-through-ict-based-e-governance-july-2010.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Manipur : Adding another Jewel through ICT based e-Governance</span></a><a class="article-nav-link next" href="nic-is-our-partner-for-e-governance-since-the-creation-of-the-state-july-2010.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NIC is our Partner for e-Governance since the creation of the State…</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

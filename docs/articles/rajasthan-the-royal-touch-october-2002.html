@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rajasthan- the Royal Touch — Informatics October 2002</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2002"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2002/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/october-2002/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/october-2002/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/october-2002/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/october-2002/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/october-2002/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2002/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2002/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2002.html">October 2002</a><span class="breadcrumb-sep">&rsaquo;</span><span>Rajasthan- the Royal Touch</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">State in Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">Rajasthan- the Royal Touch</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Indu Gupta &amp; Garima Sogani, NIC Rajasthan &bull; pp. 11–16</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2002.html">October 2002</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Rajasthan is the Land of Rajputana with a royal touch in the life style. Its imposing forts and grand palaces remind us of the sophisticated life styles of the Maharajas and great history of the state. But it is not the history alone. Rajasthan is keeping pace with the IT and has marched many steps ahead in this direction.</p>
+<p>Backed by the strong technical expertise of National Informatics Centre, the State of Rajasthan has executed some of the best valued IT projects. Land Records Computerization, High Court, Rajasthan Legislative Assembly, Treasury Computerization System are some of the prominent highlights.</p>
+<p>Major Projects</p>
+<p>Land Records Computerisation (Apna Khata)</p>
+<p>The missionary approach from NIC &amp; the state government has enabled to put the land records of about 68 lacs landholders on computers. People of 145 tehsils have already started benefitting from their own tehsil centre using this citizen centric project. Efforts are on to operationalize remaining tehsils. A pilot project has been taken up to give copies of Record of Rights (RoR) through Internet. Accordingly the government has revised the proforma of RoR. Very soon, easy to handle copies will be made available to the landholders. The tehsil level software developed by state unit uses the Windows 2000 server, SQL Server 2000 platform and offers facilities for mutation updations. System provides facility to generate new jamabandi and the government has enforced discontinuation of manual jamabandis. The software modules take care of regular crop inspection data storage and retrieval as well. Comprehensive training has been provided to 1074 patwaris. A pilot project for Ajmer district has almost been completed for archiving of old revenue records.</p>
+<p>Workshop on Land Records Computerisation being inaugurated by the Hon’ble Chief Minister</p>
+<p>Treasury Computerisation</p>
+<p>The operations of all the 32 district treasuries and 110 sub treasuries have been fully computerized by NIC in Rajasthan. Computer generated accounts and other reports are being submitted to the AG office for last 5-6 years by all the treasuries. Monthly accounts of all the treasuries are also made available at the Directorate of Treasuries for any analysis. Data of LoP and LoR is made available directly from treasuries to the DTA on the net. All sections of treasuries have been covered and applications are being enriched continuously. Impressive infrastructure has been created at all the sub treasuries which are connected through the intranet. Software is under development for electronic transfer of data from the treasuries to the AG. The staff of the treasuries and sub treasuries have been trained to handle the system independently.</p>
+<p>High Court Computerisation</p>
+<p>The Principal seat of High Court and the Jaipur Bench have been fully computerized. Application areas include Filing of the case, Caveat, Institution, Classification, Peshi, Cause list, Disposal of case and consignment of cases to record room. The system allows various queries on case no, petitioner name, respondent name, advocate’s name, date wise registration, etc. It also generates various reports like Bail institution report, Supreme court classification report, case type wise report, pendancy report, etc. Judgement writing is being done using computers. Also, the lower court record monitoring system has been developed and implemented successfully. Rajasthan High Court has been the second High Court in the country to put its case status on Internet. A Query Counter using the computerized system has also been established at High Court which caters to about 15000 queries every month. The daily cause list of the High Court is being made available on the Internet. In addition software for library management, payroll etc. has also been implemented. Access to the database of judgement of Hon’ble Supreme court ‘JUDIS’ and information of pending cases at Hon’ble Supreme court through COURTNIC is also provided.</p>
+<p>District Court Computerisation</p>
+<p>Computerisation has been done in 30 district courts of the state. NIC has installed hardware and has developed software to cater to the needs of various sections in the court. Various modules that are implemented include filing of cases, their scrutiny, registration, court room proceedings, disposal of the case, revival of the case etc. Various day to day reports and statistical reports are generated through the system. It also generates the daily cause list. The system started operations in 1998. Currently 30 DJ Courts are using the District Court Computerization system and are generating daily cause list from the system. System for LDC recruitment, pay bills etc. is also being used at various district courts.</p>
+<p>Rajasthan Legislative Assembly</p>
+<p>Major computerization work has been done in Rajasthan Legislative Assembly with the help of NIC. Question Lists are prepared in Hindi through the Question Monitoring System for circulation to all the government departments and Hon’ble members. A huge database has been created of all the assembly questions, since 1994. A system has been implemented to maintain details of all press clippings of leading national and local newspapers. A system has also been developed to provide information regarding government &amp; private bills.</p>
+<p>Public Representative Information System maintains details of all the public representatives so far in the state since creation of Rajasthan (i.e. 1952) and Computers installed by NIC for e-governance campaign positions/ministries held by them. Motions’ monitoring system is used to monitor the status of motions moved in the house for discussion. A system for MLA pension has also been developed. Rajasthan Legislative Assembly was one of the first legislative assemblies in the country to have its web site. The web site also provides ‘List of business’ for each day during the session period. Computerization of daily proceedings would be taken up shortly.</p>
+<p>Board of Secondary Education, Rajasthan</p>
+<p>NIC has provided extensive support to the BSER in various activities. Web enabled systems have been implemented for a) disseminating Results information to students b) providing Roll Number information c) providing Examination Centre Information d) scrutiny of results. Complete details of marks of the students is provided through the web site of the Board. This has greatly benefitted all the students, specially the ones who live in far off locations. More than 13 lacs hits were received on the site this year. The systems developed by NIC have been highly appreciated.</p>
+<p>The results of exams of Secondary Board are also transmitted through NICNET to all the districts as soon as these are declared. NIC district centres print and provide copy of the results at Soochna Kendra, collectorates and other important public places. In addition specific queries are also dealt by NIC centres.</p>
+<p>E-governance for Campaign Monitoring</p>
+<p>NIC State Unit has provided web enabled monitoring of various campaigns of the State Govt. The campaigns are organized to provide quick redressal of public grievances concerning different departments. Some of the major campaigns include ‘Prashasan Gaon ke Sang’, ‘Prashasan Shahron ke Sang’, ‘Anti Land Mafia’, ‘Slum Regularization and Agricultural Land Conversion’ and ‘Agricultural Land Allotment / Regularization’. It was due to timely availability of the data by NIC in required formats which made it possible to monitor the campaign and reporting to government in stipulated time period. This has made the campaigns very effective.</p>
+<p>Election Management System</p>
+<p>NIC has been providing support for all the elections in all the districts and at state headquarters since 1990. These include Parliamentary, Legislative, Local Bodies and Panchayat elections. Support is provided at various levels of election process. Pre polling activities include computer support for nomination, polling party formation, counting party formation, area &amp; zonal magistrate appointments, route chart preparation, etc. Post polling activities supported by NIC centres include computerisation of counting process, results processing and results analysis. For the first time ever in the country NIC Rajasthan has successfully executed the Project for transmission of Election results directly from the counting centers to the Election Commission using dial-up facilities in the last Assembly election.</p>
+<p>Workshop on Computerisation in District Industries Centres</p>
+<p>Integrated Pension System</p>
+<p>Integrated Pension system has been implemented at the Directorate of Pension and its all 4 regional offices. All activities associated with pension processing including generation of various authorities like Pension Payment Order, Gratuity Payment Order, Cumulative Pension Order are carried out through the system. The system is in operation since 1992. A huge database of about 1.5 lacs pensioners has been created over this period. Another system named as Pension Monitoring System enables monitoring of individual case within the department. The software developed by NIC has facilitated pension revision according to recommendations of Fifth Pay Commission in a record time.</p>
+<p>Ration Card Preparation System</p>
+<p>Ration card preparation has been taken up by some of the district centres of NIC Rajasthan. Project involves preparation of ration cards covering the urban population of these districts. Software provides for data entry, ration card printing and report generation.</p>
+<p>Public Grievance Monitoring</p>
+<p>This is one of the most effective applications of e-governance and has been implemented at various levels in government The system has been highly appreciated by the Chief Secretary Mr. Inderjeet Khanna and other senior officers. NIC state unit provides technical support at Hon’able Chief Minister’s residence for monitoring public grievances.</p>
+<p>Hon’ble CM Sh.Ashok Gehlot visiting NIC State Unit</p>
+<p>Rajasthan Communication &amp; Infrastructure Support System (RAJCIS)</p>
+<p>To monitor hardware installations throughout the state, this web enabled system has been developed and implemented which facilitates complaints lodging from remote locations which are then taken up with concerned vendors at state unit. The system also provides online discussion and mailing facilities and is also used as an effective meeting assistant during the meetings of district support group. All manual systems have been done away for monitoring hardware complaints.</p>
+<p>Video Conferencing Facilities</p>
+<p>National Informatics Centre has established DAMA based Video Conference facilities at Secretariat in Jaipur and at Jodhpur. Similar facilities are also being extended at remaining divisional headquarters.</p>
+<p>NICNET/Internet Connectivity</p>
+<p>Around 933 users of various departments all over the state are utilizing Internet services provided by NIC state unit. Internet connectivity has been extended to the office of about 71 Secretaries, Special Secretaries. Office of Hon’ble Chief Minister has also been connected through dedicated line. A Metropolitan Area Network (MAN) has been established at Jaipur which connects various Bhavans around secretariat.</p>
+<p>Training</p>
+<p>Various training programmes have been organized by different centers of NIC through out the state. Refresher training has been conducted using Video conferencing setup. Courses and workshops are being held periodically for many ongoing projects.</p>
+<p>National Projects</p>
+<p>NIC state unit is executing national projects which are also implemented in the state. These include Registrar of Companies, Regional Passport Office, Commissionerate of Central Excise, Indian Customs Department, Jt. Directorate General of Foreign Trade, Employees Provident Fund Office, AGMARKNET, etc.</p>
+<p>Web Site Design &amp; Development</p>
+<p>NIC Rajasthan has designed and hosted web sites for various organisations and departments including Rajasthan Legislative Assembly (http://rajassembly.nic.in/), National Law University (http://nlujodhpur.nic.in/), Rajasthan Board of Secondary Education (http://rajeduboard.nic.in), Rajasthan Police (http://rajpolice.nic.in/) etc.</p>
+<p>In addition, websites of many districts have also been created including Ajmer, Banswara, Baran, Barmer, Bharatpur, Bhilwara, Jaipur, Jhalawar, Nagaur, Pali, Sikar and Sirohi.</p>
+<p>Databases</p>
+<p>Over a period of time, many databases have been created for different departments with the assistance of NIC Rajasthan State Unit which have proved immensely useful for citizen services. Some of the major databases include:</p>
+<p>• Database of Land Records of nearly 60 lac land holders. • Assembly Questions’ database (1994) • Public Representative’s database ( since inception of Rajasthan) • Database of Passport Holders (approximately 3 Lacs) • Ration card holders databases at Jaipur, Udaipur and Dungarpur • Database of companies registered in the state (15700) • Pensioners’ database (approx 1.5 lakh pensioners) • Database of cases filed in High Court (over 4 lacs) • Databases of cases in 30 DJ Courts in district courts • Database of beneficiaries of employees PF • Database of Postal Life Insurance and Rural Postal Life Insurance. • Database of exporters and importers in the state (approx 8000)</p>
+<p>The NIC Rajasthan State Unit, with its commitment and relentless efforts has engrained tremendous confidence in the benefits of ICT activities, among the State Government Departments, and this, beyond doubt marks a significant achievement for any NIC Centre.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="quotes-october-2002.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Quotes…</span></a><a class="article-nav-link next" href="pondicherry-setting-an-example-october-2002.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">PONDICHERRY: Setting an Example</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

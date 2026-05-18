@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meghalaya: Making a Mark — Informatics July 2003</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2003"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2003/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2003/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2003/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/july-2003/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2003/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2003/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/july-2003/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2003/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2003/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2003.html">July 2003</a><span class="breadcrumb-sep">&rsaquo;</span><span>Meghalaya: Making a Mark</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">STATE IN FOCUS</div>
+          <h1 class="article-title" data-pagefind-meta="title">Meghalaya: Making a Mark</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Timothy Dkhar, NIC Meghalaya &bull; pp. 7–9</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2003.html">July 2003</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">“Your land is land for Gods to live in. It’s air, it’s natural scenery, it’s pure atmosphere, it’s sweet water would attract even Gods”. These words by Sardar Vallabhai Patel aptly describe the beauty of a place blessed by nature. Tucked away in the hills of eastern sub-Himalayas is the State of Meghalaya, one of the most beautiful states in the country. Nature has blessed her with abundant rainfall, sun-shine, virgin forests, high plateaus, tumbling waterfalls, crystal clear rivers, meandering streamlets and above all with sturdy, intelligent and hospitable people.</p>
+<p>NIC was first established in 1988 at Additional Secretariat building and since then it has left no stone unturned in rendering various services to the state and Central Government offices located in Meghalaya. Recently it has shifted to its own building in the Secretariat Hills which also houses the IT Department of the State Government for synergising the activities for the development of IT in the state.</p>
+<p>Hon’ble Chief Minister Sh.D.D.Lapang with DG (NIC) at the inauguration of the new NIC building at Shillong</p>
+<p>Major Projects</p>
+<p>Budget Information System The Budget Information System computerization is being done for many years. It was upgraded from Unix-based system using Fox Plus and C++ to windows based client-server system. All the documents related to Budget preparation have been computerized including the Supplementary Demand which is used to discuss in the Budget session of the Assembly during the end of the Financial Year. Also a web-enabled application has been developed to view the budget online and the complete budget has also been provided to the Auditor General in the form of a CD-ROM.</p>
+<p>Treasury Computerization The computerization of the Directorate of Accounts &amp; Treasuries and the Treasury Offices has been taken up for the past two years. The Accounts Section of these treasuries has been computerized where all reports related to accounting and cash book are prepared and printed from the databases.</p>
+<p>Transport Computerisation Computerisation of the Registration of Vehicle at Transport department was taken up and DTO, Shillong was selected as a pilot site. The VAHAN Application Software developed by Transport Informatics Group, NIC, New Delhi was implemented and the customization of this application software was carried out by NIC State Unit to suit local requirements. The various modules of this application software are Vehicle Registration, Fitness, Fee &amp; Tax, Permit and Challan.</p>
+<p>State Library Computerisation The concept behind the computerization of the State Library is to create a modern digital library, which would not only render better services to the readers and students but also respond promptly to the queries raised by them at various points of time, to make the library available on web through cataloging of Books, Tapes, CD’s, Micro Films etc. and also providing internet access to the members of the library. The staff of state central library has been provided training on the use of computers. Similar computerization projects on a smaller scale are underway for the rest of the districts of the state.</p>
+<p>Community Information Centres (CIC) The CICs have been established in all the Blocks in the State except in the newly created Blocks. Each CIC is well equipped with Computers, VSAT, TV, printers, UPS, etc. Two qualified operators manage the CICs. CICs have been imparting IT training programmes to the school students, staff of the Block Development Offices and the local people. CICs have elicited an enthusiastic response from the people, especially youngsters as it is the main medium of communications for people in the far flung and remote areas in the state. Many E-Governance packages like Comprehensive Household Surveys, MPLADS, MLA Schemes, Payroll, Personnel Management Information Systems, Village Directory, Rural Soft, Rural Bazar etc have been installed at the CICs.</p>
+<p>COMPUTERISATION OF Secretariat Administration Department (SAD) Expenditure Monitoring System: Designed and developed to monitor the monthly expenditure of the various Heads of Accounts operated by SAD from the Budget Provision and the Expenditure incurred under those Heads of Accounts.</p>
+<p>Payroll Processing: Enables the department to process the monthly pay bill and to generate a number of documents in connection with the preparation of Paybills like the Paybill Abstract, Pay Slips and the various Schedules (eg. GPF Schedules, House Building, Car Advance, Festival Advance, Children Education Advance, Professional Tax etc.) for each of its employees.</p>
+<p>Employees General Information System: This application software helps to store the particulars of the Gr.III Employees under the control of SAD Department. Details like Service Book, Deployment List of Typist/Assistants/ Asst. Superintendent etc. in the Secretariat Building, GPF information and any query related to a particular employee can be retrieved.</p>
+<p>L-Form Processing: The application is designed and developed to help the staff in preparing the ‘L-Form’ (Statement showing the details of staff for Provision of Pay etc., of Establishment including the estimate under the various Heads of Account) for inclusion in the current year of the Budget Estimates.</p>
+<p>Web Portal for Agricultural Marketing The State Government provides agricultural as well as horticultural market information for the benefit of producers (farmers), traders and consumers. Such information is usually collected by conventional methods and disseminated through radio, newspapers and journals which is often delayed, thereby adversely affecting its utility. The Web Portal has been designed with a view to provide prompt and reliable market information by linking around 110 markets located throughout the state through Internet. Authorized personnel feed the data about price quotes and quantity arrival of different agricultural and horticultural commodities in different markets thus providing timely information. On one hand, this will strengthen the bargaining power and improve the decision making capability of the farmers to market their produce, on the other hand, businessmen and consumers can benefit too, from their sales and purchases.</p>
+<p>Comprehensive Household Survey The Directorate of Economics &amp; Statistics conducts a Comprehensive Household Survey in Meghalaya with a view to building a State-wide database relating to information about every individual and his household background. The household data collected by this survey includes ownership, number of household members, type of house, availability of basic amenities like water, electric power supply &amp; sanitation facilities as well as possession of luxury items like telephone, TV, VCR, refrigerator, vehicles etc. In addition to the household data, demographic information is also collected for each household. This Survey gives a clear picture of the social and economic conditions of the people of Meghalaya both in the urban as well as rural areas which in turn can be analysed and used by decision makers for planning purposes. The data collected by the Comprehensive Household Survey was computerized by NIC Meghalaya. In the 1st Phase, all the data pertaining to urban households have been entered and verified and around 32 reports under various parameters have been generated through a web enabled application.</p>
+<p>Vehicle Information System This application has been developed and implemented in CID cell of the State Police Department to help maintain a database for all Police vehicles. With the data available that are recorded periodically the administrative cell can monitor the expenditure incurred by each vehicle for maintenance and spares. Also the POL/DOL consumed by the vehicle monthly/quarterly can be prepared at the click of the mouse.</p>
+<p>Election Computerisation NIC, Meghalaya always provides complete technical support during various Elections in the State, be it Parliamentary, Legislative Assembly or District Councils Elections. Software application has been developed for pre-poll activities like polling party formation, counting party formation, area and zonal magistrate route-charts etc and post-poll activities like computerization of counting process, result processing, generation of result etc. During the recently concluded Assembly Election 2003, for the first time, a district-level election website was conceptualized, designed, developed and launched to cater to the needs of the public to get pre-poll and post-poll information on the election. This website also helped the various cells, viz., Personnel Cell, Transport Cell, Polling Materials Cell etc. to manage the pre-poll activities in the election process. Members of the public as well as political parties were benefited as the details about the Code of Conduct, Public Announcements, Press Releases, information on how to use the EVM as well as Candidates’ details, voter turnout and final results were hosted on the site. Also a computer with LCD projector and Internet facilities was set up at media centre in the state conference room where about 30-40 press and media persons (both local and national papers) continuously browsed the results of various constituencies till the last constituency completed counting. Transmission of data from State Centre, District centre and also some from CIC centres were made to NIC Headquarters for election results which was telecast live from Doordarshan News during the counting of votes.</p>
+<p>NEC Computerisation The North Eastern Council is the nodal agency for the economic and social development of the North Eastern Region which consisted initially of the seven States of Arunachal Pradesh, Assam, Manipur, Meghalaya, Mizoram, Nagaland and Tripura. Recently the eighth state, Sikkim has been included in the Council.</p>
+<p>NIC Meghalaya has been closely involved with providing computer support to the council since 1988. Two computer centres has been set up, in each offices along with VSATS for communication services. A LAN has been established in the main secretariat office in which all the sectors are interconnected with the NIC-NEC cell as the main hub and internet connectivity is provided to each node through the SCPC VSAT installed here. Apart from the communication link through VSATS, NIC has designed and developed various software applications to support the day-to-day functioning of the NEC. Some of the packages developed and put into use at the council are Library Management Software, Scholarship Allocation Software, Payroll automation System, Budget Information System etc.</p>
+<p>Computerisation of Central Excise, Shillong The Computerization of Central Excise Commissionerate, Shillong started from the year 1994 as part of the Central Project named as System For Excise Revenue Monitoring popularly known as SERMON Project ( for capturing Central Excise Revenue and monitoring it ) which NIC had taken up as one of the major turnkey projects throughout all the Central Excise Commissionerates in the country. Under the Shillong Central Excise Commissionerate ( with its jurisdiction spread all over the NE Region) and in nine Divisional Offices spread in NE Region, Computer Systems have been installed and Unix-Windows’98 LAN systems are functioning in all these offices. The CE Commissionerate Shillong and the division offices are also having Internet/E-mail Connections. Data from Divisions are received at the Commissionerate Computer Cell, mostly by e-mail and then compiled and sent to Directorate of Systems, Chennai where the data gets compiled at all India level and reports taken out.</p>
+<p>Registrar of Companies Registrar of Companies (ROC), Shillong looks after all the seven North Eastern States. Software which was developed centrally is implemented in ROCs, Shillong. There are more than 5000 companies registered in ROC, Shillong. Almost all the activities of the ROC are being computerized right from cash counter where computerized cash receipt are being generated and thereafter diary and register for further processing.</p>
+<p>Websites Developed Important websites for various State Government Departments have been designed, developed and hosted on NIC Webserver.</p>
+<p>Board Results on the Net The Meghalaya Board results are being published on the net for the past three academic years. The compilation, designing and development of the Website was done at Tura, West Garo Hills District, since the board is located there. The site is available under the URL http://megresults.nic.in. The Website has been used to publish the results of the various examinations of the Meghalaya Board of School Education, Tura. The results included the Abstract, List of the top ten candidates, List of all the candidates securing highest marks in each of the subjects and the division wise detailed results.</p>
+<p>Prominent Websites Government of Meghalaya http://meghalaya.nic.in Department of Information Technology http:// meghdit.nic.in Directorate of Arts and Culture http://megh-ac.nic.in Community &amp; Rural Development http://megcnrd. nic.in Meghalaya Police http://meghpol.nic.in Directorate of Soil and Water Conservation http://megsoil.nic.in Shillong Municipal Board http:// meghalaya.nic.in/smb State Institute of Rural Development http://meghalaya .nic.in/sird Meghalaya State Electricity Board http://meseb.nic.in Transport Department http://meghalaya.nic.in/transport North Eastern Council http://necouncil.nic.in North-Eastern Police Academy http://nepa.nic.in</p>
+<p>The websites of the districts of East Khasi Hills, West Khasi Hills, West Garo Hills, Jaintia Hills and Ri Bhoi have also been designed, developed and hosted on NIC’s Webserver</p>
+<p>Training NIC, Meghalaya State Unit in collaboration with the State Training Institute (MATI) conducts regular training once a month for the officers and staff of the State Government. Also the District Units are engaged in imparting training at the District level. Training is also imparted to the Central Government officers and staff as and when the need arise. In house training of NIC officers on the latest technologies is also a regular feature.</p>
+<p>Infrastructure VSAT: SCPC (DAMA) for Data and Videoconferencing at NEC Secretariat. FTDMA (NG) at Additional Secretariat Building. SCPC (PAMA) for Data at NIC, Meghalaya State Unit DPC/IPA installed at seven district units and one at NEC AP Secretariat Building. LAN: Main Secretariat Building LAN, present capacity for 100 nodes, 2 servers. Additional Secretariat Building LAN, present capacity for 150 nodes, 2 servers. Third Secretariat Building LAN, present capacity for 100 nodes, 1 server. NIC, Meghalaya State Unit, LAN under development, designed for 40 nodes. Five sites, viz. Main, Additional and Third Secretariat, NIC Meghalaya State Unit and NEC Secretariat buildings are interconnected by RF links. Videoconferencing: Videoconferencing studio has been setup in NIC-NEC Unit, at NEC Secretariat, Shillong. Dial-Up: dial-up connectivity for Internet, Email etc. Dial-up connections have been provided from Remote Access Server. Email: Email server at NIC, Meghalaya State Unit running SMTP. More than 300 email accounts are existing in the server “shillong.meg.nic.in” Internet: A full fledged Web server which acts as Intranet Website (http://shillong.meg.nic.in) of the State Government has been installed and being maintained at NIC, Meghalaya State Unit.</p>
+<p>For further information, please contact, State Informatics Officer NIC Meghalaya State Unit Room No. 16, Additional Secretariat, Shillong - 793001 Email : sio-megh@hub.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="new-websites-launched-under-india-image-programme-july-2003.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">New Websites Launched under India-Image Programme</span></a><a class="article-nav-link next" href="west-bengal-forging-ahead-july-2003.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Bengal: Forging Ahead</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

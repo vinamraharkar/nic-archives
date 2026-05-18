@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Information and Communications Technology in Elections in India — Informatics July 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2011/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2011/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2011/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2011/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/july-2011/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2011.html">July 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Information and Communications Technology in Elections in India</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">Information and Communications Technology in Elections in India</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Chander Shekhar &bull; pp. 4–8</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2011.html">July 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Conduct of Elections in India is an event that involves mammoth complexity and intensive planning considering electorate size, geographical spread and terrain of India. The advent of ICT in Indian Elections has once again underlined the fact, how technology is a boon to the entire mankind. The Election commission of India is on a mission to integrate ICTs in the Indian Electoral Process within constitutional provisions and a commitment to hold regular, free and fair elections. &quot;Democracy is not just a question of having a vote. It consists of strengthening each citizen's possibility and capacity to participate in the deliberations involved in life in society.&quot; Fernando Cardoso India being the largest democracy in the world, free and fair elections have been held since 1947 at regular intervals as per the principles of the Constitution, Electoral Laws and System. Election Commission of India is a permanent Constitutional Body. The Election Commission was established in accordance with the Constitution on 25th January 1950. The Constitution of India has vested in the Election Commission of India the superintendence, direction and control of the entire process for conduct of elections to Parliament and Legislature of every State and to the offices of President and Vice-President of India. In 1998 the Commission took the historic decision to computerize the entire electoral rolls of 620 million voters. In an attempt to improve the accuracy of the electoral roll and prevent fraud, the Election Commission ordered the making of photo identity cards (EPIC) for all voters in the country. Election Commission of India in consultation with the State Government designates/ nominates Chief Electoral Officer to supervise the preparation, revision, and corrections of all electoral rolls and conduct of elections in the state. Election Commission of India in consultation with the State Government designates/ nominates District Election Officer (DEO) for each district to run and monitor election related functionalities at district level. Under DEO, preparation and maintenance of electoral rolls is done by Electoral Registration Officer (ERO) and Assistant Electoral Registration Officer (AERO). During electoral registration and conduct of elections to Parliament and the Legislative Assembly of State, the officials from Civil Administration help the election officials on need basis. CHANDER SHEKHAR Senior Technical Director NIC HQ cjairath@nic.in NIC has been providing support for all the elections in all the districts and at state headquarters. These include Parliamentary, Legislative, Local bodies and Panchayat elections. The support is provided at various levels for the election processes during pre-polling, polling and post polling events/activities/processes. Pre-polling activities include ICT support for nomination, polling party formation, counting party formation, sector &amp; zonal magistrate appointments, route chart preparation, Electronic Voting Machine (EVM) randomization, etc. The reports on law &amp; order are transmitted to the stakeholders using NICNET, internet and SMS. Post polling activities supported by NIC centres include computerization of counting process and results processing. In the elections of Assembly and the Parliament the results are transmitted to the office of CEO/Election commission. The ICT activities may be classified as: a) Pre-Election activities I Electoral Rolls Management System II Preparation of Electoral Rolls and EPIC III Drafting of Polling Personnel/Party, Randomization of EVMs and Micro Observers IV Know your Polling Booth Application - SMS based, Web based, IVRS based, Voice based, and Voter Slip V Implementation of GENESYS b) Election Day Activities I Communication Plan for Election Tracking (ComET) II SMS based services to monitor Election Process milestones and Polling Progress III Web casting/Video streaming of Poll Proceedings from Polling stations c) Post Election - Results/Trends dissemination d) Other activities related to Elections I Design and hosting of CEO website II Hosting of Electoral Rolls III Website for redressal of Public Grievances IV Customized Web Portal V Network support for data and video requirements VI Setting up of media centre for print and electronic media at Counting location VII.GIS for Election Management, Rationalization of Polling Stations, Election Planning and display of Election Results There are various ICT initiatives currently going on across states and districts as per local requirements. These have started at different times and have varied maturity level and success rates. Some of these initiatives are summarized below for wider dissemination so that more thrust towards adoption/rollout and standardization could be planned and taken up for resources optimization. ELECTORAL ROLL MANAGEMENT SYSTEM (ERMS) Management of electoral rolls is one of the most important aspects in a democratic country for successful elections. Management of electoral roll involves two interrelated processes, namely, preparation and maintenance. An ideal electoral roll ensures all eligible persons should be included and particulars of persons included should be recorded without errors. Although there are well defined and detailed procedures &amp; policies around for preparation and maintenance of electoral roll by the Election Commission of India (ECI), the manner in which electoral roll data is collected, processed and maintained differs from state to state. So, ERMS vision is to standardize creation and maintenance of electoral rolls across the country by automating ECI field functionaries through a standardized application and data formats. DR. ALOK SHUKLA Deputy Election Commissioner Election Commission of India I thank the NIC for providing various IT resource based services for use in election activities like Electoral Roll Management System (ERMS), EPICs, GENESYS, COMet, Trends/Dissemination, Public Grievances Redressal System, customized webportal, SMS based systems to monitor election process, Webcasting / video streaming. With the support and expertise of NIC team, we have been able to make elections more transparent and accountable. ERMS OBJECTIVES Provide enhanced and standardized tools for preparation and maintenance of electoral roll Optimize operations by effective use of ICT Provide timely information for easier and faster analysis Increase Operational Efficiency by removing non-standardized and redundant data Automating back-office functions by minimizing human intervention Ensure transparency and traceability in electoral roll process and data Maintain high integrity of electoral roll data and process Improved service delivery to the stakeholders APPLICATION FOR DRAFTING OF POLLING PARTIES, RANDOMIZATION OF EVMS AND MICRO OBSERVERS This application has been designed, developed and implemented for State Election Departments as per ECI's guidelines and compendium of Returning Officer's handbook. It handles the functionalities like randomization and formation of polling parties and counting parties; randomization of EVMs; randomization and deployment of force; and randomization and deployment of Micro Observers. It also helps in generating the election orders for individual parties and attendance sheet for various constituencies etc. The application engine is capable of randomizing data at three different stages for polling party and counting party formation and two stages for EVM deployment. It is client/server architecture based application with discreet business/process flow. The security features enable data secrecy, transparent and fair deployment of personnel and EVMs. DISE (District Information System for Election) and ELECON (Election Confidential) are two popular flavors of this application with different flavors implemented by different states. DISE has been used and replicated by Punjab, Himachal Pradesh, Delhi, Mizoram, Chandigarh and Karnataka. ELECON has won 11th National e-Governance Award (Silver Medal) 2008. The application has provision to generate a number of check lists and reports for increased convenience and operational efficiency. GENERAL ELECTION SYSTEM (GENESYS - PRE COUNTING) - AN OVERVIEW This application is developed by ECI. It is used to capture pre-counting information about the candidates through GENESYS web site (http://genesys.nic.in ). The forms used and process involved is as follows: Forms used for State Assembly Elections Nomination Summary List of Contesting Candidates Number of Electors &amp; Polling Station Final AC wise Result sheet Candidate Affidavits scanned at the RO/DEO level are sent to CEO Office as well as uploaded on CEO's website. A. MOHAN Deputy Director General, NIC It was in the year 1991 that the ELECON software of NIC Nalanda District Centre was released for use in all the districts of the country by the then Chief Election Commissioner Sh. T.N. Seshan. There has been large number of significant initiatives since then at the district, state and national levels for the use of ICT tools in the election related activities. Apart from providing support for development and implementation of various application systems as per the requirements of Election Authorities, NICNET services of NIC have also been used extensively for messaging, video conferencing, hosting of websites with dynamic contents such as electoral rolls and election results dissemination on counting days. COMMUNICATION PLAN FOR ELECTION TRACKING-ComET A perfect Communication Plan is essential for effective Election Tracking. ComET enables micro-management of elections, concurrent tracking and evaluation of issues and mid-course corrections. ComET is implemented to computerize communication details of all the polling stations of the country for efficient election tracking. ComET is a search enabled database of polling station level communication contact points for focused tracking on the poll day. The Plan operates through a well structured multi-layer Communication Teams (CTs) at ARO (Assembly segment level), DEO (District Level), CEO (State Level) and ECI (National Level). It creates a huge 'psychological presence', builds confidence in field election functionaries and helps the prioritization for intervention at the moment of crisis. Communication Teams have clear demarcation of geographical areas and communication-related responsibilities geared to quick crisis resolution and grievance monitoring and information flow. ComET was first implemented in Madhya Pradesh during 2008 State Assembly Elections. In 2009, during General Elections to Lok Sabha, it was rolled out to cover all States/UTs. SMS BASED SYSTEMS TO MONITOR/MANAGE ELECTION PROCESS MILESTONES AND POLLING PROGRESS NIC Tripura for the first time during General Elections 2009 used the cellular and web technology to improve the election process. Mobile phones were used on a very large scale for poll-day monitoring of events and management. A SMS-based Web Application was deployed to collect progress of poll. The application generated pre-defined Voter Turnout Report (Polling Station wise, Assembly Segment wise and Parliamentary Constituency wise). All the stakeholders like the Assistant Returning Officers, Returning Officers, Observers and the Chief Electoral Officer could directly monitor progress of poll and address any problems immediately. The SMS based system could also be reliably used to track the arrival/departure of the polling parties, conduct of mock poll, presence of polling agents/ micro-observers, deployment of CPF and use of video/digital camera at the polling station. The real time information regarding the poll process and two hourly progress of poll at the polling stations was made available online on the CEO's website for the public and the press on the day of the poll. The enhanced system was subsequently implemented in other state assembly elections like Bihar, West Bengal, Assam, etc. WEB CASTING/VIDEO STREAMING OF POLL PROCEEDINGS FROM POLLING STATIONS The Election Commission directed that in order to enable the Commission to have a true and concurrent record of the violations of the election law and to assess the impact of its corrective measures, the Returning Officer of each constituency shall make arrangements to record critical events through videography during the process of electioneering, including but not restricted to the period of public campaign, the day of poll, the transport and receipt of polled ballot boxes and other materials, counting of votes and the declaration of results in an independent intelligent and purposeful manner. During the Lok Sabha elections 2009 for the first time Tamil Nadu did the Live-Recording and Video streaming to the DEO's office for some polling stations in Chennai, Madurai, Kanyakumari and Sivaganga districts. In the Polling Stations where broadband connectivity was not feasible for live transmission, the proceedings were recorded in the hard disk of the laptops for viewing by the Observer/DEO / RO. The enhanced system enables to view live video streaming by Election Commission of India (ECI) and respective CEO, DEO and Returning Officers. Subsequently, the enhanced system was used for State Assembly Election of Bihar, West Bengal, Tamil Nadu, and Puducherry. DISSEMINATION OF ELECTION TRENDS AND RESULTS NIC was entrusted with the responsibility of hosting the election results and trends on the day of counting for dissemination to public/citizens by ECI. An application was designed, developed and implemented in high availability mode. The application was hosted at NIC Data Centers (IDC, New Delhi and NDC, Hyderabad) and the trends/results were made available at two mirrored sites http://eciresults.nic.in and http://eciresults.ap.nic.in. Dissemination of election results to the stakeholders across the globe was done using standardized and optimized reports for maximum throughput. The information was also released to media through e-mail at periodic intervals. During 2011 State Assembly Elections, the data was fed for the 824 assembly constituencies of five states namely Assam, Kerala, Puducherry, Tamil Nadu and West Bengal. The Data was stored in the central database server in IDC, New Delhi and was mirrored to NDC, Hyderabad with the replication done at Election Commission of India. One separate application was developed to pull the data from the centralized server and generate results pages for publishing in real time mode in public domain. The services of NIC have been utilized and widely appreciated in all the districts and states by the election department. This includes setting up infrastructure for media rooms, uploading of affidavits, support during revision of electoral rolls and polling booths, hosting of applications &amp; websites, providing wider bandwidth, security auditing of software, installation of hardware and software procured by the election department. The various systems/applications developed and implemented by in-house, CMC and NICSI programmers for election departments at districts and states have brought efficiency, transparency and accuracy.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-july-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="loucha-pathap-the-land-records-information-system-in-manipur-july-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Loucha Pathap: The Land Records Information System in Manipur</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

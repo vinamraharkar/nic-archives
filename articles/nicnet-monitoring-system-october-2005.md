@@ -1,0 +1,20 @@
+---
+title: "NICNET Monitoring System"
+publication: "Informatics"
+issue_date: "October 2005"
+pages: [13, 14]
+author: "M Manivannan, Dayal Khandelwal, A Venkatesan"
+section: "E-Gov Products & Services"
+---
+
+## NICNET Monitoring System
+
+NIC’s satellite-based nationwide ICT network ‘NICNET’ covering 35 State/UT Secretariats, 602 District Centers and more than 1000 Blocks, is the largest of its kind in the country with more than 2500 VSAT Nodes. The network supports the provision of various ICT related services by the government.
+NICNET has been offering network services over Ku-band VSATs (SCPC DAMA, Broadband VSATs (DVB)), Wireless Metropolitan Area Networks (MANs) and Local Area Networks (LANs) with NICNET gateway for Internet resources. NIC is also providing video conferencing services from around 400 cities all across India over NICNET. This is the largest video conferencing network in India, spread across the length and breadth of the country. The video conferencing facilities are already being provided in all districts of 18 states and these are being widely utilised by the various State and UT Governments. NIC has in-house Multipoint Conference Server (MCS) which enables multiple sites to participate in a live conference. NIC also has capabilities to provide video conferencing services using mobile video conferencing VSAT to the NICNET user domain.
+Rapid growth and vast expansion of the satellite network has increased the need to put in place, the tools for monitoring and evaluation of network performance. In the initial stages, all monitoring was done using stand alone systems and users did not have any means to evaluate the performance of their VSAT. SATCOM Division of NIC has developed a set of tools to facilitate all users to monitor the performance of their VSAT as well as to enable better management of large network projects. These tools allow the users to check availability and data usage of each VSAT on a daily basis, check the current online status of VSAT and get the details of the throughput of a VSAT for last 12 hrs which is available in different formats including graphical reports. All these reports are available on the website of the SATCOM Division http://satcom.nic.in/. The information can be accessed through the link ‘NICNET Reports’ on the main page of this website.
+ž| NICNET Reports
+NICNET reports provide a means to the user to graphically view Network availability / Utilisation / Data transferred / On-line or Off-line status / Voice and Video utilization etc (for both current month and previous month). Each user can check the utilization of a particular VSAT. Moreover summary reports based on networks and major projects are also available. This helps the user to examine and analyse patterns of usage as well as availability and downtime of their respective VSATs.
+ž| Online Health Monitoring System for VSATs
+Real time information has been provided using a WEB based Online Health Status monitoring system for VSATs. The system has been implemented with clickable maps, which can drill down to a specific VSAT of the user’s interest. Through this system, one can easily know the number of online/offline VSATs of a state or a particular project. Project Coordinators can use this tool to keep track of the online or offline VSATs at a particular point of time. It gives a good indication of actual usage and can be used to take corrective measures in case any problem occurs.
+ž| Online Traffic (Current utilization) Monitoring Tool
+A Multi Router Traffic Grapher (MRTG) web based tool is available, which provides online data throughput of every VSAT that is operated on NICNET. It also indicates any abnormal traffic either in transmission or reception, which helps the user to identify and analyse virus or spam traffic that flows through a specific VSAT. Any abnormal pattern can be analysed and problems can be addressed effectively. The main objective of providing these tools is to enable the users to evaluate performance of their VSATs themselves. SIOs, HODs, Project Coordinators and individual users can use the reports and tools for availing enhanced services from the NICNET.

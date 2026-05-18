@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Elections 2024 — Informatics July 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2024/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2024/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2024/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2024/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2024.html">July 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>General Elections 2024</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">In Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">General Elections 2024</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Rajiv Kumar, Amit Agrawal IAS, G. Mayil Muthu Kumaran, Dr. Neeta Verma &bull; pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2024.html">July 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Elections are the cornerstone of democratic governance, providing citizens with the power to choose their representatives and shape the policies that affect their lives. In India, the electoral process is a monumental event, both in scale and complexity, reflecting the nation’s vast diversity and vibrant democratic ethos. Conducting elections in India involves meticulous planning, coordination, and the integration of advanced technologies, making it a fascinating subject of study for political scientists, technologists, and governance experts alike.</p>
+<p>India’s elections are distinct from those in other parts of the world due to several unique factors. Firstly, the sheer scale of the electoral process is unparalleled. With over 900 million eligible voters, India’s elections are the largest democratic exercise globally. This vast electorate is spread across urban and rural areas, encompassing a multitude of languages, cultures, and socio-economic backgrounds. Managing such a diverse and expansive voter base requires innovative approaches to ensure inclusivity and accessibility.</p>
+<p>Secondly, the technological integration in Indian elections sets a global benchmark. India has been a pioneer in the use of Electronic Voting Machines (EVMs) and has continuously evolved its electoral technology to enhance transparency and efficiency. The introduction of Voter Verifiable Paper Audit Trails (VVPATs) has further cemented the credibility of the electoral process, providing a verifiable paper trail for each vote cast.</p>
+<p>The Election Commission of India (ECI), an autonomous constitutional authority, plays a pivotal role in overseeing the entire electoral process. Its responsibilities range from updating electoral rolls and regulating campaign activities to ensuring compliance with election laws and managing the logistical aspects of elections. The ECI’s autonomy and extensive powers are crucial for maintaining the integrity and fairness of the electoral process, a feature that is often highlighted in global comparisons.</p>
+<p>Security is another critical dimension where Indian elections differ significantly from global counterparts. Given India’s diverse security landscape, extensive planning and coordination among multiple security agencies are essential to ensure a safe and secure voting environment. This involves deploying central and state police forces, paramilitary units, and even the military in sensitive areas, tailored to the specific security needs of different regions.</p>
+<p>Moreover, the pre and post-election activities in India are marked by meticulous preparations and comprehensive measures to address potential challenges. From candidate selection and campaign strategy development to voter registration drives and logistical planning, the pre-election phase involves a series of coordinated efforts aimed at ensuring a smooth electoral process. Post-election activities, including vote counting, result declaration, and dispute resolution, are managed with precision to uphold the democratic principles of transparency and fairness.</p>
+<p>The Election Commission of India (ECI) has been at the forefront of leveraging technological advancements to enhance the electoral process in India. This commitment to modernization has significantly contributed to the efficient and transparent elections, addressing the needs of a diverse range of stakeholders, including voters, political parties, and administrative officials. The integration of Information and Communication Technology (ICT) into the electoral framework has been pivotal in transforming the ECI into a responsive organization capable of handling the complexities of the electoral landscape.</p>
+<p>In its quest to become a responsive and efficient organization, the ECI has embraced e-Governance by adopting IT-enabled seamless operations across all its offices nationwide. This initiative aims to build a core set of integrated IT applications that cover all functions of the ECI, serving various stakeholders during pre-election, election, post-election, and non-election phases.</p>
+<p>&quot;Democracy is not just a question of having a vote. It consists of strengthening each citizen’s possibility and capacity to participate in the deliberations involved in life in society&quot; - Fernando Cardoso</p>
+<p>&quot;Technology has played a crucial role in ECI’s election management, covering all stages from elector registration to result declaration. During the 2024 Lok Sabha Elections, ECI’s IT systems, backed by NIC’s infrastructure, facilitated smooth operations for election offices nationwide and seamless public-facing portals. The Commission commends the leadership and NIC teams for their exceptional support. Special recognition goes to Sh. R S Mani for ensuring high availability and security, and to Sh. M Muthu Kumaran and Sh. Sanjay Rastogi for their continuous coordination and system optimization. The Commission also extends gratitude to all NIC teams at State and District Centres for their vital role in supporting ground operations and contributing to the success of the 2024 elections.&quot; - Rajiv Kumar, Chief Election Commissioner, Election Commission of India</p>
+<p>The primary objective is to transform both the front-end and back-end operations of the ECI and the Chief Electoral Officer (CEO) offices, ensuring a streamlined and cohesive electoral process.</p>
+<p>Over time, the ECI has developed and innovated IT applications/apps for the ease of voters, political parties and ECI officials. These applications have addressed a myriad of issues, enhanced performance and resolving challenges faced in the electoral process. However, the ECI now intends to advance to the next phase by consolidating the functionalities of these applications into a centralized, integrated application.</p>
+<p>The centralized integrated application envisioned by the ECI aims to consolidate and streamline key functions, offering a unified platform for electoral management. This application will encompass various critical functionalities, ensuring a cohesive and efficient electoral process.</p>
+<p>Pre Elections: Updating Voter List, Registration of Political Parties, Delimitation of Constituencies, Ensuring Election Environment, Declaring Election Schedule, Application for nomination in Election Commission, Finalizing Nomination, Public Awareness Campaigns.</p>
+<p>Elections: Election Management, Ensuring Election environment and security, Electoral campaign of parties and candidates, Conducting Elections.</p>
+<p>Post Elections: Result Counting and Announcement, Submission of election expense by candidates and parties, Dispute Resolution and Transition of Power, Ready Ballot Unit.</p>
+<p>The National Informatics Centre (NIC) plays a crucial role in supporting the Election Commission of India (ECI) at various levels-state, district, and central-by providing technical assistance, developing IT applications, and ensuring the smooth functioning of electoral processes. NIC’s contributions are integral to the modernization and efficiency of the electoral system, helping to manage the vast and complex landscape of Indian elections.</p>
+<p>NIC has been providing support for all the elections in all the districts and at state headquarters. These include Parliamentary, Legislative, Local bodies and Panchayat elections. The support is provided at various levels for the election processes during pre-polling, polling and post polling events/ activities/ processes.</p>
+<p>At the state level, NIC plays a crucial role in customizing and deploying IT applications to meet the unique needs of each state’s election commission. This involves developing state-specific modules within the broader Election Management System (EMS), which include functionalities for constituency mapping, election worker management, and logistical planning. NIC ensures that these state-level applications are seamlessly integrated with the central EMS, facilitating efficient data exchange and coordination. In addition to application development, NIC provides extensive training and technical support to state election officials. This includes conducting workshops and hands-on training sessions to ensure that officials are proficient in using the electoral IT systems.</p>
+<p>At the district level, NIC’s involvement is equally comprehensive and vital. NIC aids district election offices in managing polling stations through IT tools that optimize their placement and resource allocation. These tools ensure that polling stations are accessible and adequately equipped, enhancing the overall efficiency of the voting process. During the election period, NIC provides real-time monitoring applications that track the movement of Electronic Voting Machines (EVMs), the progress of voting, and any incidents or irregularities that may arise. This real-time monitoring capability enables district election officials to respond promptly to issues, ensuring a smooth and secure election process. NIC also supports the district-level grievance redressal system, which allows citizens to report problems related to voter registration, polling, and other electoral activities. This system ensures that grievances are logged, tracked, and resolved efficiently, bolstering voter confidence and participation by addressing their concerns promptly. Additionally, NIC conducts training programs for district election officials and poll workers, equipping them with the skills needed to operate electoral IT systems effectively. This training is crucial for building the capacity of district election offices to manage elections seamlessly. NIC DIOs are appointed as District Nodal officer at Election Management Cell during the election time for involvement in election related activities.</p>
+<p>&quot;The unwavering support and expertise provided by NIC have been instrumental in the successful conduct of the Lok Sabha Elections 2024. The NIC team’s dedication, loyalty, and team spirit were pivotal in overcoming numerous challenges, ensuring a smooth and effective election process. Their innovative solutions and commitment to excellence facilitated seamless operations, real-time reporting, and robust data management, significantly enhancing the transparency and integrity of the elections. I would like to extend my heartfelt appreciation to the entire NIC team for their invaluable support and relentless efforts throughout the entire election process. Their hard work and collaboration with the Election Commission of India have been crucial in bringing the elections to a successful and fruitful conclusion. NIC’s contribution has set a high standard, and we look forward to continuing this partnership for future electoral endeavours.&quot; - Dr. Neeta Verma, Director General (IT), Election Commission of India</p>
+<p>NIC Headquarter is responsible for setting up and maintaining the IT infrastructure required for conducting elections. This includes servers, data centres, and secure communication networks. NIC also implements cybersecurity measures to protect electoral data from cyber threats, ensuring the confidentiality and integrity of the election process. Major ECI ICT Applications are hosted in NIC Data Centre, NIC provide technical support in managing these applications in terms of architecture based.</p>
+<p>During the counting process, NIC has been instrumental in ensuring the smooth dissemination of election results, even during the 2024 Lok Sabha elections. Leveraging its technical expertise, NIC’s Election Commission Informatics Division (ECID) manages all applications hosted on the NIC Cloud, providing critical technical support to the ECI. This support is essential for the seamless announcement of election results, involving several well-defined steps to ensure security and efficiency.</p>
+<p>Before the dissemination of election results, the ECID, NIC undertakes a series of critical activities to ensure a seamless and hiccup-free process on the day results are announced. For the Lok Sabha Election Results 2024, NIC, in collaboration with the Election Commission of India (ECI), meticulously prepared the system to address any potential challenges that might arise during the result dissemination.</p>
+<p>One of the primary activities involves detailed discussions with state NIC offices. These discussions are essential for aligning the strategies and protocols that will be implemented on the result day. NIC ensures that all state-level IT infrastructures are synchronized with the central system, facilitating smooth data flow and coordination.</p>
+<p>Additionally, network security is a top priority. NIC performs comprehensive security checks to safeguard the ECI’s network against any malicious attacks. This includes setting up firewalls, intrusion detection systems, and regular security audits to identify and mitigate vulnerabilities. By sensitizing the ECI network regarding potential threats and ensuring robust security measures, NIC aims to protect the integrity of the election results.</p>
+<p>To prepare for any unforeseen failures, NIC conducts Disaster Recovery (DC-DR) drills. These drills simulate various failure scenarios to test the resilience and responsiveness of the IT infrastructure. The objective is to ensure that in the event of a system failure, the backup systems can be activated immediately, minimizing downtime and ensuring continuity in the result dissemination process.</p>
+<p>NIC also performs extensive load testing on the IT systems that will be used for result dissemination. This involves simulating high traffic conditions to evaluate the system’s capability to handle the expected load on the result day. Through these tests, NIC can identify any bottlenecks or weaknesses in the system. If any enhancements in the architecture are required, NIC implements them well in advance to ensure the system can efficiently manage the heavy data traffic during result dissemination.</p>
+<p>In the final phase of preparations, NIC ensures that all components of the IT infrastructure are fully operational and ready for the result day. This includes checking all hardware and software components, verifying network configurations, and ensuring that all security protocols are in place. NIC also conducts final training sessions for ECI officials to familiarize them with the systems and protocols, ensuring that everyone is well-prepared to handle the result dissemination process smoothly.</p>
+<p>On the day of the Lok Sabha Election Results 2024, the result dissemination architecture managed an immense volume of traffic, starting from 1,00,000 hits per second to an astonishing peak of 2.5 million hits per second. This high demand required robust systems and meticulous planning to ensure that the servers could handle the intense load without compromising performance. NIC, in collaboration with its partners, had prepared extensively for this scenario, implementing load balancing, scalable server infrastructure, and real-time monitoring to ensure the systems remained responsive and stable throughout the day.</p>
+<p>&quot;It has been a privilege for NIC to collaborate with the Election Commission of India in transforming the electoral process through advanced technological solutions. The development and deployment of the Observer Portal for the Lok Sabha Elections 2024 exemplify our commitment to supporting the ECI with cutting-edge innovations. Our team worked diligently to ensure the robustness of the portal, enabling real-time reporting, data integration, and effective monitoring. Advanced security measures and real-time monitoring capabilities ensured seamless handling of high traffic, mitigation of cyber threats, and effective technical support during result dissemination on election day. NIC is proud to witness the positive impact of our collaboration with the ECI. The success of the 2024 elections is a testament to our innovative solutions and unwavering commitment to excellence. We remain dedicated to supporting future elections with cutting-edge technologies and innovative approaches, continually enhancing the transparency, security, and efficiency of the electoral process. Our partnership with the ECI is a source of great pride, and we look forward to contributing to the success of many more elections to come.&quot; - Amit Agrawal IAS, Director General, National Informatics Centre</p>
+<p>Electronically Transmitted Postal Ballot System (ETPBS) is developed for the use of the Service Voters. This system enables the service voters to cast their vote using an electronically received postal ballot from anywhere outside their constituency.</p>
+<p>Suvidha: This is an exclusive app for contesting candidates and political parties. With the use of this app candidates can get all the nomination related forms and updates. They can use the app to apply for permissions (meetings, rallies, vehicles, loudspeakers, etc.) and also check real time permission status through the app.</p>
+<p>Voter Helpline: This is a multipurpose app and can be used for various voter services including registration, transposition, verification, etc. With the help of this app, voters can also get all the information related to election and also election news and updates.</p>
+<p>ERO-Net: ERO-Net brings in seamless processing of forms, easy handling of the databases. It facilitates efficient form processing, simplified dashboards, role based access, and maintenance of E-Rolls.</p>
+<p>PwD App: This will enable Persons with Disability voters to mark themselves as PwD and get door step facilitation and other facilities meant for PwD voters.</p>
+<p>cVIGIL: With this app, voters can now report any Model Code of Conduct violations and election misconducts within minutes of witnessing them. The flying squads will navigate to the spot of incidence with the help of auto location to take prompt action.</p>
+<p>Vehicle Management System: A web based application for managing vehicles diverted / requisitioned from other departments for election work. All the information about the details of dept. vehicle registration number, driver contacts and periodical fuel allotment to the vehicle are uploaded in the app.</p>
+<p>In addition to managing the high traffic, NIC had to address significant cybersecurity threats, particularly DDOS attacks. These attacks aimed to overwhelm the system with excessive traffic, potentially disrupting the result dissemination process. To counter these threats, NIC worked closely with the CERT-IN, TCS SOC, ECID NIC and NIC-Cert.</p>
+<p>The successful dissemination of the Lok Sabha Election Results 2024, despite unprecedented traffic and significant cybersecurity threats, underscores the effectiveness of NIC’s comprehensive planning and collaboration with key partners. By leveraging advanced technologies and maintaining a state of high alert, NIC, along with CERT-IN, TCS SOC, and ECID NIC, ensured that the election results were delivered smoothly, securely, and transparently. This collective effort not only safeguarded the integrity of the election process but also reinforced public confidence in the democratic system.</p>
+<p>ECID, NIC, developed the Observer Portal to enhance oversight and transparency during the Lok Sabha Elections 2024. During the 2024 elections, the Observer Portal focused on operationalizing the Field Observers and Reporting modules. These components enabled election observers—comprising General Observers, Police Observers, and Expenditure Observers—to submit real-time reports and conduct thorough data analysis. Such capabilities were pivotal in swiftly addressing electoral issues and guiding informed decision-making.</p>
+<p>The development process of the Observer Management System adhered closely to Functional Requirement Specifications (FRS) provided by ECI, employing Agile methodology and the latest IT platforms. Prior to its launch, rigorous testing and multiple application demos were conducted in collaboration with the NIC/ECI team.</p>
+<p>Key integrations include the use of C-DAC’s e-sign service for digital authentication, NIC email relay for seamless communication, and ECI SMS services for timely notifications. Moreover, the Observer Management System’s mobile app is seamlessly integrated with the web-based platform via APIs, ensuring flexibility and accessibility for users in the field.</p>
+<p>Looking forward, the ongoing development of the Data Entry and Deployment modules aims to further optimize data management and enhance the efficiency of observer allocation in upcoming elections. These advancements underscore the commitment to continuous improvement and technological innovation in electoral oversight and transparency.</p>
+<p>&quot;Providing technical support to the Election Commission of India for the Lok Sabha Elections 2024 has been an extraordinary journey. NIC’s team took the lead in managing ECI applications, effectively handling high traffic and mitigating cyber threats through advanced security measures and real-time monitoring capabilities. Our team’s dedication and expertise ensured the seamless operation of these critical applications, safeguarding the integrity of the electoral process. NIC is proud to witness the positive impact of our collaboration with the ECI. The success of the 2024 elections is a testament to our innovative solutions and unwavering commitment to excellence. We remain dedicated to supporting future elections with cutting-edge technologies and innovative approaches, continually enhancing the transparency, security, and efficiency of the electoral process. Our partnership with the ECI is a source of great pride, and we look forward to contributing to the success of many more elections to come.&quot; - G. Mayil Muthu Kumaran, Dy. Director General, National Informatics Centre</p>
+<p>The 2024 Lok Sabha Elections were not just a reflection of the political pulse of the nation but also a testament to the resilience and vibrancy of Indian democracy. With NIC’s extensive support and innovative solutions, the Election Commission of India successfully navigated the complexities of this massive electoral exercise, demonstrating a robust commitment to maintaining the sanctity and transparency of the electoral process. As the world watched, India showcased its democratic strength, facilitated by the unwavering support and technological advancements provided by NIC.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="disclaimer-july-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Disclaimer</span></a><a class="article-nav-link next" href="lakshadweep-ut-from-islands-to-digital-hubs-e-governance-evolution-in-ut-july-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Lakshadweep UT: From Islands to Digital Hubs: E-Governance Evolution in UT</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

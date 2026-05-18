@@ -1,0 +1,21 @@
+---
+title: "Sonitpur : With the Computer Age"
+publication: "Informatics"
+issue_date: "July 1996"
+pages: [8]
+author: null
+section: "In the Limelight"
+---
+
+## Sonitpur : With the Computer Age
+
+Located at a distance of 181 km from the Assam State capital, Guwahati, Sonitpur is one of the historical Indian Towns. It houses some of the most important and historic monuments in Assam. In the abode of this picturesque town is located NIC's District Centre. NIC, Sonitpur District Centre was established on March 14, 1990 and became a full fledged functional unit on October 26, 1993.
+
+Presence Being Felt
+No sooner was the computer culture introduced that NIC, Sonitpur took up the responsibility of spreading it. For this purpose it undertook a number of computerization projects. One of the pilot projects was Computerization of Land Records for the Ministry of Rural Development, Government of India. Out of the six states selected for this project, Assam was one of them and in Assam Sonitpur was selected for Computerization of Land Records primarily because the District had already completed settlement operations. The District Administration, Sonitpur along with NIC District centre took up the responsibility of computerization of the Public Distribution System (PDS). The move to computerize such a vast and extensive system as PDS was necessitated by the fact that the initially existing system was plagued by many anomalies. The anomalies such as issue of bogus cards and misappropriation of the supply by vested agents, were largely due to inefficient monitoring of the system. The new computerized system not only uprooted all these short comings but also provided a smooth running, properly-allocated and monitored distribution system. This system was made transparent to the officials, employees as well as the concerned public. NIC, Sonitpur District Unit also undertook the computerization of the Pay Roll System for the District Administration, Sonitpur. The hectic and time-consuming manual system was replaced by a much faster and efficient computerized system. Today the District Administration is greatly benefited by the system and is able to prepare its pay roll for around 450 employees with ease. Computerization of the Arms Licence Information System was yet another important project undertaken by the District Centre. The problems of the manually run system were many. There was no properly maintained chronological record of the Arms Licence issued to the customers. Moreover, because of ill-maintenance, accessibility of records regarding licensing, cancellation or renewal was very difficult. The computerized system helped the administration in terms of easy accessibility for reference and monitoring of the system.
+
+Establishing Links
+By making available the NICNET connectivity, NIC, Sonitpur solved a lot of communication problems and also speeded up various development projects. NICNET connectivity was provided to fulfil the State Government Finance Officials urgent need for an up-to-date day—today weekly transition report of all treasuries and sub-treasuries of the different districts to monitor the revenue receipts and expenditure. The weekly revenue transaction reports of Sonitpur treasury and Biswanath sub-treasury were regularly processed and transmitted to Dispur through NICNET. The District Agriculture Office, Sonitpur benefits from the NICNET link-up for numerous jobs, such as, daily price of agriculture, subsidy, taxes, etc. Work in full swing at NIC, Sonitpur District Unit Tezpur, Assam.
+
+Training for Awareness
+Imparting training from time to time and as per requirement has been an integral part of NIC, Sonitpur's activities. Training programmes are organized for every level of Users as level as officials. Major among them are the courses for Computer Awareness and Application Training. Basic computer operation and NICNET operation courses are also conducted both for NIC and outside officials. Today, NIC Sonitpur is one of the ever busy and indispensable NIC computer centres. It is equipped with the latest state-of-the-art technology. And its sincere efforts have awakened the people in this remote area with the use and importance of computers.

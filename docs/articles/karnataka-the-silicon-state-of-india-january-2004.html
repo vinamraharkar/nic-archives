@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KARNATAKA – the Silicon State of India — Informatics January 2004</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2004"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/january-2004/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/january-2004/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/january-2004/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/january-2004/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2004/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2004/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2004.html">January 2004</a><span class="breadcrumb-sep">&rsaquo;</span><span>KARNATAKA – the Silicon State of India</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">S TATE IN FOCUS</div>
+          <h1 class="article-title" data-pagefind-meta="title">KARNATAKA – the Silicon State of India</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Sudha Kumari &amp; M M Shetty, NIC Karnataka &bull; pp. 8–11</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2004.html">January 2004</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">KARNATAKA, the Silicon State of India, with its rich prowess in the Information Technology arena, has captured the attention of the whole world, enticing IT firms from far and wide to pool in their investments in the State. Bangalore, its capital, otherwise known as the ‘Silicon Valley’, ‘Bytes Basket’, ‘Garden City’, ‘India’s Manhattan’ and so on, is the cradle for most of the flourishing IT Industry. The Government of Karnataka, in its endeavour to usher in an era of effective e-Governance, believes that Information Technology should be aimed at providing need-based, timely and good quality information systems to reach the citizens in an efficient and cost effective way. Since the inception of NIC Karnataka in 1987, it has been instrumental in introducing computer culture in the Government and continues supporting the Government’s e-Governance initiatives through quality services in the spheres of consultancy, networking, system study, system design, software development, implementation and hand holding.</p>
+<p>Major Projects To bridge the digital divide between the haves and have-nots, the keyword is ‘Citizen-centric’ projects. NIC KSU has been instrumental in the implementation of some major citizen centric projects…</p>
+<p>?   BHOOMI for Revenue Department BHOOMI is one of the first e-Governance projects successfully implemented for common man, jointly by the Government of Karnataka and NIC KSU. It is a workflow based online system to carry out mutations on land records data. It has been providing service to more than 70 lakh farmers of Karnataka since the last 3 years and on an average around 20,000 users are being benefited every day. Land Records Kiosks have been set up in all 177 Talukas to issue the land records documents to public on demand. Finger print (Bio-metrics) authentication has been incorporated to ensure foolproof system. BHOOMI has received widespread recognition and has become the model for replication in many other States. International awards have also been conferred on BHOOMI, namely the silver medal at CAPAM 2002 and was also adjudged a finalist at the Stockholm Challenge 2002. For the successful implementation of BHOOMI upto Taluka level, technical and training support to officials has been imparted with the help of District Informatics Officers.</p>
+<p>?| Secretariat- online : A jewel in the Crown Secretariat, the highest policy making body in the State, is a repository of wealth of knowledge. To introduce the concept of Knowledge Management, which ultimately drives towards e-Governance, NIC Karnataka State Unit has designed, developed and implemented Sachivalaya Vahini (Secretariat Knowledge System), that led to Online Karnataka Secretariat. Sachivalaya Vahini makes use of the large optical fibre based Secretariat LAN setup by Government of Karnataka, connecting more than 1200 nodes spread across 40 Secretariat departments.</p>
+<p>Sachivalaya Vahini consists of the following application packages.</p>
+<p>?| Letter Monitoring and Public Grievances Letters from state and central government departments, other organizations, People’s representatives, and grievances received from the citizens can be scanned and electronic Letter will move from desk to desk for actions to be taken. The entire movement of the Letters can be traced and action taken in each section and the reason for pendency is made available.</p>
+<p>?| File Management Electronic Letters will be filed to create electronic Files and these Files are moved crossing departments for actions to be taken. All registers maintained and reports generated manually were replaced with electronic registers and reports. Extensive queries based on any parameter of the File or action taken on the File can be made.</p>
+<p>?| Court Cases Monitoring This provides information about all Court Cases filed against the Government and by the Government. Court notices will be converted to electronic Letters through Letter Monitoring System and finally into an electronic File. Legal cell undertakes actions like preparation of parawise remarks, draft statement of objections, appointing Government Advocate, etc. Affidavit will be filed in the court and hearing will start. As and when court issues orders, those details are updated in the system.</p>
+<p>?| Budget Proposals Monitoring Government allocates funds to departments under different head of accounts to implement various development schemes. All the actions in the process have been computerised, monitored and required queries and reports can be generated.</p>
+<p>?| Personnel Information &amp; Leave Management All the details of the Secretariat employees as recorded in the service register are captured through this system. As and when transfer, deputation, promotion, retirement etc . occurs, details can be updated and necessary orders can be generated. Through Leave Management system, Secretariat employee can apply online for any type of Leave and the sanction shall be sent through email. Effort is on to integrate both Personnel Information and Leave Management system with Smart card technology.</p>
+<p>?| Knowledgebase A knowledge base consisting of all Acts, Rules, Government Orders and Circulars is being setup so that decision making process maybe expedited.</p>
+<p>?| Dashboard &amp; Ticker service Dashboard will give a bird’s eye view of the Letters, Public Grievances, Files, Court Cases, Budget proposals and Employees details. Ticker Service will enable any officer to monitor the working of his staff.</p>
+<p>?| Customer Support System As Secretariat LAN is a large network, users are bound to encounter problems at times and through the CSS, complaints received from the users can be recorded and immediate actions can be taken.</p>
+<p>?| Web Enabling All queries of general public interest related to Secretariat Knowledge System have been web enabled to provide access to citizens. Citizens can make a query to find out the status of the Letter they have sent to the Government and the exact location where the File is pending.</p>
+<p>?    ‘Mukhyavahini’ for the Chief Minister’s Secretariat For the Chief Minister’s Secretariat to handle and redress public grievances, Intranet &amp; Internet based Mukhyavahini software for Petition Monitoring, Chief Minister’s Relief Fund and web based Departmental Action Taken Report, are being utilized extensively. Till date, around 1,35,000 petitions have been monitored through the system. Grievances collected by Hon’ble CM during ‘Janaspandana’, the face-to-face interaction programme with villagers in any location, is also captured through the web based software for redressal. ‘Chief Minister’s Review’ is a single point portal for the Hon’ble CM to review important projects and developmental works. Daily weather report, rainfall data, electricity distribution with other critical parameters are also made available.</p>
+<p>?    SARATHI &amp; VAHAN for Transport Department Automation of Regional Transport Office (RTO) was first taken up in 1999. Currently, 9 RTOs are fully utilizing this software for their day-to-day operations of on-line Registration, License, Permit, Enforcement, Fitness, Fee and Tax sections. This has led to enhanced revenue collections to the tune of 20% as the system facilitates close monitoring of tax defaulters.</p>
+<p>?    SAHAKARA DARPANA for Directorate of Co-operative Audit NIC KSU has partnered with the Directorate of Co-operative Audit to bring in transparency in the administration through the ‘SAHAKARADARPANA’ dual language portal (http://sahakaradarpana.kar.nic.in) to display the financial position of more than 30,000 Co-operative Institutions, depicting their strengths and weaknesses.</p>
+<p>?    RAITA MITRA for Agriculture Department Access to reliable, updated information and improved communication is a crucial requirement for sustainable development of Agriculture. ‘RAITA MITRA’ (http://raitamitra.kar.nic.in) portal provides tips, information and bulletins on a daily basis to farmers for better cultivation. Access to information is provided free of cost through the 745 RAITA MITRA centres across the State.</p>
+<p>?    KRISHI MARATA VAHINI for Department of Agricultural Marketing The Hon’ble Chief Minister inaugurated this online agricultural price information (http://maratavahini.kar.nic.in) bi-lingual portal in 2002 and since then, the hit counter has already crossed the 1 lakh mark. The arrivals, minimum, maximum and modal prices of over 100 agricultural commodities and 2000 varieties on sale at the 142 Agricultural Produce Market Committees (APMCs) are available on Internet by 4 pm everyday.</p>
+<p>?    SAMANYA MAHITI for Rural Development and Panchayat Raj To help in micro and macro level planning, the basic amenities available in all hamlets are captured into 400 parameters that are categorized into 21 sectors. Data collected and keyed in at the District / Taluka, are transmitted electronically for consolidation at State level. Web site (http://www.kar.nic.in/rdpr) enables information to be viewed at various levels. Samanya Mahiti is implemented in all the 27 districts and the Department is actively working towards keeping the data up-to-date. Touch screen Information Kiosks have been set up at strategic locations for citizens to access this information.</p>
+<p>?    ASTHI TERIGE for Rural Development and Panchayat Raj ‘Asthi Terige’ is the Property enumeration and Tax calculation software developed for the Gram Panchayats, where the authorized person can fix the Annual Rental Value and rates of tax. Tax collections are being organized through computerized cash counters.</p>
+<p>? ZPGIS for Zilla Panchayat ZPGIS is a powerful tool that displays information about various amenities available in the district/taluka/village on the map and to perform various analysis for the district administration. SPANS GIS software is customized for this application and is implemented in Bellary district.</p>
+<p>?     CASCET - 2003 for Education Department CASCET-2003 relates to Computer Based online Admission to Professional Colleges for Medical and Engineering disciplines. Software caters to the Computerized Evaluation of Answer Sheets (OMR), announcement of the Merit List and allotment of seats. The website http://cet.kar.nic.in is being regularly updated . The project is successfully running for the tenth consecutive year. The success of CET has also led to the counselling and admissions for Diploma Engineering, Nursing, Ayurvedic, Homoeopathic and Unani degree courses. Additional features include automated Audit trail for any back-end transaction, Bio-Metrics (FIT) authentication for access, Web enabled registration for entrance examination, Comparison statement as per key values and real answers, performance comparison between the qualifying examination and CASCET, thereby enabling transparency with accuracy in rank generation and seat allocation.</p>
+<p>? CEMIS for Education Department A Decision support system for better teacher and school management has been enabled through Comprehensive Education Management Information System (CEMIS) since 1996.</p>
+<p>?    Returns Filing System for Commercial Taxes Department Commercial Taxes Department contributes to more than 70% of the State’s revenue. ‘Returns Filing System’ (RFS) for the KST and CST Acts is being extensively used in 290 Assessment Circles for Registration, Payments, Returns Filing, Notices, Assessments and DCB for the past 8 years.</p>
+<p>?    CHECKDOC for Commercial Taxes Department Computerised Commercial Taxes Checkposts play a vital role in preventing tax evasion. Since 2001, online computerisation has been implemented in 10 important Checkposts which are networked to the Head Office for information interchange. Online verification of consignor and consignee, Transit Pass information, Blacklisted dealers identification, Detection of duplicate bills, under-value transactions has been implemented. CHECKDOC has resulted in substantial increase in revenue as bogus transactions are traced and consignor-consignee cross-verifications carried out.</p>
+<p>? State Budget for Finance Department The Budget Information System was first implemented in 1991 to generate around 15 accurate, aesthetic and bi-lingual (English, Kannada) budget documents. District, Department and scheme wise data for plan schemes is captured over NICNET, which eventually culminate in the Plan and the District (ZP Link) documents.</p>
+<p>? e-archive for Department of Archives The Department of Archives is a veritable storehouse of documents dating back to the 17 th century. To provide an insight into the valuable collection of documents, Catalogue software has been web enabled (http://kannadasiri.kar.nic.in), featuring powerful search engine inclusive of Phonetic search for over 5 lakh documents.</p>
+<p>?    e-museum for Department of Archaeology &amp; Museums The Department of Archaeology &amp; Museums is the custodian of the heritage and culture of Karnataka, which is visible through the artifacts available at the 17 museums, numerous monuments and Archaeological sites under its control. To share this rich information with one and all, as a first step, Bangalore Museum’s catalogue of artifacts with photographs has been hosted (http://kannadasiri.kar.nic.in) with a powerful search engine.</p>
+<p>?    Complaints Information System for Karnataka Lokayukta Corruption is the root cause of all evil and the Karnataka Lokayukta aims at eradicating corruption by bringing the culprits to book. Software for accepting complaints with acknowledgement issued online, automatic job allocation to officers for investigation and facility for updating the status of complaints has been implemented.</p>
+<p>?   Consumer Case Information System for KSCSRC Karnataka State Consumer Disputes Redressal Commission (KSCSRC) went online on 1st January 2003. The information of the cases from filing to disposal is keyed in. Generation of daily cause list, Court Hall updations, Recording Court Hall proceedings, Certified copy of filings, Judgement Transcription and many more outputs are instantaneously available. Computerisation of all the 27 District Consumer Forums has been initiated.</p>
+<p>? WEBPAAS for Passport Office To apply for a passport, citizens all over the State had to travel to the Passport office. The Ministry of External Affairs has now decentralized the process of acceptance of passport applications to the district SP/DC/DM offices. WEBPAAS has crossed all boundaries and allows for passport application acceptance at the districts, where they are registered and acknowledged, with on-the-spot receipt issue. Data from the districts is uploaded daily to the central web server for consolidation and further processing. WEBPAAS is implemented in 150 districts throughout the country.</p>
+<p>?    Bwssb Ganakeekrutha grahakara Seva (BGS) for BWSSB BGS automates Revenue Billing and new connections for the Bangalore Water Supply and Sewerage Board (BWSSB), catering to 4 lakh consumers in Bangalore City. The merits of the system include no manual intervention, better services to consumers through ECS/SEVAK and data synchronization for anywhere bill payment between Sub-Divisions and barcode bills.</p>
+<p>?    ASHRAYA for Rajiv Gandhi Rural Housing Corporation Limited (RGRHCL) RGRHCL has re-engineered its processes to bring about the ‘Less-paper Office’ culture, wherein lakhs of paper reports being sent by courier every month for consolidation from Taluks has been dispensed with. Through ASHRAYA, the computerised system for monitoring rural housing schemes, beneficiaries’ details at taluka level are keyed in for further consolidation at State level.</p>
+<p>?    e-Granthalaya, Generic Software for Library Automation e-Granthalaya, developed by NIC Karnataka is a generic windows based Library Automation Software, which has been standardized by NIC HQ for implementation all over the country. The features incorporated include acquisition, serials, OPAC, circulation and administration, with barcode interface. Exhaustive help and search, guest account for non-members and web utilities.</p>
+<p>?   e-MAN , Generic Software for Assets Management e-MAN, a generic web based software developed by NIC Karnataka (http://kemp.kar.nic.in/e-man) for integrated maintenance of consumable and non-consumable items of technical stores, has been implemented in many State Units of NIC. The software provides for issuing items, indenting and approval, returning and receiving fresh items into the stock.</p>
+<p>?| TRAINING SERVICES A Team of IT professionals and software developers of NIC Karnataka State Unit and District Centres offer extensive training programmes to officials of Government on basic courses and software applications. State-of-the-art training facility equipped with high end Server and the latest Client systems with multimedia, LCD projector and Internet connectivity has been setup at the Internet &amp; Training Wing, Bangalore.</p>
+<p>?| E-mail &amp; Internet Services NIC KSU provides e-mail service to over 1300 users of Government, Research &amp; Educational Sectors. Internet Service is provided through its gateway at Internet &amp; Training Wing, Bangalore that is served by 1 Mbps leased line to VSNL and 128 / 256 Kbps SCPC VSAT to Master Earth Station, NIC-Delhi. Connectivity to users is extended by means of LAN to 35 Central Government offices housed in Kendriya Sadan, RF Link Metropolitan Area Network to 13 locations having 1500 nodes in Bangalore, Dial-Up lines to more than 300 users connecting through ordinary dial-up PSTN / ISDN and VSAT to all District NIC Centres for District Administration.</p>
+<p>?| Video Conferencing A DAMA VSAT based Video Conferencing (VC) Studio, with additional ISDN connectivity, is available at the Internet &amp; Training Wing, Bangalore. The VC facility is extensively used by Government Departments to review ongoing projects, for training programs and seminars etc. VC Support is also extended to Hon’ble Chief Minister’s “Janaspandana” programme during face-to-face interaction with villagers.</p>
+<p>?| Web Services NIC Karnataka has designed, developed and hosted around 80 web sites which are aesthetic in nature and rich in content for State and Central Government Departments, Boards, Undertakings and Institutions. Hot spot of our web designs is the NIC KSU home page (http://www.kar.nic.in) which accounts for more than 50,000 hits on a normal working day. The portal also hosts Examination Results that appear at different periodicity, during which time the hits spike to as high as 2,50,000 per day. The ambitious portal for the Accountant General’s Office is now under way, through which around 6 lakh officials of the State Government would have information on their General Provident Fund subscription and loans.</p>
+<p>?| Central Government Projects: Support is also being extended to the Registrar of Companies, Passport Office, DGFT, DGS&amp;D, Central Administrative Tribunal, Central Excise, Indian Customs EDI System, DACNET, AGMARKNET, High Court, Debt Recovery Tribunal, Postal Life Insurance, Coffee Board, NIMHANS in their day-to-day computerisation activities.</p>
+<p>Besides, District NIC Centres provide active support to the Deputy Commissoner’s Office and Zilla Panchayat in their e-Governance initiatives.</p>
+<p>NIC Karnataka State Unit is forging ahead in its endeavour to facilitate e-governance in the State and some of the new initiatives and projects which are under way include Raj Bhavan automation, rural digital services for the masses, PKI enabling and setting up a data recovery &amp; dissemination center for BHOOMI Project etc.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="smart-card-technology-an-overview-and-nic-initiatives-january-2004.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Smart Card Technology-An Overview and NIC Initiatives</span></a><a class="article-nav-link next" href="pithoragarh-the-growing-spectrum-january-2004.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Pithoragarh – the Growing Spectrum</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

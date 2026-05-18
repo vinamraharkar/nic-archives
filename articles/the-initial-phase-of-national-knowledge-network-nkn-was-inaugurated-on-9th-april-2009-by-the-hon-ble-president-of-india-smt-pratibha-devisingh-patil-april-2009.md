@@ -1,0 +1,12 @@
+---
+title: "The Initial Phase of National Knowledge Network (NKN) was inaugurated on 9th April 2009 by the Hon'ble President of India Smt. Pratibha Devisingh Patil."
+publication: "Informatics"
+issue_date: "April 2009"
+pages: [42]
+author: "R.S Mani, NIC HQ"
+section: "In the News"
+---
+
+## The Initial Phase of National Knowledge Network (NKN) was inaugurated on 9th April 2009 by the Hon'ble President of India Smt. Pratibha Devisingh Patil.
+
+The Initial Phase of National Knowledge Network (NKN) was inaugurated on 9th April 2009 by the Hon'ble President of India Smt. Pratibha Devisingh Patil. NKN is the realisation of a vision of an Indian knowledge superhighway, for which a need has been felt by various stakeholders. Discussions between the office of Principal Scientific Advisor to the Govt. of India and the National Knowledge Commission resulted in evolution of a consensus for requirement of a National Knowledge Network. The objective of the NKN is to bring together all the stakeholders in Science, Technology, Higher Education, Research and Development, GRID Computing, e-Governance with speeds scalable eventually up to the order of 10s of gigabits per second coupled with extremely low latencies. It aims to interconnect all knowledge and research institutions of the country by a unified high bandwidth information backbone to enable applications which require sharing of electronic resources, grid computing, tele-medicine, collaboration amongst knowledge workers, virtual classrooms, virtual libraries and E-Governance etc. The NKN is being managed by National Informatics Centre (NIC) as a state-of-the-art multi gigabit pan India digital communications network. It has been designed to ensure the highest level of availability, quality of service with robust, secure and reliable connectivity. The architecture of initial phase of NKN is scalable and it is built around a high-speed core (2.5 Gbps) complimented with distribution at nearly 15 points-of-presence at appropriate speeds. Major participating institutions will have an option to connect to the NKN distribution points at 1Gbps or more. In the Initial Phase, it is planned to connect 57 institutes and 16 institutes are already connected and process of connecting the rest is on. The realisation of Initial Phase of NKN will provide a catalytic effect and pave the way for final phase of NKN implementation in terms of reach, technology and wide variety of core applications.

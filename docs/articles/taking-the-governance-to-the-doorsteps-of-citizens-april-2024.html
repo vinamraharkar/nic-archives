@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taking the governance to the doorsteps of Citizens — Informatics April 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/april-2024/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/april-2024/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/april-2024/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/april-2024/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/april-2024/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2024/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2024.html">April 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Taking the governance to the doorsteps of Citizens</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Taking the governance to the doorsteps of Citizens</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By P. V. Bhat, Dy. Director General &amp; SIO; S. Jayanthi, Dy. Director General &amp; ASIO &bull; pp. 10–15</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2024.html">April 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Since 1980, Karnataka has emerged as a prominent IT hub in India, with major players establishing their development centres in Bangalore, laying the foundation for what would become the ‘Silicon Valley of India’. Supported by top-tier science and engineering institutions, public sector backing, advanced research facilities, and proactive state governance, Karnataka’s software industry flourished, benefiting from Bangalore’s favourable climate. In the early 1990s, the Government of Karnataka, collaborating with the National Informatics Centre (NIC), initiated efforts to integrate IT systems across various governance domains. By the late 1990s, Karnataka had implemented IT solutions for crucial sectors like land records, registration, transportation, professional college counselling, and commercial taxes. These systems have since evolved with cutting-edge technologies, seamlessly integrating with other platforms for efficient data exchange. This forward-thinking approach has transformed citizen services, enabling online application submissions and prompt service delivery. Through streamlined processes, these endeavours have bolstered transparency, accountability, and efficiency in governance, ultimately bringing services closer to citizens’ fingertips.</p>
+<p>NIC Karnataka has spearheaded digital innovation with initiatives like Seva Sindhu and e-Janma, offering seamless citizen services and digitally-signed certificates. Other achievements include streamlining revenue court processes and educational management systems. Additionally, NIC Karnataka has facilitated online property tax payments and introduced e-waybills under the GST regime, contributing to enhanced efficiency and transparency in governance.</p>
+<p>ICT Initiatives in the State</p>
+<p>Central Projects Centre of Excellence in Blockchain Technology https://blockchain.gov.in Under the MeitY funded project, the Centre of Excellence (CoE) team has established distributed infrastructure across NIC data centres in Bhubaneshwar, Hyderabad, and Pune. They have deployed Hyperledger Fabric and Sawtooth Blockchain Networks. Additionally, application platforms like Document Chain, Certificate Chain, and Property Chain have been developed and deployed in these locations. These platforms are designed to be versatile, allowing various e-Governance systems to harness the benefits of blockchain technology. Their easy onboarding process and loosely coupled integration with Line-of-Business applications facilitate the seamless onboarding of any department across India.</p>
+<p>Blockchain Platform Projects                                        No. of Documents Drug logistics      • Karnataka                                     25 Lakhs Certificate Chain   • CHHATTISGARH - Indira Gandhi Krishi Vishwavidyalaya, Raipur • MANIPUR - Council of Higher Secondary Education Manipur 300 Lakhs • Central Board of Secondary Education • Karnataka Secondary &amp; Sr. Secondary Document Chain      • ANDHRA PRADESH - Water Resource Department • DELHI - Revenue Department • KARNATAKA - Revenue Department • KARNATAKA - Directorate of economics and statistics 280 Lakhs • Ministry of Consumer Affairs - Department of Consumer Affairs • PUDUCHERRY - UT - Revenue Department • PUDUCHERRY - UT - Department of Civil Supplies and Consumer Affairs Property Chain      • KARNATAKA - Revenue Department • KARNATAKA - Town Municipal Council 194 Lakhs • KARNATAKA - City Corporation • PUDUCHERRY - UT - Revenue Department Judiciary Chain     • Ministry of Justice - Supreme Court</p>
+<p>These platforms store and retrieve documents such as birth certificates, death certificates, caste certificates, income certificates, licences, records of rights, and marks sheets for verification purposes. Furthermore, a Drug Logistics platform has been implemented, enabling the tracking and tracing of drugs procured and distributed to hospitals. Proof-of-Concepts for remote voting and financial transactions, specifically e-invoicing, have been developed and have garnered interest from several states for potential implementation.</p>
+<p>GST e-Waybill System https://ewaybillgst.gst.gov.in The implementation of the “E-waybill” system under the Goods and Services Tax (GST) regime represents a pivotal transition from traditional paper-based permits to a digitally streamlined approach in indirect taxation. Launched on April 1, 2018, this system revolutionizes the way taxpayers manage the movement of goods by enabling them to generate electronic waybills online. These e-waybills, accompanied by unique reference numbers, are easily verifiable by officials through a dedicated mobile application. Accessible round the clock and adaptable to various platforms including web, APIs, offline tools, mobile apps, and SMS, the system boasts a user-friendly interface catering to the diverse requirements of businesses across sectors. Its integration with Fastag and Vahan further amplifies operational efficiency. Notably, the elimination of check posts and reduction in transit time by approximately 30% have significantly streamlined logistics operations. Beyond operational enhancements, the e-waybill system serves as a potent tool in combating GST fraud, ensuring tax compliance, and bolstering revenue collection efforts. Leveraging e-Waybill Analytics, officials can tap into a wealth of data on vehicle movements and key risk indicators to detect and deter fraudulent activities effectively. With a staggering daily generation of over 25 lakh e-Waybills, this digital platform is reshaping the landscape of indirect taxation, facilitating smoother trade, and fostering greater transparency in the GST ecosystem.</p>
+<p>GST e-Invoice System e-Invoicing under GST is a game-changer system and has placed the country in the e-invoicing League of nations and ahead of other developed nations in the world. The system involves reporting the B2B and Export invoices issued by the taxpayers to their customers, on the government portal and obtaining a unique Invoice Reference Number (IRN) along with the Signed QR code and Signed invoice. It’s a faceless system with a major thrust on API integration so that the ecosystem can exchange the data electronically. The standardised e-invoice format, based on international standards (UBL/PEPPOL), has led to machine readability, enhanced interoperability, and uniform interpretation in the entire ecosystem. The system caters to the multiple modes of generation like Web, APIs, offline tools, mobile apps and GST Suvidha Providers. It was rolled out on 1st October 2020 and covered all the taxpayers in a phased manner. More than 22 crores e-invoices are generated on monthly basis by around 10 Lakh big taxpayers. This system is helping in settling the Input tax claims of the purchasers and preparation of the return statements. It is assisted in improving tax compliance and collection. e-Invoice Analytics aids in market trend understanding and tax collection prediction.</p>
+<p>NIC Karnataka has been a key technology partner of Government of Karnataka in development and implementation of many innovative and successful digital systems, since 1988. NIC team is very closely collaborating with the state government departments in building and integrating the various systems for smooth and quick exchange of information. NIC-Karnataka has also developed and implemented the Blockchain based solutions for the digital systems in Karnataka. I am happy to note that Informatics April 2024 issue is specially showcasing the e governance initiatives of NIC- Karnataka. I congratulate and wish success to the entire team and look forward to many more digital innovative initiatives by NIC-Karnataka for the citizens of state and nation. Dr. Shalini Rajneesh, IAS Addl. Chief Secretary &amp; Development Commissioner Government of Karnataka</p>
+<p>GST Prime GST Prime is a GST analytical product to help the tax administrators of state/centre to analyse and monitor the tax collection and compliance in their jurisdiction. This system caters to the requirements of the field level offices and enforcement/intelligence offices to identify the defaulters and tax evaders. The system acts as an interface between GST Common Portal and e-Waybill Systems and tax administrators. It provides analysed and actionable reports and helps in enforcing GST in a more efficient and effective manner. It has a number of reports on ABC Analysis, Risk based Analysis and Circular Trading &amp; Taxpayer profile with 360 View. It also has integrated with a couple of external databases for cross verification of data. It has assisted the GST officers in Improvement of tax compliance and collection &amp; in detection of tax frauds. It is being rolled out for all the states and zones of the GST department.</p>
+<p>AgriStack AgriStack stands as a pivotal digital public infrastructure initiative within the agricultural ecosystem, currently under development for the Department of Agriculture &amp; Farmers Welfare (DAFW) of the Government of India. The NIC Karnataka State unit is deeply involved in an advisory and consulting capacity, providing expertise in the domain knowledge, technical architecture, design, development, and implementation phases of the AgriStack project. Comprising a diverse array of components, including databases, registries, directories, frameworks, standards, data schema, APIs, and IT systems, AgriStack facilitates the accessibility of agricultural data through interoperable systems. This infrastructure is meticulously crafted on open standards, featuring a federated architecture within the framework of InDEA. Moreover, integration with UIDAI and a consent framework ensures robust security and authorized data access. As part of the AgriStack initiative, three reference applications have been developed to cater to the needs of implementing states. These include the Farmer Registry, Crop Sown Registry, and AgriStack Consent Manager, each serving to enhance data management and accessibility for agricultural stakeholders across the nation.</p>
+<p>e-SAM e-SAM (electronic System for Asset Management) is a comprehensive asset management system that encompasses the planning, control, and maintenance of organizational assets throughout their lifecycle. By effectively managing the acquisition, operation, maintenance, renewal, and disposal of assets, e-SAM enhances delivery potential while reducing costs and risks. Proper maintenance and deployment of assets ensure positive capital enhancement over time. This workflow-based system includes processes for Asset Management Contracts (AMC), vendor management, obsolete declaration, and more. User departments utilizing e-SAM include NIC, Supreme Court, UIDAI, and Ladakh.</p>
+<p>RTI Online RTI Online is a citizen-centric system based on workflow, seamlessly integrated with payment gateways, SMS alerts, and email alerts. It has been implemented across various departments of the Government of Karnataka, adhering to the guidelines outlined in the RTI Act of</p>
+<ol class="article-list">
+<li>This system ensures a clear distinction between citizen and officer modules, facilitating</li>
+</ol>
+<p>effective e-Governance implementation within departments. By bridging the gap between information providers and seekers, RTI Online significantly reduces communication barriers. Citizens can conveniently pay online, track application status, and authenticate using OTP- based verification. Its user departments include the Government of Karnataka, Government of Ladakh, and Government of Jammu &amp; Kashmir.</p>
+<p>CIS The Case Information System (CIS) is a versatile application designed to automate judicial activities across various tribunals, authorities, and commissions. Serving as a workflow application, CIS offers an end-to-end solution for managing cases, from initial filing to disposal. Key features of CIS include modules for Case Registration, Scrutiny, Case Allocation, Customized Cause List generation, Notice Generation, storage of Court Documents/ Judgments, and recording details of dispatch of LCR/Court Orders. Additionally, it facilitates Certified Copy Application Registration/Status Updation and provides dashboards for comprehensive monitoring. An online interface is available for Advocates/Litigants to e-File cases with e-Payment options, along with services to view case status, cause lists, judgments, and more. User departments benefiting from CIS include the Karnataka Appellate Tribunal, Karnataka State Administrative Tribunal, and Karnataka Electricity Regulatory Commission.</p>
+<p>e-Aushada e-Aushada serves as a centralized portal for managing the drug supply chain across all hospitals. This comprehensive system organizes, supervises, and facilitates the distribution of medicines, thereby reducing expenses and optimizing procurement processes while ensuring timely medication supply for patients. The Supply Management System automates supply chain operations, streamlining the process of maintaining various medications in hospitals. By doing so, it enables hospitals to effectively plan their resources. The primary objective is to provide management with an efficient, transparent, reliable, and cost-effective solution for managing the organization’s medication supply chain. User departments utilizing e-Aushada include the Department of Health and Family Welfare (DHFW) Karnataka, the Employees’ State Insurance Corporation (ESIC) under the Government of India, and the Department of Animal Husbandry.</p>
+<p>AIS AIS (AI Tool for text transcription, summarization &amp; translation) is a user-friendly web-based solution designed to assist Courts, Government departments, Commissions, and Tribunals in converting spoken content into text, translating documents into local languages, and generating quick summaries of lengthy content. Developed with the support of the ‘Centre of Excellence AI team’ of NIC, this tool streamlines various tasks related to text processing. Key functionalities of the AIS tool include translating content into local languages, bulk uploading of recordings for transcription, and obtaining the transcribed text in Word/ PDF formats. Additionally, users can download translated and summarized text in Word/PDF formats for easy access and reference. User departments benefiting from AIS include the High Courts of Karnataka, Jammu &amp; Kashmir, West Bengal, Assam, and the Karnataka Electricity Regulatory Commission.</p>
+<p>State Projects DBT Platform The Direct Benefit Transfers (DBT) Platform serves as a unified solution facilitating Direct Benefit Transfer from the Government to beneficiaries. Positioned between the Beneficiary Management software of various departments and the treasury/bank, it enables Aadhaar Enabled Payments directly into the beneficiary’s bank account. This comprehensive platform ensures accurate linking of Aadhaar to beneficiaries, maintains a common data vault, and adheres to UIDAI guidelines. It provides essential services such as Identity Validation and Financial Address Validation. Additionally, the e-Governance department, acting as the nodal agency for DBT, utilizes the platform to monitor and facilitate smooth implementation. Since August 2023, the platform has successfully facilitated payments to approximately 3 crore beneficiaries each month.</p>
+<p>FRUITS https://fruits.karnataka.gov.in/ The Farmer Registration &amp; Unified Beneficiary Information System, known as FRUITS, is an e-Governance initiative designed to manage and maintain a comprehensive registry of farmers. FRUITS serves as a centralized platform for all agriculture and allied departments to provide benefits to eligible farmers. Functioning as a soft infrastructure project in the agriculture sector, FRUITS acts as an inventory of farmers, their land holdings, and the benefits they receive. By maintaining a well-organized and scrutinized farmer database, FRUITS eliminates the need for farmers to navigate through bureaucratic hurdles to access benefits. Moreover, FRUITS aids developmental departments in addressing various challenges, including preventing multiple benefits to the same beneficiary, curbing impersonation, and detecting fraudulent benefit claims with fake documents. Currently, FRUITS boasts a total of 95 lakh registered farmers, with 7.6 crores beneficiaries receiving Direct Benefit Transfers.</p>
+<p>Kutumba Kutumba is a comprehensive Entitlement Management System evolving into an Integrated Social Information System (SIIS). It encompasses a social registry, integrated beneficiary management systems, beneficiary registry, payment platform, and grievance redressal system. Serving as a platform for providing suo-moto services to citizens, Kutumba aims to achieve universal coverage of all residents in the State of Karnataka. This system empowers residents to self-enroll/update their family details, streamlining the process of accessing benefits from various programs or subsidies automatically, without the need for application submissions. Notably, Kutumba is built using secondary data, eliminating the need for laborious surveys while ensuring efficient service delivery to citizens.</p>
+<p>Seva Sindhu Seva Sindhu, built on the ‘ServicePlus’ Platform of NIC, represents a landmark initiative of the Government of Karnataka. Developed with continuous support from the Service Plus teams of NIC-Hqrs and NIC-Karnataka, it has garnered recognition, including an award from the Hon’ble Prime Minister of India, for its seamless, end-to-end delivery of citizen services without human intervention. As its name suggests, Seva Sindhu serves as a single platform offering a multitude of services to citizens in a cashless, contactless, and paperless manner. Launched in March 2018 with 35 services from 6 departments, it has since evolved into a comprehensive agency providing close to 820 services across 90 departments, boards, and corporations of the Government of Karnataka, the highest in the country. These services encompass both Government-to-Citizen (G2C) and Government-to-Business (G2B) categories, significantly reducing the compliance burden for citizens and facilitating ease of doing business. Running on the Service Plus platform of NIC, Seva Sindhu offers an end-to-end digital solution, encompassing application submission, documentation, fee payment, status tracking, and delivery of output documents and certificates. All services undergo digital processing through integrated workflows, ensuring efficiency and transparency. To date, Seva Sindhu has processed over 6 crore applications and collected ₹ 100 crores in department fees and service charges. Integrated with various citizen service centres such as Grama One, Janasevaka, Karnataka One, and Bangalore One, Seva Sindhu aims to consolidate all departmental services onto a single platform. Its overarching objective is to provide government services in a cashless, faceless, and paperless manner, advancing accessibility, cost-effectiveness, accountability, and transparency in governance.</p>
+<p>State Scholarship Portal The State Scholarship Portal (SSP) serves as a crucial platform for the disbursement of Pre- Matric &amp; Post-Matric Scholarship schemes in Karnataka. Designed to ensure equitable access to scholarships for Scheduled Castes, Scheduled Tribes, Backward Classes, Minorities, Differently abled, Economically weaker sections, and other categories, the portal streamlines the process across various government departments. Initiated under the direction of the then Chief Minister to standardize scholarship disbursal and ensure timely payments, the SSP provides a centralized platform for students to submit applications. It functions as a decision support system for application processing and scholarship disbursement through DBT using Aadhaar enabled Payment System (AePS) by departmental sanctioning authorities. Developed by the National Informatics Centre, Karnataka State Unit, and implemented by the Centre for e-Governance, Government of Karnataka, SSP operates as a comprehensive paperless system. It digitally verifies students’ academic details through integrations with various universities and boards. In the academic year 2023-24, SSP facilitated the disbursal of approximately ₹ 1500 crores to around 45 lakh students, marking a significant milestone in its 100% digital journey since its inception in the academic year 2018-19.</p>
+<p>FAPSS The Farmer Agriculture Produce Support System (FAPSS) streamlines the registration, procurement, and payment processes for farmers and their commodities. This system ensures transparent implementation of Minimum Support Price (MSP) schemes for various agricultural produce, covering the entire workflow from farmer registration to payment disbursement. Integrated tightly with the FRUITS for registration purposes, FAPSS enables registered farmers to deliver their produce at designated Procurement Centres (PCs) authorized for MSP. The application offers modules for creating PCs, graders, storage points, and stacks, along with functionalities for grading and outwarding produce from PCs to storage points. Upon delivering their produce, farmers receive a grain voucher, and on completion of procurement operations, their payment data is prepared and transmitted to the State DBT portal for payment processing. Payments are made directly to the Aadhaar-linked bank accounts of farmers, ensuring efficiency and transparency in the payment process.</p>
+<p>Ongoing Projects AHARA A comprehensive ration card management system implemented in Karnataka, serving approximately 1.5 crore families with over 5 crore beneficiaries.</p>
+<p>BBMP PTAX An online property tax payment system available for citizens of Bangalore. The total property tax collection for the fiscal year 2023-2024 amounted to ₹ 3800 crores.</p>
+<p>Nadakacheri An online, workflow-based system designed to process and issue 42 different types of certificates by the revenue department. On average, over 1 crore certificates are generated annually through this system.</p>
+<p>DSSP This workflow-based system processes and distributes social security pensions for needy individuals. With over 80 lakh beneficiaries, the system disburses approximately ₹ 600 crores in payments each month.</p>
+<p>SAJALA An e-Governance application offering a comprehensive enterprise solution for water billing management for BWSSB. It handles monthly collections of ₹ 130 crore and manages billing for 10.5 lakhs connections across 15 different types.</p>
+<p>KEA A comprehensive solution for admission to all professional courses in the state, implemented since 2023, covering the entire process from start to finish.</p>
+<p>e-Suraksha An online, workflow-based system has been deployed for the services offered by electrical inspectorate departments. This system encompasses 25 different services.</p>
+<p>WCMS A Web Content Management System has been developed for the Department of Collegiate Education (DCE), serving 430 Government Colleges, 85 Government Polytechnics, 15 Engineering Colleges, and 14 universities.</p>
+<p>EMIS The Education Management Information System has been implemented for Government First Grade Colleges, Grant-in-aid Colleges, and Government Polytechnics, covering a total of 430 colleges.</p>
+<p>RCCMS The Revenue Court Case Monitoring System is a web-enabled application seamlessly integrated with the Karnataka Land Records System. It offers a comprehensive process flow for revenue courts, starting from the filing of cases to their final disposal.</p>
+<p>eJanma eJanma is a standardized software utilized for issue of digitally signed birth and death registration certificates in Karnataka. It is seamlessly integrated with various platforms including RCH, SAKALA, Bapuji Seva Kendras, Seva Sindhu, UIDAI, Kutumba, and Blockchain technology.</p>
+<p>eSahamathi eSahamathi is a solution designed to implement a consent framework based on the Data Enablement and Protection Architecture (DEPA) by NITI Ayog. It facilitates the sharing of data from the FRUITS System and NAD System.</p>
+<p>National Projects Following is a concise summary of the various National e-Governance projects maintained and implemented by NIC Karnataka for the state citizens: • eHospital: A workflow-based ICT solution for government hospitals in Karnataka, comprising over 450 hospitals since 2015. With 8+ modules, it optimizes hospital operations, from patient admissions to billing. • Sarathi: Streamlining activities related to driver’s licenses, offering AI-based face authentication, 14+ faceless services, and serving 67 Regional Transport Offices (RTOs). • eOffice: This system has been implemented across 29 instances, covering 2500 offices and serving 63,500 officers. It streamlines administrative processes, enhances efficiency, and ensures seamless document management, and thus, promising to revolutionize government operations in the state. • e-PAR: Implementing electronic annual performance appraisal reports for 52,028 officers, enhancing efficiency and transparency in performance evaluations. • eProcurement: Enabling end-to-end e-Procurement and e-publishing processes for 25+ Central Government Organizations and 8 Public Sector Units (PSUs), optimizing procurement operations. • PM Kisan: Supporting farmers through the Government of India scheme since 2018, benefiting 45.8 lakh farmers by providing financial assistance. • eCourt: Implementing ICT solutions in the Indian Judiciary, serving 3 benches of High Courts, 31 District Courts, and a total of 1,124 courts, enhancing judicial processes and accessibility. • iRAD: Implementing electronic detailed accident reports, processing over 1,06,262 accident details and completing 63,756 cases since April 1, 2021, improving accident data management and judicial processes. • Vahan: Facilitating activities related to vehicle registration, offering faceless services for registration processes across 67 RTOs, ensuring efficiency and transparency.</p>
+<p>Accolades • Seva Sindhu, acclaimed for its multifaceted services, was honored with the Award of Excellence in Public Administration by the Hon’ble Prime Minister of India for its seamless, end-to-end delivery of citizen services without human intervention • In addition, GST Prime was recognized at the 20th CSI SIG e-Governance Awards during the CSI SIG e-Governance Conference held by DAPRG in Madhya Pradesh in 2022</p>
+<p>Way Forward NIC Karnataka is strategically positioned to propel the state towards a future marked by digital innovation and inclusive governance, building upon its notable achievements. With a focused approach on bolstering digital infrastructure, augmenting service delivery, and harnessing cutting-edge technologies such as AI and blockchain, NIC Karnataka is dedicated to strengthening its role as a catalyst for positive transformation. Through initiatives aimed at fostering innovation, forging strategic partnerships, and prioritizing sustainability, the organization endeavors to empower citizens, stimulate economic growth, and ensure equitable access to technological solutions across all strata of society. By embracing a culture of continuous learning and improvement, NIC Karnataka remains steadfastly committed to shaping a digital future that delivers tangible benefits and opportunities to the diverse populace of Karnataka.</p>
+<p>Contact for more details State Informatics Officer NIC Karnataka State Centre VI &amp; VII Floor, Mini Tower Dr. Ambedkar Veedhi, Bengaluru, Karnataka - 560001 Email: sio-kar@nic.in, Phone: 080-22863790</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="quality-software-and-mobile-solutions-for-the-nation-april-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Quality Software and Mobile Solutions for the Nation</span></a><a class="article-nav-link next" href="shaping-darbhanga-s-digital-destiny-april-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Shaping Darbhanga’s Digital Destiny</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat Maps - A Multi-layer GIS Platform — Informatics January 2020</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2020"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2020/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/january-2020/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/january-2020/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2020/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/january-2020/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/january-2020/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/january-2020/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/january-2020/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2020/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2020/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2020.html">January 2020</a><span class="breadcrumb-sep">&rsaquo;</span><span>Bharat Maps - A Multi-layer GIS Platform</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">In Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">Bharat Maps - A Multi-layer GIS Platform</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 21–28</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2020.html">January 2020</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Information Technology, as a cross-cutting frontier of knowledge, has opened several new vistas of applications for daily needs of the civil society. One of them is Geographical Information System (GIS) technology, which is rapidly becoming a catalyst for several transformational changes in the world; mainly in natural resource management, planning, decision-making, governance and citizen engagement services. While e-Gov is the current paradigm, the future lies in embedding GIS in governance and service delivery and in establishing g-Gov (Geospatial Technology) as the next frontier.</p>
+<p>GIS has been in use in India for more than two decades and forms the core of several mission critical projects in the Government and private sector. However, the deployment has been at departmental level with minimal integration, resulting in creation of silos and restricting the benefits. There is a need to consolidate the work already done and build a unified portal to enable g-Gov and bring wide-ranging benefits.</p>
+<p><strong>National GIS Platform using Bharat Maps</strong> The mandate of Digital India initiative of the Government of India is to digitally empower the society. It envisages the facilitation of location based/ GIS based decision-making for planning, e-Governance and better utilization of resources available, an important component of the initiative.</p>
+<p>In order to fulfil the objectives of Digital India and to establish end-to-end geo-spatial electronics delivery systems as a part of the National GIS Mission Mode Project, the National Informatics Centre (NIC) established the core foundation of National GIS with the support of Planning Commission from 2004-09. This was executed in collaboration and cooperation with the Survey of India (SOI), Department of Space (DOS), Registrar General of India (RGI) and other organizations. NIC has developed an integrated base map as a web-based NICMAPS service, harmonizing around 5000 topographic maps sheets from SOI, Satellite data from the Indian Space Research Organization (ISRO) in various resolutions, RGI data for 6,40,000 villages and other datasets form various other organizations. Ultimately, this has been developed into a platform with 23 categories of layers and services that are being continuously updated and deployed for e-Governance applications.</p>
+<p>As a part of upscaling of multi-layer GIS project supported by the Ministry of Electronics &amp; Information Technology (MeitY), NIC has created 6 layers, viz. road, rail, river, canal, water bodies and settlements at 1:10000 scale. These were captured using 2.5m satellite imagery from ISRO.</p>
+<p>GIS platform, established by NIC, MeitY, using NICMAPS services, has been revamped as “BHARAT MAPS”. It depicts the core foundation data as BHARAT MAPS, an integrated multi-scale, multi-resolution base map service using reference data from various agencies. It may be seen that this data warehouse is the largest single spatial data repository in WGS84 datum with compliance to the National Map Policy as well as global standards.</p>
+<p><strong>Key Features of Bharat Maps</strong></p>
+<ul class="article-list">
+<li>A robust and scalable framework based on service oriented architecture</li>
+<li>NIC common spatial data repository as per the Open Geospatial Consortium (OGC) standards with many vector layers comprising of administrative boundaries, transportation network, natural resources etc.</li>
+<li>NIC base map service consisting of pre-composed maps with scales ranging from 1:40 million to 1:20000</li>
+<li>Administrative boundaries and locations up to village level covering 725+ districts, 6000+ blocks/ sub-districts, 6,40,000 villages and corresponding Gram Panchayats (GPs), linked with Census/ Local Government Directory (LGD) Code</li>
+<li>NIC base map service with all topographical features at 1:50k</li>
+<li>NIC street map service with road network of 1:50k/ 1:10k</li>
+<li>NIC satellite imagery service is a dynamic service using Indian Remote Sensing (IRS) satellite images of resolution 2.5 m.</li>
+<li>NIC terrain base map service features shaded relief imagery to provide a neutral background for other data layers.</li>
+<li>Mash-ups with global web services</li>
+<li>Geo-coder which enables single line search for around 13 lakh locations</li>
+<li>Pin code locator covering rural post offices</li>
+<li>Area of Interest (AOI) which enables user to view/ analyze specific area with masking</li>
+<li>Basic GIS tools for navigation, query, buffer, print and distance measurement</li>
+<li>Advanced geo-processing models for elevation profile, swipe and spotlight</li>
+<li>Linkage to attribute data like census etc</li>
+<li>Full compliance with National Map Policy 2015 of the Ministry of Defence, Remote Sensing Data Policy 2011 from ISRO and National Data Sharing and Access Policy 2012 of Department of Science and Technology (DST)</li>
+</ul>
+<p><strong>Salient features</strong></p>
+<ol class="article-list">
+<li>A robust and scalable framework based on Service Oriented Architecture (SOA)</li>
+<li>Incorporated OGC Standards based spatial data repository</li>
+<li>Tile based maps at 14 different scales up to 1:4K</li>
+<li>Seamless mosaics of IRS images of various resolutions like LISS-IV, cartosat-1 (2.5m)</li>
+<li>Terrain base map service featuring shaded relief imagery</li>
+<li>Leveraging additional content with external global services using mashups</li>
+<li>Rich Internet Application (RIA) with cross platform support based Javascript API</li>
+<li>Linkage to attribute data like census etc.</li>
+</ol>
+<p>Jan Dhan Darshak, a Mobile Application based on NIC’s Bharat Maps, was launched to provide a citizen-centric platform for people to locate banking touchpoints (branch/ banking correspondents/ ATMs) in the country. The facilities under Jan Dhan Darshak App could be availed as per the need and convenience of common people. The web version of this application could be accessed at http://findmybank.gov.in. This App is also being used for identification of unbanked inhabited villages. This Application is helping the Government in deepening financial inclusion and strengthening banking infrastructure in the country.</p>
+<p><strong>Platforms for GIS Service Delivery of NIC</strong> a) Visualization services These services are open to Government as well as citizens (http://bharatmaps.gov.in/).</p>
+<p><strong>Functionalities of Bharat Maps</strong> <strong>Table of Contents</strong> Table of Contents widget displays the list of available dataset layers such as Administrative Layer, India Assets and Parliamentary/ Assembly Constituency Boundaries.</p>
+<p><strong>Area of Interest Widget</strong> Data Extract widget enables end users to select a subset of data from the application's map display. End users define the data subset by specifying an area of interest.</p>
+<p><strong>CSV/ Thematic Viewer</strong> CSV/ Thematic viewer enables users to make their own thematic maps by joining their data with Bharat Maps datasets for polygons (State and District) and points. In order to join the two, it is to be ensured that both data and Bharat Maps datasets share a field or column with common values, called a key. For creating the theme, users can download sample CSV file and provide their data, which can be uploaded. It also enables uploading user’s own latitude/ longitude data as CSV and viewing the same on Bharat Maps platform.</p>
+<p><strong>Swipe Spotlight Widget</strong> Swipe tool allows to compare two layers side-by-side, by selectively masking the topmost of the two layers. Spotlight tool allows to see through a circular “cut out” of one map layer onto any layers below. To use the Swipe Spotlight Tool, the user must select a layer to be “active” over your base map layer.</p>
+<p><strong>Elevation Profile Widget</strong> This widget allows to create a profile of the elevation height, along with a route between two or more points.</p>
+<p><strong>Night Light Data</strong> Night Light Data displays satellite imagery of India captured at night, providing a composite view of the patterns of human settlement and economic activity across the country for the year 2012 and 2016. It is sourced from NASA Earth Observatory images using Suomi NPP VIIRS data.</p>
+<p><strong>Legend</strong> It conveys the meaning of symbols used to represent features on the map to users. Legends consist of indicative map symbols with labels containing explanatory text.</p>
+<p><strong>Identify Widget</strong> Identify widget tool interacts with the map to display information about the feature that was clicked on in the map.</p>
+<p><strong>Locator Widget</strong> This widget enables end users to search a location on the displayed map content in the viewer. The widget provides two ways to find a location i.e., entering an address or longitude/ latitude coordinate values.</p>
+<p><strong>Print</strong> Print widget enables viewer application end users to print what you see is what you get (WYSIWYG) output. All map display content that is currently visible will be printed. This includes the navigation widget, the scale bar. The output gets generated on clicking the “Print Preview” button, which can be saved in a PDF file or can be printed.</p>
+<p><strong>Map Switcher</strong> Switch between different map services. Open the Map Switcher extension popup to show the available selection of maps. Click any of the links to open the base map in the viewer NIC-Base Maps, NIC-Satellite Imagery, NIC-Street, NIC-Terrain, and ESRI-Street, ESRI-Topo, ESRI-Aerial. Only one base map is visible at a time.</p>
+<p>This widget also has an option to provide users the ability to turn on/ off operational layers on the map display.</p>
+<p>b) Map services (https://mapservice.gov.in/) GIS services from NIC are based on Service Oriented Framework leveraging multi-layer, multi-scale &amp; multi-resolution GIS data. Dissemination/ utilization of these datasets was a real challenge. Bharat Maps framework is a unique and robust infrastructure leveraging seamless countrywide base maps, satellite images and terrain maps, similar to the services rendered by global GIS communities.</p>
+<p>NIC has developed an automated map service dissemination application consisting of about 32 layers. This platform enables all the NIC officers to access and integrate map services in their e-Gov application. The Remote Sensing &amp; GIS division has also developed tools and templates, which are being made available through the resource section in the application.</p>
+<p>Map services are being provided to various Ministries and Departments like the Ministry of Sanitation and Drinking Water for SBM (Gramin), Drinking Water Portal etc. Similar services are being provided to the Ministry of Rural Development, Ministry of Urban Development, Department of Land Resources, Department of Labour, Vahan &amp; Sarathi projects, Central Government Health Scheme (CGHS), Health Management Information System (HMIS) etc.</p>
+<p>c) Geocoding and Reverse geocoding services Geocoding is the process of transforming a description of a location such as a pair of coordinates, an address and name of a place to a location on the earth's surface. User can geocode by entering one location description at a time or by providing many of them at once in a table. Finding places on a map is an integral part of a GIS, and geocoding enables the same. NIC has incorporated three geocoding options on Bharat Maps - NIC Place Locator, Pincode Locator and ESRI World Geocoder.</p>
+<p>Reverse geocoding is the process of back (reverse) coding of a point location (latitude, longitude) to a readable address or place name. This permits the identification of nearby street addresses, places, and/ or areal subdivisions such as neighborhoods, county, state and country. This service can be availed through NIC’s Map Service portal. NIC has created a reverse geocoding API, which gives details of a place name, its district and state, if the latitude and longitude are provided.</p>
+<p>d) NIC Satellite Imagery Satellite imagery is one valid source of latest location information, and therefore, having its base map service is of added advantage for visualization and verifying data. As a part of the “Upscaling of Multi-layer GIS Framework” project, it was required to create in-house and high resolution national image services for upgrading the existing selected GIS layers to 1:10,000 scale and encourage its use in various e-Gov applications instead of the external services like Google, Bing etc.</p>
+<p>In view of this, country-wide high resolution panchromatic and multi-spectral standard satellite imageries of IRS (2.5m Cartosat-1 and 5m Resourcesat-2, respectively) have been procured from the National Remote Sensing Centre, Hyderabad. These datasets have been processed to develop a seamless Natural Color Composite (NCC) data of 2.5m resolution. The size of the output NCC datasets is of the tune of 5 terabytes. This improved dataset has been aligned as an image service on Bharat Maps portal to enable its consumption in various e-Governance projects.</p>
+<p><strong>State GIS portal</strong> The State GIS portal (https://stategisportal.nic.in/) empowered by Bharat Maps is a simplified user interface for all the states and union territories of India. Six Centres of Excellence in GIS have been established in Madhya Pradesh, Tamil Nadu, Odisha, Bihar, Andhra Pradesh and Assam. They also offer GIS services to various departments.</p>
+<p><strong>GIS Applications using Bharat Maps</strong> NIC is providing Multi-Layer GIS Framework as a platform to address multi-disciplinary and multi-institutional requirements for sustainable economic development, and these services are being deployed in various initiatives taken up by the Government. Brief descriptions of such NIC initiatives follow as under:</p>
+<ul class="article-list">
+<li>GIS for Financial Inclusion (DBT-GIS) for mapping all banking and postal assets has been developed and released under G2G domain. This is a work-flow based application (http://dbtgis.nic.in/bankgis) of mapping of financial infrastructure across the country to facilitate the financial inclusion of rural masses so that the Direct Benefit Transfer (DBT) can reach the unreached. This is being developed into an integrated platform consisting of a set of applications and mobile based tools for continuous data capture and update of Financial Inclusion (FI) infrastructure, which include bank branches, ATMs, banking correspondents (operating micro-ATMS in villages) and post offices.</li>
+<li>Jan Dhan Darshak Mobile App for Financial Inclusion Service using Bharat Maps was launched by Late Shri Arun Jaitley, the former Hon’ble Finance Minister on 25th September 2018.</li>
+<li>GIS for Panchayati Raj: GIS division is extending support to Panchayat Informatics Division in their e-Panchayat suite of applications to embed GIS services in the workflow of application. A Panchayat Atlas application (Gram Manchitra) has been developed for integration into plan plus software for visualizing various assets and enabling the Gram Panchayat Development Plan (GPDP) process.</li>
+<li>Gram Manchitra, an application (https://grammanchitra.gov.in/) for the preparation of GPDP was launched and dedicated to the nation by Shri Narendra Singh Tomar, the Hon’ble Minister for Rural Development, Agriculture &amp; Farmers Welfare and Panchayatiraj, Government of India during the National Panchayat Award Ceremony on 23rd October 2019.</li>
+</ul>
+<p>BBNL, a special purpose vehicle established for connecting all Gram Panchayats (GPs) for providing high bandwidth through OFC Network, has adopted state-of-the-art technology for management of their project. GIS is one of the technologies, which has been leveraged to develop a digital database of telecom assets for efficient monitoring. The services of NIC and its Bharat Maps platform has been intensively utilized at various stages of the project. We acknowledge the services of NIC in establishing the GIS infrastructure at Data Centres in Delhi and Bengaluru.</p>
+<ul class="article-list">
+<li>BBNL GIS: NIC is providing end-to-end support (http://gisapp.bbnlindia.net.in/bbnlportal/) to Bharat Broadband Network Limited (BBNL) for managing their enterprise GIS system (OFC network mapping). The support encompasses all three phases of data capture - planning, execution and operations. NIC has also helped BBNL in establishing the GIS infrastructure in their data centres in Delhi and Bengaluru (disaster recovery).</li>
+<li>Ministry of Human Resource Development (MHRD): NIC is supporting MHRD in mapping school location data, and a website (http://schoolgis.nic.in/) was launched in 2015. The application has been revamped and relaunched with mobile-friendly features by Shri Ramesh Pokhriyal ‘Nishank’, Hon’ble Minister of MHRD.</li>
+<li>Ms. Rina Ray, Secretary (School Education and Literacy), MHRD launched GIS for Kendriya Vidyalaya Sangathan (KVS) Project Monitoring (https://kvsgis.nic.in/gis/) at KVS-NVS National Principals’ Conference held from 6th to 7th February 2019.</li>
+<li>Department of Post: A GIS application (http://postalgis.nic.in/) has been developed for postal department. The Postal Zone Mapping of 7 Mega Cities has also been done.</li>
+<li>Ministry of Health and Family Welfare: GIS Maps Service of Administrative Boundary extended to HMIS application of the Ministry is being provided.</li>
+<li>Agriculture: GIS for Soil Health Card based on soil health card database has been developed and launched (https://soilhealth7.gov.in/). GIS based support has been provided to the Ministry of Agriculture for sending target specific weather forecasting SMS by identifying doppler radar coverage. Support has also been provided to the Soil and Land Use Survey of India (SLUSI) in developing various applications, which include publishing of Micro-watershed Atlas.</li>
+<li>Left Wing Extremism (LWE) Division of Ministry of Home Affairs (MHA): Mapping of key infrastructure layers and identification of gap areas in LWE districts as a project has been approved by MHA. The application (http://lwegis.nic.in/) has been developed and launched and is being used by LWE division.</li>
+<li>Ministry of Rural Development: GIS dashboard applications have been developed for Gram Swaraj Abhiyan (GSA), Extended GSA schemes and DISHA project. A dashboard application for Prime Minister’s Awas Yojana (PMAY) scheme has been developed.</li>
+<li>Ministry of Urban Development: A GIS based dashboard application (http://geourbanmissions.gov.in/) has been developed for the Ministry of Housing and Urban Affairs (MoHUA) for visualization and monitoring of various schemes such as Swachh Bharat Mission (SBM), Prime Minister’s Awas Yojana (PMAY), Atal Mission for Rejuvenation and Urban Transformation (AMRUT), Smart Cities, Deendayal Antyodaya Yojana-National Urban Livelihoods Mission (DAY-NULM) and Jal Shakti Mission.</li>
+<li>Road &amp; Highways GIS Based System for State Highways Assets for West Bengal State High Development Corporation: The GeoAsha Application (http://wbgis.nic.in/GeoAsha/) of State Highway Assets has already been released in public domain.</li>
+<li>Punjab Agriculture Marketing Board and Public Works Department (PWD): Mapping of all roads, managed by the Mandi Board &amp; PWD, as value addition at top of road layers, has been done and generated by NIC using high resolution satellite data service from NICMAPS GIS platform. This also covers the creation of Agriculture Produce Marketing Committee (APMC) boundaries by field staff of the State Government. This application (https://punjabroadsgis.gov.in/) and a Mobile Application i.e., Punjab Sadak Sewa were launched for reporting and monitoring the condition of roads.</li>
+<li>Ministry of Food Processing Industries (MoFPI): A GIS based application (http://indiafoodprocessingmap.nic.in/) for resource mapping has been developed for MoFPI as a part of their Investor portal. This provides crop production statistics and infrastructure details like food parks, food testing labs, cold chain etc.</li>
+</ul>
+<p>GIS is a key pillar of Digital India programme, and NIC has been leveraging GIS in various e-Gov applications for more than two decades and is the main organization responsible for geo-enabling use of maps in e-Gov applications and mainstreaming of GIS in ICT systems in the government.</p>
+<p>With the support of erstwhile Planning Commission and MeitY, RS &amp; GIS Division has prepared a huge repository of geospatial data and is being deployed as a service in Bharat Maps. We are dovetailing GIS into workflow of various Ministries to keep the data current and relevant. Bharat Maps platform is being continuously updated to provide new and innovative services like geocoding, reverse geocoding, map as a service etc.</p>
+<p><strong>Training and Capacity Building</strong> A weekly training programme is conducted by RS &amp; GIS Division to train NIC officers on the use of GIS services in their applications. Over 500 officers have already been trained, and about a dozen departments have shown interest in utilizing the services.</p>
+<p><strong>Awards &amp; Accolades</strong></p>
+<ul class="article-list">
+<li>ESRI’s Special Achievement Award to NIC for GIS in 2017</li>
+<li>Asia Geospatial Excellence Award to NIC for Bharat Maps in 2017</li>
+<li>Gems of Digital India Jury Choice Award to Bharat Maps in 2018</li>
+<li>Technology Sabha Award to Bharat Maps project in Enterprise Applications category</li>
+<li>Certificate of Appreciation to NIC for enabling DOT in achieving Bharatnet Phase 1 target of 1 lakh Gram Panchayats</li>
+<li>Certificate of Appreciation to NIC for Outstanding Contribution in Management and Implementation of Gram Swaraj Abhiyan and Extended Gram Swaraj Abhiyan</li>
+<li>Digital India Award 2018 to the Department of Financial Services (Gold category) in Web Ratna (Ministry/ Department) for the mapping of financial infrastructure across the country to facilitate financial inclusion of rural masses so that DBT can reach the unreached</li>
+</ul>
+<p><strong>Vision</strong> Geography or Geo-spatial is a core foundation for decision support systems and is a platform by default, where man-made as well as natural events or phenomena interact real-time in parallel simultaneously. Therefore, it is defined as “Science of Where”. Though “Computing” as a science is a sequential process, with advancement in digital technologies (such as supercomputing and parallel processing) including various data capturing platforms, viz. Internet of Things, sensors, Unmanned Aerial Vehicle/ drone, mobile, and Light Detection and Ranging (“Science of When”) as well as analytics platforms, viz. Big Data and Artificial Intelligence/ Machine Language (“Science of What”), we are in the process of building an end-to-end ecosystem, deploying near real-time “geo-vision” as core foundation of decision-making and governance process.</p>
+<p>There is a need of technology partnership with leading technology providers (copyright or open source) for a unified technology platform around open standards, not only for GIS but also for Location Based Services, Satellite Based Image Services as well as Ground/ Aerial Based Digital Survey Systems.</p>
+<p>There are many proprietary GIS technologies (like ESRI, Here Maps, Hexagon, Planet, Trimble, Bentley etc.) as well as Open Source Solutions (like Geo-Server, Post GIS, QGIS, GRASS, Map server etc.). Though, in view of the above, the idea to have a “Unified Geo-Spatial Technology Platform” is an excellent one, it needs to be approached in a holistic manner with proper direction and appropriative technical resources and investments.</p>
+<p><strong>Conclusion</strong> GIS is enabling Digital Transformation for Sustainable Economic Development. It means end-to-end service delivery covering work flows, business activities, processes, competencies and models to fully leverage changes in planning and decision-making so that benefits, positive impact and opportunities get created at all levels of the society. It is to be noted that “GIS enabling” is a process “embedded as core to sustainable transformation”. This is what the current practice is adopted by NIC as part of core technology support and service delivery integrated with geo-spatial component for location based e-Governance. NIC’s Multi-Layer GIS Platform, Bharat Maps defines such a multi-scale and multi-resolution service oriented framework, which is leveraging even API based OGC compliant (WMS, WFS etc.) map services to get integrated with e-Governance work flows associated with flagship programmes of the Government such as Swachh Bharat Mission, Schools, Telecom, Health, Drinking Water &amp; Sanitation, Rural Development &amp; Panchayati Raj, Roads and Agriculture.</p>
+<p>In the above context, as an extension for future road map, the word “Digital” represents enhanced technology solutions with integration of emerging technologies, viz. Big Data, Location Intelligence, IoT, Sensor Enablement, Drone and LIDAR, with GIS as a part of end-to-end service delivery platform. NIC is working towards enhancing the current offerings by scaling up the GIS cloud infrastructure to meet the ever increasing demand for GIS services at various levels of the Government both at the Central and State levels. NIC is also collaborating for various e-Gov projects to enhance the GIS content and asset database, which will help Ministries and Departments in providing enhanced geospatial services to various stakeholders.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="ngt-online-portal-january-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">NGT Online Portal</span></a><a class="article-nav-link next" href="mparivahan-a-citizen-centric-transport-solution-enriched-with-latest-technologies-january-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">mParivahan - A citizen-centric transport solution enriched with latest technologies</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

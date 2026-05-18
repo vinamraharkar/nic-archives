@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFORMATION AND FACILITATION COUNTERS — Informatics October 1997</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 1997"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-1997/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/october-1997/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/october-1997/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/october-1997/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-1997/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/october-1997/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/october-1997/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1997/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1997/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-1997.html">October 1997</a><span class="breadcrumb-sep">&rsaquo;</span><span>INFORMATION AND FACILITATION COUNTERS</span></nav>
+        <div class="article-header">
+          
+          <h1 class="article-title" data-pagefind-meta="title">INFORMATION AND FACILITATION COUNTERS</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 7–13</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-1997.html">October 1997</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The Conference of Chief Ministers held on May 24, 1997 discussed an Action Plan for effective and responsive Government at the Central and State levels. Inaugurating the Conference, the Prime Minister drew attention to the urgent need to come up with ideas and strategies for responsive and effective administration, which could revive the credibility of the Government.</p>
+<p>● NEED FOR INFORMATION &amp; FACILITATION COUNTERS ● SETTING UP OF INFORMATION &amp; FACILITATION COUNTERS ● CONCEPT OF COUNTER SERVICE ● SERVICES RENDERED BY INFORMATION &amp; FACILITATION COUNTER ● INFORMATION &amp; FACILITATION COUNTER- TECHNOLOGICAL ASPECT ● CONCLUSION ● INFORMATION &amp; FACILITATION COUNTER FOR MINISTRY OF PETROLEUM &amp; NATURAL GAS ● INFORMATION &amp; FACILITATION COUNTER FOR DEPARTMENT OF FERTILIZERS ● INFORMATION &amp; FACILITATION COUNTER FOR MINISTRY OF HUMAN RESOURCE DEVELOPMETN &amp; MINISTRY OF WELFARE ● CONTACT</p>
+<p>NEED FOR INFORMATION &amp; FACILITATION COUNTERS An integral aspect of administrative reforms, both in the short term and in the longer perspective is related to the speedy and easy access of information to the public on the services and activities of Government. There are considerable delays in securing access to information, since Government Departments do not have an appropriate mechanism to provide information to the citizens or to deal with their queries and complaints at a single point. It is here that the Information and Facilitation Counters (IFCs) prove beneficial to the people. Counter services facilitate the Government in providing effective and efficient services to the public.</p>
+<p>SETTING UP OF INFORMATION &amp; FACILITATION COUNTERS The Department of Administrative Reforms and Public Grievances in association with the National Informatics Centre have undertaken the responsibility of setting up of Information and Facilitation Counters at various Government Ministries/Departments. In the first phase of implementation of the Project it was decided to set-up Facilitation Counters in forty Ministries/Departments of the Central Government.</p>
+<p>DEPARTMENTS WHERE IFCs ARE CURRENTLY OPERATIONAL</p>
+<p>Telecom Youth Affairs &amp; Sports Education Culture Women &amp; Child Development Chemicals &amp; Petrochemicals Mines Information &amp; Broadcasting Coal Petroleum &amp; Natural Gas Welfare Company Affairs Commerce Industrial Development Industrial Policy &amp; Promotion Heavy Industry Steel Textiles Supply (only DGS&amp;D) Health Family Welfare SSI &amp; Agro-based Rural Industry Urban Development Agro based SSI &amp; rural Industry Urban Employment &amp; Poverty Alleviation Economic Affairs (expenditure) Revenue (CBEC) Revenue (CBTD) Home Affairs Personnel &amp; Training Railways Agriculture &amp; Cooperation Animal Husbandry &amp; Dairying Fertilizers Civil Supplies Food Food Procurement &amp; Distribution Rural Development Rural Employment &amp; Poverty Alleviation Posts</p>
+<p>CONCEPT OF COUNTER SERVICE The concept of Counter Service has been designed keeping in mind the need of the general public. It comprises of three components which are: (a) The front section of the counter, where the Customer waits for the service. Appropriate and sufficient facilities should be provided for the customers in front of the counters. The counters should thus be equipped with appropriate directional signs; notice boards; enquiry desk with necessary application forms, pamphlets, brochures; a comfortable waiting area and a queuing system. (b) The counter, which is the section where the Government staff starts meeting and providing services to the people. Range of the services provided by the counter shall vary from one Department to another based on the activities of the respective Department. It is the place where counter staff receives customers, provide services and terminate the service. (c) The section behind the counter, which provides support for the counter services. The ability of Government Departments/Offices to provide quality counter services depends largely on the role played by the staff who renders support services behind these counters. All planning, managing of resources, decision making process and daily administrative matters are carried out at this section.</p>
+<p>SERVICES RENDERED BY INFORMATION &amp; FACILITATION COUNTER It is at the IFC that various services such as the status of application forms, waiting list number, issue of licenses, permits, identity cards, processing of application for essential facilities and other services are provided. It also looks into the specific query of a particular Customer and tries to provide a satisfactory answer within two weeks. An illustrative list of guidelines that can be kept in mind while preparing for the services at counter are: ● Particulars of an organization, its functions and responsibilities. ● Description of the organization's decision making process in terms of procedures and powers and responsibilities of its officers and employees. ● Norms for performance of an organization's activities such as prescribed periods for their processing and completion, physical and financial targets etc and the actual achievements with reference to such norms /targets. ● Classes of records under the control of an organization including the rules, regulations, instructions and list of manuals etc, used by its employees for carrying of activities. ● Facilities provided by the organization for access to information.</p>
+<p>INFORMATION &amp; FACILITATION COUNTER- TECHNOLOGICAL ASPECT As it is evident from above sections that IFCs have to provide variety of services. To provide these services in an efficient and meaningful manner it is vital that all the information be stored in electronic form. This will not only make the information easily accessible but will also enable regular updation of the same in a cost effective manner. Keeping track of the numerous queries coming in every day and replying to the Customers query within a stipulated time period of two weeks would not be possible without the help of an Automated System for dissemination and flow of information from the IFC to the respective Ministries/Departments and visa versa. The National Informatics Centre has helped these Departments in converting their information in electronic form for the purpose of easy accessibility. NIC has also developed a standard Software for this purpose. The Software runs on Windows platform on Intel Pentium. Since there is a provision of providing printouts to the Customer, a printer is also provided at the Counter. As mentioned earlier the functioning of IFCs largely depend on the information provided by the various Departments. Therefore, for an efficient exchange of information between the staff at the counter and the staff at various sections and an easy access to the various databases of the Ministry it is necessary to connect them through a Local Area Network (LAN). NIC is also helping the various Government Ministries/Departments in establishing the LAN. This will enable continuous and prompt access of information as well as timely response to the query of the User.</p>
+<p>CONCLUSION Information and Facilitation Counters are currently operational at forty Departments of the Central Government and many more are under development. These Counters are catering to the various information requirements of the people and also taking care of their respective queries by providing apt solutions in a specified period of time. The concept of Information and Facilitation Counter as the name suggests have indeed benefited the people of the Country. It has facilitated the public to access the vast amount of information held by the various Government Departments. However the task does not end here. In order to make the Government Administration effective and responsive, the Ministries/Departments need to organize more and more information in electronic form, update it regularly and make it available through the Counters.</p>
+<p>INFORMATION &amp; FACILITATION COUNTER FOR MINISTRY OF PETROLEUM &amp; NATURAL GAS The Information and Facilitation Counter for Ministry of Petroleum &amp; Natural Gas was inaugurated on June 30, 1997, by Mr Jaineshwar Mishra, Minister of Petroleum &amp; Natural Gas. The Counter is rendering its services to number of organisations; business community environmentalists as well as general public alike. The Counter covers a wide range of information such as energy scenario in India; investment opportunities in Oil Sector; approvals-pricing- Exim Policy; environmental protection and pollution control; major oil companies of India and other organizations under ministry of petroleum and natural gas etc. The Counter also caters to various queries such as guidelines on release of LPG connection and transfer of LPG connection, retail outlets of LPG, Avenues of investment in the Oil Sector etc; of the Customer.</p>
+<p>INFORMATION &amp; FACILITATION COUNTER FOR DEPARTMENT OF FERTILIZERS The Department of Fertilizers, Ministry of Chemicals and Fertilizers, Government of India has established a Information and Facilitation Counter at Shastri Bhavan (Gate no.3) with the objective of helping seekers of information from various segments of the society who want to gather information about fertilizers. The Counter will guide and provide information through printed materials and computer print-outs which will cover information on fertilizer production; import of fertilizers and raw materials; distribution and consumption of fertilizers; price and subsidy; technology and safety; environment; bio-fertilizers and other fertilizer and agriculture related information including Global Fertilizer and Agricultural Scenario. In order to help Users to have current information on production; imports; availability and sale of fertilizers, computer print-outs are also made available.</p>
+<p>INFORMATION &amp; FACILITATION COUNTER FOR MINISTRY OF HUMAN RESOURCE DEVELOPMENT &amp; MINISTRY OF WELFARE The Information and Facilitation Counter for the Ministry of Human Resource Development has been rendering its services to the people since June 30, 1997. The Counter covers information about Department of Education; Youth Affairs &amp; Sports; Culture and Women &amp; Child Development. The Information and Facilitation Counter for Ministry of Welfare was inaugurated on July 25, 1997. The Counter provides on-line access to details of the schemes of various Departments under the Ministry such as objective, application procedure, whom to contact, type of beneficiaries etc. The details of the scholarships offered by the constituent Departments of the Ministry can be accessed to know about the nature of scholarships, eligibility, important dates, procedure for application, whom to apply etc.</p>
+<p>FOR ANY FURTHER INFORMATION PLEASE CONTACT E-mail: bkg@hub.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="software-for-jee-october-1997.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">SOFTWARE FOR JEE</span></a><a class="article-nav-link next" href="disciplinary-cases-computerized-for-haryana-government-october-1997.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">DISCIPLINARY CASES COMPUTERIZED FOR HARYANA GOVERNMENT</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

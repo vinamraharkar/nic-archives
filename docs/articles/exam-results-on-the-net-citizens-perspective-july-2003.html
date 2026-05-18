@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXAM RESULTS ON THE NET - Citizens’ Perspective — Informatics July 2003</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2003"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/july-2003/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2003/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2003/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/july-2003/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2003/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2003/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2003.html">July 2003</a><span class="breadcrumb-sep">&rsaquo;</span><span>EXAM RESULTS ON THE NET - Citizens’ Perspective</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">E GOV PRODUCTS &amp; SERVICES</div>
+          <h1 class="article-title" data-pagefind-meta="title">EXAM RESULTS ON THE NET - Citizens’ Perspective</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Sonal Kalra, NIC HQ with inputs from Vinod Taneja (UP), Ajay Chahal (HP), N.K Prasad (Bihar) and Deepk Bhargava (Rajasthan) &bull; pp. 15–16</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2003.html">July 2003</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">In the decades spanning 60’s and 70’s, exam results, especially those of the State School Boards meant students and parents spending sleepless nights waiting for the early morning arrival of the ‘Gazette’ carrying the result. With the change in the pattern of Education Boards all over the Country, the concepts of +2 results and entrance exams for various professional courses came into fore, not only enhancing the number and magnitude of examinations but also bringing tough competition in the academic scenario. Till a few years back, it was a common sight to see the students thronging notice boards trying to find their roll number in the list of successful candidates. The emergence of Internet has seemed to transform the above scenario as it has made it possible for students to check their Exam Result in the comfort of their own homes, through the click of a mouse.</p>
+<p>Like past many years, this year too saw NIC providing the School Board through WWW, Interactive Voice Response System (IVRS), Short Message Service (SMS) and Email. The entire activity was huge, in terms of magnitude of resources involved as well as the number of target audience. For the CBSE results alone (Class X and XII), the Results website of NIC received over 26.7 million hits while 7.5 Million results were delivered. In addition as large as 3.3 lakh marksheets were delivered to students in their individual mail boxes while large number of consolidated school wise results were also delivered to different schools on their email. Around 3.8 lakh results were also delivered through IVRS systems while 2.1 lakh results were delivered through SMS. To guage the response of students, teachers, parents and all others who checked out the School Board results in various States on the Internet this year, we asked the Informatics Correspondents at Uttar Pradesh, Himachal Pradesh, Bihar and Rajasthan to give us the first hand account of the ‘result-experience’ in their state. This is what Vinod Taneja, Ajay Chahal, N.K Prasad and Deepak Bhargava reported…….</p>
+<p>Uttar Pradesh……. With the growing popularity of http://results.nic.in, examination bodies in Uttar Pradesh could no longer resist using NIC’s web services for dissemination of results of their respective public examinations through the net.</p>
+<p>First, it was Uttar Pradesh Board of High School &amp; Intermediate Education (UPMSP), Allahabad for its class 12th &amp; 10th exams. Soon to follow in quick succession were Uttar Pradesh Public Service Commission (UPPSC), Allahabad and Railway Recruitment Board (RRB), Gorakhpur. After experimenting with the many ‘dot coms’, all these institutions ultimately settled for ‘nic.in’. The result was the launch of http://upresults.nic.in on 1st June ’ 2003, exclusively as a results portal for all the exams related to the state of Uttar Pradesh.</p>
+<p>U.P., as such, is not known much for IT penetration. Majority of web-hits can be assumed from relatively developed towns, district headquarters and outside the state. But majority of around 8.5 Lakhs and 26 Lakhs students that appeared for Class 12th &amp; 10th exams respectively, belong to comparatively remote and rural areas. And, it was for this segment of the population that NIC fully lived up to its credo as a service organization, practically implementing its aim of ‘Bridging the digital divide’ and ‘Reaching out to the unreached’. Earlier, a student of rural areas could know his results hours or even days after it was announced and knowing marks could take even weeks. This time, I.T. solution made it too fast, just coinciding with the announcement of results at Allahabad: instant display of marks sheet on the net, school-wise results of a district that reached the respective DIO through e-mail, coupled with NIC’s seamless bandwidth and ‘95’ (local phone !) facility of Department of telecommunications. As a consequence, NIC - district centers in all 70 districts of U.P. turned into virtual call centers for eager students, their parents and guardians. DIOs in collaboration with the district administration, made all out efforts by managing requests through a number of telephones &amp; terminals setup for the purpose.</p>
+<p>DIOs of U.P. deserve special praise for their tireless efforts. DIO Allahabad, Shri Praveen Singh sums up the mood at NIC District Centres in UP during the declaration of these results: “Never mind, the huge crowd outside the office and continuous ringing of telephone lines, it was indeed a satisfying feeling to serve the rural masses. The response was tremendous. Students and their parents were too thankful for NIC’s free-of-cost service.”</p>
+<p>Rajesh Kr Gangal, DIO Aligarh with a student at the time of result announcement</p>
+<p>Himachal Pradesh… The HP Board of School Education at Dharamshala conducts the examinations of 8th, 10th, 11th and 12th classes in the hill State of Himachal Pradesh. Himachal has difficult geographical terrain and 90% of the 61 Lakh population live in villages. Approximately, 5 lakh students appear for the annual examinations every year. Prior to web publishing, the results were published in the newspapers/gazettes and the students could see the status of their result and total marks on the next day only. For getting the detailed marks, the students had to wait for a week or more at remote areas in Lahaul &amp; Spiti, Kinnaur and Chamba districts, which used to reach after a month by post.</p>
+<p>The Board approached NIC HP State Unit in the year 2001 for publishing of examination results of 8th and 10th classes through NIC’s results portal. Accordingly, the website http://hpresults.nic.in was launched in the year 2001.</p>
+<p>This year, over 5 lakh students appeared in various examinations and the results of classes 8th , Plus Two and 10th are already declared. So far more than 2 lakh page views have been recorded. About 50,000 students also used the IVRS facility in the last 20 days.</p>
+<p>The popularity of accessing results from the website can be gauged from the fact that students no longer have to wait for their results to reach by post for taking admission in the next classes. Long queues of students and parents could be seen at the Cyber Cafes for taking the printouts of subject wise marks.</p>
+<p>Deepika, a Matric student from Hamirpur was very happy on the evening of 10th June, 2003 when she said “It was wonderful to see my name on the computer screen with the subject wise marks. And I got first division too!” Sh. B.R. Rahi, Chairman, HP Board said “The Board has fulfilled a major commitment to its students by providing results immediately at the time of declaration of results through three different mediums by using Information Technology.”</p>
+<p>The Cyber Café owners, too, benefited from the whole exercise .Sh. Jyoti Punj, owner of Cyber Café-J.P. Communications, Nahan told us “We wait eagerly for the day when the Board results are declared on NIC’s website. Our business increases many folds on that day in comparison to other days”.</p>
+<p>Bihar…. Bihar Intermediate Education Council is a statutory body responsible for conducting the Intermediate Examinations in the State. More than 2,40,000 students appeared in the Intermediate Examinations in the State this year.</p>
+<p>The result of Intermediate examinations was a mammoth task earlier carried out manually. The results were published in various newspapers and other print media. Searching, sorting and retrieval of results was very time consuming and problematic. NIC Bihar State Unit took over the job of publishing the entire results pertaining to Intermediate Examination Results. The official web-site for Bihar Intermediate Education Council (BIEC) (http://biec.nic.in) was inaugurated on 8th June 2002 by Hon’ble Bihar Chief Minister Smt. Rabri Devi. Since then, NIC is regularly helping BIEC for publication of their results on the web. This year too, the results of all examinations of Bihar Intermediate Education Council were published on the Net.</p>
+<p>The students are so happy that a successful student Ms. Shobha Kumari Sinha of Intermediate in Science says “Earlier knowing examination result was another examination for all of us. However, the results on the Internet has been a gift bonanza to cheer...we are all happy and thrilled...”. Like wise Sh. Arun Kumar, a student of +2 Science says “Because of Intermediate Results on the web we all have results at the door-step and Bihar is at par with any other state as far as result publication on the Net is concerned...”</p>
+<p>Rajasthan……</p>
+<p>The Rajasthan Board of School Education at Ajmer conducts the examination of Sr. Secondary (Commerce), Sr. Secondary (Science), Sr. Secondary (Arts), Varishtha Upadhyay, Secondary, Open School and Praveshika for the entire State.</p>
+<p>Approximately, 10 lakh students appear for the annual examinations every year. In the past, the results were declared through newspapers/notices and the students could see the total marks on the next day only. For getting the detailed marks, the students had to wait for a week or more at remote areas, which used to reach after a month by post. With the declaration of results on the Internet, the entire scenario has been transformed.</p>
+<p>DIO, Ajmer commented that “beneficiaries of the NET have been wide ranging right from the students, parents to even senior Government Officers. Chairman, Board of Secondary School Education was more interested in seeing the results over NIC web sites instead of visiting the local board office. The District Collector, Ajmer visted the NIC Centre herself to see some results.</p>
+<p>The scene at Jaisalmer…. The scene at NIC Jaisalmer office located at far east and in close proximity of Pakistan was phenomenal during the result time . On the day of results, NIC became a cheerful ground of students. A mix with joy and sorrow, laughter and tears all happened at NIC center for almost 4 hours. The NIC official at Jaisalmer observed that “The result project connected NIC with the common man and established a place for NIC in the hearts of students and parents because emotions were attached with this project ...and emotions are more long lasting than any other work”</p>
+<p>Accolades from far and near :- I would like to congratulate National Informatics Centre for bringing up on time Board Results. I am sure you will fulfill the long needed requirement of Tribal Student of Dungarpur having no such type of facility - Additional Collector(Development), Dungarpur</p>
+<p>Sh. Subodh Agarwal, IAS, District Collector, Bharatpur has appreciated the efforts of NIC by saying “NIC has done an appreciable and great effort by providing board results through NET”.</p>
+<p>The parents at Chittorgarh, city of Victory Tower were quoted as saying - “It is just superb, fast and free service provided by NIC.” They were wondering how NIC is disseminating such huge amount of authentic and correct information with such ease. They also lauded the efforts of the NIC staff in satisfying a large number of queries.</p>
+<p>Sh. Mohd. Aslam, a Banker at Banswara, down south in Rajasthan was browsing the NET to get the result. His futile attempt to search the right site for results ended when he made a phone call to NIC office at Banswara. He commented later on “ It’s amazing, they have the links to almost all the results in India. And I followed the link to Rajasthan Board. The speed of server was good and it is great that NIC is providing the results in such a manner that no one can stand in comparison”</p>
+<p>“The School wise merit list prepared by NIC, Baran is used for departmental purposes. The information compiled by NIC Baran from the result data otherwise would have taken several months in manual compilation “ Sh. Madhu Soral, District Education Officer, Baran</p>
+<p>One of the Senior District Level Officer at Pali remarked - “ Ab to Ghar Baithe Hi Phone par NIC dwara parinam uplabdh ho jata hai”.</p>
+<p>The Last word….</p>
+<p>Sh. Inderjeet Khanna, Former Chief Secretary, Government of Rajasthan narrates one of the incidents he witnessed at a small and remote place called Ramgarh close to Pakistan Border in Jaisalmer District during every e-governance and IT event. He saw a student running and shouting with pleasure on the road. When inquired about the reason, he showed a printout of his result in the Board Examination which he had obtained from the website. By making him get the marks immediately at such a far flung area , the real mission of NIC to use ICT as a tool to make peoples’ lives easy has been met.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="mudra-municipal-corporation-towards-digital-revenue-administration-july-2003.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">MUDRA - Municipal Corporation towards Digital Revenue Administration</span></a><a class="article-nav-link next" href="integrated-e-security-standards-july-2003.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Integrated e-Security &amp; Standards</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

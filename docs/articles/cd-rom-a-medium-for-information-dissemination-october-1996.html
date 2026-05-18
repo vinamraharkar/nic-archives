@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CD-ROM : A Medium for Information Dissemination — Informatics October 1996</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 1996"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-1996/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1996/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1996/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-1996/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-1996/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-1996/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-1996.html">October 1996</a><span class="breadcrumb-sep">&rsaquo;</span><span>CD-ROM : A Medium for Information Dissemination</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Cover Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">CD-ROM : A Medium for Information Dissemination</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 4–5</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-1996.html">October 1996</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The dramatic excursion of CD-ROM (Compact Disc Read Only Memory) technology, in the last decade, from the peripheries of the computer industry to its mainstream has seen it universally invade corporate environs and homes, with a spell-binding zeal matched only by the impetus of the PC 'wave' which swept captivated Users off their feet, in the preceding years.</p>
+<p>CD-ROM is a medium for storage and distribution of large volumes of computerized information. It is known as 'Read Only Memory' because information stored on a CD-ROM disc, by the publisher cannot be erased or rewritten. A single CD, 12 centimetres in diameter and 1.2 millimetres thick can accommodate an enormous 650 MB of information, the equivalent of about 300,000 A4 typewritten pages of text or 450 high-density floppies. It can house the entire Encyclopedia Britannica, along with its diagrams and images. Considering that a disc can hold the images of 12,000 pages of text, this accounts for an amazingly low cost per page, of less than a rupee. Its value is enhanced by a shelf-life of 25 years or even more. Information stored on a CD-ROM disc can be read by mounting the disc in a CD-ROM drive or player, attached to a computer. CD-ROM uses the power of laser and optical techniques. The retrieval speeds of CD-ROM are lower than those for magnetic hard disks, but CD-ROM has numerous compensating benefits which have served to make it the most widely used medium for information interchange.</p>
+<p>The later phase of CD-ROM evolution heralded a revolution which brought to desktop a simple, affordable and time-effective technique for the production of CD-ROMs which till 1989 had been the exclusive preserve of moneyed service providers and their highly trained teams of production specialists working in massive capital-devouring environment-controlled factories.</p>
+<p>The Desktop CD-ROM production technology viz. CD Recordable (CD-R) enables PC Users to publish database and applications on CD, in-house. The information published can range from the internal corporate information such as sales and marketing; to interactive multimedia instructional packages for students on any conceivable subject; to locally produced databases, to any kind of information the imagination of humans can conjure up for communication to fellow beings. Today, entire books with limited printed copies, are being distributed on CD-ROM. This enables an astonishing saving in time and money besides evoking the whole-hearted approval of environmentalists.</p>
+<p>CD-ROM technology emerged as a derivative of CD-Audio (music CD) technology also known as CD-A. The physical characteristics of CD-ROM discs are dictated by standards stipulated in the Yellow Book and the logical characteristics by ISO 9660. ISO 9660 describes a unique file system which provides a common meeting ground for DOS, Windows, Mac and Unix operating systems that is a disc recorded in adherence to 9660 can be used under any of these Operating Systems (OSs). This includes the data files, different programme files required for each individual OS.</p>
+<p>In its most basic configuration, a CD-R production unit comprises of an external or internal CD-R Recorder linked by a SCSI (Small Computer Systems Interface) cable to a SCSI adapter fitted in a 'host' PC. The information to be recorded on a CD-R disc is created on or transferred to the hard disk of the 'host'. Using special Pre-mastering Software, the information is then organized in a logical format conforming with the ISO 9660 CD-ROM standard for data documentation. In other words an 'image' of the data as it would reside on CD is developed on the host's hard disk. Another facility provided by the Pre-mastering Software enables the 'image' to then be downloaded onto a blank CD-R disc loaded in the Recorder, which 'burns' or 'cuts' the disc, using a laser beam. The blank disc consists of plastic substrata, a reflective layer of gold and a green organic dye layer into which the laser 'melts' the information.</p>
+<p>The individually produced or one-off CD-R disc can now be read in a standard ISO 9660 CD-ROM drive. Though a given area of a disc once burned or written cannot be rewritten or the data on it erased, however data can be appended to un-burned portions of the disc by a process called Multisession Recording.</p>
+<p>Most Pre-mastering Software packages offer a feature whereby the CD image on the hard disc can be tested for integrity and compatibility with appropriate search engines, before burning the CD-R disc. This is done by simulation of CD playback that is by creating an environment on the hard disc which emulates CD conditions, including the slower CD access times and data transfer rates that is search and retrieval speeds.</p>
+<p>The Pre-mastering Software also provides the ability to test-burn the disc to avoid indeterminable errors at the time of actual burning. Recorders can write at different speeds controlled by the software, designated 1X for single-speed and further 2X, 4X and 6X for double, quad and six speeds respectively. They have internal cache buffers ranging from 512 KB to 4 MB.</p>
+<p>Till the advent of CD-R technology, CD-ROM discs were produced in gigantic, environment-tuned factories. A glass master was first created from data usually supplied by User on magnetic tape. Then a metal stamper was developed and large numbers of copies made of a given title by embossing the data pattern on cooling plastic, using the stamper, at the rate of a few seconds per copy. The factories were phenomenally expensive and the process extremely complex.</p>
+<p>Recorded CD-R discs can be read on any of the millions of standard CD-ROM drives the world over. 60% of all β in the United States are shipped with CD-ROM drives fitted and the existing installed base tops 75 million units worldwide. This is a reflection of the spiralling acceptance and popularity of CD-ROM and the consequent potential of CD-R.</p>
+<p>CD-R disc can be used as input to 'traditional' factory-based production bureaus for large-scale replication in thousands or millions. Thus, the production of 'prototypes' or 'proofs' of titles destined for mass scale reproduction is a natural and hugely viable application for CD-R. Once copies of a disc are produced or 'pressed' by conventional process they cannot be altered, thus being able to fully test the prototype is critical.</p>
+<p>The unique advantage of CD-R will gain a further edge as the installed base of CD-ROM drives touches the expected 250 million units by the end of 1997. Compared to 5.25&quot; WORM (Write Once Read Many), CD-R provides the added benefit of superior standardization and a larger installed base of play back drives.</p>
+<p>In addition to the more common CD-ROM, several other formats for CD have evolved mainly to meet insatiable User demands for multimedia applications. CD-XA or Extended Architecture enables the interweaving of data and audio and is used in most of the popular commercial titles. In order to be compatible with the older single-speed drives, a disc with data and audio combined would have to adhere to Yellow Book or CD-ROM standards, but CD-XA offers a more effective solution. CD-I or CD-Interactive is targeted towards instructional and educational packages for home entertainment and calls for propriety software and player, the player hooked up to a Television set. CD-Plus or Enhanced CD was a specification designed to enable music CD producers to include data and graphics on conventional audio CDs. White Book or Video CD caters to full-motion MPEG (Motion Picture Experts Group) video. Photo-CD was designed to be able to store photographic images on CD, using multi-session recording.</p>
+<p>The quality of functionality provided by a Pre-mastering software package is gauged, inter-alia, by which and how many of these CD formats it supports.</p>
+<p>The National Informatics Centre pioneered the use of Desktop CD-ROM production technology in India with the acquisition of one of the earliest Recorders in the year 1991. NIC has capitalized on the benefit of its unique experience in setting up a superbly equipped state-of-the-art CD-R Lab at its Headquarters (New Delhi). Professional services are available to external Users from the government, public and private sectors, for an eminently affordable fee. In addition to publishing CD-R discs, NIC also offers a disc-to-disc duplication service.</p>
+<p>A fascinating array of CD titles has been published mainly for in-house enthusiasts. An application for the Indian Parliament contains a rare compilation of the profiles of Lok Sabha Members of Parliament, the Indian Constitution, the Constituent Assembly debates and the speeches of the Speakers of both houses since 1980 in a simple, browser-friendly format. Two multi-media packages for the Ministry of Agriculture and Ministry of Rural Areas &amp; Employment offer a unique interactive learning experience. The Computer Aided Paperless Examination System (CAPES) CD encompasses an extraordinary, first-time experience to hopefuls seeking employment in the form of a question/answer databank for the paperless examinations and fresh updated CDs are periodically cut for this purpose. The ClassROM application is a remarkable interactive multimedia instructional package for the avid seekers of information on the use of the ubiquitous multimedia technology. CDs have been cut for distribution of special software. A CD was cut for the National Institute of Oceanography, Goa containing a huge database of Oceanographic data to facilitate its distribution to branch offices spread across the Country.</p>
+<p>The facility at NIC is being upgraded as it keeps in stride with advancing technology and state-of-the-art recorders, a multi-disc duplicator in addition to feature-rich software will be added. The Pre-mastering Software currently in use supports a number of different formats including CD-ROM, CD-I and CD-Audio and multi-session recording. In the two years since its inception, the services have steadily geared up in response to expanding User demands.</p>
+<p>To facilitate the process of multimedia applications development a plethora of multimedia Authorizing Packages are available along with several Database development, search and retrieval packages of all types including those containing structured data, text, video and audio clips, graphics, animation and images.</p>
+<p>Bearing in mind CD-ROM's inherent speed limitation, special CD-optimized retrieval software have been developed by international software companies, which attempt to mitigate this disadvantage by judicious use of software mechanisms. The software are either prohibitively expensive with very high royalty charges or do not cater to the entire range of data types sought to be addressed, for example numeric, structured, textual, images etc. After focused and exhaustive research, NIC has been successful in identifying a retrieval engine satisfying all desired criteria.</p>
+<p>Purely in terms of financial viability, the production of CDs using CD-R proves advantages for upto 50 copies. For upto 100 copies, time-efficiency still tilts the balance in the favour of CD-R. For more than a hundred copies time and cost economics dictate the use of the traditional process.</p>
+<p>The soon to be released DVD (Digital Video Disk or Digital Versatile Disk) or the high-density CDs will usher in a new era in the evolution of CD. A single-sided DVD disc would contain 4.7 GB of information especially suited for feature-length movies using MPEG 2 compression and extremely massive computerized data banks. The double-layered discs will accommodate 8.5 GB and the dual-sided double-layered disc 17 GB. CD-ROM drives will not play DVD but DVD drives will be backward compatible with CD-ROM and CD-R. DVD-R or Recordable DVD, of capacity 3.8 GB initially, is slated to be available by the end of 1997-1998.</p>
+<p>For further information kindly contact:</p>
+<p>CD-ROM Database Production and Commercialization Unit Bibliographic Information Division National Informatics Centre A-Block, CGO Complex Lodi Road, New Delhi-110003 Phone: 4362369; 4361133 NICMAIL: MEDLARS E-mail: nandita@medlar0.delhi.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="vehicle-registration-october-1996.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">VEHICLE REGISTRATION</span></a><a class="article-nav-link next" href="entertainment-revenue-information-system-october-1996.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Entertainment Revenue Information System</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

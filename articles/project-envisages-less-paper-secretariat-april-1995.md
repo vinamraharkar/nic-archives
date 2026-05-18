@@ -1,0 +1,12 @@
+---
+title: "Project envisages 'less paper' Secretariat"
+publication: "Informatics"
+issue_date: "April 1995"
+pages: [7]
+author: "From our Haryana Correspondent"
+section: "PROJECTS"
+---
+
+## Project envisages 'less paper' Secretariat
+
+The Haryana State Secretariat is witnessing a cultural and organizational change brought about by the introduction of information technology by the Haryana State Unit of the National Informatics Centre. Computerization has made fast and sound decision making possible leading to overall development of the State. Terminals have been provided to state secretaries enabling them to monitor and query the status of different projects at the press of a key. The software behind this project, nicknamed Informatics for Administrative Secretaries (IAS) covers many applications and databases. The software has been developed with the ultimate objective of creating a 'less paper' office through the automation of a wide range of activities. A unique feature of the System is that it has been so designed as to make it entirely independent of its operating system as far as the Users are concerned. The User does not have to use any operating system commands, and many officials have been using the System quite unaware of exactly which operating system is working for him. The software encompasses a wide range of day-to-day activities and includes components such as tour information, time planner, note pad, phone book, visiting card deck, meeting decisions, activities and achievements, file movement, VIP references, public grievances, scheme monitoring, monitoring progress reports, etc. Large databases have been built up to facilitate extraction of vital information on basic statistics of the State, State Budget, Haryana IAS Officers, telephone directory of Haryana, Census 1991, village abstract, department pay scales, GIST services, socioeconomic parameters, etc. These have further paved the way for computerization of other secretariat activities such as personnel management, follow-up of court cases, payroll processing, library management, etc. The System is user friendly with well-defined menus and 'help' facilities. Structural and modular construction of the System lends it the flexibility of easy usage and access. Minimum computer knowledge is required to run the System. Training courses on operating the System are already underway. In the first batch, more than 200 private secretaries, personal assistants and stenographers were trained in word processing, spreadsheet operations, and other software applications.

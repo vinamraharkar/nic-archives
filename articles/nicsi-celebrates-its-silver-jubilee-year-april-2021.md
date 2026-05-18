@@ -1,0 +1,16 @@
+---
+title: "NICSI Celebrates its Silver Jubilee Year"
+publication: "Informatics"
+issue_date: "April 2021"
+pages: [4, 5]
+author: null
+section: "Spotlight"
+---
+
+## NICSI Celebrates its Silver Jubilee Year
+
+National Informatics Centre Services Inc (NICSI) celebrated its Silver Jubilee on 28 Jan 2021 at a formal event at Vigyan Bhawan, Delhi. Shri Ravi Shankar Prasad, Hon’ble Union Minister for Law & Justice, Communications and Electronics & IT was the chief guest and the esteemed dignitaries at the dais were Shri Ajay Sawhney, Secretary, MeitY, Shri C. P. Gurnani, CEO, Tech Mahindra India, Ms. Debjani Ghosh, President, NASSCOM, Dr. Neeta Verma, Director General, NIC, Dr. Rajendra Kumar, Additional Secretary, MeitY and Chairman, NICSI, Shri Prashant Kumar Mittal, MD, NICSI. Delegates from government, industry and academia participated in the event. The silver jubilee celebration was made live for the public and other stakeholders in government.
+NICSI was established in 1995 under NIC, MeitY, GoI for providing and procuring IT solutions for various e-governance projects undertaken by NIC, MeitY, other central ministries and government organizations such as the public sector undertakings.
+Hon’ble Union Minister in his inaugural address highlighted Digital India as a movement to empower the ordinary Indians with the power of technology. He urged NICSI and NIC to develop India as a leader in the Data Economy. Shri Ajay Sawhney, in his address emphasized the need for harmonizing the stand-alone government products and services and looked forward to making these into single products that will be available for the public with ease. Dr. Rajendra Kumar, in his speech highlighted the two key elements “Ease of Living for citizens” and “Ease of Doing Business for the businesses” which can bring a complete transformation in the way government departments perceive digital, use digital, and in the way citizens and businesses can use that interface for availing services. DG NIC, Dr. Neeta Verma, in her speech, remembered Dr. Sheshagiri who was the founder of NICSI, and also highlighted how NICSI has transformed its business model from Desktop and Servers to Cloud-based Products and Services.
+She also mentioned “Tejas”, a product that will give “Data Analytics as a Service” over the cloud. Shri Prashant Kumar Mittal, addressing the gathering mentioned the role of private and government industries behind the great success achieved by NICSI. C. P. Gurnani presented his views on the role of IT in India’s new Innovation System. Ms. Debjani Ghosh, in her address over video conferencing highlighted the role of IT in enabling Atmanirbhar Bharat.
+A short film on NICSI’s achievements and journey in the past 25 years was viewed. The software products launched on the occasion were Tejas (Visualization Intelligence Tool), e-Auction (generic open, public, and commodity auction platform) and Work from Anywhere platform, which facilitates government officials to access the applications enabling the official work activities seamlessly from anywhere. A brochure on NIC product portfolio including e-office, ServicePlus, e-Hospital, BhuNaksha, e-Prison, e-Courts and Darpan was released by the Hon’ble Union Minister. These software products are for International offering.

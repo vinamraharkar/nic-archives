@@ -1,0 +1,12 @@
+---
+title: "Delhi Takes a Technological Leap in Forensic Science by Blockchain Integration for Secure Evidence Management"
+publication: "Informatics"
+issue_date: "October 2023"
+pages: [45]
+author: "Informatics Desk, NIC-HQ"
+section: "In the News"
+---
+
+## Delhi Takes a Technological Leap in Forensic Science by Blockchain Integration for Secure Evidence Management
+
+In a ground breaking move to enhance transparency and security in forensic evidence management, Hon’ble Lieutenant Governor of Delhi, VK Saxena, has introduced Blockchain Technology into the Inter-Operable Criminal Justice System for the Delhi Forensic Science Laboratory (DFSL). This collaboration with NIC aims to revolutionize digital evidence recording, storage, and safeguarding. The incorporation of Blockchain Technology into DFSL’s e-forensic application is a significant milestone for forensic science and the criminal justice system. Blockchain’s reputation for tamper-proof and transparent record-keeping makes it an ideal solution for preserving critical evidence, aligning with the broader mission to enhance forensic investigation efficiency and reliability. This integration provides transparent and tamper-proof digital evidence records through Blockchain technology, ensuring integrity and authenticity. It benefits the criminal justice system by enhancing trust, reducing litigation, improving efficiency, ensuring security, and maintaining accountability. In this system, crucial steps in the criminal justice process are represented as blocks in a chain, each with a unique code. These blocks include the initial crime report, first information report details, jurisdiction information, forensic team visits, and more. Each time evidence changes hands, a new block is added, documenting custody. In contrast to previous systems, where information was logged into the Crime and Criminal Tracking Network and Systems (CCTNS), the blockchain system ensures anonymity and confidentiality. Investigating officers and even forensic experts do not have access to forensic evidence details until they receive the final report. Blockchain technology ensures transparency, trust, security, and efficiency in the criminal justice system while automating the forensic workflow with confidentiality. This step enhances coordination, contributes to an equitable justice system, and accelerates justice delivery, marking a significant leap toward technology-driven societal benefit.

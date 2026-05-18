@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y2K : Problems and Solutions — Informatics July 1999</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 1999"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;2</div><a href="../pages/july-1999/page-2.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-2.jpg" alt="Page 2" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-2.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;3</div><a href="../pages/july-1999/page-3.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-3.jpg" alt="Page 3" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-3.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-1999/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-1999/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-1999/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-1999/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/july-1999/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-1999/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-1999/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-1999.html">July 1999</a><span class="breadcrumb-sep">&rsaquo;</span><span>Y2K : Problems and Solutions</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">Y2K : Problems and Solutions</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 2–8</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-1999.html">July 1999</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Nature of the Problem</p>
+<p>Legal Implications</p>
+<p>Methodology</p>
+<p>Computer Hardware</p>
+<p>System Software</p>
+<p>Applications Software</p>
+<p>Data Communication Systems</p>
+<p>Embedded Systems</p>
+<p>High Level Y2K Action Force</p>
+<p>International Scenario</p>
+<p>Strategy for Success</p>
+<p>National Resource Web Site</p>
+<p>&quot;Year 200 compliance&quot;- a term which no computer user can afford to ignore today....What exactly is Y2K Problem...and what needs to be done ? Find out in this Lead Story which attempts to present a perspective on the much dreaded &quot;Millenium Bug&quot;</p>
+<p>Historically, computer systems have been programmed with a two-digit date field to represent the year. With the arrival of the next millenium, '00' will stand for the Year 2000. The hardware and software in many computers , however, will wrongly interpret it as 1900 in place of 2000 for all calculations, comparison, sorting etc.</p>
+<p>As a result, many systems, which compare dates to decide which is earlier, will no longer work. Systems, which calculate length of time also, may not compute accurately. There are other possible effects of the date change in computer software, depending on the assumptions made and programming techniques used by the designer of the software.</p>
+<p>This is what is known as the Year 2000 (Y2K) problem or some times called the millennium bug.</p>
+<p>Nature of the Problem</p>
+<p>Immovable Deadline : The Y2K problem has an immovable deadline. All the corrective steps have to be taken before the deadline i.e. before the start of Year 2000. In some applications, which project into the future, corrective steps may have to be taken even earlier.</p>
+<p>All Pervasiveness: As the problem is all pervasive, i.e. it affects the hardware, software, communication sub-systems and all digital systems having firmware or software (Embedded Systems), it is a big management challenge to affect all the changes concurrently.</p>
+<p>Legal Implications</p>
+<p>The Year 2000 crisis is a foreseeable issue (certain and material) and widely known.Thus, the failure of an organization/ corporation to develop and implement a remedial plan may be a breach of their duty and hence may have serious legal implications.</p>
+<p>As Y2K compliance decisions and project planning is the responsibility of the management of an organization, any inaction in this regard makes the management legally responsible.</p>
+<p>Vendors, who have supplied non-compliant system especially in recent past, also make themselves legally responsible. The extend of liability is also dependent on the contractual terms and conditions.</p>
+<p>Methodology</p>
+<p>To tackle the Y2K problem in an organization effectively, a five-phase methodology is followed.</p>
+<p>Inventory</p>
+<p>Impact Analysis &amp; identification of Mission Critical systems</p>
+<p>Rectification</p>
+<p>Testing</p>
+<p>Implementation</p>
+<p>The first phase involves, making an inventory of all the hardware, system &amp; application software and embedded systems. The second phase involves Y2K impact analysis and identification of critical systems for priority remediation. Plan made at the end of the second phase forms the basis of monitoring by the management. Rectification is followed by rigorous testing of the entire system before implementation.</p>
+<p>Computer Hardware</p>
+<p>As the system date &amp; time is taken from the hardware by the operating system for onward transmission to applications development tools and software, the basic hardware (Real Time Clock) and firmware (BIOS) need to support the complete date &amp; time information. RTC stores the date &amp; time except the century part, which is stored in CMOS as 19. In most of the systems, century stored in CMOS does not change to 20 at century roll over time. However, it can be reset to 20 manually by giving a full date on Jan 1' 2000. For critical on-line applications, a Y2K utility can be installed, which can monitor the change over and set the century part in CMOS to 20 automatically. Alternatively, BIOS can be suitably upgraded to support automatic century rollover.</p>
+<p>System Software</p>
+<p>Operating System : Support for complete date at the operating system level is also very essential. Date &amp; time are involved in many OS commands like Directory listing, Backup etc. Incomplete date may lead to problems in chronological ordering and manipulation of file objects. Testing of OS for Y2K compliance is not easy as many different components of OS deal with date. Just testing the system date is not enough. For compliance status, one has to depend on the information from the vendor. According to the information available on the Internet, almost all the operating systems, except those supplied in late 1998 onwards require Y2K patches or new versions to be installed for Y2K compliance.</p>
+<p>System Software Tools like office suite etc need to support complete date formats for proper functioning beyond Year 2000. Impact of Year 2000 on such tools should be known. Information about the compliance of various tools is readily available on the Internet. Patches as well as compliant version of many software tools are also available for upgradation. Tools are available which can scan a workstation, identify all off the self products loaded in the system, and produce a Y2K compliance status report for corrective action.</p>
+<p>Applications Software</p>
+<p>For an Application software, the following three options are possible</p>
+<p>Rectify : The application may have to be made compliant by suitable modifications and testing.</p>
+<p>Replace : Redevelopment in a new platform may be a better option. So it provides an opportunity to switch over to new technologies</p>
+<p>Retire : The application may be in the process of getting phased out &amp; hence would not require any action.</p>
+<p>Data Communication Systems</p>
+<p>Network services such as E-mail, Web services, EDI, Electronic Commerce etc. pose a serious Y2K challenge. It requires all the data communication sub-systems LAN, bridges, routers, and Communication protocols to be made compliant for above services to run successfully in Year 2000. As these services involve sub-systems across organizations, any non-compliant link in between would lead to breakdown of services. Tools are available today, which can scan a data network, identify all the devices (hardware, firmware or software), their versions and produce a compliance status report, which can be used for further corrective action.</p>
+<p>Embedded Systems</p>
+<p>Apart from the computer hardware &amp; software, embedded systems i.e. systems, which have microprocessor chips with associated firmware, pose a bigger challenge for achieving Year 2000 compliance. These microchips have proliferated in very large variety of equipment. According to estimates, more than 25 billion microchips are scattered all over the world in almost all kinds of objects like VCR, elevator, medical equipment, automobiles, traffic lights, Automatic teller machines, airplanes, satellites, telecommunication systems, control systems of power &amp; chemical plants etc. It is estimated that at least a small percentage (5-10%) of such devices will be affected by Year 2000 problem. If suitable corrective steps are not taken, malfunctioning of these devices can have serious impact on the functioning of the organizations as well as the entire society.</p>
+<p>It has been realized the world over that fixing embedded systems is a much bigger challenge compared to fixing software and hardware systems. The organization is highly dependent on the vendor for identification of the problem (as one cannot change the date externally for testing) as well as for fixing the problem. Moreover, vendors of some of the control systems acquired a long time ago, may not be in business any more. Vendors themselves are dependent on other vendors for supply of sub-systems. Therefore, the vendor who has supplied the end equipment may not be capable of resolving all the problems. In case the problem cannot be resolved, the sub system may have to be replaced, thus increasing the cost of Y2K remediation substantially.</p>
+<p>High Level Y2K Action Force</p>
+<p>Recognizing the significance of Year 2000 problem, a High Level Action Force on Managing the Impact of Year 2000 Problem in India has been constituted under the chairmanship of member (Planning Commission). The Terms of Reference of the Action Force are as follows:</p>
+<p>To identify critical sectors in the country which are required to be monitored for handling the Year 2000 Problem in the country.</p>
+<p>To get Sector-specific action plan prepared by the respective organization/ agencies for remedial work related to the Year 2000 Problem.</p>
+<p>Periodically monitor the implementation of the Action Plans</p>
+<p>To make plans for Awareness building among the affected categories of organizations, the Parliament, the Press and the Public.</p>
+<p>To take necessary steps for the establishment of a corpus fund of Rs.700 crores to address the Year 2000 Problem in India.</p>
+<p>To evolve a mechanism for providing financial support, out of the Corpus fund, to various government organizations/ PSUs/ Companies and other affected organizations/ activities in handling the impact of Year 2000 Problem on the computer based activities and services offered by them.</p>
+<p>To keep contingent action plans for various sectors in readiness to meet possible post 1999 outbreak situations.</p>
+<p>The Following Utility and service sectors, which are critical from Y2K perspective in India, are listed below.</p>
+<p>Finance - Banking &amp; Insurance</p>
+<p>Power</p>
+<p>Petroleum and Natural Gas</p>
+<p>Telecom</p>
+<p>Surface Transport</p>
+<p>Railways</p>
+<p>Civil Aviation</p>
+<p>Space Research</p>
+<p>Atomic Energy</p>
+<p>Defence</p>
+<p>International Scenario</p>
+<p>World bodies like World Bank etc. have taken initiatives to organize Y2K awareness workshops across the globe and made grants and funds available for Y2K activities.</p>
+<p>United Nations General Assembly passed a resolution on Y2K issue and organized a special Workshop of National Y2K coordinators in December'98 to communicate the importance and urgency of the Y2K problem. Experience sharing, International cooperation and Contingency planning to deal with this gigantic man made problem, unparalleled in the history of man kind, have been emphasized.</p>
+<p>Strategy for Success</p>
+<p>For the organization to succeed in its Y2K compliance, the following elements would play a critical role :</p>
+<p>Methodology : The 5-step methodology described in the previous section is very critical to the success of Y2K remidiation effort.</p>
+<p>Y2K Coordinator : One senior person of the management should be made responsible for the Y2K compliance process in the organization.</p>
+<p>Effective Monitoring : As the Y2K deadline cannot be moved, a strict monitoring by the management is very crucial.</p>
+<p>Technology updates using Internet : Keeping uptodate on the Y2K technology front is very important. And for this, there is no better tool than the Internet Compliance information on hardware, system software, Y2K tools; consultancy, downloadable patches etc. are readily available on the Internet.</p>
+<p>Vendor Management : Vendor plays an important role in the Y2K compliance process. Vendor is responsible for proliferating the non-compliant systems in the first place. By his effort, he can resolve the problem once and make it available to so many of his customers. This is especially true for hardware, system software and embedded systems.</p>
+<p>Experience sharing : Sharing experience and problems with other organisations in the same sector, can help in expediting the process as well as invoking better vendor cooperation and solution negotiations.</p>
+<p>Contingency Planning : An organization faces Y2K risk from possible failure of Y2K compliance systems, non- compliant systems, external interfacing agencies for inputs and national infrastructure like power, telecom etc. A contingency plan needs to be made to address any of the above failures, so that functions critical to the survival of the organization can continue.</p>
+<p>Y2K Compliance Audit : It is not enough that systems are reported as compliant. An external audit team should make anindependent assessment of Y2K remidiation effort. Any shortcoming discovered during the audit should be brought to the notice of the management for corrective action.</p>
+<p>National Resource Web Site</p>
+<p>A National Y2K resource Web site has been created with URL</p>
+<p>www.nic.in/y2kactionforce</p>
+<p>It is planned to enrich the above Year 2000 Action Force Web site on a continuous basis so that all relevant aspects of Y2K are covered with highly focussed references which are of direct use to the end users of this information. As searching the Internet directly for the required information is like searching a needle in a haystack, directly relevant information linked on this site will help the organizations spread throughout the country to make a head start.</p>
+<p>For further assistance and information, please contact :</p>
+<p>Y2K Action Force Secretariat National Informatics Centre A-Block, CGO Complex, Lodhi Road</p>
+<p>New Delhi - 110003</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link next" href="national-seminar-on-y2k-in-fertilizer-sector-july-1999.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">National Seminar on Y2K in Fertilizer Sector</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

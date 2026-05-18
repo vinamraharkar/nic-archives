@@ -1,0 +1,18 @@
+---
+title: "Land Records Revolution: Blockchain Pilot Launched in Assam"
+publication: "Informatics"
+issue_date: "April 2024"
+pages: [44]
+author: "Kavita Barkakoty, Assam"
+section: "In the News"
+---
+
+## Land Records Revolution: Blockchain Pilot Launched in Assam
+
+In a significant leap towards modernising land records management, Smt. Nidhi Khare, Secretary of the Department of Land Resources, Government of India, led the launch of a Blockchain Pilot in the Land Records Sys-tem, along with the rollout of the Unique Land Parcel Identification Number (ULPIN) seeding of geo-referenced maps from Bhunaksha and the National Generic Document Registration System (NGDRS) in Assam. The event held on 13th February 2024 was a collaborative effort between the Revenue and Disaster Management Department, Government of Assam, and the Depart-ment of Land Resources.
+The inauguration ceremony witnessed a detailed presentation on Block-chain technology and its pivotal features by the State Informatics Officer (SIO) of Assam. Smt. Khare emphasized the importance of NGDRS, a project initiated by the Department of Land Resources, Ministry of Rural Develop-ment, Government of India, under the One Nation One Software initiative. She elucidated that NGDRS, developed by NIC Pune, serves as a common, generic application for registration departments across the country. Nota-bly, the Assam Instance of NGDRS, hosted in the State Data Centre (SDC), has been integrated with various platforms like Dharitree, NOC, eGras, e-Stamp, and citizen services of Sewa Setu, facilitating seamless online payment and citizen services. With NGDRS now operational in all 77 Sub-Registrar Offic-es (SROs) of Assam, the project marks a significant milestone in enhancing transparency and efficiency in land registration processes.
+Highlighting the significance of Blockchain technology, Smt. Khare em-phasized its role in revolutionizing land records management. She stressed that Blockchain ensures increased trust, auditability, traceability, and im-mutability of land records data, thus enhancing the integrity of the system. The integration of ULPIN as the unique blockchain ID further strengthens the authenticity and uniqueness of land parcels. Describing ULPIN as the “Aad-har or fingerprint for land,” Smt. Khare explained its reliance on geo-ref-erenced cadastral maps to provide a 14-digit alphanumeric identification number to every land parcel. The implementation of ULPIN aims to ensure uniqueness in all transactions, update spatial records, facilitate linking of property transactions, and eliminate fraudulent activities.
+The District-level Blockchain-based cadastre and land records registry Pilot, launched in Darrang district, marks a significant step towards ensuring security, accountability, and scrutiny of land records from start to end. The pilot project, set to be rolled out pan Assam shortly, promises to usher in a new era of transparency and efficiency in land administration, paving the way for comprehensive land records management in the state.
+This knowledge-sharing initiative is part of NIC’s broader commitment to enhancing digital capabilities within government departments, thereby improving service delivery to citizens. The success of this program in Sikkim is expected to pave the way for similar training initiatives in other states, aligning with the national objective of building a digitally empowered gov-ernment workforce.
+
+Smt. Nidhi Khare, Secretary, Department of Land Resources, Govern-ment of India, launches a Blockchain in the Land Records System, along with ULPIN in Assam

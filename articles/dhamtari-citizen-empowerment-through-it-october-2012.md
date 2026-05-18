@@ -1,0 +1,40 @@
+---
+title: "DHAMTARI – Citizen Empowerment through IT"
+publication: "Informatics"
+issue_date: "October 2012"
+pages: [37, 38]
+author: "UPENDRA SINGH CHANDEL"
+section: "Districts Informatics"
+---
+
+## DHAMTARI – Citizen Empowerment through IT
+
+National Informatics Centre, Dhamtari came into existence in the year 2000 and since then it has been tirelessly working to promote e-governance in the district administration. In the last 12 years the district has witnessed tremendous growth, in the field of Information Technology thereby improving the accessibility and delivery of various government services to the citizens.
+Dhamtari, a district of Chhattisgarh is about 78 kms from the state capital Raipur. It has a rich cultural heritage and is famous for its dance styles, cuisine, music and traditional folk songs. The total area of the district is 2029 sq. kms and it is about 305 meters above the mean sea level. The district has a total population of almost 8 lakhs (as per the 2001 census) with the gender ratio of 1012 females for every 1000 males and a literacy rate of 78.95 percent. From the administrative point of view the district is divided into four tehsils, four blocks and 651 revenue villages.
+The district has global IT presence through the website http://dhamtari.gov.in which assists the citizens in accessing information about the district. The website also contains public interest information like ongoing development schemes in the district, tenders, recruitments, weather forecast, contact information of various district level officials and links to other important government websites.
+ICT INFRASTRUTURE
+Network services provided by NIC: A 100 Mbps link connects the district centre with state head quarters at Raipur, while LAN connectivity is extended to District Collector Office, SP Office, Post Office, Zila Panchayat, Block Panchayat and VC Room and other administrative offices within the collectorate.
+Video conferencing facility: The Video Conferencing facility available in the district plays an important role in redressal of public grievances and monitoring departmental activity and district projects. It allows the administration to interact with state head quarters on regular basis without travelling and in a cost effective manner.
+ICT Training: Training programmes are regularly conducted for the officials of various departments on various schemes like MGNREGA, Smart Kerosene Delivery System, PlanPlus, PRIASoft, CPSMS etc.
+e-GOVERNANCE INITIATIVES
+Computerization of ICDS Scheme (Integrated Child Development Services): ICDS is a World Bank assisted project, headed by Department of Women & Child Development, Ministry of Human Resource Development, Government of India. The purpose of ICDS is to improve the health status of children between the age-group 0-6 years and to lay the foundation for proper psychological, physical and social development of the child.
+While implementing the project in Dhamtari huge anomalies were found in the food grain allocation, erratic distribution of food coupons, irregular disbursement of funds and calculations. In order to remove these anomalies, NIC Dhamtari developed the Early Child Care & Education (ECCE) software to channelize, systematize and re-engineer the complete distribution cycle. This online software records the attendance of children, calculates the cooking cost, prints required number of food coupons, monitors the supply of nutrition supplements to all 1050 Aanganbadis, across the district, thereby ensuring transparency and accountability in the system. SMS services have been integrated with the application to transfer data on daily basis while sector wise ready to eat food requirement are automatically calculated by the software based on online data. Numerous MIS reports are generated to help the supervisors and other authorities to have a proper check on the whole process.
+The implementation of ECCE software has resolved many issues pertaining to anomaly in food grain distribution from PDS shops, discrepancies in cooking cost, delay in data entry and fund spent on the project, etc. The new online system ensures immediate accountability & transparency in the system as the complete data is available online.
+Mid-day Meal Online Monitoring System (MoMS): Under Mid-day Meal scheme, the whole process from data collection, student’s attendance to salary disbursement has been computerized. The success of the project has prompted the state government to considere state level rollout of the software application. (http://cg.nic.in/pdsonline/cgmdm)
+Misal Record Online: Digitization and computerization of very old missal records was done under the supervision of District NIC and have been uploaded to http://cg.nic.in/Dhamtari/misal for citizen’s use.
+Jandarshan (http://cg.nic.in/jandarshan): Jandarshan program is organized at Chief Minister’s residence and district collectorate for redressal of citizen’s grievances. Complete process of redressal system has been computerized right from application filling to disposal of the application.
+Gramsuraj (http://cg.nic.in/gramsuraj): Gramsuraj program is organized by the state government every year in the month of April to reach out to the people at the grass roots level, application form of demands and complaints are entered online for quick response and redressal.
+e-COURT
+NIC Dhamtari provides all technical support to implement the Court Information System (CIS) software in the District Court. A website has also been developed for district court and all cause lists and important court orders are regularly updated on this website.
+Bhuiyan (Land Record Computerization): The project is developed with an objective to computerize the land record at all Tehsil. In order to ensure proper functioning of the project client-server architecture has been adopted. Printed copies of B-I, Khasra and Land Map in digitized form are being delivered to citizens.
+E-kosh (Treasury computerization project): E-Kosh is a key eGovernance project implemented by NIC district centre in the G2G area. The project intends to provide accurate and effective financial accounting of various departments at the district level and the state level.
+Employment Exchange: Online Registration of unemployed youths is done through this website. Both the Job seekers & employer can register themselves online on this website. Based on the registrations the employment exchange is issuing computerized registration slips.
+Transport Office Project (Vahan & Sarathi): Vahan and Sarathi are major projects of state road transport department. Vahan functions for vehicle registration and Sarathi for providing driving licenses. NIC is assisting RTO office in connectivity and operational issues.
+S. PRAKASH (IAS) Colletor & District Magistrate, Dhamtari, Chhattisgarh
+Information Technology brings about a prominent change in the field of e-governance. It gives me immense pleasure to present the e-governance initiatives undertaken in the district of Dhmatari, Chhatisgarh with the help of NIC. These initiatives have brought about radical change in the process of governance in the district enhancing transparency and betterment of citizen centric services. I appreciate the district administrative staff and Mr. Upendra Singh Chandel, DIO, Dhamtari, for their regular and dedicated efforts in making e-governance initiatives successful in the district.
+Paddy Procurement System:
+NIC helps the state agency MARKFED in the Paddy procurement process done every year in the district. In paddy procurement season 2011-12, District Dhamtari saved 5.7 lakhs rupees by using online system. All 80 paddy purchase centres are connected through broadband, Wi-Max, Data Card and other communication media.
+NIC, Dhamtari is also implementing many other state and national level eGovernance projects for Excise, Election, Rural Development (MNREGA, Planplus, YuvaSoft etc).
+FOR FURTHER INFORMATION
+District Informatics Officer, Dhamtari, Chhattisgarh, dhamtari.cg@nic.in
+Phone: 07722-237147, Mob: 9827952169

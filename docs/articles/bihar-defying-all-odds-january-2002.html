@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bihar- Defying All Odds — Informatics January 2002</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2002"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/january-2002/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/january-2002/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/january-2002/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/january-2002/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/january-2002/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2002/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2002/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2002/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2002.html">January 2002</a><span class="breadcrumb-sep">&rsaquo;</span><span>Bihar- Defying All Odds</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">In the Limelight</div>
+          <h1 class="article-title" data-pagefind-meta="title">Bihar- Defying All Odds</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 13–18</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2002.html">January 2002</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Bihar, the land of Buddha with rich heritage and culture having an area of 94,163 sq. km. and population of 8,28,78,796 can’t afford to lag behind as far as IT revolution is concerned. The Bihar State Unit of NIC was set up at Patna in 1988, the same year when there was a tremendous wind of IT culture through out the country. During 13 years of its untiring service to the state, NIC has achieved, in a planned way, an ever growing computer culture by undertaking various computerization initiatives in different State Government Departments and introducing new ICT tools in the identified 27 priority sectors in the State.</p>
+<p>Major projects</p>
+<p>NICTRAN : One of the major success stories of the NIC Bihar State Unit relates to the successful implementation of the computerisation programme of the State Transport Department. The package, aptly titled NICTRAN, takes care of Tax Collection, registration, renewal of licenses etc. The package has been very popular and proved to be very useful as it has made the entire process of Revenue Collection very fast, easy and convincing to the tax payers. This exercise to computerise the Surface Transport Sector in the state govt. is further extended to cover the rest of the district Transport Offices. Presently 5 DTOs are fully computerised in the State of Bihar after division of Jharkhand and rest of the DTOs are to be computerised in the near future. As per the Ex. State Transport Commissioner Mr. RS Sharma, “Revenues at Patna and other DTOs have doubled within a year of its implementation”</p>
+<p>TRAMSNIC: District Treasuries of Bihar have been computerized over the years in a phased manner. 37 district treasuries have been taken in the purview of the computerisation programme, which included site preparation, installation of systems and conducting exhaustive training programmes. Computerization of Treasuries is a major breakthrough as far as NIC BSU’s achievements are concerned. All district treasuries in the State as well as the Sachivalay Treasury have already been computerised</p>
+<p>Finance Computerisation : The State Budget 2001-2002 was prepared using innovative computerisation techniques, resulting in a saving of over Rs. 40 lakhs to the Bihar Govt. Exchequer. Shortly afterwards, it was also released on a CD-ROM to facilitate the users in micro level planning and analysis. On the release of Budget CD-ROM, the then State Finance Minister Mr. Sankar Prasad Tekriwal said “..with this, Bihar has now become one of the few select states where such an excercise has been carried out. The excercise deserves the loudest applause since it has preserved the content and feel of budget in its entirety and presented in Hindi ”</p>
+<p>GPF Computerisation : The Directorate of GPF, Govt. of Bihar deals with almost 3,00,000 state govt. employees regarding maintenance of their GPF subscriptions, loans, withdrawals and refunds. NIC has initiated the computerisation programme for the Patna District Office comprising 60,000 employees. The software package has been successfully designed, developed and implemented in Patna in ORACLE RDBMS with Developer 2000. It is envisaged to be implemented in the rest of the districts in Bihar very soon.</p>
+<p>STAMINA : The Finance (Commercial Tax) department plays a vital role in the physical arrangement of decentralised Tax Collection through out the state. NIC has developed a comprehensive software ‘STAMINA’ to monitor the fund flow, defaulters’ list, reminder letters, cases monitoring etc. The State Govt. is working out on an ambitious program to monitor the revenue receipts through network. The Software has been operational in seven circles of Bihar. The software package has been designed and developed in ORACLE 8i and Developer 2000.</p>
+<p>REVENUE MANAGER 2000 : Bihar State Electricity Board (BSEB) is the sole agency for all types of work related to power generation, transmission and its distribution across the State. Being a capital intensive project, regular and accurate billing and timely collection of revenue is necessary to keep the cash-flow in correct shape and this is the focus of this project. Revenue Manager 2000 is a web-enabled software package which deals with the consumer billing system. The package is operational at three divisions at Patna. The IVR facility is also provided at the Kankarbagh Division where consumers can get the answers to their billing related queries. Recently BSEB web-site (http://bseb. bih.nic.in) designed, developed and implemented by the NIC Bihar State Unit was inaugurated by the Hon’ble Energy Minister, Govt. of Bihar.</p>
+<p>ELECON : ELECON , designed by the NIC Bihar State Unit is a software package for fulfilling the MIS requirements of the District Administration during Lok Sabha &amp; Vidhan Sabha elections. Its utility value was duly appreciated and noted by the then Chief Election Commissioner, Shri T.N.Seshan who noted ‘In the background, the Management Information System package ELECON developed by National Informatics Centre will go a long way in giving support to District Administration in conducting elections. This marks the beginning of modernisation of election machinery. India has now become the First Afro-Asian country to use Computer- Communication for elections. We are proud of giving this lead. ‘</p>
+<p>ELECON was designed from the very outset as a software tool that could be deployed by any district administration in a fairly short time with minimum of problem. It has the ability to initialize itself, generate its own database files and to create its own data-entry screens based on local requirements.</p>
+<p>Urban Basic Services for Poor (UBSP): The UBSP project is a centrally sponsored scheme financed by UNICEF and executed by NIC Bihar. The main objective of the project is to improve the overall living condition of the slum pockets of the cities in Bihar. NIC is engaged in generating various MIS and GIS based reports to monitor the life style of slum dwellers vis-a-vis their existing environments.</p>
+<p>High Court Computerisation : This is an area where NIC Bihar State Unit has got major success and has proved to be exemplary to other High Courts of the country. The cause list preparation, AO filing etc. are problem areas where the computerisation has provided a wholesome solution. Many useful training sessions have been conducted by NIC for the benefit of High Court officials. Patna High Court was computerised in the year 1990-91 . Hon’ble Justice A. M. Ahmadi, inaugurating the Computerisation Programme of Patna High Court remarked ‘Patna High Court has the privilege of being the First High Court of the country to computerise the cause list preparation and to answer to the queries of litigants through modern IT tools.’</p>
+<p>VC facilitates justice for undertrials : Recently, Video Conferencing based Public Justice for the Undertrials conducted in Bihar created history in the judiciary system where VC facility was extended from Beur jail to Civil Court and more than 100 undertrials were released after recording their statements of facts. A proposal for VC facilities for all Jails and respective Civil Courts has been prepared by NIC and submitted to the apex body for subsequent action. As a second major breakthrough the same excercise was also conducted at Muzaffarpur where Dr. N. Vijayaditya, Director General, NIC inaugurated the facility.</p>
+<p>Besides all these, NIC Bihar State Unit has also designed, developed and implemented many software packages like Petition Monitoring System, Computerisation of Elementary Education in Bihar, Rural Development related Scheme Monitoring, Public Distribution System, Surplus Ceiling Land, Land Record Computerisation Projects etc.</p>
+<p>Bihar Official Web-Site Bihar official web-site (http://bihar.nic.in) was inaugurated by Bihar Chief Minister Hon’ble Smt Rabri Devi on 14th August 2001. Inaugurating the Web-site Smt Rabri Devi said that Bihar web-site contains many important items besides regular and conventional information about Bihar. This web-site also contains information on various Govt. schemes for the downtrodden and economically backward citizens of the State. She also praised National Informatics Centre Bihar State Unit for its efforts in developing the website.</p>
+<p>Other Important Centres</p>
+<p>NIC Bihar State Unit has also opened up many centres which are providing IT services to the administrative authority at their door steps. The centres are at important places such as the Governor House, Patna High Court, CM Secretariat, Chief Secretary’s Office, Passport Office etc.</p>
+<p>State-of-the-art Training Centre Effective training is vital for the success of any computerisation activity and NIC Bihar State Unit has set up a full- fledged Training Centre at its NITPU centre. The centre is well equipped with modern Computers, Sitting arrangements, Projectors, teaching aids etc. Since its inception, NIC has continuously imparted training to State Govt. employees. On an average 600 - 800 trainees are being trained by the NIC Officials per annum. The Video Conferencing facility is also available through which, State Executives carry out VCs with other important VC centres in the country.</p>
+<p>NIC District Units</p>
+<p>After the creation of Jharkhand, Bihar now has 38 districts. NIC District Units are operational at 27 districts presently and the remaining newly created districts shall soon have NIC Centres. At Districts the NIC Officers are busy in delivering software products as per the need of the Administration. Following are some of the the software packages running at various districts : PDS-MIS - Distribution of food grains, Anupurna Yojna, Antodaya Anya Yojna for Supply Department Treasury Account Management System (TRAMSNIC) Election Booth MIS for Election • Integrated Scheme Monitoring System for Rural Development Certificate Cases Management System National &amp; State Old-age Pension, National Maternity Schemes, National Family schemes for Social Security GPF Account Management System BPL-MIS - Welfare schemes for Boys/Girls living below Poverty Line, Scholarship for poor Boys &amp; Girls, Mid Day Meal Revenue Collection, Commercial Lagan, Land Acquisition &amp; Distribution for Land Reforms Commercial Tax, Excise Tax, Registrations, Transport, Municipality for Revenue Collections</p>
+<p>Initiation of E-Governance Project in the state</p>
+<p>Recently NIC Bihar State Unit was requested to submit a Project Proposal for the improvement of overall IT infrastructure and implementation of e-Governance for the State. The Project Funding was sanctioned under Planning Commission, Govt. of ndia. The Steering Committee under the Chairmanship of Development Commissioner, after careful review, passed the Project Proposal to the Cabinet for further necessary action. Subsequently, the Cabinet also approved the proposal. The objectives of the Project are</p>
+<p>&quot;to improve IT infrastructure in the State, bring in IT awareness among the Citizen, conversion of Govt. machinery from IT Culture to e-Governance and above all facilitate public with efficient services”.</p>
+<p>The major components of the above Project are as follows:</p>
+<ol class="article-list">
+<li>Public Utility Projects ( Transport, Commercial Taxes, Land Registration, Municipal Tax, Police, Public Grievances)</li>
+</ol>
+<ol class="article-list">
+<li>Computer Systems for the Govt. Departments</li>
+</ol>
+<ol class="article-list">
+<li>Computer Systems for Divisional Commissioners Offices</li>
+</ol>
+<ol class="article-list">
+<li>Strengthening District Computer Centres in terms of Computing facilities</li>
+</ol>
+<ol class="article-list">
+<li>LAN for the Secretariats</li>
+</ol>
+<ol class="article-list">
+<li>Development of IT manpower (Training)</li>
+</ol>
+<ol class="article-list">
+<li>Building Data Warehouse</li>
+</ol>
+<ol class="article-list">
+<li>Construction of Conference-cum-Training Centres</li>
+</ol>
+<ol class="article-list">
+<li>Installation of Internet/ NICNET &amp; Video Conferencing Facility</li>
+</ol>
+<p>These are the major innovative activities undertaken by NIC Bihar which will help a great deal in giving a boost to E- Governance in the state. Systems Study for the Public Utility Projects has already been done.</p>
+<p>The day is not far when Bihar shall be making a mark for itself in successfully operating, transacting and delivering useful public services thus keeping the flag of E-Governance flying high……</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="land-records-computerization-january-2002.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Land Records Computerization</span></a><a class="article-nav-link next" href="intertalk-software-january-2002.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">InterTalk Software</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

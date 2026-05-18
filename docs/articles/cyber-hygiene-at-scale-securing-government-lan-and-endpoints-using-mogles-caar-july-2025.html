@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Hygiene at Scale - Securing Government LAN and Endpoints using MOGLES &amp; CAAR — Informatics July 2025</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2025"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/july-2025/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/july-2025/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/july-2025/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2025.html">July 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Cyber Hygiene at Scale - Securing Government LAN and Endpoints using MOGLES &amp; CAAR</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Technology Update</div>
+          <h1 class="article-title" data-pagefind-meta="title">Cyber Hygiene at Scale - Securing Government LAN and Endpoints using MOGLES &amp; CAAR</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Syed Hasan Mahmood, Rajeev Kumar Yadav &bull; pp. 31–33</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2025.html">July 2025</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Government Cyber Space is an extremely challenging environment targeted persistently by the best in the world with limitless resources at their disposal (read nation-state advanced persistent threat attackers (APTA)). Government infrastructure is a collection of various autonomous systems each with its own policies and controls. So, traditional cyber security models do not fit government’s cyber security needs. Hence, there was a need to develop a custom model for securing government Local Area Network (LAN) and Endpoints (EP). NIC developed Model of Government LAN &amp; EP Security (MOGLES) after experimenting with various tools and techniques and finalizing the one that works the best. MOGLES has been successfully implemented in critical ministries/departments and working fine for more than two years. It is a time-tested and proven model. It is built with basic measures but with strict implementation. This model can be implemented at all other ministries/departments/organisations/states in phased manner with necessary resources.</p>
+<p>To address the complex cybersecurity needs of government infrastructure, a custom framework—Model of Government LAN &amp; Endpoint Security (MOGLES)—has been formulated and successfully implemented across critical ministries. Complemented by the Continuous and Automated Assessment and Remediation (CAAR) approach, it ensures structured endpoint security, continuous system hardening, and policy compliance. This scalable, privacy-centric model leverages existing technologies to enable robust, cost-effective, and sustainable protection of government networks and digital assets.</p>
+<p>Building Blocks of MOGLES Time, Patience &amp; Consistency We need to understand &amp; accept that securing an infrastructure is like building a fort, one wall at a time, one moat at a time, one bastion at a time; there are no magic tricks or wands. It is hard work which needs persistent efforts and time along with necessary resources. So, we need to set reasonable &amp; achievable targets and work dedicatedly towards it without shifting goalposts frequently. Typically, a LAN with 500 endpoints may take around 2-3 months without major disruption. It can be achieved within 2 months at war footing.</p>
+<p>Authority &amp; Ownership The NIC Head of Department (NIC-HOD) or Nodal Officer (NO) must be entrusted with full authority and responsibility for implementing MOGLES. Their success depends on strong coordination with stakeholders and users within the ministry or department. Commitment and trust are essential from both NIC and the department. Additional L1 support engineers and necessary resources must be provided to the NIC-HOD/NO to handle operational tasks effectively.</p>
+<p>Establishment of ITHD Each ministry/department must set up an IT Help Desk responsible for provisioning all endpoints. Regardless of how the endpoint was procured, it must pass through the ITHD for formatting and secure configuration before being handed to users. This also applies during personnel transfers or role changes. The ITHD should operate from a dedicated lab space, equipped with tools to handle multiple endpoints simultaneously and a stock of spare devices for replacements. It will function under the NIC-HOD/NO, with a Single Point of Contact (SPOC) nominated from Admin/Purchase/Store sections to manage logistics and coordination.</p>
+<p>Formatting of all old endpoints All legacy endpoints must be formatted before secure configuration. If an endpoint is already compromised or malfunctioning, other measures will be ineffective, and the endpoint will remain untrusted. Any old device not processed through the ITHD must be formatted, and any device showing abnormal behavior should be reformatted promptly.</p>
+<p>Deployment of EPS Tools Multiple endpoint security tools are needed for various functions. An ideal environment must have all of them. But we can start with a few necessary ones and augment the others in due course. A typical set of tools is listed below. The systems maintenance and management of these tools will be the responsibility of NIC Endpoint Security (EPS) Team. EPS team will provide technical support needed for deployment of the agents and troubleshooting issues. The policy to be implemented on endpoints will be provided by EPS team. The deployment, functioning of agents on endpoints and endpoint support will be the responsibility of NIC-HOD/NO and its team. Another important responsibility of NIC-HOD/RO is to ensure that all endpoints that are powered on must report to all the central consoles. If an endpoint is not reporting on any central console it will be considered non-compliant. The compliance of the endpoints using the provided tools, policies, guidelines and procedures will be the responsibility of NIC-HOD/NO. In case of any issue or new requirement, NIC-HoD/NO should reach out to EPS team for resolution/solution.</p>
+<p>Mandatory Tools: Network Access Control (NAC) It acts like a sentry for network access. No endpoint is allowed to access the LAN until the user is authenticated and device posture evaluated for compliance. It will ensure that all endpoints in the LAN are authenticated (to a user) and compliant to the government policy. Any non-compliant device can be moved to a quarantined segment until the compliance is achieved. It can be used to detect and automatically deploy UEM/EDR, if not found installed on endpoint during posture evaluation. DHCP is mandatorily needed for NAC to function correctly. Hence it is also integrated with NIC LDAP and IPAM to automatically update the IP details of each authenticated user in IPAM. The IP inventory will always be updated automatically and correctly.</p>
+<p>Unified Endpoint Management (UEM) It is the primary tool for managing the endpoint w.r.t. OS deployed &amp; patching, software deployment &amp; patching, policy configuration, compliance and auditing. All other tools can be deployed using it. It is the first and most important tool to be deployed on each endpoint. All the endpoint configuration, policy enforcement and hardening are being deployed using UEM. It will primarily be used for endpoint management without going to user desks and eating up users’ working time. All the tasks will be carried out from UEM console silently in the background without interfering with users. UEM will be used instead of Domain Controllers (DC) as it provides all the functionalities needed by government infrastructure without the security risks associated with DC. For example, in a Windows environment, GPO, SecPol etc. will not be configured.</p>
+<p>Endpoint Detection &amp; Response (EDR) It is the primary security tool for protecting the endpoints from malware and other attacks. If an endpoint is connected to the government network or holds government data without a functional and online NIC approved EDR agent, government data and the entire network are at risk. EDR is a behaviour-based anomaly detection security tool that applies AI/ML models on large amount of endpoint logs and telemetry to detect new and unknown threats. It is not dependent upon signatures. EDR is used for managing the host firewall of the endpoints to prevent network attacks and lateral movements. It is also used to control and manage external USB storage media connecting to endpoints. It is also used for threat hunting and incident response in case of compromise.</p>
+<p>Offline Data Backup (ODB) In today’s cyber world, no system is hack-proof or perfectly safe. Even after trying the level best and putting best of the security controls available, there are small chances that the endpoint may get compromised and data corrupted/encrypted/lost/wiped. In such cases, Offline Data Backup (ODB) comes to the rescue. ODB is based on the philosophy of hope for the best but plan for the worst where data recovery from offline backup is a measure of last resort. It is to be understood that online backup in cloud storages and drives maybe better than no backup but cannot act as a substitute for periodic offline backup. Online or connected backups are fraught with similar risks as data on endpoints. Considering the sensitivity of govt. data, it is recommended to keep periodic backups of user data created on endpoints on individual storage media like portable hard disks.</p>
+<p>Optional Tools: Operating System Log (OSL) Collection Although EDR telemetry collects most of the relevant logs from the endpoint but not all of it. APTA are well aware and versed with the EDR telemetry of popular products. They continuously hunt, develop and use techniques which escape EDR telemetry data making threat hunting difficult. So, it is important to also capture detailed Operating System Log (OSL) to detect such sneaky and advanced attack vectors. For example, Windows Event Logs and Sysmon logs collect a wealth of data from Windows endpoints including task scheduling events, PowerShell execution events, USB connection events etc. This data becomes critical in case of compromise by APTA for detection and forensics. The problem with OSL is that it has limited capacity and is then overwritten by newer logs quickly resulting in loss of logs. So, they have to be collected on a central data lake to ensure extended periods of retention and analysis. OSL are not forwarded automatically by OS, so some agent has to be installed and configured to ship logs to the central data lake.</p>
+<p>Digital Rights Management (DRM) DRM focuses on data security. It doesn’t concern with the security of endpoints or any other device. Its sole focus is to protect user data, whether at rest or in motion. It provides granular rights for data sharing and access with detailed logging and continuous auditing. It provides persistent protection which ensures that data is safeguarded or protected wherever it resides, including in copies. It supports dynamic policy control which allows data owners to modify the permissions for their protected data at any point in time even if the file has already been shared. DRM has a feature of automatic expiration of files which allows administrators to set expiration dates for access that has been granted beyond which the access rights are automatically revoked. DRM also imposes replication restrictions which ensures that illegal or unauthorized copying of protected data is prohibited.</p>
+<p>Data Loss Prevention (DLP) DLP is also a data security solution which keeps track of sensitive data on endpoints and prevents leaks via various media like external USB storage, web/email upload, network share, print and copy etc. It is different from DRM as it works automatically in the background without user interaction implementing organisational data security policies. It can work on classification of data by users or automated keyword-based protection. It can be deployed in monitoring or protection mode. Monitoring mode will generate alerts for the administrators and protection mode will prevent movement of files against the defined policies. DLP can also be used to encrypt sensitive files automatically while being copied/shared to external media. These encrypted files will open only on internal endpoints with DLP agent running and remain encrypted on all other endpoints. This prevents inadvertent leakage of files/data.</p>
+<p>Proactive Monitoring Log monitoring at centralized facilities is a standard practise today. It is necessary for monitoring core infrastructure. But it is not so effective for monitoring LAN and EPs due to lack of contextual information. Hence, ministry/department specific contextual monitoring of endpoint and firewall logs is essential. It is proposed to have 1 or 2 dedicated young NIC officers (depending upon load and criticality) continuously monitoring each ministry/department all through the day. They will work closely with NIC-HOD/NO &amp; L1 support engineers to ensure that any threat or incident is duly taken care of. Also, carry out threat hunting by monitoring abnormalities. It is to be noted that they should not be assigned to work on LAN and EP operations, nor supervise operations engineers. They should be allowed to focus on highlighting gaps in compliance, monitoring of logs and threat hunting in their respective ministry/department.</p>
+<p>Continuous and Automated Assessment and Remediation (CAAR) Cyber security is less about identifying threats and catching malware and more about maintaining posture and compliance of infrastructure. It is less about high flying measure and more about doing the basic cyber hygiene right. An important step towards this aim is system hardening. System hardening is a crucial cybersecurity practice that involves taking specific measures to reduce vulnerabilities and potential attack surfaces in a computer system or network. It’s a proactive approach to security, aiming to make systems more resilient against cyberattacks. It is important as it helps in reducing attack surface, enhancing resilience, improving posture and maintaining compliance. Typical system hardening entails the following: • Vulnerability Assessment: Regularly identifying and assessing potential security flaws in hardware, firmware, software, and configurations. • Patching and Updates: Applying security patches and updates to address known vulnerabilities. • Configuration Management: Ensuring proper security settings and configurations, including disabling unnecessary services, closing unused ports, and adjusting default settings. • Removal of Unnecessary Software: Eliminating programs and services that are not essential for the system’s functionality to reduce the attack surface. • Access Control: Limiting user permissions and access to system resources based on the principle of least privilege. • Monitoring and Auditing: Continuously monitoring system activity for suspicious behaviour and auditing security configurations.</p>
+<p>The most popular and common technique to implement system hardening is script-based. All the relevant parameters are configured on the endpoint using a PowerShell or batch script in a single execution. The hardening script can be executed on the endpoints either manually on each endpoint or through some delivery system like UEM. The compliance of these hardening parameters are evaluated periodically through audits. The issues with this approach, first, is that if some hardening parameters are modified either by user or APTA utilizing a vulnerability, they can be fixed only after the next audit. The endpoint will remain at risk or compromised till the next audit. Considering the sensitivity and critically of government data and motivation of APTA, this window of invisibility causes serious risks. Second, if any hardening configuration impacts business function of users, it is cumbersome to troubleshoot, identify and roll-back specific configuration. The quickest possible solution in such cases is formatting of the endpoint which disrupts user functions and causes friction.</p>
+<p>We are proposing a new framework of hardening endpoints, which takes care of the problems of script-based approach, called Continuous and Automated Assessment and Remediation (CAAR). In this approach, the hardening parameters are handled individually or in coherent groups of configuration. Each individual/group parameter is checked on each inventory by UEM through Custom Inventory Report (CIR). If there is a gap then these endpoints are labelled using Smart Labels. Relevant scripts or software installations or uninstallations are triggered based on these labels and remediation initiated. All of these steps are automatic and regular. Ministry / department can get the compliance status on a daily basis through reports. This creates an ecosystem of continuous and automated assessment and remediation of system hardening parameters. It reduces the windows of risk and gives granular visibility of hardening parameters. The advantages of CAAR framework include continuous monitoring, automated remediation, no disturbance for users, roll-back of specific parameter in case hardening affects business functions, regular internal audits, improved posture and compliance, reduced attack surface and overall secure environment. The ownership of the system hardening policy will remain with EPS team and the policy defined by EPS team has to be followed NIC-HOD/NO and their teams. It is important to note that CAAR framework will automatically remediate gaps in hardening parameters in endpoints. However, if some endpoints still remain non-compliant then the issue is mostly with the endpoint itself. NIC-HOD/NO along with the L1 support engineers must get it resolved by visiting the endpoints and running troubleshooting guides.</p>
+<p>Government LAN and EP security is unique in terms of resources, requirement and threat perception. Traditional models are not effective in securing them effectively. Hence, there was a need to create a new model and framework which was indigenous and would suit the govt. LAN and EP security requirements better. MOGLES and CAAR were conceived, designed, implemented and successfully tested in various critical ministries and departments of central govt. over a period of two years. They were born in the field and have survived the grind of nation-state APTA in the field. These involve using traditional available technologies and configuring them to suit govt. ecosystem in a novel way. The model is privacy-centric, low cost, autonomous, granular control and provides complete control to ministry/department for their LAN and EP. It is simple and horizontally scalable. It can be easily implemented across various govt. office spread across central, state, district and public-sector.</p>
+<p>Fig 10.2 : A sample hardening parameter under CAAR framework for configuring NIC DNS server is tabled below for reference NIC DNS CIR: Lists configured primary and secondary DNS Servers (space separated) for network adapters of Windows endpoints. Label: @nodns Device label dynamically applied to windows endpoints where the DNS Server is not NIC DNS Server (1.10.10.10 and 36.50.50.50). Script: Custom – Configure NIC DNS Server. Configures NIC DNS Server on endpoints with label ‘@nodns’. Report: Custom – Endpoints without NIC DNS Server. Report to list Windows endpoints without NIC DNS Server.</p>
+<p>Contact for more details Syed Hasan Mahmood Scientist-D NIC HQ, Room#7, A1B6, 5th Floor, A-Block, CGO Complex Lodhi Road, New Delhi - 110003 Email: hasan@nic.in, Phone: 011-24305379</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="mp-apmc-digital-ecosystem-the-digital-revolution-of-apmcs-in-madhya-pradesh-july-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">MP APMC Digital Ecosystem - The Digital Revolution of APMCs in Madhya Pradesh</span></a><a class="article-nav-link next" href="beyond-the-audit-iso-27001-as-the-backbone-of-trusted-digital-infrastructure-july-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Beyond the Audit - ISO 27001 as the Backbone of Trusted Digital Infrastructure</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

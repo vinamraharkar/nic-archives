@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quality Software and Mobile Solutions for the Nation — Informatics April 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/april-2024/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/april-2024/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/april-2024/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/april-2024/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/april-2024/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/april-2024/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2024.html">April 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Quality Software and Mobile Solutions for the Nation</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Quality Software and Mobile Solutions for the Nation</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Ajay Singh Chahal, Dy. Director General &amp; SIO; Sandeep Sood, Senior Technical Director; Sarvjeet Kumar, Scientist - C &bull; pp. 4–9</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2024.html">April 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Himachal Pradesh, often referred to as Dev Bhoomi or “the land of Gods and Goddesses,” is not just renowned for its natural beauty but also for its forward-looking approach towards technology integration. Nestled in the northern part of India, the state shares its borders with several regions, including the Union Territories of Jammu &amp; Kashmir and Ladakh, and Punjab, Haryana, and Uttarakhand. It also shares international boundaries with the Tibetan region. Despite its hilly terrain, Himachal Pradesh has been quick to embrace digital governance. Recognizing the challenges faced by its citizens, particularly in remote rural areas, the State Government has leveraged technology to bridge the gap. Through initiatives like eHimBhoomi, eDistrict, and eKalyan, citizens can access a range of government services online, saving time and effort in the process.</p>
+<p>NIC Himachal Pradesh has been entrusted with National level projects for quick development and roll out in the country in case of emergencies. During COVID-19 pandemic lockdown, the dedicated team of NIC HP officers rose to the occasion and developed the RT-PCR mobile app and COVID-19 Sample Collection Management System. Subsequently, OxyCare-Oxygen Monitoring System was also developed and rolled out, during tough times, in a short time-frame during lockdown.</p>
+<p>At the forefront of this technological transformation is the National Informatics Centre (NIC) Himachal Pradesh State Centre. Established in 1988, NIC HP has been pivotal in driving ICT activities in the state. Since its inception, it has served as the backbone of various digital governance endeavors, supporting the government in implementing and operating online platforms such as Vahan and Sarathi. With the assistance of NIC, HP has made significant strides in enhancing digital infrastructure and services. From providing online permissions and applications for services to ensuring the operation of all district centres, NIC HP has been instrumental in catalyzing the state’s digital transformation journey. In essence, Himachal Pradesh’s embrace of technology, coupled with the relentless efforts of NIC HP, has not only made government services more accessible but has also laid the groundwork for a more connected and empowered society.</p>
+<p>Key Initiatives in the State</p>
+<p>Land Records and Registration Computerisation NIC HP has developed sophisticated software for the digitization of legacy Land Records attribute data, facilitating efficient management and accessibility of vital land records information. With the implementation of the eHimbhoomi application, records are maintained in real-time, ensuring accuracy and reliability. The ongoing digitization of cadastral maps during settlement operations further enhances accessibility, with over 75% of villages already digitized and available for public viewing online. Additionally, the mobile app mHimbhoomi provides convenient access to informatory copies of Records of Rights (RoR). The state has adopted the NGDRS application for deed registration, streamlining the registration process across the state. Furthermore, integrations with various software platforms such as SAVAMITVA, DigiLocker, CSC, and others enhance the functionality and utility of the land records database, facilitating seamless operations in areas such as agriculture procurement, crop insurance, and farmer database management.</p>
+<p>Integrated Financial Management System The IFMS (Integrated Financial Management System) developed for Himachal Pradesh encompasses comprehensive financial management functionalities, including budget processing, online bill processing, examination, and integrations with eKuber, GST, PFMS, Departments, and the Accountant General office. It facilitates online Challans for receipts and final payments to vendors and employees. Supported by multiple user-friendly mobile applications for citizens, vendors, employees, and government officials, the IFMS ensures convenient access to information and efficient monitoring. This project has significantly benefited the government by enhancing financial management capabilities, facilitating timely actions when necessary. Featuring role-based dashboards for Finance and Accountant General (AG) office officers, the workflow-based solution enhances operational efficiency. Recognized through multiple awards, the IFMS stands as a testament to its success and effectiveness over the years.</p>
+<p>Manav Sampada The Manav Sampada software, also referred to as the Electronic Human Resource Management System (eHRMS), is a comprehensive product developed for efficient management of human resources. It has been successfully replicated in 19 states across the country, covering approximately 25 lakh service books. Many states have integrated it with their local systems, incorporating features such as local hosting, audit, and ongoing enhancements. In Himachal Pradesh, the eHRMS is fully implemented, encompassing all aspects of an employee’s service record from recruitment to pension processing. It manages various records including Annual Confidential Reports (ACRs), Annual Property Returns, leaves, and transfer orders, among others. Integrated with applications for departmental examinations, tours, and training institutes, the system promotes paperless functioning and is complemented by mobile apps for employees to access their service records and apply for leave and tours conveniently. Recognized for its excellence, the project was honoured at the prestigious CSI SIG e-Governance Award (Gold) in 2022.</p>
+<p>Works MIS The Works MIS software has been meticulously developed and successfully implemented across 59 Jal Shakti Vibhag Division, setting a benchmark nationwide. Integrated with eBudget, it manages irrigation and public health works seamlessly through online transactions. With nearly 6 lakh water connections monitored, users can conveniently access and pay bills via mobile apps and web platforms. Field engineers utilize the software for efficient project progress documentation. Additionally, automated report and bill generation enhances transparency and accountability in financial transactions, with prompt sharing to Treasuries and the AG office.</p>
+<p>NIC Himachal Pradesh has proactively provided ICT solutions, using latest technologies, to the State Government Departments. I have personally observed the dedication and efforts put in by NIC HP officers at State and District level throughout my career. The work done by NIC in Land Records, Finance Management for the state and at National level projects during Covid19 is commendable. I am happy to note that Informatics April 2024 issue is specially showcasing the e governance initiatives of NIC-Himachal Pradesh. I congratulate and wish success to the entire team and look forward to many more digital innovative initiatives by NIC-Himachal Pradesh for the citizens of state and nation. Prabodh Saxena, IAS Chief Secretary Himachal Pradesh</p>
+<p>Employment Exchange MIS The Employment Exchange MIS (EEMIS) software revolutionizes the youth employment process in the state. It offers online registration, document submission, and real-time vacancy notifications for both Government and Private sectors. Notably, private employers can register, access the candidate database, conduct interviews, and issue appointment letters through the software. Integration with the Ex-Servicemen Department streamlines nominations for government posts. Candidate renewals are facilitated online, and applicants can easily apply for skill development and unemployment allowances. The mobile app X10 enhances accessibility, allowing candidates to apply, renew, and track payments on their smartphones. Additionally, the software facilitates Job Fairs, enabling direct interaction between private employers and registered candidates, leading to same-day selections.</p>
+<p>Smagr eSamadhan Smagr eSamadhan is an essential tool for efficiently managing public grievances online. Integrated with the CPGRAMS system of the Government of India, it ensures swift redressal of complaints forwarded to the State Government. Moreover, integration with CMRefNIC facilitates seamless electronic transfer of references to relevant offices or departments, with timely action taken reports. The system is further enhanced by its integration with eHRMS, incorporating organizational hierarchy and employee details for streamlined authentication.</p>
+<p>Working closely with NIC Himachal Pradesh, the State Disaster Management Authority has developed innovative web and mobile applications for Large Dams Safety and School Disaster Management Plans for all Schools of the State for management and relief during such times. Their commitment to quality and timelines is highly appreciable. D.C. Rana, IAS Director-cum-Special Secretary Disaster Management, Dept. of Revenue Govt. of Himachal Pradesh</p>
+<p>Miscellaneous Software Applications Developed / Maintained Here is a concise summary of the miscellaneous software applications developed and maintained by NIC HP: • Cooperation MIS: Management Information System for cooperation-related activities. • HP Agriculture Produce Procurement Portal: Online portal for procurement of agricultural produce in Himachal Pradesh. • Him Atithi: Online booking system for government circuit houses, rest houses, and bhawans. • Real Estate Regulatory Authority MIS: Management Information System for the Real Estate Regulatory Authority. • Online Factory Registration System: Digital system for factory registration. • Pong Dam Oustees Relief Management System: Software for managing relief for displaced individuals due to the Pong Dam. • eVidhan System: Digital system for legislative proceedings. • Large Dams Safety MIS: Management Information System for monitoring the safety of large dams. • Common Inspection System: System for conducting inspections across various sectors. • Telephone Directory, Civil List: Digital directory of government employees and officials. • Workflow-based State Election Commission Software and Mobile Apps: Software for managing electoral processes. • House Allotment MIS: Management Information System for allotting government houses. • Schemes MIS: System for monitoring and managing government schemes. • Online Hotels Reservation System for Tourism Department: Digital platform for hotel reservations. • eGazette: Digital publication of the state gazette. • Generalized CMS-based Website Development software: Software for developing websites. • CMRefNIC: Software for the Chief Minister’s Office. • HimPragati: Platform for facilitating investors and monitoring budget assurances.</p>
+<p>Central Projects Competency Centre for Mobile Applications Development The Competency Centre for Mobile Applications Development, managed by NIC HP, stands as one of the four Mobile Competency Centres nationwide. With expertise in cross-platform development tools like Xamarin and Flutter, it has successfully crafted over 100 mobile apps on iOS and Android platforms. Noteworthy national-level apps include RT-PCR, Janmanrega, MDM/PM-POSHAN, and MyCGHS, alongside others for State and District-level use. Key activities of the Centre include: • Providing training to NIC officers from Districts and other States on mobile application development • Offering guidelines for developing mobile apps • Hosting Android mobile apps on NIC’s Google Play Store account • Conducting security audits of internally developed apps by CERT-In agencies • Ensuring app updates in compliance with Apple and Google policies</p>
+<p>Grievance Appellate Committee MIS To safeguard the interests of users (Digital Nagriks) and facilitate resolution of their issues, Grievance Appellate Committees (GAC) have been established under the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021 [IT Rules], as per the Information Technology Act, 2000. These rules and committees aim to ensure a Safe, Trusted, and Accountable Internet for Indian users. The GAC handles appeals from Digital Nagriks who are aggrieved by decisions made by Grievance Officers of social media platforms and other digital channels regarding complaints of user or victim violations of the IT Rules. NIC HP has developed the software (https://gac.gov.in) for online processing, facilitating the entire appeal process from citizen filing to committee processing. It features three interfaces: one each for Citizens, Intermediaries, and the three GAC Committees.</p>
+<p>RT-PCR and COVID-19 Sample Collection Management System During the initial phase of the Covid19 pandemic, the Government of India faced the challenge of standardizing sample data collection for various tests nationwide. In response, ICMR designed the Specimen Referral Form (SRF), while NIC HP developed the RT-PCR and RATI mobile apps for ICMR. These apps are utilized by over 1 lakh sample collectors across 31 States/UTs. Testing laboratories input results against the SRF data, which is anonymized after 14 days. The COVID-19 Sample Collection Centre web portal (https://covid19cc.nic.in) facilitates user whitelisting for Apps/Portal access and offers detailed analytics for District/State/National level administrative and health officials. Additionally, it generates necessary raw and processed data for laboratories, collection centers, and sample collectors. This software solution is successfully implemented in 31 States/UTs.</p>
+<p>OxyCare In response to the urgent need for Medical Oxygen in healthcare facilities, OxyCare, an IT-enabled Management Information System (https://oxycare.gov.in), has been developed. It meticulously tracks oxygen devices such as concentrators, cylinders, ventilators, and PSA Plants, utilizing secure QR codes for identification. OxyCare Management Information System (OC-MIS) facilitates allocation, distribution, installation, and maintenance, including online monitoring of purity, flow, and pressure for PSA Plants. Maintenance is further supported by the OxyCare-Engineer mobile app. This comprehensive solution is operational across all 36 States / UTs.</p>
+<p>PM POSHAN-ARMS The objective of the PM POSHAN-ARMS software is the instant reporting of meals served in various schools of the State / Country, primarily through SMS from the mobile phones of registered teachers on the Nation-wise Toll-free Number 15544. This toll-free number is available across all mobile service providers for the country and no charges are levied to the registered teachers for sending the mid-day meal data through SMS on this number. The software has been designed and developed by NIC Himachal Pradesh for online data transfer to National portal. The backend software comprising of configurable master tables for storing location, school, teachers, reason for non-serving, student / teacher attendance, alerts, monitoring tools, direct entry of meals data, graphical reports, interfacing with the mobile app, GIS reports etc. The application provides generalised solution for easy on-boarding for other States, Data collection through different modes of SMS, Mobile App, Web (https://mdmhp.nic.in) and is multi-lingual. Several major national-level projects have been successfully implemented in the state to enhance governance and public service. These include initiatives like PRAGATI (Pro-Active Governance and Timely Implementation) and eSamiksha for real-time project monitoring, eOffice for paperless office operations, SPARROW for employee performance appraisal, and IVFRRT for foreigner registration. Additionally, systems like the Integrated Criminal Justice System (ICJS), PM Kisan Samman Nidhi, and the National Generic Document Registration System have been introduced for various administrative and welfare purposes. Other projects such as ePRI Suite of Applications, eGranthalaya for library management, MGNREGS for rural employment, and Aadhaar Enabled Biometric Attendance System (AEBAS) for attendance tracking further contribute to improving governance efficiency and public service delivery.</p>
+<p>Network, Video Conferencing, Email Services NIC HP provides comprehensive network, video conferencing, and email services to facilitate efficient communication and collaboration across various government departments and institutes. With a robust network infrastructure connecting institutes to the NKN network and providing NICNET connectivity to key government offices, including the State Secretariat and Data Centre, NIC HP ensures seamless access to essential resources. Additionally, the provision of email accounts for state government personnel and the setup of video conferencing facilities in strategic locations further enhance communication capabilities, fostering effective decision-making and coordination among stakeholders. Following is the summary of Network, Video Conferencing, and Email Services Provided by NIC HP: • Connection of 25 Institutes to NKN Network • Provision of NICNET Connectivity to State Wide Area Network, HP Secretariat, Vidhan Sabha, State Data Centre, Deputy Commissioner Offices, and Central Government Offices complex • Management of 28,000 email accounts for the State Government • Establishment of 2000 nodes connected on LAN and WiFi networks in Secretariat and Deputy Commissioner offices • Video Conference setups installed in Governor’s House, Chief Minister’s and Chief Secretary’s offices, HP Assembly, HP Secretariat, and District Headquarters</p>
+<p>Important Events Organised NIC HP provided technical support for various successful events, including the Chief Secretaries Conference and National Conference of Chief Secretaries held at Dharamshala. Additionally, NIC facilitated Hon’ble Prime Minister Narendra Modi’s visits to Himachal Pradesh, organizing interactions via NIC VC with beneficiaries from 6 different states during one visit, earning high praise for the event arrangements.</p>
+<p>Accolades NIC HP’s major projects have garnered national recognition across various prestigious awards. With a total of 12 National e-Governance, 7 Digital India, 3 Gems of Digital India, and 15 CSI e-Governance Awards, among others, NIC HP has consistently demonstrated excellence in project development and management. Notably, in March 2023, five projects received CSI e-Governance Awards during the 20th Conference, including Works MIS, Large Dams Safety MIS, HP Agriculture Produce Procurement Portal, Public Service Commission Software for Transformation, and HP Real Estate Regulatory Commission Management System. Additionally, the RT-PCR Solution was honored with the Digital India Award (Gold) by the Hon’ble President of India at the Digital India Awards 2020 for its remarkable contribution during the COVID-19 pandemic.</p>
+<p>Way Forward NIC Himachal Pradesh is now focusing on adopting Artificial Intelligence, Analytics and Blockchain technologies with improved UI / UX to further increase the usability of its various software. Necessary training and handholding have been provided to the concerned officers and Land Records, PSCSoFT and Finance sector projects have been taken up in first phase. The UI / UX interface of many services has been enriched as per UX4G to provide better experience to users. The objective is to develop quality products to enrich digital interaction between Government and citizens.</p>
+<p>Contact for more details State Informatics Officer NIC Himachal Pradesh State Centre HP Secretariat, Shimla, Himachal Pradesh - 171002 Email: sio-hp@nic.in, Phone: 0177- 2624045</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="disclaimer-april-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Disclaimer</span></a><a class="article-nav-link next" href="taking-the-governance-to-the-doorsteps-of-citizens-april-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Taking the governance to the doorsteps of Citizens</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

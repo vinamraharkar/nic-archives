@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informatics — April 2019</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <header class="nameplate nameplate-sm">
+    <hr class="nameplate-rule-heavy">
+    <hr class="nameplate-rule-thin">
+    <div class="nameplate-grid">
+      <div class="nameplate-side"><a href="../index.html">&larr; All Issues</a></div>
+      <div class="nameplate-center">
+        <div class="nameplate-title">Informatics</div>
+        <div class="nameplate-subtitle">April 2019 &bull; 40 articles</div>
+      </div>
+      <div class="nameplate-side right">National Informatics Centre<br>Government of India</div>
+    </div>
+    <hr class="nameplate-rule-gold">
+  </header>
+
+  <main id="main-content" class="issue-toc-page">
+    <div class="page-strip"><a class="page-thumb" href="../pages/april-2019/page-1.jpg" target="_blank" title="Open page 1"><img src="../pages/april-2019/page-1.jpg" alt="Page 1" loading="lazy"><div class="page-thumb-label">p.&thinsp;1</div></a><a class="page-thumb" href="../pages/april-2019/page-2.jpg" target="_blank" title="Open page 2"><img src="../pages/april-2019/page-2.jpg" alt="Page 2" loading="lazy"><div class="page-thumb-label">p.&thinsp;2</div></a><a class="page-thumb" href="../pages/april-2019/page-3.jpg" target="_blank" title="Open page 3"><img src="../pages/april-2019/page-3.jpg" alt="Page 3" loading="lazy"><div class="page-thumb-label">p.&thinsp;3</div></a><a class="page-thumb" href="../pages/april-2019/page-4.jpg" target="_blank" title="Open page 4"><img src="../pages/april-2019/page-4.jpg" alt="Page 4" loading="lazy"><div class="page-thumb-label">p.&thinsp;4</div></a><a class="page-thumb" href="../pages/april-2019/page-5.jpg" target="_blank" title="Open page 5"><img src="../pages/april-2019/page-5.jpg" alt="Page 5" loading="lazy"><div class="page-thumb-label">p.&thinsp;5</div></a><a class="page-thumb" href="../pages/april-2019/page-6.jpg" target="_blank" title="Open page 6"><img src="../pages/april-2019/page-6.jpg" alt="Page 6" loading="lazy"><div class="page-thumb-label">p.&thinsp;6</div></a><a class="page-thumb" href="../pages/april-2019/page-7.jpg" target="_blank" title="Open page 7"><img src="../pages/april-2019/page-7.jpg" alt="Page 7" loading="lazy"><div class="page-thumb-label">p.&thinsp;7</div></a><a class="page-thumb" href="../pages/april-2019/page-8.jpg" target="_blank" title="Open page 8"><img src="../pages/april-2019/page-8.jpg" alt="Page 8" loading="lazy"><div class="page-thumb-label">p.&thinsp;8</div></a><a class="page-thumb" href="../pages/april-2019/page-9.jpg" target="_blank" title="Open page 9"><img src="../pages/april-2019/page-9.jpg" alt="Page 9" loading="lazy"><div class="page-thumb-label">p.&thinsp;9</div></a><a class="page-thumb" href="../pages/april-2019/page-10.jpg" target="_blank" title="Open page 10"><img src="../pages/april-2019/page-10.jpg" alt="Page 10" loading="lazy"><div class="page-thumb-label">p.&thinsp;10</div></a><a class="page-thumb" href="../pages/april-2019/page-11.jpg" target="_blank" title="Open page 11"><img src="../pages/april-2019/page-11.jpg" alt="Page 11" loading="lazy"><div class="page-thumb-label">p.&thinsp;11</div></a><a class="page-thumb" href="../pages/april-2019/page-12.jpg" target="_blank" title="Open page 12"><img src="../pages/april-2019/page-12.jpg" alt="Page 12" loading="lazy"><div class="page-thumb-label">p.&thinsp;12</div></a><a class="page-thumb" href="../pages/april-2019/page-13.jpg" target="_blank" title="Open page 13"><img src="../pages/april-2019/page-13.jpg" alt="Page 13" loading="lazy"><div class="page-thumb-label">p.&thinsp;13</div></a><a class="page-thumb" href="../pages/april-2019/page-14.jpg" target="_blank" title="Open page 14"><img src="../pages/april-2019/page-14.jpg" alt="Page 14" loading="lazy"><div class="page-thumb-label">p.&thinsp;14</div></a><a class="page-thumb" href="../pages/april-2019/page-15.jpg" target="_blank" title="Open page 15"><img src="../pages/april-2019/page-15.jpg" alt="Page 15" loading="lazy"><div class="page-thumb-label">p.&thinsp;15</div></a><a class="page-thumb" href="../pages/april-2019/page-16.jpg" target="_blank" title="Open page 16"><img src="../pages/april-2019/page-16.jpg" alt="Page 16" loading="lazy"><div class="page-thumb-label">p.&thinsp;16</div></a><a class="page-thumb" href="../pages/april-2019/page-17.jpg" target="_blank" title="Open page 17"><img src="../pages/april-2019/page-17.jpg" alt="Page 17" loading="lazy"><div class="page-thumb-label">p.&thinsp;17</div></a><a class="page-thumb" href="../pages/april-2019/page-18.jpg" target="_blank" title="Open page 18"><img src="../pages/april-2019/page-18.jpg" alt="Page 18" loading="lazy"><div class="page-thumb-label">p.&thinsp;18</div></a><a class="page-thumb" href="../pages/april-2019/page-19.jpg" target="_blank" title="Open page 19"><img src="../pages/april-2019/page-19.jpg" alt="Page 19" loading="lazy"><div class="page-thumb-label">p.&thinsp;19</div></a><a class="page-thumb" href="../pages/april-2019/page-20.jpg" target="_blank" title="Open page 20"><img src="../pages/april-2019/page-20.jpg" alt="Page 20" loading="lazy"><div class="page-thumb-label">p.&thinsp;20</div></a><a class="page-thumb" href="../pages/april-2019/page-21.jpg" target="_blank" title="Open page 21"><img src="../pages/april-2019/page-21.jpg" alt="Page 21" loading="lazy"><div class="page-thumb-label">p.&thinsp;21</div></a><a class="page-thumb" href="../pages/april-2019/page-22.jpg" target="_blank" title="Open page 22"><img src="../pages/april-2019/page-22.jpg" alt="Page 22" loading="lazy"><div class="page-thumb-label">p.&thinsp;22</div></a><a class="page-thumb" href="../pages/april-2019/page-23.jpg" target="_blank" title="Open page 23"><img src="../pages/april-2019/page-23.jpg" alt="Page 23" loading="lazy"><div class="page-thumb-label">p.&thinsp;23</div></a><a class="page-thumb" href="../pages/april-2019/page-24.jpg" target="_blank" title="Open page 24"><img src="../pages/april-2019/page-24.jpg" alt="Page 24" loading="lazy"><div class="page-thumb-label">p.&thinsp;24</div></a><a class="page-thumb" href="../pages/april-2019/page-25.jpg" target="_blank" title="Open page 25"><img src="../pages/april-2019/page-25.jpg" alt="Page 25" loading="lazy"><div class="page-thumb-label">p.&thinsp;25</div></a><a class="page-thumb" href="../pages/april-2019/page-26.jpg" target="_blank" title="Open page 26"><img src="../pages/april-2019/page-26.jpg" alt="Page 26" loading="lazy"><div class="page-thumb-label">p.&thinsp;26</div></a><a class="page-thumb" href="../pages/april-2019/page-27.jpg" target="_blank" title="Open page 27"><img src="../pages/april-2019/page-27.jpg" alt="Page 27" loading="lazy"><div class="page-thumb-label">p.&thinsp;27</div></a><a class="page-thumb" href="../pages/april-2019/page-28.jpg" target="_blank" title="Open page 28"><img src="../pages/april-2019/page-28.jpg" alt="Page 28" loading="lazy"><div class="page-thumb-label">p.&thinsp;28</div></a><a class="page-thumb" href="../pages/april-2019/page-29.jpg" target="_blank" title="Open page 29"><img src="../pages/april-2019/page-29.jpg" alt="Page 29" loading="lazy"><div class="page-thumb-label">p.&thinsp;29</div></a><a class="page-thumb" href="../pages/april-2019/page-30.jpg" target="_blank" title="Open page 30"><img src="../pages/april-2019/page-30.jpg" alt="Page 30" loading="lazy"><div class="page-thumb-label">p.&thinsp;30</div></a><a class="page-thumb" href="../pages/april-2019/page-31.jpg" target="_blank" title="Open page 31"><img src="../pages/april-2019/page-31.jpg" alt="Page 31" loading="lazy"><div class="page-thumb-label">p.&thinsp;31</div></a><a class="page-thumb" href="../pages/april-2019/page-32.jpg" target="_blank" title="Open page 32"><img src="../pages/april-2019/page-32.jpg" alt="Page 32" loading="lazy"><div class="page-thumb-label">p.&thinsp;32</div></a><a class="page-thumb" href="../pages/april-2019/page-33.jpg" target="_blank" title="Open page 33"><img src="../pages/april-2019/page-33.jpg" alt="Page 33" loading="lazy"><div class="page-thumb-label">p.&thinsp;33</div></a><a class="page-thumb" href="../pages/april-2019/page-34.jpg" target="_blank" title="Open page 34"><img src="../pages/april-2019/page-34.jpg" alt="Page 34" loading="lazy"><div class="page-thumb-label">p.&thinsp;34</div></a><a class="page-thumb" href="../pages/april-2019/page-35.jpg" target="_blank" title="Open page 35"><img src="../pages/april-2019/page-35.jpg" alt="Page 35" loading="lazy"><div class="page-thumb-label">p.&thinsp;35</div></a><a class="page-thumb" href="../pages/april-2019/page-36.jpg" target="_blank" title="Open page 36"><img src="../pages/april-2019/page-36.jpg" alt="Page 36" loading="lazy"><div class="page-thumb-label">p.&thinsp;36</div></a><a class="page-thumb" href="../pages/april-2019/page-37.jpg" target="_blank" title="Open page 37"><img src="../pages/april-2019/page-37.jpg" alt="Page 37" loading="lazy"><div class="page-thumb-label">p.&thinsp;37</div></a><a class="page-thumb" href="../pages/april-2019/page-38.jpg" target="_blank" title="Open page 38"><img src="../pages/april-2019/page-38.jpg" alt="Page 38" loading="lazy"><div class="page-thumb-label">p.&thinsp;38</div></a><a class="page-thumb" href="../pages/april-2019/page-39.jpg" target="_blank" title="Open page 39"><img src="../pages/april-2019/page-39.jpg" alt="Page 39" loading="lazy"><div class="page-thumb-label">p.&thinsp;39</div></a><a class="page-thumb" href="../pages/april-2019/page-40.jpg" target="_blank" title="Open page 40"><img src="../pages/april-2019/page-40.jpg" alt="Page 40" loading="lazy"><div class="page-thumb-label">p.&thinsp;40</div></a><a class="page-thumb" href="../pages/april-2019/page-41.jpg" target="_blank" title="Open page 41"><img src="../pages/april-2019/page-41.jpg" alt="Page 41" loading="lazy"><div class="page-thumb-label">p.&thinsp;41</div></a><a class="page-thumb" href="../pages/april-2019/page-42.jpg" target="_blank" title="Open page 42"><img src="../pages/april-2019/page-42.jpg" alt="Page 42" loading="lazy"><div class="page-thumb-label">p.&thinsp;42</div></a><a class="page-thumb" href="../pages/april-2019/page-43.jpg" target="_blank" title="Open page 43"><img src="../pages/april-2019/page-43.jpg" alt="Page 43" loading="lazy"><div class="page-thumb-label">p.&thinsp;43</div></a><a class="page-thumb" href="../pages/april-2019/page-44.jpg" target="_blank" title="Open page 44"><img src="../pages/april-2019/page-44.jpg" alt="Page 44" loading="lazy"><div class="page-thumb-label">p.&thinsp;44</div></a><a class="page-thumb" href="../pages/april-2019/page-45.jpg" target="_blank" title="Open page 45"><img src="../pages/april-2019/page-45.jpg" alt="Page 45" loading="lazy"><div class="page-thumb-label">p.&thinsp;45</div></a><a class="page-thumb" href="../pages/april-2019/page-46.jpg" target="_blank" title="Open page 46"><img src="../pages/april-2019/page-46.jpg" alt="Page 46" loading="lazy"><div class="page-thumb-label">p.&thinsp;46</div></a><a class="page-thumb" href="../pages/april-2019/page-47.jpg" target="_blank" title="Open page 47"><img src="../pages/april-2019/page-47.jpg" alt="Page 47" loading="lazy"><div class="page-thumb-label">p.&thinsp;47</div></a><a class="page-thumb" href="../pages/april-2019/page-48.jpg" target="_blank" title="Open page 48"><img src="../pages/april-2019/page-48.jpg" alt="Page 48" loading="lazy"><div class="page-thumb-label">p.&thinsp;48</div></a></div>
+    <p class="section-rule">Table of Contents</p>
+    <ul class="toc toc-grid"><li><span class="toc-num">I.</span><div><a href="../articles/editorial-april-2019.html">Editorial</a><div class="toc-meta">By Editor (Mohan Das Viswam) &bull; p. 2</div></div></li>
+<li><span class="toc-num">II.</span><div><a href="../articles/masthead-and-credits-april-2019.html">Masthead and Credits</a><div class="toc-meta">By Dr. Neeta Verma (Patron), Rama Nangpal, G.K. Gaur, Nagesh Shastri, Nandita Chaudhri (Advisory Panel), Mohan Das Viswam (Editor), Dr. Dibakar Ray, Reuban K., Kavita Barkakoty, Sarbjeet Singh, A.K. Dadhichi (Zonal Editors), Sunil Sunsunwal, Pankaj Kumar, Archana Sharma (Web Version), Leena Khurana, Rohit Maurya (Content &amp; Design Support), Sudarshan Singh Balouria, Anita Bhardwaj (Print, Circulation &amp; Dispatch) &bull; p. 2</div></div></li>
+<li><span class="toc-num">III.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/nic-s-first-technology-conclave-held-april-2019.html">NIC’s first Technology Conclave held</a><div class="toc-meta">By Dr. R.K. MISHRA &bull; pp. 4–6</div></div></li>
+<li><span class="toc-num">IV.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/vivid-2019-held-in-new-delhi-april-2019.html">VIVID 2019 Held in New Delhi</a><div class="toc-meta">By MEDIA INTERACTION &amp; PROTOCOL DIVISION, NIC &bull; pp. 7–8</div></div></li>
+<li><span class="toc-num">V.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/digital-india-awards-conferred-april-2019.html">Digital India Awards conferred</a><div class="toc-meta">By DIGITAL INDIA AWARDS TEAM, NIC &bull; pp. 9–10</div></div></li>
+<li><span class="toc-num">VI.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/nic-s-command-control-centre-inaugurated-april-2019.html">NIC's Command &amp; Control Centre inaugurated</a><div class="toc-meta">By ANIL RATHORE &bull; p. 11</div></div></li>
+<li><span class="toc-num">VII.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/nic-s-centre-of-excellence-in-artificial-intelligence-inaugurated-by-hon-ble-union-minister-shri-ravi-shankar-prasad-april-2019.html">NIC’s Centre of Excellence in ‘Artificial Intelligence’ inaugurated by Hon’ble Union Minister, Shri Ravi Shankar Prasad</a><div class="toc-meta">By SHARMISTHA DAS GUPTA &bull; p. 12</div></div></li>
+<li><span class="toc-num">VIII.</span><div><span class="toc-section-label">Spotlight</span><a href="../articles/dg-interacts-with-senior-nic-officers-on-new-year-day-april-2019.html">DG interacts with Senior NIC Officers on New Year Day</a><div class="toc-meta">By MEDIA INTERACTION &amp; PROTOCOL DIVISION, NIC &bull; p. 13</div></div></li>
+<li><span class="toc-num">IX.</span><div><span class="toc-section-label">From the States</span><a href="../articles/goa-aspiring-to-be-the-it-hub-of-india-april-2019.html">Goa: Aspiring to be the IT Hub of India</a><div class="toc-meta">By ARVIND KUMAR DADHICHI (Editor), PRASHANT THETE (Sr. Technical Director &amp; SIO), ARCHANA P. NAGVEKAR (Technical Director), PARIMAL RAI, IAS (Chief Secretary, Government of Goa) &bull; pp. 14–18</div></div></li>
+<li><span class="toc-num">X.</span><div><span class="toc-section-label">District Informatics</span><a href="../articles/district-mahabubnagar-telangana-setting-new-horizons-towards-digital-empowerment-and-enhanced-e-governance-april-2019.html">District Mahabubnagar, Telangana Setting new horizons towards digital empowerment and enhanced e-Governance</a><div class="toc-meta">By REUBAN K (Editor), M. SATYANARAYANA MURTY (Tech. Director &amp; DIO), RAVI BANDI (Scientist-B &amp; ADIO), D. RONALD ROSE, IAS (District Magistrate &amp; Collector, Mahabubnagar, Telangana) &bull; pp. 19–30</div></div></li>
+<li><span class="toc-num">XI.</span><div><span class="toc-section-label">In Focus</span><a href="../articles/public-financial-management-system-facilitating-digital-inclusion-and-accelerating-transformation-to-a-digital-economy-april-2019.html">Public Financial Management System Facilitating digital inclusion and accelerating transformation to a ‘Digital Economy’</a><div class="toc-meta">By DIPANKAR SENGUPTA (Sr. Technical Director &amp; HoD), SANJAY AGARWAL (Secretary, Dept. of Agriculture Cooperation and Farmers Welfare, Government of India), ARVIND PANAGARIYA (Professor of Economics, Columbia University, Former Vice Chairman, NITI Aayog), NAGESH SHASTRI (Deputy Director General, National Informatics Centre) &bull; pp. 21–28</div></div></li>
+<li><span class="toc-num">XII.</span><div><span class="toc-section-label">E-GOV PRODUCTS &amp; SERVICES</span><a href="../articles/online-examination-system-of-nic-oesnic-april-2019.html">Online Examination System of NIC (OESNIC)</a><div class="toc-meta">By REUBAN K (Editor), K. JAYABALAN (Sr. Technical Director), K.K. SIVA PRASATH (Scientist ‘D’) &bull; pp. 31–32</div></div></li>
+<li><span class="toc-num">XIII.</span><div><span class="toc-section-label">E-GOV PRODUCTS &amp; SERVICES</span><a href="../articles/national-power-portal-april-2019.html">National Power Portal</a><div class="toc-meta">By MOHAN DAS VISWAM (Editor), ADARSH SAIWAL (Sr. Technical Director), C.K. SHUKLA (Sr. Technical Director), RAM KRISHAN (Sr. Technical Director), RANJEET SONI (Technical Director), G.K. GAUR (Dy. Director General, NIC) &bull; pp. 33–34</div></div></li>
+<li><span class="toc-num">XIV.</span><div><span class="toc-section-label">E-GOV PRODUCTS &amp; SERVICES</span><a href="../articles/anubhav-portal-april-2019.html">Anubhav Portal</a><div class="toc-meta">By MOHAN DAS VISWAM (Editor), Dr. Y. K. SINGH (Sr. Technical Director), ANIL BANSAL (Technical Director), R. Sriram (Sr. Technical Director) &bull; pp. 35–36</div></div></li>
+<li><span class="toc-num">XV.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/appscape-introduction-april-2019.html">Appscape Introduction</a><div class="toc-meta">By C.J. ANTONY &bull; p. 37</div></div></li>
+<li><span class="toc-num">XVI.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/chc-agri-machinery-april-2019.html">CHC Agri Machinery</a><div class="toc-meta">By Dr. Ranjna Nagpal &bull; p. 37</div></div></li>
+<li><span class="toc-num">XVII.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/e-bloodbank-april-2019.html">e-BloodBank</a><div class="toc-meta">By Chayan Kanti Dhar &bull; p. 38</div></div></li>
+<li><span class="toc-num">XVIII.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/evidhan-april-2019.html">eVidhan</a><div class="toc-meta">By Dharmesh Kumar &bull; p. 38</div></div></li>
+<li><span class="toc-num">XIX.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/lok-kalyan-mitr-april-2019.html">Lok Kalyan Mitr</a><div class="toc-meta">By Hemant Kumar Arora &bull; p. 39</div></div></li>
+<li><span class="toc-num">XX.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/ss-tank-april-2019.html">SS Tank</a><div class="toc-meta">By Achuta Venu Nattay &bull; p. 39</div></div></li>
+<li><span class="toc-num">XXI.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/hp-circle-rates-april-2019.html">HP Circle Rates</a><div class="toc-meta">By Ajay Singh Chahal &bull; p. 40</div></div></li>
+<li><span class="toc-num">XXII.</span><div><span class="toc-section-label">Appscape</span><a href="../articles/traffic-management-himachal-pradesh-janabhaar-rally-april-2019.html">Traffic Management Himachal Pradesh-JanAbhaar Rally</a><div class="toc-meta">By Ajay Singh Chahal &bull; p. 40</div></div></li>
+<li><span class="toc-num">XXIII.</span><div><span class="toc-section-label">International eGov Update</span><a href="../articles/china-has-unveiled-its-first-female-ai-news-anchor-april-2019.html">China has unveiled its ‘first female AI news anchor’</a><div class="toc-meta">p. 41</div></div></li>
+<li><span class="toc-num">XXIV.</span><div><span class="toc-section-label">International eGov Update</span><a href="../articles/malaysian-state-deploys-facial-recognition-system-to-fight-crime-april-2019.html">Malaysian State deploys Facial Recognition System to fight crime</a><div class="toc-meta">p. 41</div></div></li>
+<li><span class="toc-num">XXV.</span><div><span class="toc-section-label">International eGov Update</span><a href="../articles/nasa-to-use-blockchain-technology-for-air-traffic-management-april-2019.html">NASA to use Blockchain Technology for Air Traffic Management</a><div class="toc-meta">p. 42</div></div></li>
+<li><span class="toc-num">XXVI.</span><div><span class="toc-section-label">International eGov Update</span><a href="../articles/university-of-missouri-to-strategize-on-ways-to-prevent-cyber-attacks-april-2019.html">University of Missouri to strategize on ways to prevent cyber attacks</a><div class="toc-meta">p. 42</div></div></li>
+<li><span class="toc-num">XXVII.</span><div><span class="toc-section-label">In the News</span><a href="../articles/chief-minister-uttarakhand-launches-gpf-mobile-app-april-2019.html">Chief Minister, Uttarakhand, launches GPF Mobile App</a><div class="toc-meta">By NARENDRA SINGH NEGI, RAJEEV LAKHERA &amp; ANUJ DHANGAR &bull; p. 43</div></div></li>
+<li><span class="toc-num">XXVIII.</span><div><span class="toc-section-label">In the News</span><a href="../articles/second-national-workshop-on-central-public-procurement-portal-cppp-held-in-new-delhi-april-2019.html">Second National Workshop on Central Public Procurement Portal (CPPP) held in New Delhi</a><div class="toc-meta">By ATUL KUMAR &bull; p. 43</div></div></li>
+<li><span class="toc-num">XXIX.</span><div><span class="toc-section-label">In the News</span><a href="../articles/chief-minister-chhattisgarh-launches-farmer-specific-mobile-apps-april-2019.html">Chief Minister, Chhattisgarh, launches farmer-specific Mobile Apps</a><div class="toc-meta">By Y.V. SHREENIVAS RAO &bull; p. 44</div></div></li>
+<li><span class="toc-num">XXX.</span><div><span class="toc-section-label">In the News</span><a href="../articles/e-challan-system-inaugurated-by-transport-commissioner-in-jammu-kashmir-april-2019.html">e-Challan System inaugurated by Transport Commissioner in Jammu &amp; Kashmir</a><div class="toc-meta">By JIT RAJ &bull; p. 44</div></div></li>
+<li><span class="toc-num">XXXI.</span><div><span class="toc-section-label">In the News</span><a href="../articles/digidhan-mitra-chatbot-launched-by-hon-ble-union-minister-shri-ravi-shankar-prasad-at-vivid-2019-april-2019.html">Digidhan Mitra Chatbot launched by Hon’ble Union Minister, Shri Ravi Shankar Prasad at VIVID 2019</a><div class="toc-meta">By TEAM INFORMATICS &bull; p. 45</div></div></li>
+<li><span class="toc-num">XXXII.</span><div><span class="toc-section-label">In the News</span><a href="../articles/events-on-enterprise-architecture-held-in-assam-and-meghalaya-april-2019.html">Events on Enterprise Architecture held in Assam and Meghalaya</a><div class="toc-meta">By KAVITA BARKAKOTY, ASSAM &amp; CANDIDA B.M. BOOTH SHADAP, MEGHALAYA &bull; p. 45</div></div></li>
+<li><span class="toc-num">XXXIII.</span><div><span class="toc-section-label">In the News</span><a href="../articles/gis-portal-for-circle-rates-of-lands-property-launched-in-dehradun-april-2019.html">GIS portal for Circle Rates of Lands (Property) launched in Dehradun</a><div class="toc-meta">By JAG JEEVAN BIST &bull; p. 46</div></div></li>
+<li><span class="toc-num">XXXIV.</span><div><span class="toc-section-label">In the News</span><a href="../articles/pensioner-s-portal-launched-by-hon-ble-dy-chief-minister-of-tamil-nadu-april-2019.html">Pensioner’s Portal launched by Hon’ble Dy. Chief Minister of Tamil Nadu</a><div class="toc-meta">By R GAYATRI &bull; p. 46</div></div></li>
+<li><span class="toc-num">XXXV.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/national-e-governance-awards-2019-april-2019.html">National e-Governance Awards 2019</a><div class="toc-meta">p. 47</div></div></li>
+<li><span class="toc-num">XXXVI.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/president-s-award-presented-to-nic-kerala-state-centre-april-2019.html">President’s Award presented to NIC Kerala State Centre</a><div class="toc-meta">p. 47</div></div></li>
+<li><span class="toc-num">XXXVII.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/smart-cities-digital-payments-awards-conferred-april-2019.html">Smart Cities Digital Payments Awards conferred</a><div class="toc-meta">p. 47</div></div></li>
+<li><span class="toc-num">XXXVIII.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/certificate-of-appreciation-for-eoffice-implementation-april-2019.html">Certificate of Appreciation for eOffice implementation</a><div class="toc-meta">p. 48</div></div></li>
+<li><span class="toc-num">XXXIX.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/informatics-newsletter-online-april-2019.html">Informatics Newsletter Online</a><div class="toc-meta">p. 48</div></div></li>
+<li><span class="toc-num">XXXX.</span><div><span class="toc-section-label">Accolades</span><a href="../articles/nician-bags-special-election-award-2018-april-2019.html">NICian bags Special Election Award 2018</a><div class="toc-meta">p. 48</div></div></li></ul>
+  </main>
+</body>
+</html>

@@ -1,0 +1,15 @@
+---
+title: "eScholarship initiative launched for SC, ST & OBC students of Uttarakhand"
+publication: "Informatics"
+issue_date: "January 2015"
+pages: [48]
+author: "Vinod Kumar Taneja, Uttarakhand"
+section: "In the News"
+---
+
+## eScholarship initiative launched for SC, ST & OBC students of Uttarakhand
+
+eScholarship (http://escholarship.uk.gov.in) was officially launched by the Govt. of Uttarakhand during a day-long workshop organized at Dehradun on 19th November 2014. Starting from the current academic session, eScholarship provides an online facility for SC, ST and OBC students in the state to apply for Government’s Post-matric scholarships. The workflow application designed, developed, hosted and maintained by NIC, Uttarakhand, seamlessly integrates Educational Institutes, Social Welfare Department’s Directorate, IT Cell & District Level Offices, treasuries and banks ensuring direct payment of scholarship and fee reimbursement into student’s bank account.
+The participants included representatives from selective educational institutes, students, media persons, concerned officials from the state’s Social Welfare, Tribal Welfare and Finance Departments including all District Social Welfare Officers. The proceedings of the workshop were conducted jointly by Shri G. R. Nautiyal, Deputy Director & IT Cell Nodal Officer from Social Welfare Department and Shri Vinod Kumar Taneja from NIC Uttarakhand.
+The pre-lunch session of the workshop was chaired by Shri P.S. Jangpangi, IAS, Secretary, Social Welfare in the presence of Shri V.S. Dhanik, Director, Social Welfare and Shri Satyendra Kumar, SIO NIC Uttarakhand. During this session, all the participants were made to understand the self-help features like user manuals along with complete workflow of eScholarship application demonstrated by Shri Chandan Singh Bhakuni from NIC Uttarakhand. During the second session, chaired by Shri S. Raju, Additional Chief Secretary, live hands-on session on eScholarship was demonstrated to the stakeholders. This session saw the actual disbursement of scholarship credited into the bank account of Shri Amit Kumar Shaw, a student from Uttaranchal University, Dehradun. This happened within minutes of his online application being acted upon on the spot - vetted and forwarded by his college authorities, sanctioned by District Social Welfare Officer, Dehradun and submitted as a treasury bill to the Dehradun treasury, from where the Chief Treasury Officer sanctioned the transfer of scholarship amount to student’s bank account.
+The workshop concluded with the media briefing by the Additional Chief Secretary. He explained that last year, the State Government disbursed around R 250 crores to more than 1 lakh SC/ ST/OBC students in the state. He also detailed the benefits that have actually accrued and the tedious efforts of Social Welfare Department to usher in transparency and efficiency using NIC Uttarakhand’s offerings, like eSPAN (http://ssp.uk.gov.in) for disbursement of Social Security Pensions and now eScholarship.

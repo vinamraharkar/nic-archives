@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Transport Register — Informatics October 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2011/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2011/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2011/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2011/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/october-2011/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2011/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2011/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2011.html">October 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>National Transport Register</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">National Transport Register</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Mahesh Chandra; Nagaraj Kulkarni &bull; pp. 4–8</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2011.html">October 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Over the past decade or so there has been an island of e-Governance initiatives by state transport authority of different States in the country. The experience with the IT initiatives, have been very good and is extremely beneficial in making transport department services accessible to the common man in his locality through various service delivery outlets. It also ensures efficiency, transparency &amp; reliability of such services at affordable costs to realize the basic needs of the common man.</p>
+<p>&quot;Without data that is consistent, accurate and reliable across the enterprise an organization can easily reach misleading, faulty and potentially harmful conclusions&quot;.</p>
+<p>Ministry of Road Transport &amp; Highways (MoRTH) had envisaged National Transport Project for computerization and interlinking of about 975 RTOs/DTOs across the country. Ministry in consultation with National Informatics Centre (NIC) implemented the National Transport Project at all the RTOs/DTOs across the country.</p>
+<p>This is one of the Mission Mode Projects under National e-Governance Plan. The RTOs (Regional Transport Offices) in various States and UTs across the country are responsible for granting the Driving License, registration of motor vehicles and also providing various other services to the citizens. Off late, it was observed that these offices are working in isolation due to which information availability was limited and access to data from their offices was not available. Complaints were received in case of inter State transfer of vehicles. To do-away with the manual process so as to ensure uniformity and standardized process throughout the country, the Central Government had made provisions in the Central Motor Vehicles Rules-1989 for issuance of smart card based Driving License (DL) &amp;</p>
+<p>&quot;SARATHI&quot; A one-stop solution to driving licensing (DL). (http://sarathi.nic.in)</p>
+<p>&quot;VAHAN&quot; A one stop solution for vehicle registration (RC) (http://vahan.nic.in)</p>
+<p>Registration Certificate (RC). On these lines- The Ministry of Road Transport &amp; Highways has envisaged National Transport Project to develop standardized software in consultation with the NIC and to make it available to all the States.</p>
+<p>On those lines, NIC has developed the standardized software; Vahan &amp; Sarathi and the software is made available to all the States. NIC has also customized it to suite the requirement of the State. The aim of the National Transport Project was to computerize the RTOs, develop and implement standardized software for the DL &amp; RC, smart card enablement, establish State Register and National Register and subsequent State-wide roll out. The software has been successfully customized and implemented in 33 States/UTs and 97% States have been computerized. The smart card is being issued for 24 States/UTs. The project has reached a sustenance phase wherein now it has capability for preventive maintenance, high availability &amp; scalability through robust technological architecture. The project was awarded SKOCH ICT and SKOCH Challenger Award 2010 for its exemplary contribution to the transport sector.</p>
+<p>The focus of the article is to present the scope of National Register (NR), its benefits and technology utilized for the Business Intelligence (BI) by interlinking all the RTOs/DTOs. The National Register has the capability to provide time critical information through a structured managerial reporting. The</p>
+<p>National Register can provide reports at different levels: operational, tactical &amp; strategic for informed decision making. It provides the ability to intelligently select and apportion data for query analysis and quick information at the click of a mouse. Meaningfulness and correctness of information is a key interest of the department such that not only the transport department but also other government departments, citizens and businesses can be benefited from it.</p>
+<p>Further, the vision is to integrate National Register with other departmental databases for ready information availability to anyone desired. Example; Bihar State government extensively utilizes the NR-SR services for providing information to the citizens under the Right to Services (RTS) Act. The concept of National Register centrally aligns to the Right to Information (RTI) hence ensuring transparency of the information received from the citizens and distributed centrally anywhere, anytime. As said by Einstein &quot;We cannot solve the problem by using the same kind of thinking when we created them&quot;. The NR initiative is gradually evolving into a world-class National level business intelligence system, with ideas like information access through SMS based services, integration with banks for financial services, web based applications, UID integration, cloud computing, payment gateways, smart card based applications (SCOSTA) and many more. The initiative is in fact an initiation to powerful ideas that the department is planning to develop, design and launch. The technological revolution has met the information gap and the transport department is pursuing actively to utilize every bit of it. The gamut of citizen services offered through the National Register is discussed in the subsequent sections. The article is structured with the information necessary to help understand the details and the services offered through the National Register.</p>
+<p>FINDING THE RIGHT SOLUTION The RTOs across the country remained isolated and completely disconnected and ran with heterogeneous operational system. The department lacked of mechanism &amp; infrastructure for combining data residing at different sources and providing a unified view of these data to itself for its business needs and also to other stakeholders like police, crime bureau, etc.</p>
+<p>Apart from this, the Ministry of Transport &amp; Highways had constraints to handle rapid data growth and provide 24x7 data service to G2G, G2C and G2B. It also required information reporting at the National level for the departmental decision and policy making.</p>
+<p>What needed was a robust solution to provide integration between the isolated RTOs across the States through a world-class integration technology tool.</p>
+<p>To enable the complex data integration, light weight Oracle Data Integrator (ODI) is used. The ODI (Figure 1) enables data extraction from heterogeneous sources and transforms it suitably as per the business process that consolidates the data into SR-NR (Figure 2).</p>
+<p>Oracle Data Integrator Features An Extract Transform &amp; Load (ETL) &amp; Business Intelligence (BI) Middleware Tool. Support heterogeneous sources and targets Packaged/Interfaces Changed Data Capture (CDC) Import/Export data facility Multiple repositories Agent load balancing/scheduler Oracle data quality integration Repository explorer Security/Profiles</p>
+<p>ESTABLISHMENT OF STATE REGISTER (SR) State level data repository called State Register (SR) has been established at every State. All the information being captured at RTOs/DTOs level will entirely go in to SR, so as to avoid any dependency of introducing new services on the level of information available at the State level. The collected data at the State level provides information for operational and tactical decision making.</p>
+<p>SR is connected to all RTOs/DTOs through Leased Line/VPNoBB connectivity. This supports the data consolidation for RTOs/DTOs to SR and vice versa. SR will provide real time information to State transport department, RTOs/DTOs, police department and other G2C,G2B services.</p>
+<p>NATIONAL REGISTER (NR) A Centralized database for Driving License and Registration Certificate has been created from SR and is located at NIC Data Centre, Hyderabad. Its architecture has been designed for high availability, reliability and scalability. SR-NR is connected through high availability NIC Network (NICNET). High availability network supports the real time data replication from SR to NR.</p>
+<p>The Ministry of Road Transport and Highways (MoRTH) has about 1000 RTOs spread across the country. Establishing State Register and a National Register by the process of data integration is the NIC's solution to the exploding requirements for information from disparate, heterogeneous systems to make sound decisions and comply with the Central Motor Vehicles Act (CMVA)-1988, throughout the country. This has made the services of issuance of Driving License and Vehicle Registration to the citizens simple, fast and transparent.</p>
+<p>STATUS OF THE PROJECT Computerization: The computerization of the RTOs has been achieved for most of the States except for few RTOs in J&amp;K and Punjab. This is expected to be completed in the current financial year. State Consolidation Register (SCR)- The SCR activities are completed to 99% for Vahan and 85% for Sarathi State Register (SR) is completed to 98% for Vahan and 67% for Sarathi database National Register (NR) is completed to 95% for Vahan databases and 59% for Sarathi database</p>
+<p>Fraud Detection- Mumbai ATS Post the Mumbai blast, police had a tough task to identify and track the terrorist involved in the serial blasts. To identify the criminals the Mumbai ATS approached the transport department for assistance and quick information search on the vehicle owners and the details. Due to the availability and information readiness with the National Register (NR) it was possible to access the details required.</p>
+<p>NR-SR Web Services formally launched on July, 2011 (http://parivahan.nic.in) Operations: Support is provided to sustain the continuity of the services offered by NR-SR</p>
+<p>VALUE PREPOSITION The successful launch of National Transport Register has improved the quality &amp; availability of services to all the stakeholders- Ministry, Citizens and Businesses. Reducing turn-around time of various G2G, G2C, G2B services and increased law abidance.</p>
+<p>The services provided by the National Register like availability of intelligent MIS for decision making, quick and easy availability of information to other Government departments, tracking of stolen vehicles and detection of malpractices, e-payment of taxes, fees etc.</p>
+<p>The entire Transport data from all the remote RTOs' operational servers can be accessed by the departments spread across the country at National, State, Regional, District etc. This important information can also be shared with other agencies like Insurance and Police, and other law enforcement agencies. The quality and online availability of services to the citizens has been significantly improved. Premium services can be started from NR. Data can be mined from business intelligence purpose. It is also ready to join National Grid (NATGRID).</p>
+<p>The National Transport Register provides consistent, accurate, and reliable information to G2G, G2C, and G2B. It would not be an exaggeration to say that the e-Gov ICT objective of the Government of India is largely met through the National Transport Register.</p>
+<p>SARATHI Services DRIVING LICENSES New Driving License Learning License Renewal of Old Driving License Change of Address etc. Endorsements Issue of Duplicate License</p>
+<p>ENDORSEMENT MANAGEMENT Revocation Notifications Disqualification Cancellation</p>
+<p>ISSUE ENDORSEMENT FEE LICENSE</p>
+<p>VAHAN Services VEHICLE REGISTRATION New Vehicle Registration Renewal of Registration Transfer of Ownership Change of Address etc.</p>
+<p>PERMIT &amp; TAXES Issue of National &amp; Interstate Permit Renewal of Permit State-wise tax calculation &amp; Payment</p>
+<p>FITNESS Issue of Fitness Certificate Renewal of Fitness Certificate</p>
+<p>ENFORCEMENT Issue of Challan Settlement of Penalty Amount</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-october-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="spatial-information-system-for-the-rajiv-vidya-mission-andhra-pradesh-october-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Spatial Information System for the Rajiv Vidya Mission, Andhra Pradesh</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

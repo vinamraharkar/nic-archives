@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andhra Pradesh: A State in Focus — Informatics April 2012</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2012"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/april-2012/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2012/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2012/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/april-2012/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2012/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2012/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/april-2012/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2012/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2012/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/april-2012/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2012/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2012/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2012.html">April 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Andhra Pradesh: A State in Focus</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">FROM THE STATES/UTs</div>
+          <h1 class="article-title" data-pagefind-meta="title">Andhra Pradesh: A State in Focus</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By DR VV VENKATA Ramana, SHRI R V RAO, R. Gayatri &bull; pp. 26–29</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2012.html">April 2012</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Andhra Pradesh, ranked as the fourth largest in size and the fifth largest in terms of population, is one of the prominent states contributing to the upward economic growth of India. That’s why it is one of the most preferred destinations for IT and other sectors. National Informatics Centre in Andhra Pradesh has come a long way, successfully completing vital e-governance projects for Central, State Governments and Public Sector Departments, operationalised in 1986 connecting the entire 23 district Hqs in the state over NICNET. NIC State Centre has the State-of-the-art Data Centre facility, with a 2.754 GBPS Internet gateway and a Disaster Recovery (DR) Centre for IDC of Delhi &amp; Messaging Services. It has 3 Fiber Links 2.5/10 Gbps from Hyderabad to Delhi and has multi-Site Video Conferencing studio and Video Conference Facility for all districts. Apart from developing and implementing eGov applications and other customised software, a host of Services are offered at the NIC state centre. They are broadly classified into Data Centre Services, Network &amp; Internet Services, Video Conferencing and Virtual class rooms and Email Services, Registration Authority Services, NKN Services, Supporting various ICT initiatives through NICSI.</p>
+<p>Data Centre ServiCeS unDer the following CategorieS: Primary Data Centre Services at State level (SDC Services) Primary Data Centre Services at the National level (NDC Services) Disaster Recovery Services (DRC Services) Certifying Authority Disaster Recovery (CA_DR Services) DR Services for States like Gujarat, Goa, Rajasthan etc.,</p>
+<p>network &amp; internet ServiCeS: A host of applications like WEB/ Mail/ connectivity to SDC/ NDC/ DR &amp; BCP are running on the Network Services. All State Capitals in the country are connected to Hyderabad creating a multi homing NICNET. Core network of 2.5G /10G connectivity is setup on NKN with mesh connectivity for high availability and redundancy. Network infrastructure to provide 10G connectivity at APSC. All District NIC Centers connectivity is being enhanced to 100 Mbps and 1Gbps at bordering districts to neighbouring States. DR services of NMS, AAA &amp; ASA services are active. Hi-bandwidth redundant Internet Gateway. Network services for Dept. of Posts, CGHS, PAO, e-Courts. 24x7 Helpdesk for Network services. Email Services - Though E-mail services are on Centralized Server at Delhi, the DR services for the E-mail are operational from Hyderabad and as on date 6000 e-mail accounts for AP created under NIC e-mail services. Video Conferencing and Virtual class rooms. All 23 Districts of AP on VC Network through terrestrial links. Desktop VC (EVCS) services are enabled at the Offices of Chief Secretary, Chief Post Master General, Director General Police. Studio Based VC System have been commissioned at UIDIA, APARD &amp; INCOIS. Exclusive Studio based VC commissioned for AP Secretariat. On an average monthly 100 -120 VC sessions conducted from NIC, Hyderabad Studios. Virtual class rooms and e-learning framework as a part of NKN services.</p>
+<p>regiStration authority Digital certificates are the digital equivalent (i.e. electronic format) of physical or paper certificates. Knowing the importance and the need of digital certificates, it has become mandatory for the officials to use the same. At AP state centre, Issuance of digital Signature Certificates for Govt. officials is being carried out on a regular basis. As many as 1948 certificates issued to various state and central govt. and public sector departments. NKN Services – As a part of the countrywide National Knowledge Network, a State of the art NKN - INOC &amp; Disaster Recovery Centre is being commissioned at NIC, Hyderabad. So far, 55 Universities, Scientific, R &amp; D Institutes (including Health) are brought under the NKN umbrella. Some of the most successful eGov Applications at the State level that are initiated, implemented and supported at present include: Computer Aided Administration for Registration Department (CARD). Land Records Management Information System for Revenue Department. Rural Soft - Financial Accounting System for Dept. of RD. E-Panchayat for Panchayat Raj Dept. Water soft - web based MIS for Panchayat Raj , RWS. Integrated Management system of Pay &amp; Accounts Office &amp; Treasuries [IMPACT]. Pension Settlement &amp; Management Information System. Prajavani – a Public Grievance Monitoring System in Telugu for all District Collectorates. Online Case Status Information System for Cyberabad Police Commissionerate. Ambient Air Quality Live for State Pollution control Board. Online Web based counseling for Engg. MBA, MCA and Polytechnic courses. Online counseling for Post Graduate courses of NTR Health University. GIS School mapping For Sarva Siksha Abhiyan. Karmika Sankshema Nidhi Paryavekshana for Labour Welfare Board. Stock and Financial Accounting System for Civil Supplies Corporation. Dept. of Information &amp; Public Relations Official web portal &amp; Centralized Advertisement System. Girl Child Protection Scheme Portal for Women Dev. and Child Welfare Dept. Missing Persons Portal for Women Dev. and Child Welfare Dept. Drug procurement system of A.P. Health &amp; Medical Housing Infrastructure Development Corporation. Blood Bank Information system for Institute of Preventive Medicine. Online Vaccination Appointment for International travellers. Online Scholarship Management System for AP Minority Welfare Dept. Work Flow System for Dept. of Horticulture. List of Business Information System – LOBIS for AP High Court. Case Information System for District courts.</p>
+<p>In addition to the eGovernance applications, AP state centre has developed and implemented SMS Based Applications using Open Source technologies. Some of the SMS applications include Complaint &amp; Alert System for Police Commissionerates of Hyderabad, Cyberabad, Jammu &amp; Kerala, Tracking of Mobiles, Vehicle &amp; Stolen Vehicles, Complaint against PDS and auto forwarding system, Status System for Prajavani, Kadapa and Anantapur and also a Complaint &amp; Redressal System for A.P. State Road Transport Corporation.</p>
+<p>Support for Central projeCtS State Center has been supporting many of the Central projects including Mission mode Projects including National Animal Disease Reporting System(NADRS), National Employment Portal, Immigration, FISHNET, AGMARKNET, Department of Posts, e-Office, e-Procurement, CGHS, DGFT, eGranthalaya etc. Training Activities that are being conducted from time to time include training and Technology and Skill updating Programs for Technical staff, and other Project Specific training programs for the users.</p>
+<p>new &amp; ongoing e - governanCe initiativeS Mee Seva – Revenue Services through APOnline - To provide faster and better citizen services to the public, the State Government launched 'Mee Seva' centres on a pilot basis in Chittoor district and will be available in all districts very soon. This is for the first time in the country that key citizen services were brought under one roof. Mee Seva provides 51 services relating to Registration, Revenue and 15 other departments. Within 15 minutes of application submission, documents electronically signed by the authorities will be handed over to the citizen. For this Mee Seva, Web services are written to share data from CARD and LAND Record applications. On request, verification of digitally signed student data at the service end Handshake with APOnline for the issue of requested Certificate through the electronic Service delivery system of Mee Seva Counters. Centralised Computer Aided Administration for Registration Department (CARD), centralised Land Records for Revenue Dept., Work flow automation of Pollution Control Board, Prisons Management System for major Prisons of the state, Work flow automation of Octopus of Police are some of the ongoing initiatives.</p>
+<p>e - governanCe awarDS NIC AP state centre has won many e-Governance awards in the recent past, the latest being as follows: The Online Scholarship Management System (OSMS) developed for Andhra Pradesh State Minority Finance Corporation bagged the Bronze Award for “Excellence in Government Process Re-Engineering” National eGovernance Awards 2009-10. Mobile based food supply chain management system (mFoods, URL: http://apagrisnet.gov.in/ mfoods) for AP Foods Department has won the 8th South Asia Manthan Award 2011. It is developed with an objective for timely supply of food supplies to serve poor, undernourished group of women &amp; children of the state, in an efficient and transparent way. Mobile technology has been built into the system to facilitate the department capture indents, monitor food supply status and track the supply status geographically through mobiles. The other salient features of the system include -Spatial Analysis with Google Maps, Dashboards for monitoring. HORTNET – a Vortal to render one-stop-non-stop integrated services(URL http://hortnet.gov.in) to farmers and other stake holders of Horticulture, Agriculture and allied sectors(fisheries, animal husbandry, social forestry, dairy has won the eIndia 2011 Award. It was also a finalist in 8th South Asia Manthan Award 2011. HORTNET help promote holistic growth of the horticulture sector through an area based regionally differentiated strategies viz. research, technology promotion, extension, processing and marketing. Successfully implemented in AP and fulfilling the computerization requirements of State Horticulture Mission, Govt. of AP. Online Scholarship Management System and e-Medlabs (Vaccination appointments online for International Travellers) have also have won the eIndia 2011 Award.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="nic-madhya-pradesh-gateway-for-e-governance-in-the-state-the-heart-of-incredible-india-april-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">NIC, Madhya Pradesh Gateway for e-Governance in the State “the Heart of Incredible INDIA”</span></a><a class="article-nav-link next" href="agile-development-model-for-e-governance-software-april-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Agile development model for E-Governance Software</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

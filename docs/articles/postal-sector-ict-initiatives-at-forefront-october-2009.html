@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postal Sector: ICT Initiatives at Forefront — Informatics October 2009</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2009"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2009/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2009/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2009/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2009/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2009.html">October 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Postal Sector: ICT Initiatives at Forefront</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">Postal Sector: ICT Initiatives at Forefront</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Dr. Shefali Dash &bull; pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2009.html">October 2009</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The post office in India has evolved over the decades; it has come a long way from physical transmission of human emotions to electronic mails. The long wait for the friendly postman to deliver Money order has taken a new avatar of Instant Money Order. India Post had to redesign its services and introduce various premium services in the wake of Telecommunication revolution. In the midst of this transformation; the post office is still one of the most trusted names across the country with vast potentials largely untapped and unexplored. The Department of Posts has 845 Head Post Offices and 25,320 Departmental Sub Post Offices while the remaining Post Offices are located in rural areas working for few hours. The VIIIth and IXth plans saw computerization of 506 Head Post Offices and 1266 Sub Post Offices. The software package, Meghdoot, developed by Postal Training Centre (PTC), Mysore enabled computerization of most of the operations in the Post Offices. Sanchay Post; another software, computerized the savings bank operations in the Post Offices. Subsequently, E-enabled services such as e-Post (electronic Post), iMO (instant Money Order) and e-bill Post also launched. Software packages have also been developed for computerizing Postal Life Insurance (PLI), Speed Post and other premium services and operations in administrative and account offices. These applications were running from severs hosted at Post Offices or at National Informatics Center, which made monitoring of different applications an enormous task. Further, these computerized post offices were isolated entities with one or two clients connected to dedicated servers of web based services like iMO, ePost, etc. through dial up connections and therefore could not provide full fledged network-driven services to customers. During the Xth Plan, the Department of Posts has computerized all its Head Post Offices and most of the major Sub Post Offices and planned to create a virtual private network linking these offices. An expert committee was set up to deliberate on the issues related to establishment of National Data Centre, which suggested that in view of the intricacies involved in the setting up and maintenance of a data center on a 24X7 basis, the services of National Informatics Center (NIC) may be availed. Initiatives Undertaken by National Informatics Centre Communication Information Systems Division (CISD) of NIC at Department of Posts, Dak Bhawan has been entrusted to provide consultancy and guidance for consolidation of existing IT initiatives to harvest maximum benefits. CISD suggests modalities for implementation of new applications to meet the challenges and competition posed by the private sector. Credit goes to CISD for support during implementation of many IT enabled postal operations like ePost, iMO, etc. National Informatics Centre has been instrumental for establishing necessary postal network and inevitable infrastructure to provide improved e-services. National Data Centre (NDC) and Wide Area Network (WAN) for the DoP For improved ICT infrastructure, NIC planned for a Data Centre at NIC, Delhi, Disaster Recovery Centre (DRC) at NIC, Hyderabad and a WAN to connect 1318 post offices in a Closed User Group (CUG) with 2Mbps lease line circuits. Provision has been made for broadband/ ISDN connections to act as fall back option in case of lease line circuit failure. Schematic diagrams of the NDC and WAN are shown in figures 1 and 2 respectively. Fig.1- DoP National Data Centre Architecture Fig. 2: DoP Network Architecture with 2Mbps leased line and Broadband as backup Innovative Applications of the Department of Post Electronic Mail (ePost): ePost is a printed or even handwritten message of customers, scanned and transmitted as email through internet at http://www.indiapost.nic.in. At the destination offices, these messages are printed, enveloped and delivered through postmen like other letters. ePost centres, equipped with internet connection, computers, printers and other necessary equipments have been set up in the Post Offices, covering all the districts and major towns in the country. However, ePost service can also be availed of from any Post Office. Irrespective of whether a customer is in a metropolis or in a remote village, s/he can send and receive ePost messages. The messages booked at Post Offices which are not the ePost centres, are sent to the nearest ePost centres for scanning and dispatch. Similarly, messages received at ePost centres for areas beyond their delivery jurisdiction are printed and sent to concerned Post Offices for delivery. One can buy prepaid cards from Post offices to send ePost from home also. Instant Money Order (iMO): The iMO service enables instant money transfer between sender and recipient residing in India through the post offices. A customer can send up to Rs. 50,000/- by depositing the cash in any of the iMO centres, collect a 16 digit iMO number and inform this number to the recipient. The recipient can collect the money from any iMO centre by presenting the iMO number and a photo identity proof. In this web based service https://www.indiapostimo.gov.in/rvw, money transaction happens instantly. Project Arrow (Post Offices: A window to the world for Aam Aadmi): Due to the large reach of the post offices, specially in the remote and rural areas, it was felt that the Post offices should be enabled to open new vistas to the common man to connect him to the out side world and be the harbinger of kaleidoscopic changes in the lives of the common man. With this objective, the Project Arrow was launched, initially covering 50 post offices across the country and subsequently extended to 500 post offices. Now, in the third phase of the project, it is being planned to extend to another 5000 post offices. To monitor the activities, performances and the service delivery on a daily basis, a web based system has been developed through which each Arrow post office enters data on the number of mails/ money orders received every day and the number of deliveries performed on the same day. Data from the post offices on their daily transactions are extracted using a Data Extraction Tool (DET) in an automated process. Key Performance Indicators (KPIs) are calculated on the basis of data entered on the website and data extracted using DET. These KPIs are monitored regularly to take proactive decisions to improve the performance of a post office. Postal Life Insurance (PLI): PLI was started in 1884 as a welfare measure for the employees of Posts &amp; Telegraphs Department which subsequently was extended to cover other government employees. On 24th March, 1995, the benefits of Postal Life Insurance were extended to rural populace of the country under the banner of Rural Postal Life Insurance (RPLI). Computerisation of PLI/ RPLI started way back in 1995 using UNIX systems with dumb terminals at the 23 postal circles. Though this system was working fairly well, it was necessary to revamp it to compete with the private insurance players who flooded the customers with varieties of facilities and options. As a result, an upgraded web based system http://indiapostpli.gov.in came into existence. Consumer Price Index (Rural): Department of Posts has been entrusted by Central Statistics Organization (CSO) with the collection of Rural Retail Prices towards formulation of Consumer Price Index (Rural). CSO has selected around 500 commodities for collecting retail prices every month from 1183 villages covering all districts of the country. Each village has been linked to the nearest head / sub post office for data entry. Data is collected by postal field staff and entered through user friendly data entry screens on web enabled application for verification by the Supervisor (post master). This application has been designed with role based access control for operator, supervisor, DoP HQ and CSO. Each role has been assigned with pre defined access and privileges depending on requirements. An exhaustive MIS reporting system has been designed to provide information to various stake holders as per their requirements. NREGA Postal Accounting System: The ICT based Mobile payment system for NREGA workers were undertaken in 25 Branch Post offices in Orissa on a pilot basis. In this, Identity cards as well as e-passbooks in the form of smart cards were issued to the NREGA workers at the time of opening of accounts. These cards were personalized with the photograph of the worker and other account details and have a provision for carrying biometric imprints. The NREGA account holder presents his smart card to the Branch Post Master (BPM) at the time of transaction, which is read through the NFC reader, and after proper verification and authentication, the BPM performs the transaction through the mobile phone. Payment of the desired amount is made after checking the balance amount in the account of worker with the Central Payment Server. Once the transaction is completed, the worker is given a printed slip with details of the transaction done. An offline software interface is also provided to the BPOs where GPRS signal is low. Role based MIS reports can be generated in the system. Many more applications, such as RTI through which RTI application/ appeal addressed to any central government department can be accepted at the post offices which would then be transmitted to the nodal officer of the concerned department, CPACT for Circle level postal Accounting System, Patram for Postal Account Transaction Maintenance, Freighter Mail Movement Tracker, Mail Monitoring system, Postal Account Current System, Web based Pension Management System, etc. have been implemented in the Department of Posts to streamline the work flow and improve the service delivery. These systems have been deployed by the CISD in collaboration with Pers Infotech Division and some of the NIC State Units, namely, Tamilnadu, Karnataka and Gujarat. Future Plans Besides the services which are currently being offered by the Department of Posts, many new proposals are under way to improve the postal services. Some of the proposed major projects are: National Address Database Management System for India Post: The Department of Posts is focusing on creation of a National Address Database Management System for India Post wherein the information related to every delivery point of postal services for both residential as well as commercial/industrial locations in urban and rural areas would be captured along with the maintenance of the standard database. A letter is handled in the Postal system on the basis of address thereon. Unambiguous address is essential for effective and economical mail sorting operations. Adoption of a standard gives it stability, continuity and greater uniformity over the geographical jurisdiction and for long time to come. Further, it improves the quality of mail delivery, enables it to be machine processed and reduces costs. An address has two basic attributes; viz. one that describes the personal identification details; and the other that describes location identification details. The main objective of Postal Geographic Information System is to create/integrate, maintain and disseminate digital spatial database associated with the existing data of DoP. This may be initiated with providing a base map of the order of 1:1000 scales, which may sufficiently provide a view of the catchment area of the Post Offices and further demarcation of &quot;Beat Catchment&quot; with support from DoP. This may be integrated further with addresses, Pin Codes as found suitable within the project. Virtual Post Office: It is proposed to develop a portal for Virtual Post Office to provide postal services to the customers on 24X7 basis. The services to be rendered through the virtual post office are: — Mail services: registration, parcels, insurance, value payable posts, surface air lifting, free posts, and services associated with traditional postal communication. — Financial services: banking, postal life insurance, money order, instant money order, international money transfer, mutual funds, electronic clearance services, and electronic international money order services. — Premium services: speed post, business post, bill mail, electronic intimation of delivery, national bill mail, e-payment, express parcel, media post, greeting post, logistic post, direct post, and retail post. — Philatelic services: information regarding stamps issued by the DoP over the years. Philatelic Deposit Accounts opening online by making payment through the payment gateway set up by DoP. — Customer services: enabling customers to provide feedback, and grievance redressal system for maximum customer satisfaction. Awards and Accolades ICT intervention for improved postal services has brought many awards &amp; recognitions for the Department of Posts. Some of these are: — Skoch Challenger Award for instant Money Order in 2007 — Manthan award for Instant Money Order in 2007 — Oracle e-governance excellence award for Postal Life Insurance Computerisation in 2006 — Microsoft e-Governance Award for instant Money Order in 2006 Microsoft e-Governance Award for iMO</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="we-can-leverage-the-expertise-of-nic-nicsi-in-implementing-turn-key-ict-projects-an-exclusive-interview-with-sh-sailesh-kumar-singh-ias-it-secretary-govt-of-jharkhand-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">“We can leverage the expertise of NIC / NICSI in implementing turn key ICT projects” …… An Exclusive Interview with Sh. Sailesh Kumar Singh, IAS &amp; IT Secretary, Govt of Jharkhand.</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

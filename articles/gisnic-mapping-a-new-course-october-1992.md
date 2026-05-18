@@ -1,0 +1,12 @@
+---
+title: "GISNIC: MAPPING A NEW COURSE"
+publication: "Informatics"
+issue_date: "October 1992"
+pages: [7]
+author: null
+section: "PROJECTS"
+---
+
+## GISNIC: MAPPING A NEW COURSE
+
+The Geographical Information System of the National Informatics Centre (GISNIC) is a system for storing, retrieving and analyzing geographically referenced data sets. With the emergence of databases in the Eighties, computer cartography is now fast emerging as a superior tool in accessing and interpreting the contents of these databases. In a Geographical Information System, both spatial (eg. maps, satellite imagery) and non-spatial (eg. census data, field data) data sources can be integrated, and a set of spatially registered data layers can be analyzed independently or in combination with a number of other layers. Thus, one can stitch together bundles of data from a wide variety of sources, and manipulate them to get quantitative information for resource management & planning. GISNIC Version 1.0 is the outcome of a novel experiment at NIC to develop a set of tools for retrieval and transformation of both spatial and non-spatial data. GISNIC is a microcomputer-based modular, Geographic Information System (GIS) which operates on the PC AT/386 family of micros under SCO XENIX. GISNIC has been designed specifically for microcomputers using state-of-the-art GIS concepts. GISNIC employs phenomenological structuring for modelling complex phenomena observed in real-life situations. It allows feature hierarchies to organize spatial data. Various geographical features can be represented as point, segment or region. Different feature types can be combined in a single map. GISNIC utilizes state-of-the-art client-server architecture to link attribute data with various spatial features. Any realational database management system can be used as backend for accessing non-spatial data. Attribute information can be organized independently, or may be taken from an existing MIS. OUTPUT AND DISPLAY - General graphic display for a variety of graphic devices. - Defining and generating graphics or reports in both interactive and batch modes. - Saving and editing macros which define map composition for application to other maps. - Plotting multiple coverages or database layers over one another. - Providing window-to-viewport transformations for scaling, rotation and map positioning. - Clipping graphic elements occurring outside specific map window.

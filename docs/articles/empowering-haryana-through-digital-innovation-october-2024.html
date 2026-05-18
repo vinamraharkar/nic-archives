@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empowering Haryana Through Digital Innovation — Informatics October 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2024/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2024/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2024/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2024/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/october-2024/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/october-2024/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2024/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2024/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2024.html">October 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Empowering Haryana Through Digital Innovation</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">From the States</div>
+          <h1 class="article-title" data-pagefind-meta="title">Empowering Haryana Through Digital Innovation</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Edited by VINOD KUMAR GARG &bull; pp. 4–9</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2024.html">October 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Since 1988, NIC Haryana has been a vital technology partner for the Government of Haryana, transforming governance with advanced IT systems and seamless e-Governance solutions. Leveraging AI, Cloud Computing, and Data Analytics, NIC Haryana has automated workflows, digitized records, and ensured efficient service delivery. Anchored by the NIC Mini Cloud and Haryana State Data Centre, it powers initiatives like SARAL, Parivar Pehchan Patra (PPP), AePDS, and Meri Fasal Mera Byora, revolutionizing public services with transparency and real-time support. Committed to inclusive governance, NIC Haryana drives digital innovation, aligning with the Digital India vision and inspiring nationwide advancements.</p>
+<p>ICT Initiatives in the State</p>
+<p>NIC Haryana has been a pioneer in implementing innovative ICT solutions that enhance governance and simplify access to public services for citizens. Some of the key initiatives that have transformed governance in Haryana include:</p>
+<p>Parivar Pehchan Patra https://meraparivar.haryana.gov.in/</p>
+<p>The Parivar Pehchan Patra (PPP) is a groundbreaking initiative by the Government of Haryana, aimed at establishing a comprehensive family database across the state. Each household is assigned a unique 8-digit Family ID, unifying all family members under a single record. This system streamlines the delivery of government schemes and services by enabling real-time verification of socio-economic and demographic data.</p>
+<p>Currently, over 76 lakh families are registered under the PPP, with more than 73 lakh verified through an extensive cross-checking process. By integrating with over 400 government services and schemes, the PPP simplifies access to benefits such as Old-Age Pensions, Caste and Income Certificates and various welfare programs, eliminating the need for repeated documentation.</p>
+<p>With its dynamic and authentic database, the PPP has transformed service delivery, adopting a proactive governance approach. Eligible citizens are automatically identified, and the government contacts them for consent. Once approved, benefits are provided from the following month. Notable proactive services include Old Age Pension, Widow Pension, Divyang Pension, BPL Ration Card, Ayushman Bharat Medical Insurance, and Mukhya Mantri Vivah Shagun Yojna.</p>
+<p>Beyond streamlining service delivery, the PPP facilitates proactive governance by automatically updating records for life events such as births, deaths, or marriages. Citizens can also update or verify their family information at their nearest Atal Seva Kendra or SARAL Kendra, ensuring the system remains accurate. This initiative fosters transparency, efficiency, and inclusivity, establishing Haryana as a pioneer in digital governance.</p>
+<p>Auto Appeal System https://aas.saralharyana.nic.in</p>
+<p>To ensure timely and transparent service delivery, the National Informatics Centre, Haryana State Centre, developed the Auto Appeal System (AAS) for the Haryana Right to Service Commission. Launched by the then Chief Minister of Haryana on September 1, 2021, AAS is a pioneering initiative in India.</p>
+<p>The Auto Appeal System automates the filing of appeals under the Right to Service Act for eligible individuals when application timelines are breached, while also allowing for manual appeal submissions. If an application surpasses the deadline, an automatic appeal is generated and forwarded to the First Grievance Redressal Authority (FGRA). If no action is taken or a final decision is not reached within 30 working days, the appeal escalates to the Second Grievance Redressal Authority (SGRA). A further escalation to the Haryana Right to Service Commission (HRTSC) occurs if the SGRA fails to act within another 30 days.</p>
+<p>Grievance authorities, including the HRTSC, may summon the Designated Officer (DO) and the appellant for hearings, issue directives, and request responses, which can be uploaded online. The system supports rescheduling hearings, issuing interim orders, and delivering final judgments, while both the HRTSC and SGRAs have the authority to impose penalties on DOs, with compensation potentially awarded to citizens.</p>
+<p>The AAS also supports manual appeal submissions via the Antyodaya Saral Portal (https://saralharyana.gov.in) or the Antyodaya Saral Helpline at 0172-3968400. If applicants are dissatisfied with FGRA or SGRA decisions, they can use the Auto Appeal System (https://aas.saralharyana.nic.in) alongside the portal and helpline for further appeals.</p>
+<p>To date, 440 services and schemes across 41 Departments, Boards, and Corporations have been integrated into AAS, with over 14.23 lakh appeals filed and 98.7% (14.04 lakh) successfully resolved.</p>
+<p>Policy Based Transfers in HRMS</p>
+<p>The online policy-based transfer system is a vital part of the government’s administrative framework, designed to efficiently manage large-scale employee transfers within specific cadres. Each cadre follows a transparent, government-approved policy framework outlining clear transfer criteria. At the core of this system is a detailed policy document, specifying factors like service tenure, performance ratings, and other relevant criteria. Eligible employees are identified, objectively scored, and matched to vacancies, ensuring fairness and merit-based decisions.</p>
+<p>The system operates through two portals: HRMS (https://hrmshry.nic.in), the administrative hub for nodal officers to manage transfers, and IntraHry (https://intrahry.gov.in), where employees can review scores, submit preferences, and participate in the process. This streamlined, technology-driven approach reflects the government’s commitment to efficiency, transparency, and employee welfare. So far, 8,138 employees have been transferred under 156 policies.</p>
+<p>HRMS Haryana https://hrmshry.nic.in/</p>
+<p>The Human Resource Management System (HRMS) platform in Haryana is used to manage the service records of over 3.3 lakh employees. It automates HR functions like transfers, promotions, and leave applications. The system has processed 38 lakh ACRs, 1,34,035 general Transfers, and 17 lakh Leaves, providing a more transparent and efficient HR management framework for the state government.</p>
+<p>Comprehensive Cashless Health Facility</p>
+<p>The Ayushman Bharat Haryana Health Protection Authority, in collaboration with NIC-Haryana, has developed a portal to issue Comprehensive Cashless Health Facility (CCHF) cards to government employees and pensioners.</p>
+<p>To generate a CCHF card, an employee must ensure their Parivar Pehchan Patra (PPP) ID is linked with the HRMS and e-Pension system databases.</p>
+<p>NIC has created and shared an API with the Ayushman Bharat National Health Authority (NHA) to facilitate the generation of CCHF cards. This API has been successfully tested and integrated by the NHA team.</p>
+<p>Antyodaya SARAL Haryana http://saralharyana.gov.in</p>
+<p>SARAL (Simple, All-Inclusive, Real-Time, Action-Oriented, Long-Lasting) is a flagship initiative by the Government of Haryana, aligned with the Digital India vision. It digitizes and streamlines 744 services and schemes across 59 departments, enhancing accessibility, transparency, and efficiency. Built on the Service Plus Framework, SARAL offers online access to 542 services, with real-time tracking through the Antyodaya SARAL Dashboard.</p>
+<p>Processing over 50,000 applications daily via 117 SARAL Kendras and 18,000+ Common Service Centers (CSCs), the platform delivers reliable service. During the pandemic, SARAL swiftly launched new services in 6-8 hours, ensuring uninterrupted access. To date, it has received 8.84 crore applications, processing 97.9% successfully.</p>
+<p>CM Windows &amp; Jan Samvaad</p>
+<p>CM Window is a web-based Grievance Management portal for processing and resolving citizen grievances registered at kiosks in DC and SDM Offices. Grievances are routed to state marking teams and field officers, achieving a resolution rate of 1,216,474 out of 1,321,522. Integrated with CPGRAMS and Haryana’s Auto Appeal System (AAS), it includes Jan Samvaad for tracking requests and development projects from the Chief Minister’s public functions. Out of 60,975 Development Works, 16,930 are completed, with the rest ongoing. The system covers all Haryana Departments.</p>
+<p>Social Media Grievances Tracker</p>
+<p>The Social Media Grievances Tracker (SMGT) is an application for monitoring citizen grievances posted on the social media platform X (formerly Twitter). It captures tweets, filters them for grievances, and forwards them to state-level marking users who assign them to field officers for resolution. The system supports parallel marking to multiple officials for prompt action, and grievances are closed only after satisfactory resolution, with updates sent to citizens via tweet. Focused on urgent issues, the tracker operates across all Haryana Departments. Out of 440,116 tickets created, 422,171 have been resolved.</p>
+<p>Track and Trace System</p>
+<p>This system for the Excise and Taxation Department enables tracking liquor products and tracing their production or import origin. Each bottle is labeled with a unique Bar/QR code, scanned at every movement stage to maintain a comprehensive tracking record. Managing around 117 crore codes annually, the system handles large volumes of data efficiently.</p>
+<p>Haryana Mines &amp; Geology Information System https://mis.minesharyana.gov.in/</p>
+<p>This system manages passes for material transport from mines to crushers and permits for mining activities. It provides online status checks, monitors eRawaana authenticity, and sends proactive SMS alerts. Dashboard reports offer insights on payments and operations, aiding the state in preventing illegal mining. It currently oversees 41 Contractors, 43 Mines, 416 Screening Plants, and 1,059 Crusher Units.</p>
+<p>Web-HALRIS https://jamabandi.nic.in/</p>
+<p>Web-HALRIS (Web-based Haryana Land Records Information System), developed by NIC Haryana, digitizes property registration and land records management. It offers services like deed writing, stamp duty calculations, deed appointments, and access to Record of Rights (RoR) and registered deeds. Handling over 60,000 property deeds and 200,000 RoR transactions monthly, Web-HALRIS enhances transparency and efficiency.</p>
+<p>The e-Girdawari mobile app, launched on February 4, 2022, is an extension of Web-HALRIS, enabling Patwaris to perform digital crop inspections. Integrated with Web-HALRIS, the app records crop details, damage assessments, and encroachments, supporting timely land record updates and the Digital India initiative.</p>
+<p>iFMS Haryana http://ifmsharyana.nic.in/</p>
+<p>Haryana’s iFMS (Integrated Finance Management System) integrates financial management systems such as OBAMAS, eBilling, OTIS, eGRAS, and ePension to ensure smooth financial operations across the state. It supports real-time bill processing, electronic payments, and the management of over 1.59 lakh pensioners, streamlining financial workflows and reducing administrative delays.</p>
+<p>Meri Fasal Mera Byora https://fasal.haryana.gov.in/</p>
+<p>Meri Fasal Mera Byora (MFMB) is a key initiative by the Government of Haryana that empowers farmers by providing a unified platform for crop registration and access to government schemes. Integrated with land records and databases, it ensures accurate and transparent data management.</p>
+<p>Key features include PPP-based crop registration, real-time verification with land records, and direct access to government benefits like subsidies, crop insurance, and MSP. API integration with schemes like eKharid and seed programs allows seamless data sharing. With 12.03 lakh registered farmers, MFMB enhances transparency, prevents overproduction claims, and promotes agricultural sustainability.</p>
+<p>AePDS</p>
+<p>AePDS is a transformative initiative in Haryana aimed at ensuring the efficient and transparent distribution of subsidized food grains. By integrating Aadhaar-based biometric authentication at Fair Price Shops (FPS), AePDS has minimized fraud and leakages, ensuring only eligible beneficiaries receive food supplies.</p>
+<p>Key features include biometric verification, One Nation One Ration Card portability, and real-time monitoring for transparent distribution. With over 35 lakh transactions processed monthly, AePDS also integrates with Annapurti Grain ATMs to enhance the convenience and transparency of food distribution, significantly improving food security and public welfare across the state.</p>
+<p>Litigation Management System https://lmshry.gov.in/</p>
+<p>The Litigation Management System (LMS) in Haryana is a workflow-based platform designed to monitor and manage court cases involving government departments, corporations, and state bodies, ensuring timely legal case management.</p>
+<p>Key features include integration with Bharat API for seamless access to court cases, real-time reports and dashboards, online access to petitions, and email/SMS alerts for case updates. LMS is being used by 197 departments, tracking 21.5 lakh court cases, and supports 5,800+ registered users with around 1,600 daily logins, ensuring efficient legal process management.</p>
+<p>Other Initiatives in the State</p>
+<p>NIC Haryana has implemented several other critical initiatives across various sectors to enhance governance, ensure transparency, and improve the delivery of services. These initiatives cover a wide range of areas, from education and transportation to healthcare and finance.</p>
+<p>NeVA</p>
+<p>The National e-Vidhan Application (NeVA) is a digital initiative aimed at making legislative processes paperless, allowing legislators to manage documents, discussions, and legislative work electronically, for promoting eco-friendly and efficient governance. On August 8, 2022, the then Hon’ble Chief Minister Haryana, Shri Manohar Lal, launched NeVA at the monsoon session of the Haryana Legislative Assembly. This shift enables Members to use iPads for accessing proceedings, replacing traditional paper methods.</p>
+<p>NIC Haryana played a pivotal role in NeVA’s implementation, preparing the Detailed Project Report, finalizing technical specifications, and ensuring 1 Gbps connectivity for the Assembly. They also established a Wi-Fi network, configured iPads, and provided support during a mock session. The NIC Haryana team, led by Shri Deepak Bansal, was commended for enabling this transition to paperless governance.</p>
+<p>e-Office</p>
+<p>e-Office is a fully digital platform for managing file movements and official communications within government departments, promoting a paperless work environment. Presently 5 instances of e-Office in the State of Haryana and many more organisations / universities are in process of onboarding the e-office in their organisation.</p>
+<p>S3WaaS - Haryana</p>
+<p>S3WaaS (Secure, Scalable, and Sugamya Website as a Service) platform has enabled the development and hosting of secure and user-friendly websites for government departments. Haryana is the first state to have all district websites hosted, along with 50 departmental websites, making government information easily accessible to citizens while ensuring compliance with web accessibility standards.</p>
+<p>GePNIC</p>
+<p>Government e-Procurement System (GePNIC) in Haryana is a comprehensive digital procurement platform used by government departments and PSUs. With 8,586 procurement entities and 83,706 registered contractors, the platform processes an average of 5,800 tenders per month, with over 3.9 lakh tenders valued at ₹2.35 lakh crore to date. The system ensures transparent and efficient procurement, reducing delays and enabling fair competition.</p>
+<p>Revenue Record Room Management System</p>
+<p>This system digitizes property and land records, providing seamless access to important documents for government officials and citizens alike. It has significantly improved land record management across Haryana, handling millions of revenue documents annually, ensuring transparency in property transactions.</p>
+<p>eTransport</p>
+<p>eTransport integrates key components like eChallan, PUCC, Vahaan, and Sarathi to streamline and digitize transport services. eChallan enables electronic enforcement of traffic violations, allowing authorities to issue fines and process payments online. PUCC ensures vehicles meet environmental standards by digitizing the issuance of Pollution Under Control Certificates. Meanwhile, Vahaan handles vehicle registration, ownership transfers, and road tax collection, while Sarathi manages driving licenses, including issuance, renewal, and online tests.</p>
+<p>Together, these components provide a comprehensive, transparent, and citizen-friendly platform for managing transport services. The eTransport system enhances road safety, ensures regulatory compliances, and simplifies access to critical services like vehicle registration and licensing, making the entire process more efficient and accessible for citizens and authorities alike.</p>
+<p>Punjab and Haryana High Court https://highcourtchd.gov.in/</p>
+<p>NIC Haryana has digitized the operations of the Punjab and Haryana High Court, allowing citizens to access judicial services online. The system provides access to 33 lakh cases and 67 lakh orders and has issued over 11 lakh notices online. It facilitated 7 lakh bail orders and offers a completely digitized experience for court proceedings, reducing the reliance on physical paperwork.</p>
+<p>ICJS</p>
+<p>The Interoperable Criminal Justice System (ICJS) platform integrates law enforcement, judicial, and forensic departments, enabling seamless sharing of criminal case data in real time. It allows for better case tracking and management across multiple agencies, promoting the swift delivery of justice.</p>
+<p>Online Admissions and eCounselling</p>
+<p>Haryana’s Online Admissions and eCounselling system simplifies the entire admission process, right from application submission to the seat allocation, for higher education institutions. The platform handles over 50,000 admissions annually, integrating with DigiLocker and PPP for document verification, benefiting both students and 500+ institutions.</p>
+<p>CeFMaTIS https://cfmsharyana.nic.in/</p>
+<p>The Centralized File Movement and Tracking Information System (CeFMaTIS) tracks the movement of government files, ensuring accountability and timely processing. It supports over 266 departments and handles 753 lakh transactions, tracking 6.5 lakh file movements monthly.</p>
+<p>MedLEaPR Haryana https://medleaprhry.gov.in/</p>
+<p>MedLEaPR is a centralized, web-based workflow system for preparing Medico-Legal (MLR) and Post-Mortem Reports (PMR) using legally approved forms. It provides role-based access for doctors and health institutions and integrates with forensic and specialized labs, like FSL and CFSL, to examine samples for court and police cases. The system features SMS/email notifications for sample status and is linked with CCTNS.</p>
+<p>Highlighted in recent legislation for digital report transmission, MedLEaPR is now adopted by the Ministry of Home Affairs as the standard solution for all medico-legal cases. 27 States &amp; UTs have onboarded this system and it supports 737 institutions in Haryana, generates over 2 lakh reports annually, and serves as a crucial component of the Interoperable Criminal Justice System.</p>
+<p>ODISCM https://dpmuhry.gov.in</p>
+<p>The Online Drug Inventory and Supply Chain Management System (ODISCM) streamlines drug procurement and distribution across Haryana’s Health Institutions. It enables centralized order placement, real-time monitoring, and vendor tracking, ensuring efficient drug availability and adherence to quality controls as per the state’s new drug policy.</p>
+<p>Serving over 1,249 Health Institutes and 400 vendors, ODISCM has processed ₹90 crore in purchase orders and integrates with Sandes for alerts and interactive services.</p>
+<p>Online Release Orders and Billing System for DIPRL Haryana</p>
+<p>The Online Release Orders and Billing System is an ERP solution developed by NIC Haryana for the Information, Public Relations, and Languages Department. Initiated under the directive of the Hon’ble Chief Minister to ensure transparency and expedite payments for government print media advertisements, it automates the issuance of release orders and billing processes.</p>
+<p>Launched on December 14, 2020, the system served 339 organizations and 851 newspapers, issuing 31,371 release orders and processing 104,392 bills totaling over ₹28,004 lakh.</p>
+<p>IVFRT Haryana</p>
+<p>The Immigration, Visa, and Foreigners Registration &amp; Tracking (IVFRT) system is implemented in all 22 districts of Haryana, offering online services for visa extensions, nationality verification, and tracking of foreign residents. It facilitates seamless data sharing between institutions and law enforcement agencies.</p>
+<p>Haryana Seed Portal https://uttamseed.haryana.gov.in</p>
+<p>This portal was launched by the then Hon’ble Chief Minister of Haryana, Shri Manohar Lal, on October 30, 2021, in Chandigarh. Developed by NIC Haryana, the portal ensures transparency in the seed production process for both government and private seed-producing agencies, enhancing the quality of certified seeds.</p>
+<p>Farmers can apply for the Seed Development Program through the portal, and seeds are issued by seed-producing agencies. Integrated with the MFMB portal, it provides real-time monitoring of seed availability through an inventory system. Future plans include integrating the portal with the seed certification program for survey and testing, ensuring comprehensive seed quality management.</p>
+<p>HREX</p>
+<p>The Haryana Employment Exchanges Portal (HREX) connects job seekers with potential employers, offering over 4.5 lakh active jobseekers the opportunity to apply for vacancies posted by 9,669 registered employers. The portal enables online job fairs and real-time recruitment through 65 employment exchanges.</p>
+<p>HRERA &amp; HREAT https://haryanarera.gov.in/</p>
+<p>The Haryana Real Estate Regulatory Authority (HRERA) and Haryana Real Estate Appellate Tribunal (HREAT) platforms regulate the real estate sector in Haryana, ensuring transparency in property transactions. To date, 1,718 advocates, over 1,604 real estate projects, 36,904 complaints and 3,580 appeals have been registered on the system, ensuring compliance with real estate regulations.</p>
+<p>Notably, NIC Haryana received the CSI SIG e-Governance Award for Haryana Real Estate Regulatory Authority (HRERA) under State Government Project Category on 23rd April 2022 as part of the 19th CSI SIG e-Governance award 2021 at MNNIT, Allahabad, Prayagraj, Uttar Pradesh.</p>
+<p>HRAWAS https://awas.haryanapwd.gov.in/</p>
+<p>The House Allotment System (HRAWAS) automates the process of allocating government housing to employees based on their seniority and preferences. The system ensures transparency and efficiency, eliminating manual errors in the allotment process.</p>
+<p>HUM https://harudhyam.edisha.gov.in</p>
+<p>The Haryana Udhyam Memorandum (HUM) platform is a digital database for enterprises and workers in Haryana. With 56,400 registered industries, the system provides a holistic view of the state’s industrial landscape, enabling the efficient delivery of industry-related services.</p>
+<p>e-Tourism/Guest House Booking</p>
+<p>The e-Tourism platform allows online booking for 45 resorts and 48 guest houses, with over 15 lakh bookings processed to date. The system has generated ₹320 crore in revenue, offering citizens a convenient, digital way to manage their stays.</p>
+<p>ICT Infrastructure in Haryana</p>
+<p>NIC Haryana has established a robust and scalable ICT infrastructure that supports the state government’s digital governance initiatives. This infrastructure enables seamless communication, data management, and service delivery, ensuring that the government operates efficiently while providing essential services to citizens. The ICT infrastructure encompasses various components, including LAN networks, cloud platforms, high-speed internet connectivity, secure email systems, and advanced video conferencing solutions.</p>
+<p>NIC LAN</p>
+<p>NIC Haryana has established a comprehensive LAN infrastructure connecting key government offices across the state for efficient communication and data exchange. Six major LANs in Chandigarh link over 5,000 nodes across buildings like the Secretariat and Vidhan Sabha. Wi-Fi services are available in five government offices, and the network extends to all 22 districts, encompassing over 5,000 nodes.</p>
+<p>NIC Haryana Mini Cloud</p>
+<p>Launched in 2018, the NIC Haryana Mini Cloud is a state-of-the-art platform for rapid deployment of government applications and e-Governance services. With 1,056 vCPUs, 6,144 GB of RAM, and 210 TB of storage, it ensures high performance and scalability. Key features include load balancing, advanced firewalls, intrusion prevention, and DDoS protection. Connected via high-speed 10 Gbps bandwidth, it supports large-scale e-Governance and the state’s digital transformation efforts.</p>
+<p>NICNET and NKN in Haryana</p>
+<p>NIC Haryana delivers high-speed, secure internet through NICNET and the NKN. NICNET serves government offices, while NKN connects 39 research and educational institutions across the state. NICNET links all 22 district offices to the State Data Centre via leased circuits, supported by a 10 Gbps connection to the Integrated Network Operations Centre (INoC), ensuring seamless and secure connectivity.</p>
+<p>Email Services</p>
+<p>NIC Haryana delivers secure email and messaging services for state government officials, integrating over 158,500 users across departments and PSUs. The platform features backup and disaster recovery, anti-virus and anti-spam protection, and 24/7 support. Additionally, it manages 1.25 crore SMS alerts monthly for e-Governance services and public awareness campaigns.</p>
+<p>Video Conferencing Services</p>
+<p>NIC Haryana has established a robust video conferencing infrastructure to enable seamless communication among government officials, especially during critical times. The state operates 95 video conferencing studios, logging over 8,000 hours annually. The indigenous NICMEET platform supports 166,700 users, offering features like personalized video rooms, SMS/email notifications, and secure connections.</p>
+<p>Awards</p>
+<p>NIC Haryana was honored with the CSI SIG e-Governance Award for the Haryana Real Estate Regulatory Authority project in the State Government Project category on April 23, 2022, at MNNIT, Prayagraj, Uttar Pradesh. Other major accolades include the Business World Digital India Award for Web-HALRIS, the Gem of Digital India Award for e-Panchayat, and multiple TechGov Awards for digital governance innovations.</p>
+<p>On Good Governance Day (December 25, 2022), NIC Haryana received two prestigious awards form the then Hon’ble Chief Minister, Shri Manohar Lal: one for the AAS under State Flagship Schemes and another for eFarad.</p>
+<p>Way Forward</p>
+<p>NIC Haryana is set to maintain its pivotal role in advancing digital transformation across both state and national levels. Several innovative projects developed in collaboration with the state have already been adopted on a national scale. The full implementation of the PPP platform will streamline the delivery of all state services through a unified system, significantly improving efficiency and accessibility for citizens.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="disclaimer-october-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Disclaimer</span></a><a class="article-nav-link next" href="endeavouring-digital-transformation-for-effective-governance-october-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Endeavouring Digital Transformation for Effective Governance</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Courts Mission Mode Project: The Journey so Far — Informatics January 2009</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2009"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2009/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2009/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2009/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2009/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2009/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2009/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2009/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2009/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2009/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2009/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2009/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2009/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/january-2009/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2009/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2009/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2009.html">January 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>e-Courts Mission Mode Project: The Journey so Far</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">e-Courts Mission Mode Project: The Journey so Far</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By CLM Reddy &bull; pp. 4–8</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2009.html">January 2009</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The e-Courts scheme aims ICT enablement of the lower courts across the country in their functioning. The project envisages deployment of hardware, software and networking to assist district and taluka courts in streamlining their day to day functioning. Key functions such as case filing, allocation, registration, case workflow, orders and judgments will be IT-enabled. Causelists, Case status, orders, judgments will be available on the web and made accessible to litigants, advocates, and general public. The project aims to build a national grid of key judicial information available 24x7 in a reliable and secure manner.</p>
+<p>Project Modules, Phases and Timelines The first phase of the e-Courts project was approved in February 2007. The duration of the phase is 2 years with a planned expenditure of Rs.442 Crore for different components of the project. Along with ICT implementation in district and taluka courts, the project will also manage and implement the ICT infrastructure upgradation at Supreme Court and all High Courts. The key modules in e-Courts Project are: Laptops and Laser Printers, Personalized Training to judges, Broadband based Connectivity to judges, Connectivity at court complexes, Videoconferencing, Site preparation, Hardware, Networking, Application Software, Technical Manpower, Upgradation of ICT Infrastructure at HCs and SC</p>
+<p>Project Execution: Key Stakeholders - Roles and Responsibilities National Informatics Centre is the implementing agency for the project. NIC personnel at District level will be part of District Project Monitoring Committee, headed by District Judge, to look after progress of e-Courts Project in the entire District, including Taluka Courts. NIC technical personnel will advise the District Judiciary in site preparation activities, HW installation, Networking, Application SW implementation and all other technical issues. The project is being implemented under the guidance of the e-Committee. The office of e-Committee provides the valuable interface to the judiciary, and also supplements NIC in all implementation aspects. Hon'ble e-Committee Chairman, Sh. Justice P.K.Balasubramanyan, has been personally visiting all High Courts and continuously engaging all High Courts for successful implementation of the project.</p>
+<p>Department of Justice is providing key support for project monitoring and evaluation. All High Courts have appointed Central Project Coordinators for managing the implementation of the project.</p>
+<p>Service Levels The Key Service Levels to be achieved by this project, for litigant public, are:  Registration of case: by auto-generated case numbers  Copies of Judgment: judgments would be made available through web  Preparation and delivery of decrees: Decree should be made available to the concerned parties by e-mail, where ever applicable  Generation of automated cause list: Within an hour of conclusion of court service daily  Generation of court diaries: Automated diaries  Availability of Case status: Online 'case status' right from filing of a case till it gets disposed  Generation of daily orders: As soon as the Judge signs the order and edited by the Court Master  Website for each court: Every court will have its own website</p>
+<p>The envisaged service levels for Registry are:  Submission of report of Commissioner/ pleader appointed for recording evidence: Tracking of submission of commissioners' report on a timely basis  Storing of documentary evidence: Scanning and digitally capturing the cases in the database  Calculation of court fees due and paid for: Automated calculation of court fee at the end of each transaction and report generated on a daily basis  Release of orders to the copying section: As soon as the judgment is signed.  Filing of written statement by the defendant: Tracking of generation of written statement - to be generated within 30 days of the date of summons or 90 days (if allowed to be extended by the court)</p>
+<p>Project Progress Monitoring System (PPMS) To manage the nation wide project, NIC has developed a comprehensive Project Progress Monitoring System to capture key project data such as number of Court Complexes, Judges, High Court Committees, Project Personnel, Existing Hardware, Network etc. The PPMS also captures project progress details for Site Preparation, Distribution and Installation of Hardware and LAN, Training, Internet Connectivity, Laptop and Printer Status, etc. The PPMS provides access to key project documents; generate customized status reports for all stakeholders, general information on - Vendors, Product Installation, and Software Updates. The District Courts have shown active participation in updating data on the website. The website today has 2280 court complex registrations including 756 district court complexes and 5545 Judges' registration. Other key data such as availability of Videoconferencing facility, DG Sets, hardware at district and taluka courts is being collected through the website. All District Courts are requested to provide information required by NIC through the website and ensure that data provided is complete, accurate and validated before being sent. District Courts that have uploaded data on the website are requested to update it on a regular basis. Going ahead in the future, the website would become the single most important source of project progress and reporting. NIC intends to use the website as the only source of data for implementation of the project.</p>
+<p>Key Achievements The key achievements of the e-Courts MMP project are summarized below:  13365 laptops distributed to district and taluka court Judges across the country  12599 laser printers distributed to district and taluka court Judges across the country  Training on the basics of computers has been imparted to 11005 / 13365 Judges and 44020 / 60000 Court Staff.  Broadband / Dialup Connections provided at 9733 / 13365 Judges residence, 489 / 525 District Court Complexes and 740 / 1530 Taluka Court Complexes.  Funds released for site preparation to most of the District Courts  Job Orders issued by NIC, for deployment of 600 System Officers at district court level, for a duration of 18 months.  Empanelment process for hardware vendor completed.  Application software is getting finalized  Project Progress Monitoring System (PPMS) developed for capturing key project data</p>
+<p>Site Preparation The overall guidelines for site preparation are as under: I. Computer Server Room (CSR)  CSR not required (where no. of court in a complex is ONE)  CSR required (where no. of courts in a complex are more than ONE) II. Judicial Service Center (JSC)  There will be only one counter at JSC where no. of courts in a complex are up to five.  There will be two counters at JSC where no. of courts in a complex are more than 5 but less than ten.  There will be three counters at JSC where no. of courts in a complex are more than ten. III. Other Guidelines  Cost estimates and layout diagrams, to be approved by Committee  NIC is releasing payment after receiving cost estimates  Cost estimates should not exceed Rs.2.75 Lakh/site  Completion certificate to be vetted by High Courts and District Courts  Site Preparation excludes LAN  AC/DG sets procurement - central empanelment</p>
+<p>Application Software District and Subordinate Court Software is being tested at 6 Pilot Sites viz. Mumbai &amp; Chennai, Nainital (Uttaranchal), Gwalior (MP), Cochin (Kerala) and Kamrup &amp; Nogaon (N-E). Additionally, feedback has been requested from users at Bhubaneshwar, Shillong, Raipur, Silvassa, Ahmedabad and Kolkata. Work has been initiated for enabling selected software to provide support for major regional languages including Hindi.  Application software will be based on common data structures and functionality  Critical analysis of common view by software standardization committee  Design, development, testing, and rollout of common view software by NIC</p>
+<p>Hardware Procurement A tender for empanelment of vendors for supply of hardware, software and networking was floated exclusively for the e-Courts project and completed the process of empanelment. The empanelled vendors will approach courts for certain pre purchase activities such as inspection of site readiness, LAN survey and preparation of bill of material etc. They will also get in touch with DIOs in this regard. A conscious decision has been taken to procure the hardware only when site is ready in all aspects and intimated to NIC by the courts. Each court will be provided with:  4 Computers (1 desktop and 3 thin clients) with 3 printers  2 computers in court, 1 in Judicial Service Centre (JSC), 1 for General purpose Payroll, etc  3 Printers 2 in Court, 1 in JSC/General Purpose  All computers in a court complex will be networked to a server  At each court complex one scanner will be provided</p>
+<p>Technical Manpower Technical manpower will be deployed at district courts where site preparation funds have been sent. At each District court 1 System Officer, 2 System Assistants will be deployed for 18 man-months. They will report to District Court Judges. Whenever need arises, they will visit the subordinate courts and TA/DA will be paid to them. The role of the technical persons at district court is:  To manage and coordinate maintenance of ICT infrastructure such as computers, scanners, printers, LAN, Internet connectivity, communication equipment such as switches, routers, modem, Wi-Fi etc at the respective court complexes put under their charge.  Interaction with vendors for maintaining and supporting the equipments as and when required by the court administration.  Coordinate with concerned vendor, installation and maintenance of OS, office tools and the like.  To maintain customized application with reference to reinstallation and upgradation with new modules/patches.  Impart training to judges and court staff They will be selected by a committee to be constituted by the high courts. The Selection Committee at HCs is to consist of High Court nominee, a technical expert from the State and Nominee of NIC. The vendor has to submit resumes of candidates in ratio 1:3, i.e. for one position, 3 resumes.</p>
+<p>Challenges Faced Some of the key issues faced by the e-Courts project are as follows. Inadequate funds for Site Preparation: Cost estimates for site preparation in the original proposal were insufficient, due to increase in number of court complexes. Hence, additional funds are required for site preparation. Due to this reason it has been decided that priority should be given for site preparation of district court complexes. Once additional funds are made available all court complexes in the country will be covered. Power Backup: Due to budgetary constraints, funds for providing connectivity from DG Sets to ICT Infrastructure may not be provided under the e-Courts project. All such cabling and installation costs have to be borne by the High Courts. Recurring cost for maintenance of DG sets shall be borne by respective HCs. Project Monitoring Website: There have been delays by HCs in uploading the required details on the PPMS website. Since NIC is dependent on the website for key project data, all High Courts must ensure that data uploaded is complete and accurate. Videoconferencing Facility: The project envisages VC facility at 500 locations. Providing facility only at district courts without covering jails will not be beneficial. Since allocated funds are insufficient to provide VC facility at all jails, further funds are required.</p>
+<p>Next Steps Following are some of the important steps to be completed in the project:  Site preparation activity has to be completed by the courts  LAN survey and bill of material will be submitted by the vendors  HW, SW and LAN have to be procured and get them installed  WAN will be established at each court complex  Deployment of technical manpower  Unified application sw has to be finalized  Training on the app sw will have to be imparted to the judges and court staff</p>
+<p>Network Diagram for Connectivity for e-Courts Following are the broad guidelines for providing internet connectivity at court complexes: Bandwidth for internet connectivity will be provided by the Internet Service Provider  Internet connectivity and all interfaces to the external networks are routed through the State Data Centre maintained by NIC. It performs two functions: — Network Address Translation — Ensures Network Security  The internet connectivity to the court complexes may be provided through 3 modes: — NICNET upto 2 MBps leased line — SWAN upto 2 MBps leased line — BSNL broadband connectivity The three modes will function in a unified IP address space. The primary internet connection at the court complex will be provided by either SWAN or NICNET (via 2MBps leased line) depending on the availability in the respective state. A dedicated BSNL broadband connection will also be provided at each court complex as a back-up connection in order to provide a reliable and redundant network. In places where NICNET and SWAN are not available, the BSNL broadband connection will act as the primary connection. The bandwidth of the broadband connection will vary according to the workload estimated for respective court complexes.</p>
+<p>Connectivity for varying number of nodes within court complex The internet connectivity will be provided to multiple nodes (end user computer) at various court complexes through router and switch in the following manner:  through a dedicated BSNL broadband connection  through upto 2 MBps leased line from SWAN or NICNET Number of nodes in a court complex shall determine the number and configuration of switches (level 2 or 3) and routers. Fast and fair trial has always been a long awaited dream for the citizens of India. The experience of a person undergoing trial has never been pleasant so far. Hence there was a need of an ICT based Indian Judiciary for quicker trial. It is hoped that in the coming time e-Courts will prove to be a landmark in the life of the people and transform their anticipations into reality.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-january-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="upcoming-conferences-january-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Upcoming Conferences</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

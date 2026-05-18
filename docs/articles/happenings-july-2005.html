@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happenings — Informatics July 2005</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2005"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/july-2005/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2005/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2005/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/july-2005/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2005/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2005/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/july-2005/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2005/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2005/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2005/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2005/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2005/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2005/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2005/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2005/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2005.html">July 2005</a><span class="breadcrumb-sep">&rsaquo;</span><span>Happenings</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Happenings</div>
+          <h1 class="article-title" data-pagefind-meta="title">Happenings</h1>
+          <hr class="title-rule">
+          <p class="article-byline">pp. 20–24</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2005.html">July 2005</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">This section features news about NIC’s activities/events across the Country and the various new software being developed by NIC in its mission towards facilitating e-governance…..</p>
+<p>| Training conducted at LBSNAA, Mussorie The Management Faculty of Lal Bahadur Shastri National Academy of Administration, Mussoorie in collaboration with Indian Institute of Management (IIM), Ahmedabad conducted a three-day long module on Project Management for IAS Professional Course Phase-I. The Project was a part of the module conducted by NIC Training Unit, Mussoorie. The session on Project was a Lecture cum Demonstration followed by hands-on sessions. The content of the sessions included Work Break down Structure (WBS), Milestone, Making Sub-Activities, Outlining, Task Dependency, Gantt Chart, PERT Chart, Network Diagram and other different views, Slack time, Resource Management, Assigning Resources to various activities, Leveling Resources, Resource Graph, Resource and Task usage, Assigning Cost to different activities, Generating Different Reports etc. M Chakraborty, NICTU Mussorie</p>
+<p>| Annual Conference of Nagaland CIC operators A two-day annual conference of the Nagaland CIC Operators was recently held at Zonal Council Hall, Kohima. Shri Yitachu, Parliamentary Secretary, Law &amp; Justice, Science &amp; Technology &amp; IT was the Chief Guest. In his speech, he appreciated NIC, Nagaland for contributing tremendously towards the skill upgradation and capacity building of the Government employees of the various departments. He also said that CIC, the brainchild of NIC is doing well in almost all the areas. Swedesenuo Natso, Nagaland Correspondent</p>
+<p>| VC Services inaugurated in Bihar Hon’ble Governor of Bihar Dr. Buta Singh inaugurated Video conferencing facility in the state of Bihar on 25th May 2005. Many dignitaries such as Hon’ble Union Minister of State Dr. Shakeel Ahmad, Ministry of Communications &amp; IT, Govt. of India, Chief Secretary of Bihar, Development Commissioner of Bihar and DG NIC were also present at the function. Speaking on the occasion Shri Arun Pathak, Advisor to H. E. Governor of Bihar said dedication of video conferencing services will not only help in expediting e-Governance in the state but its utility will indirectly benefit the common masses in deriving qualitative Govt. services. N.K Prasad, Bihar Correspondent</p>
+<p>| VC Session conducted by Nagaland Chief Secretary A VC session between the Nagaland Chief Secretary, and other senior officers was held on 3rd June in Kohima to assess various developmental activities being undertaken in the districts as well as law and order situation in the state. Chief Secretary interacted with the various Deputy Commissioners using NIC’s VC services and held discussions over important matters concerning the state. Kemvu Elah, Nagaland Correspondent</p>
+<p>| Vehicle Registration Computerization (VAHAN) Launched at Ropar VAHAN software developed by NIC for issuance of Registration of commercial and private vehicles was launched recently at Ropar, in Punjab as a pilot project. The project leader from State of Punjab Dr. K.S. Sra, Additional State Transport Commissioner said, with the help of this software DTO would be able to issue the Registration Certificate within half an hour after completion of all required formalities. District Transport Officer Mr. P.S. Johal, intimated that entire backlog data since 1968 has been captured through the software. And now onwards, all the transactions related to old Registration Certificates would be managed using this software. Sarbjeet Singh, Punjab Correspondent</p>
+<p>| AIS launched in Ludhiana Affidavit Information System (AIS) designed and developed by NIC Punjab State Centre was recently launched and implemented at Ludhiana. Seven clients have been installed at SUWIDHA Counters for AIS, each equipped with Digital Camera and Laser printer in the newly constructed chamber in Mini Secretariat. Out of these seven counters, two counters are especially designated for Senior Citizens and Ladies only. Approximately 900 affidavits are attested at SUWIDHA counters daily through AIS. With the affidavit attestation, insurance activity has become simpler and faster. The Chief Secretary of Punjab Shri Jai Singh Gill, recently visited SUWIDHA Centre at Ludhiana and lauded the implementation of AIS. Vikram Jeet Grover, Punjab Correspondent</p>
+<p>| IT Secretary visits Joshimath Sh. Brijesh Kumar, Secretary (IT), recently visited Uttaranchal to review the progress being made by State Govt. in the field of Information Technology and e-governance. During his visit to one of the border Tahsil “Joshimath” in Chamoli District, he appreciated the work of NIC while reviewing the progress of Computerization of Land Records at Tahsil Level. He viewed the working of NIC’s “Bhu-Lekh” Software and generated a copy of ROR. In addition, the DIO of the State apprised him about the various projects that NIC is working on in the State. Rajesh Goyal, Uttaranchal Correspondent</p>
+<p>| DC*Suite goes online with 145 Terminals Palakkad Collectorate in Kerala went online with 145 terminals, a combination of thick &amp; thin clients, covering all the employees of the collectorate. The intranet application has the features of Workflow based file movement system, revenue recovery &amp; public grievance modules. Besides the site preparation, NIC has established the district data center, academy hall for training, VC facility and Touch Screen Kiosk as turnkey project. Asha Varma, Kerala Correspondent</p>
+<p>| 18th E-Governance Centre Operational at Kangra(HP) Sh. B. R. Bajaj, Principal Secretary, IT, Transport and Tourism Minister of Himachal Pradesh, Sh. G.S. Bali inaugurated the E-Governance Centre at Kangra sub-division of District Kangra, on 7th May 2005. This is the 18th sub-division where the services of issuing the driving licenses and vehicle registration have been started. Sh. Bali informed that under the project all records pertaining to motor vehicle registration and licensing have been digitized. This would facilitate prompt updating of these records. He added that Department of Transport, with the help of NIC Dharamsala, Shimla and New Delhi, has developed software for these applications besides software for issuance of various permits for vehicles, tax receipts etc. Mukesh K Ralli, HP Correspondent</p>
+<p>| Inauguration of 6th E-SAMPARK Centre Sh. S K Sandhu, IAS, Finance Secretary and Secretary IT Chandigarh Administration inaugurated the 6th E-SAMPARK Centre in Sector 23 Chandigarh on 9th May. Senior officers from Chandigarh Administration and Municipal Corporation were present on the occasion. Apart from 11 services pertaining to 7 departments, Passport form collection service and bill payment through credit card has also been started. Now Credit card holders will be able to pay their electricity and water bills online. Vivek Verma, Chandigarh Correspondent</p>
+<p>| First SUWIDHA-SDM Centre inaugurated Government of Punjab inaugurated the first SUWIDHA – SDM centre at Mohali in Ropar District on 6th June 2005. SUWIDHA – SDM Centre accepts application forms for SDM office services and 4 Back-end Services. Back-end Services includes Affidavit Issuance System, Certificate Issuance System, SARATHI and VAHAN. SUWIDHA 2.0 software developed by NIC Punjab is generic in nature and can be implemented in any Deputy Commissioner office of the country. Sh. Bajaj appreciated the team efforts of NIC Punjab and called for SUWIDHA – SDM implementation in all the 72 SDM offices of the State with technical support of NIC Punjab. Vikram Jeet Grover, Punjab Correspondent</p>
+<p>| Road inauguration through VC in J&amp;K NIC J&amp;K added another achievement to its list as Video Conferencing facility was used when a road in Jammu city connecting Zanana Park with CTO was re-christened in the name of former Chief of Army Staff, General (Retd.) N.C. Vij. The road was inaugurated remotely by H.E. the Governor of J&amp;K, Lt. Gen. (Retd.) S.K. Sinha and Hon’ble Chief Minister, Jenab Mufti Mohd. Sayeed on 23rd April 2005, by means of Video Conferencing facility provided by NIC. A galaxy of dignitaries and eminent personalities, including the Deputy Chief Minister, Pt. Mangat Ram Sharma and General Vij, were present on the occasion. Both the sites were connected by means of VC and as soon as the inauguration was done, the Abhinav Theatre reverberated with sounds of applause and cheers of not only those present there but also of the 400 Army Jawans present near the memorial plaque on the road. The OFC backbone of the Power Grid, Jammu was utilized for connectivity. NIC’s efforts were appreciated by all quarters including the Municipal Corporation, Jammu, which had organized the function. Jit Raj, Jammu &amp; Kashmir Correspondent</p>
+<p>| Chief Minister launched state–wide e-Kosh project in Chhattisgarh Five months after inaugurating the pilot phase of NIC Chhattisgarh‘s e-Kosh project, the Hon‘ble Chief Minister of Chhattisgarh Dr. Raman Singh on 1st May‘05 launched the full-fledged e-Kosh project at the City Treasury Office, Raipur in a function attended by a host of cabinet Ministers, senior officers and other VIPs. The Chief Minister speaking on the occasion appreciated the collective efforts of the State finance department and NIC. The e-Kosh software developed by NIC covers the treasury subsystems viz. Payments, Receipts, Deposit Accounts, Works Accounts, and Pensions. The V-SAT based treasury network has 17 district treasuries, 46 Sub-Treasuries and 3 Divisional Joint Director offices as its nodes. The payment and expenditure data on the district treasury servers and central servers at Joint Director offices is updated daily online from concerned sub-treasuries. Now the latest Payment and expenditure status of any treasury can be known at any time with the commencement of e-Kosh network. Y V Shreenivas Rao, Chhattisgarh Correspondent</p>
+<p>| Computerisation of Government Press at Pondicherry NIC, Pondicherry has taken up the complete computerization of various activities of the Directorate of Stationery and Printing. As part of this exercise, a website for the Department of Stationery and Printing has been designed and hosted by NIC, Pondicherry. For the first time, all the Government Gazettes are made available on the web. Other features like Govt. Telephone Directory, Various Forms for Government Staff, Frequently Asked Questions, etc are also available on the website. The website was formally launched by Hon’ble Chief Minister Shri. N.Rangasami. Smt. M. Sathiavathy, IAS, Secretary (IT) presided over the function. Sivanandam S, Pondicherry Correspondent</p>
+<p>| New portals to guide farmers Utilization of ICTs for agricultural development has become inevitable in the post-WTO scenario. To optimize the effectiveness of these tools, NIC has come up with DACNET (http://dacnet.nic.in), Agmarknet (http://agmarknet.nic.in) and Agris portals. These portals, developed by NIC in collaboration with The Directorate of Oilseed Development, Hyderabad were unveiled at the one-day National Workshop on “WEB services on Oilseeds Development: DACNET (Phase II) Initiative” in Hyderabad on 31st May 05. With the operationalisation of these portals, every available information pertaining to all the State Agriculture departments will be available at one place. Shortly portals in all regional languages will be developed. Speaking on this occasion Sh. M. Moni, Deputy Director General, Agricultural Informatics Division, NIC, New Delhi informed that in the overall strategy of ushering e-governance, the Department of Agriculture and Cooperation is implementing DACNET as a central scheme, in which all the 172 directorates spread across the country and field offices are networked. S Ramchandran, Andhra Pradesh correspondent</p>
+<p>| Launch of Rajiv Gandhi Grameen Vidyutikaran Yojana by Hon’ble PM Hon’ble Prime Minister Dr. Manmohan Singh launched a new scheme named as Rajiv Gandhi Grameen Vidyutikaran Yojana Scheme of Rural Electricity Infrastructure and Household Electrification on 4th April 2005. Smt. Sonia Gandhi, Chairperson, National Advisory Council graced the occasion as Guest of Honour. Sh. P.M. Sayeed, Union Power Minister presided over the function. The Chief Ministers of 12 States (Assam, J&amp;K, Jharkhand, Madhya Pradesh, Orissa, Rajasthan, Uttar Pradesh, Andhra Pradesh, Karnataka, Kerala, Maharashtra and West Bengal) and H.E. the Governor of Bihar participated in the programme through video-conferencing. Union Territory of Lakshadweep also participated on the national network during the programme. NIC facilitated the multipoint videoconferencing link over NICNET from Vigyan Bhavan to 9 States. The conference was well appreciated by all dignitaries present at Vigyan Bhavan. Sambeet Mishra, NIC HQ</p>
+<p>| State Level Inauguration of Service Delivery Project at Kottayam The State Level Inauguration of Service Delivery Project under Modernizing Government Programme was held at Kottayam on 19 March, 2005. Sh. Oommen Chandy, Hon’ble Chief Minister of Kerala inaugurated the Project. The Software developed by NIC Kerala State Center for linking Sub Registrar Office, Taluk Office and Village Office was released by Sh. C F Thomas, Minister for Rural Development and Registration. Actual transaction was registered at Kottayam Additional SRO on 18, March 2005 using PEARL software of NIC and the Thandapper Extract and Basic Tax Receipt was issued to the party on 19, March 2005 using EMERALD software of NIC. Asha Varma, Kerala Corespondent</p>
+<p>| Planning and Management of Water Resources A paper titled “Informatics Blueprint for Integrated Water Resources Planning and Management at grassroots level: A Quintessential Requirement for Adaptation to Climate Change and Sustainable Agricultural Development in India” was presented by Sh. M Moni, DDG (NIC) at the recent National Conference on “Climate Change and its Impact on Water Resources in India”, organized by Department of Geography, School of Earth &amp; Atmospheric Sciences, Madurai Kamaraj University, Madurai, Tamil Nadu. The paper deals in detail with the methods and plans that should be adopted for management of water resources in developing countries like India. R Gayatri, Tamil Nadu Correspondent</p>
+<p>| Distribution of IT awareness training certificate to MLAs by CM, Mizoram An IT awarness training was jointly organized and conducted by NIC Mizoram State Centre and Mizoram Legislative Assembly in February. Hon’ble Chief Minister of Mizoram, Sh. Zoramthanga distributed the training certificates to all Ministers and MLAs at Assembly Secretariat, Mizoram. This is the first time that NIC Mizoram organized and conducted such training for the senior level functionaries of the state. Topics covered were Introduction to e-governance, various ongoing e-governance projects of Mizoram government, usage of Internet/email etc. Lalhmachhuani, Mizoram Correspondent</p>
+<p>| Workshop on Arunachal Pradesh Payroll System (APPS) package A one-day workshop on Arunachal Pradesh Payroll System (APPS) package for state government departments was organised by NIC Arunachal Pradesh State Unit recently at Itanagar. The Department of Information Public Relation &amp; Printing sponsored the workshop. 25 participants from 12 departments participated in the workshop. The workshop was inaugurated by the Secretary to the Governor of Arunachal Pradesh. The APPS 3.0 CD with User Manual was also distributed to the departments on the occasion. The HODs and participants appreciated the efforts of NIC and suggested to conduct such workshops in future also. D K Debnath, NIC Arunachal Pradesh</p>
+<p>| AGMARKNET Workshops in Maharashtra NIC Maharashtra State Centre, Mumbai is implementing AGMARKNET Project in Maharashtra. Under phase-I &amp; II of this project, 64 Agriculture Produce Market Committees (APMCs) have been computerized and under phase III, 100 APMCs have been computerized. As a part of this project, NIC Maharashtra State Centre, Mumbai conducted 10 workshops for the officers and staff of APMCs at Raigad, Nashik, Beed and Yavatmal district of Maharashtra last year. DIO of NIC Centre at Raigad, Nashik, Beed and Yavatmal and Mr. Pravin Surawar from Maharashtra State Centre coordinated these workshops. DIO and DIA of neighbouring districts of above locations participated in conducting training at these workshops. During the workshops, lectures and practical were conducted on basics of computer, e-mail and Internet, Lotus SmartSuit, AGMARKNET data reporting software and AGMARKNET Portal. A total of 180 staff/Officers of APMCs participated in these 10 workshops. Video conferencing was also conducted between NIC Mumbai and NIC Nashik and NIC Beed in which Sh. Moiz Hussain Ali, SIO Maharashtra interacted with the participants. P K Suri, NIC HQ</p>
+<p>| Training Conducted for Operators of Rural Service Delivery Points (RSDP) A training Programme was conducted recently for operators of Rural Service Delivery Points (RSDP) or Rajiv Rural Internet Kiosks of East Godavari District for 4 days to cover all the operators batch wise. The activities &amp; services provided by NIC included Agmarknet, Marknet, Judis, Courtis, Medlars, Passport (Webpass), GISTNIC etc. and East Godavari District web site, NIC website etc were also demonstrated. A set of 10 CDs containing ‘Rythu Samachara Darshini’ was distributed to create awareness among farmers of the village through the RSDP operators. This facilitates RSDP Operators to get additional income by providing the services to citizens and also creates awareness among the rural public. BVNS Prakasa Rao, NIC Andhra Pradesh</p>
+<p>| Paper on e-Granthalaya presented at the ADB Regional Workshop. A paper titled “e-Granthalaya: Moving Towards Rural Digital Library for Sustainable Rural Livelihoods” was presented by Sh. M Moni, DDG (NIC) at Regional Workshop on “Managing Sustainable e-Community Centers”, organized by ADB Institute (Tokyo) and Colombo Plan Staff College for Technical Education (CPSC), from 4-10 May 2005 at Agra (India). Professor John Rose, who is a renowned professor in Library science and has been associated with UNESCO for a long time, has hailed the proposal for an e-Granthalaya of rural libraries using digital library techniques. A workshop for “e-Granthalaya and NewsNIC” users was also organized by the Library &amp; Information Services Division, NIC HQs during 2-3 May 2005. The workshop was inaugurated by Shri M Moni, DDG(NIC). The workshop was attended by 32 participants from various Government/ PSU/ Private libraries from all over India. The workshop was aimed to give training on implementation and use of library application software (e-Granthalaya and NewsNIC) developed by NIC. P K Upadhayay, NIC HQ</p>
+<p>| Seminar on E-Governance NIC, Lakshadweep organized a seminar on E-governance recently at Kavaratti. The Hon’ble Administrator, Sh. Parimal Rai, IAS inaugurated the seminar. Sh. Madhup Vias, Secretary (IT), Lakshadweep, Sh. B. Amanulla District and Sessions Judge, Sh. H.S. Dhaliwal, Superintendent of Police and Sh. C.M. Ahmed, Director, DIT and the head of all the departments of the Lakshadweep administration participated in the seminar. A demonstration of the Intranet using the Intranic of NIC, the file tracking system (FTS) developed by NIC, which can track movement of files and letters and the rural bazaar portal that is an e-commerce portal for the promotion of products of rural artisans was done at the seminar. Brief presentations on Smart Card, Digital Signature and Biometrics device were also made. K P Mohammed Koya, Lakshdweep Correspon-dent</p>
+<p>| Citizen IT Kiosk inaugurated A touch screen based “CITIZEN IT KIOSK” was inaugurated recently at the visitor’s room of Collectorate, Dhenkanal (Orissa) for dissemination of Govt. information to general public. Smt. Usha Padhee, Collector of the district inaugurated the IT Kiosk. The IT Kiosk disseminates information such as ROR details, Grievance Status, Gun license information, NGO details, Project details, MPLAD/MLALAD Schemes and Blood donors data base. It also provides information about schemes such as SC, ST, Children’s, Women’s welfare, Fact File (Administration, People’s representative, Press, Health facilities, Industries, History, Demography, Mines &amp; Minerals, Cultural, Games etc.), Departmental Information, Emergency Services etc. Dillip Kumar Nanda, NIC Orissa</p>
+<p>| DG NIC visits Public Service Centers in Gujarat Dr. N Vijayaditya, DG (NIC), during his visit to Gujarat on June 3, 2005 visited the citizen service centers in Kheda district. He had been to the One Day Civic Center, E-Dhara (Land Records) center at taluka and e-gram center at village Panchayat where NIC developed G2C applications are facilitating the administration. The One Day Civic Center at taluka level issues various certificates to citizens on the same day of application. In Kheda district, physically handicapped operators hired by the Government are operating the system. The E-Dhara center issues the Record of Right (ROR) copy to the landowners. All 225 taluka offices in Gujarat have an E-Dhara center operational with the rural land records data and the changes are done online. The computerized ration card system is also implemented in all taluka using NIC software. The ‘e-gram’ is based on the survey of families living in the village. This contains the details of each family member. This data is used to provide certificates such as income, caste, domicile, character, etc. to citizens. The Gujarat Government has initiated the project to replicate the software already running in more than 600 villages to another 3000 villages and is aiming to cover 13000 villages this year. Rajnish Mahajan &amp; Manoj P A, NIC Gujarat</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="cyber-governance-new-websites-portals-launched-july-2005.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Cyber Governance: New Websites/Portals Launched</span></a><a class="article-nav-link next" href="publisher-information-july-2005.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Publisher Information</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

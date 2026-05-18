@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Online App: Single Point Resource for Employee Information — Informatics January 2017</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2017"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/january-2017/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="../pages/january-2017/page-35.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;36</div><a href="../pages/january-2017/page-36.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-36.jpg" alt="Page 36" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-36.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;37</div><a href="../pages/january-2017/page-37.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-37.jpg" alt="Page 37" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-37.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2017.html">January 2017</a><span class="breadcrumb-sep">&rsaquo;</span><span>Employee Online App: Single Point Resource for Employee Information</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">E-GOV. PRODUCTS &amp; SERVICES</div>
+          <h1 class="article-title" data-pagefind-meta="title">Employee Online App: Single Point Resource for Employee Information</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Edited by MOHAN DAS VISWAM, RACHNA SRIVASTAVA, Y V RAMANA, ANDREWS VARGHEESE, PANKAJ K. KHETWAL, SUBRAMANIAN M &bull; pp. 34–37</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2017.html">January 2017</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">In near future, the ‘Push Notification’ service of EO App will be decoupled and provided as a component or a web service so that it can be reused by other applications. Employees Online Mobile App (EO App) has been designed and developed by e-Office Project Division &amp; NIC-DoP&amp;T Division for providing various information such as about Senior officers’ appointments &amp; postings orders, as approved by ACC, “What is New” in D/o DoP&amp;T, Holiday list and Directory Listing of all Ministries/ Departments (contact-us info) on a real time basis. Over 4900 IAS officers posted across the country and other Group A central services officers will be able to access details of their ER sheet, APAR, IPR, Postings apart from offer list, Officers at centre, training application status, domestic, foreign training details, Civil list (IAS), vacancy circulars, OMs &amp; Orders etc. The EO App was launched on 28/10/2016 by Dr. Jitendra Singh, Hon’ble Minister of State of the Ministry of Development of North Eastern Region, Prime Minister Office, Personnel, Public Grievances and Pensions, Department of Atomic Energy and Department of Space, in the presence of Shri Bhaskar Khulbe, Secretary(PMO), Shri B. P. Sharma, Secretary(P), Shri Rajiv Kumar, EO &amp; AS(DoP&amp;T), Dr. Ajay Kumar, AS(MeitY), Smt. Neeta Verma DG(NIC), Shri G. K. Gaur, DDG(NIC), Smt. Rachna Srivastava, Sr.TD(NIC), Shri S. N. Sowpari, Sr.TD(NIC) and other senior officers from DoP&amp;T. The Hon’ble Minister appreciated the initiative and stated that “EO App is first of its kind to keep one updated about bureaucratic appointments, other orders and circulars of DoP&amp;T and is a step towards transparency in eGovernance. It will also check on the number of repeated RTI Applications filed by citizens to seek Governance related information as most of the details will be put online for public on real time basis.” EO APP ARCHITECTURE The data for EO App is being provided by several different backend application systems like DoP&amp;T Personnel, DoP&amp;T Trainings, Circulars and Orders database, eOffice SPARROW etc. Considering the fact, that some of these applications were already in use and all had different authentication mechanisms, it was decided that a centralized architecture (the Middle Layer) should be created to provide the following features. • Unified authentication mechanism. • Decoupling of mobile App from departmental web services from the data contributing Apps. • Single point of contact for better security. EO APP SERVER (MIDDLE LAYER) EO App middle layer had been designed as a RESTful API, using the latest technologies, in a secure and optimized manner, to address the three most important aspects of software development. Security • All the APIs are accessible only via encrypted channels, TLS. • Once the user is logged in, using username/ password, each subsequent request will include the JSON Web Token, JWT, for authentication. The password is not stored in the mobile, thus it cannot be stolen. • Developed as per OWASP guidelines. Scalability • The middle layer was developed as a stateless REST API, since there is no session it can be easily scaled, both vertically and horizontally. Performance • The middle layer has a caching mechanism, using Ehcache, to cache all the master data, thus reducing the turnaround time. • The middle layer supports “Conditional GET” request, so that a resource is not returned unless it has been modified since the previous request. This feature will also reduce the data usage of the mobile. • The response from the server is compressed using gzip. BEST PRACTICES As several backend systems were the source of data for EO mobile App, Web Services were written by individual application providers. Some of the best practices adopted while designing REST API for Backend Data Provider Web services were: • The backend API should support “Conditional GET” request. • Wherever the API is returning text response it is recommended to enable compression. • It is recommended to expose the service URL via encrypted channel only, i.e. HTTPS. • Maintain versioning of API. • Use RESTful URLs. • For text response, provide an option for the client to specify the response format, i.e. JSON or XML, both formats should be supported and JSON can be made as default format. • Ensure proper usage of HTTP methods. • Ensure proper usage of HTTP status code. • Implement the concept of limit and offset when retrieving large set of data. •Create proper documentation, documentation libraries like Swagger can be used to document your API. • Application should be stateless. • Use token based authentication, like JWT, instead of HTTP Basic authentication. • For the data that serves multiple users, frequently accessed and doesn’t change frequently, prefer caching those data. EO APP (ANDROID &amp; IOS) Mobile applications are becoming a necessity nowadays for end user satisfaction and for reaching wider target audience with greater ease of access. NIC has developed EO Apps for iOS and Android mobile platforms. These Apps are developed as native applications, hence are more responsive, have better performance and enable instant notifications. These Apps follow the Flat Design and Material design principles for unified user experience on the Apple Sandbox and Android platforms respectively. Security features of EO App • The data exchanged between the mobile devices and the server is transferred through TLS channel only. This protects the application against eavesdropping and tampering with or forging the contents of the communication. • These Apps are using TLS server certificate pinning mechanism to prevent man in the middle attacks. • EO App doesn’t store the password (LDAP password) of the user in the mobile device and instead JWT token is used for maintaining the session, which is valid for a specific amount of time. This increases the security of the App. • The JWT Token, used for authentication, is stored in the mobile device in encrypted form only. This prevents the eavesdroppers or man in the middle attackers to misuse it. • The EO iOS App conforms to the Apple’s standard of “App Transport Security”. It enforces applications to send network requests over a secure connection. If App Transport Security is enabled for an application, network requests are sent over HTTPS by default. Apple emphasizes its commitment to security and privacy by automatically enabling App Transport Security for applications built with XCode version 7 onwards. Techniques &amp; Technologies used in EO App • JSON Rest API: The Restful APIs used in this App uses JSON as data exchange format. JSON (JavaScript Object Notation) is being used for data transfer between EO App and the middle layer. JSON is preferred to xml, as it is faster in parsing, lightweight and it has ability to represent complex data types in the form of objects (key-value pairs). • Data compression (gzip): To make data communication faster between EO App and middle layer the data is compressed in gzip format. It provides the effective way to save the consumption of network data and faster transfer of data. The data has been compressed to about 72% of the original size by this App after gzip enabling. • TLS certificate pinning: EO Android App has used TLS server certificate pinning for additional security. It is one of the authentication process in which the client makes a connection to the server and the server responds with its SSL certificate. If the certificate is issued by a Certificate Authority that is trusted by the OS and is already pinned to the client, then the connection is allowed, otherwise the connection does not take place. This prevents Man-in-the-middle attacks, interception and other eavesdropping attacks. The Android App uses password protected bouncy castle key-store to trust and pin the certificate. • Push notifications (FCM): EO App uses Firebase Cloud Messaging (FCM) for push notifications. FCM is a new, improved version of the Google Cloud Messaging API and is known for being cross platform, so FCM makes a natural fit in the firebase suite of features designed for Android, iOS, and other mobile &amp; web applications. It provides simpler client development and Firebase Notifications, a server less notifications solution with a web console that lets anyone send notifications to target specific audiences based on Firebase Analytic insights. • EO App uses collapsible message, message may be replaced by a new message containing the same collapse key if it has yet to be delivered to the device. This App uses 2 collapse keys (one for “What’s New” and another for EO Orders). • EO App uses the topic messaging that allows to send a message to multiple devices that have opted in to a topic (like “What’s New” and EO Orders etc.) subscribed. • EO App uses the data messages based notification, in which only client App is responsible for processing data messages. That is, the original message is not pushed from the FCM cloud to the device, instead a ping is sent. After receiving the ping, the mobile app polls the middle layer and gets new notifications and hence makes the app more secure. The first version of EO Android App was released with Pull notification, whereby the mobile App pulls the server, at periodic interval, for any new notification. Since this process was not real time and battery draining, Push notification was used to replace the pull notification service. The push notification uses Firebase Cloud Messaging (FCM) in the latest version. Steps for enabling push notification: • Registration of the project in Google. Google to acknowledge with providing sender ID and key. • Whenever EO Mobile App is installed, a token will be shared to it by FCM. • EO Mobile App will send the FCM token to the EO App Server. • EO App Server will subscribe the newly registered tokens to a topic, in FCM. • Whenever a new message is received from DoPT server, the EO App Server will construct a topic data message and send it to FCM. • FCM will notify all the mobile Apps that are subscribed to that topic. Features of EO Android App • Material design: EO App has followed the material design. It resulted in the reduction of the overhead cost of designer and UX developers for multiple screen sized devices. As per material design, the App uses just two to three colours mostly to brand the entire App and a single prototype design can be used for web and mobile. • Network library (Volley): Volley library is used in this Android App for managing networking requests. It provides easier and faster networking requests handling by managing the processing and caching of network requests. It also saves development time by eliminating the need of writing the same network call/ cache code again and again. EO App sends multiple requests to the middle layer and these requests are being automatically scheduled by Volley. It provides transparent disk and memory caching using ET tags. It also allows a powerful cancellation request API, which allows cancellation of a single request or set blocks or scopes of requests to cancel. Features of EO iOS App • Flat design: EO iOS App has tried to follow the Apple flat design, wherever possible in the App in the given time frame. It resulted in the reduction of the overhead cost of designing for multiple screen sized devices like iPhone, iPad etc. • Security for jailbroken devices: The EO iOS App checks if the App is being run on a jailbroken device or not while launching. If the device is jail broken, then the App will exit, otherwise it will work normally. This increases the security for the App, as it will not allow the App to proceed on any compromised devices for better security. FUTURE ROADMAP Currently, the ‘Push Notification’ service is tightly coupled with the EO App middle layer; in future, it will be decoupled and provided as a component or a web service, so that it can be reused by other NIC applications to avail ‘Push Notification’ service. The TLS pinning, currently implemented, is only Server certificate pinning; in future, the client side pinning also can be implemented for additional security. For further information, please contact: RACHNA SRIVASTAVA Sr. Technical Director &amp; HoD eOffice Project Division NIC, A-Block, CGO Complex, Lodhi Road New Delhi-110 003 Email: rachna_sri@nic.in Phone: 011-24364782</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="serviceplus-metadata-based-framework-enabling-versatility-in-eservice-delivery-january-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">ServicePlus: Metadata Based Framework Enabling Versatility In eService Delivery</span></a><a class="article-nav-link next" href="epayment-services-in-goa-transport-department-goa-goes-cashless-january-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">ePayment Services in Goa: Transport Department, Goa goes Cashless</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

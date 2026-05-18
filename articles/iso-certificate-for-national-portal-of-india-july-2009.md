@@ -1,0 +1,16 @@
+---
+title: "ISO Certificate for National Portal of India"
+publication: "Informatics"
+issue_date: "July 2009"
+pages: [43]
+author: "Vir Bikram Kumar, NIC HQ"
+section: "News"
+---
+
+## ISO Certificate for National Portal of India
+
+Standards ensure desirable characteristics of products and services such as quality, environmental friendliness, safety, reliability, efficiency and interchangeability - at an economical cost. National Portal of India (NPI) (http://india.gov.in) achieved another mile stone and has got Certification for ISO Standards 1. ISO 25051:2006 Software Engineering, SQuaRE, 2. ISO/IEC 9126-1:2001 Software Engineering Product Quality and 3. ISO/IEC TR 9126-2:2003 Software Engineering External Matrix for its Functionality, Reliability, Usability, Efficiency, Maintainability and Portability.
+
+Standards make an enormous positive contribution to most aspects of our lives.
+
+The initiation process for ISO Certification was started in March 2008 and for this STQC Certification Services, DIT was approached. As initial requirement from the STQC, a detailed document was prepared for NPI along with the Content Management System (CMS) for NPI. The document contained Hardware and Software Architecture, the complete sitemap of NPI with its different search options and CMS along with Content Workflow Diagram with its functionality which was submitted to the STQC for evaluation. The entire NPI was thoroughly audited by STQC as per our document and evaluation report was submitted to us. After evaluation STQC reported some error along with some suggestions for improvement which were fixed and again Action Taken Report was submitted for second round of auditing. In the process of auditing and evaluation STQC not only tested the functionality, they used Testing tools for Stress Testing also interviewed the users and analyzed the feedbacks and response of the feedback which includes the remedial actions taken. The process was again repeated and the certificate was issued after third round of evaluation process. The parameter on which certification was based is illustrated below. ISO/IEC 25051:2005 defines quality requirements for COTS (Commercial off the Shelf) software products. A COTS software product includes the product description, the user documentation, and the software contained on a computer sensible media. The quality requirements, functionality, reliability, usability, efficiency, maintainability, portability, and quality in use are consistent with the definitions of Software Quality Requirements and Evaluation (SQuaRE). The parameters on which certification was based is illustrated below. ISO/IEC 9126-1 defines terms for the software quality characteristics and how these characteristics are decomposed into sub-characteristics. ISO/IEC 9126-1, however, does not describe how any of these sub-characteristics could be measured. ISO/IEC TR 9126-2 defines external metrics. An external functionality metric should be able to measure an attribute such as Functionality, Reliability, Usability, Efficiency, Maintainability and Portability. India.gov.in now meets the quality characteristics of Functionality, Reliability, Usability, Efficiency, Maintainability and Portability.

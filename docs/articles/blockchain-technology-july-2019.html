@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockchain Technology — Informatics July 2019</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2019"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;37</div><a href="../pages/july-2019/page-37.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-37.jpg" alt="Page 37" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-37.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;38</div><a href="../pages/july-2019/page-38.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-38.jpg" alt="Page 38" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-38.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/july-2019/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/july-2019/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2019.html">July 2019</a><span class="breadcrumb-sep">&rsaquo;</span><span>Blockchain Technology</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Technology Update</div>
+          <h1 class="article-title" data-pagefind-meta="title">Blockchain Technology</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By REUBAN K., B. VINAYA, T. PECHIMUTHU &bull; pp. 37–40</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2019.html">July 2019</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">A mechanism revolutionizing multiple sectors, eliciting accountability and eliminating errors Since the blockchain database system provides security, trust, provenance, traceability and availability, the stakeholders of various business systems/ organizations can collaborate with each other. This technology has been initially experimented in the finance sector as in Bitcoin network, insurance payments and cross border payment networks. As a Proof of Concept, Blood Bank Supply Chain Model has been developed and tested on Hyperledger Sawtooth Framework. Business involves transactions and information exchange among various stakeholders. Since most of the existing systems are centralized, there is greater risk to security, and this necessitates the need for a secure and shareable system to help stakeholders interoperate efficiently. Blockchain is a distributed system where transaction records are bundled in blocks and linked with previous ones. Transaction data within a block is secured because it is encrypted and digitally signed. Bitcoin network is a pear to pear payment network, and it is an application of blockchain technology.</p>
+<p>Blockchain Ecosystem Blockchain is a decentralized distributed database (ledger) of immutable records accessed by various business applications over the network. Client applications of related businesses can read or append transaction records to the blockchain. Transaction records submitted to any node are validated and committed to the ledger database on all the nodes of blockchain network. Committed transactions are immutable because each block is linked with its previous block by means of hash and signature values. Protocols such as Gossip and Consensus ensure that the submitted transactions are transferred to all nodes and committed on all blockchain nodes consistently. As shown in Figure 1, blockchain ecosystem consists of blockchain client, blockchain node, blockchain network, transaction processor/ smart contract and consensus process. Blockchain client is an application that creates transaction message in a prescribed format and submits it to blockchain node through web API. It may be any existing application, which posts transaction message to blockchain node. Clients are restricted using Public Key Infrastructure (PKI) technology at blockchain node level. Blockchain node is a server node that runs blockchain services responsible for receiving the transaction and transmits the transaction to other blockchain nodes. With respect to the design, the node participates in consensus process to commit the block of transaction data to ledger database. Blockchain network is a network of linked nodes used for read, write transactions into ledger database. The topology (as shown in Figure 2) is based on the nodes participating in consensus process. Traditional systems are centralized where all data and decision-making is concentrated on a single node or cluster of nodes. In decentralized systems, the data and decision-making are spread out among a large number of nodes. These nodes maintain copies of the shared database and decide among themselves which data is to be committed to the database using consensus mechanism. Decentralized networks can be an interconnection of centralized or hub-and-spoke type networks. A distributed network is a special case of decentralized system where every single node in the network maintains the shared database and participates in consensus to determine which data is to be committed to the database.</p>
+<p>Blockchain Types Public, Private and Consortium: In public blockchain, anyone can read and submit transaction, and take part in consensus process. Bitcoin and Ethereum are examples of public blockchain. Private blockchain is controlled by only a single body or an organization that controls who can read and submit transaction, and take part in consensus process. Consortium blockchain operations are controlled by a selected set of participating organizations. Public blockchain is called permission less blockchain. Private and consortium blockchain are called permissioned blockchain. Transaction Processor/ Chain Code/ Smart Contract is a process that runs at blockchain nodes for processing the transaction data and maintaining the status in ledger database. It is called by blockchain process when the transaction commit is started. During the process, it can call or execute other business process tasks transparently before committing the transaction. Consensus is a procedure to select a leader node, which decides whether the block of transactions is to be committed or rejected. Earlier versions of blockchain system used Proof of Work (PoW) for consensus process. Every node or participatory node is given a mining task, and a node elected as leader completes the mining task first. Mining task is to find or calculate a certain pattern value of hash value by adding nonce to current hash. Node that participates in mining process requires heavy computing resources. Latest consensus protocol uses PoET, which is called “Proof of Elapsed Time”. Every node in the consensus process selects random time and keeps decreasing. The node that reaches zero first is selected as leader. Transaction is a unit of business data within Hyperledger. Block is a set of transactions bundled with signatures and hash value of previous block. Genesis block is the first block of chain created during installation and configuration. Merkle Tree is a tree data structure (as shown in Figure 3) in which leaf node holds hashes of every transaction and intermediate node holds hash calculated from immediate child nodes. In blockchain, a block consists of one or more transactions and its respective tree of hashes. In a distributed system, this tree is used to maintain data consistency among all participating nodes. Ledger/Chain Database is a key-value database for a chain of serialized blocks. One block may contain one or more transactions. State Database is a key-value database for storing transaction state and links of its related transactions.</p>
+<p>Hyperledger Sawtooth Framework Hyperledger Sawtooth is an enterprise blockchain platform for building distributed ledger applications and networks. It is an open source project under Hyperledger developed by Intel. Sawtooth core is a central Sawtooth software, which contains Validator, REST API and Transaction Processors. The Sawtooth Architecture (as shown in Figure 4) separates these core functions from application-specific business logic, which is handled by transaction families. Validator is responsible for validating batches of transactions, combining them into blocks, maintaining consensus with the Sawtooth network and coordinating communication between clients, transaction processors and other validator nodes. REST API is a service used by client applications for submitting transactions to blockchain node. It is also used for fetching transactions, blocks and transaction status information from blockchain database (https://ipaddress:port/blocks, https://ipaddress:port/transaction/transactionid). Transaction Processor validates transactions and updates its state database based on rules defined by the associated transaction family. Sawtooth includes default transaction processors for on-chain permission and configuration settings. SDK support for application development: Sawtooth provides software development kit for creating and manipulating transactions at client and back end transaction processor level. Sawtooth supports Python, Go, NodeJS, Java and C++. Consensus protocol supported by Sawtooth: Devmode, PBFT (Practical Byzantine Fault Tolerence), PoET SGX (Software Guarded eXtension), PoET simulator DevMode is a simplified random ledger algorithm for development and testing. PBFT is a leader based, non-forking consensus algorithm, and it is ideal for smaller consortium style networks. PoET SGX: The Proof of Elapsed Time (PoET) Consensus method utilizes a “trusted execution environment” called SGX provided by Intel Processor. It elects individual peers to execute requests at a given target rate. PoET Simulator: It is same as PoET SGX, but it has simulated SGX environment. Other blockchain platforms: Ethereum, R3 Corda, Multi Chain and Hyperledger Fabric</p>
+<p>Blockchain Technology Use Case: Blood Bank Supply Chain Blood Bank System The recording of blood donations is done with paper and pen, and parameters like group, expiry date, and temperature are maintained manually. It could be fatal to patients if anyone receives infected/ contaminated blood. There is no proper way to verify the cleanliness of blood donated without testing it. There is no consolidated repository for the information of blood. Right from donor registration to hospital, multiple actors are involved in the process such as donors, testers, camps, blood bank, doctor and hospital.</p>
+<p>Use case In the complete supply chain, recording transactions right from donor registration to patient and other important properties of blood such as group, test report, expiry date and temperature are maintained on blockchain. As a Proof of Concept, the above supply chain workflow has been implemented on Hyperledger Sawtooth Framework with six nodes. In this case, the client application has been implemented in Python and NodesJs. Backend transaction processor is implemented in Python.</p>
+<p>Comparison between Blockchain Platforms Type based on availability to user: Sawtooth: Private Fabric: Private Ethereum: Public Quorum: Private</p>
+<p>Sector focus: Sawtooth: Any Fabric: Any Ethereum: Any Quorum: Financial</p>
+<p>Consensus: Sawtooth: Proof of Elapsed Time Fabric: Proof of Stake Ethereum: Proof of Work Quorum: Raft</p>
+<p>Multi-tenancy: Sawtooth: Using family Fabric: Using channels Ethereum: Not supported Quorum: Not supported</p>
+<p>Language support: Sawtooth: Python, GO, Java, NodeJs, C++ Fabric: Python, GO, Java, NodeJs Ethereum: Solidity Quorum: Solidity</p>
+<p>Throughput: Sawtooth: ~2000tps Fabric: ~2000tps Ethereum: ~ 500tps Quorum: ~ 100tps</p>
+<p>Security: Sawtooth: PKI based, Supports access control policies Fabric: PKI based, Supports access control policies and network security Ethereum: Need to encrypt the data Quorum: PKI based</p>
+<p>Scalability: Sawtooth: Scalable, Performance dependent on consensus algorithm and number of nodes Fabric: Scalable, Performance dependent on consensus algorithm and number of nodes Ethereum: Scalable, Performance dependent on consensus algorithm and block size and compute power Quorum: Scalable</p>
+<p>Project type and maintainer: Sawtooth: Open source and maintained by Intel Fabric: Open source and maintained by IBM Ethereum: Open source Quorum: Open source and maintained by JP Morgan</p>
+<p>Support and documentation: Sawtooth: Extensive documentation for developers and administrators Fabric: All support documentation is available as GitHub. Ethereum: Online documents are available. Not in detail. Quorum: Not in detail.</p>
+<p>Criteria for Adopting Blockchain Technology Following are some of the questions to assess the need of blockchain technology for existing/ new applications: Is there a need to remove intermediaries that add complexity? In order to complete certain main business process, some sort of sub process is required. For example, for loan sanction, the applicants’ KYC and income status need to be verified. For recruitment process, employee verification including personal details, qualification details and experience details needs to be done. Nowadays, the above verifications are outsourced to third party agencies, which is time-consuming and costly.</p>
+<p>Is non-repudiation i.e., the proof that someone submitted a transaction, needed? After transporter delivers goods or food grains to retail shop, a transaction about the delivery on blockchain ensures that it has been delivered because it is accessible to supplier. Retailer cannot deny the delivery and delay the payment. At some places, a proof of the financial transaction needs to be provided for getting income tax relief or other benefits.</p>
+<p>Is tamper resistance needed? System that ensures the transaction data can’t be tampered. In traditional system, the transaction data can be tampered whereas in the same case in blockchain, it is very difficult because of its immutable property.</p>
+<p>Does data need to be shared across multiple entities? In the business process, transaction data requires to be shared among various stakeholders.</p>
+<p>Do multiple entities need to modify the data? Suppose a business needs to be accessed by different entities and modify. A complete trace of what has been modified and by whom is required.</p>
+<p>Conclusion While selecting the sector for adopting blockchain technology, essential care needs to be taken to assess its suitability for the sector. Several blockchain platforms are currently available with different features. Hence, the selection of suitable platform for an application requires detailed survey and testing. Identifying the best platform for different classes of application requires detailed study and evaluation.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="artificial-intelligence-in-e-governance-applications-july-2019.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Artificial Intelligence in e-Governance Applications</span></a><a class="article-nav-link next" href="appscape-july-2019.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">APPSCAPE</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

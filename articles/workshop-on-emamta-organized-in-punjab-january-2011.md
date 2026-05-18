@@ -1,0 +1,12 @@
+---
+title: "Workshop on eMAMTA organized in Punjab"
+publication: "Informatics"
+issue_date: "January 2011"
+pages: [44]
+author: "Vikram Jeet Grover"
+section: "In the News"
+---
+
+## Workshop on eMAMTA organized in Punjab
+
+FOR effective implementation of Mother and Child Tracking System MCTS under e-Mamta project in Punjab, a workshop-cum-training was organized by National Rural Health Mission Punjab with the support of NIC Punjab from 10 Nov to 12 Nov 2010 in the Conference Hall of Parivar Kalyan Bhawan, Chandigarh. The one day workshop was organized on three consecutive days com-prising of District Family and Welfare Officers, District Programme Officer and District Monitoring and Evaluation officer from all the districts. DIOs from all the districts of Punjab with respective NRHM officers, also participated in the workshop. Sh Vikram Jeet Grover TD and Sh.Gurdev Singh PSA from NIC Punjab also attended the workshop. In his welcome speech, Dr Ashok Nayyar Director Health and Family Welfare, Govt. of Punjab gave introduction to the MCTS Programme and its importance in delivery of health services. Sh Gulshan Kumar Deputy Director Statistics Directorate of Health Services Govt. of Punjab explained the objectives of MCTS to the participants. He also explained the 80 column format of NRHM for MCTS to the participants. Sh Satish Chandra, IAS Principal Secretary Health Govt Of Punjab also attended one session in which he interacted with the participants and explained the importance, need and urgency of implementation of MCTS. He also urged the participants to ensure its successful launch in Punjab from 1 Dec 2010. The workshop was conducted by Sh.Gurdev Singh PSA NIC Punjab where he demonstrated the MCTS application in detail covering the preparation of various masters including common masters including procedure to add vil-lages not available in Census 2011 data and explained the importance of accuracy in creating Masters for correct data entry and reporting. The procedure for online data entry on MCTS application for Pregnant women, temporary migrated pregnant mother and Child registration and immunization was demonstrated in detail. Generation of Work plans and various reports based on different parame-ters was also shown. The Monitoring and Evaluation Officers were given hands on time on the application for verifying their understanding on the concepts and work flow of the application. The Question & Answers session was taken up and all the queries were answered jointly by Punjab Health department and NIC.

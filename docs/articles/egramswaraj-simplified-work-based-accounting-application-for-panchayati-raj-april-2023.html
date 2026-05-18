@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eGramSwaraj Simplified Work-based Accounting application for Panchayati Raj — Informatics April 2023</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2023"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/april-2023/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2023/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2023/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/april-2023/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2023/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2023/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/april-2023/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2023/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2023/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/april-2023/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2023/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2023/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2023.html">April 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>eGramSwaraj Simplified Work-based Accounting application for Panchayati Raj</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">eGov Products &amp; Services</div>
+          <h1 class="article-title" data-pagefind-meta="title">eGramSwaraj Simplified Work-based Accounting application for Panchayati Raj</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Edited by MOHAN DAS VISWAM &bull; pp. 28–31</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2023.html">April 2023</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Panchayati Raj Institutions (PRIs) play a crucial role in the provision of various services and basic amenities to rural citizens. It is of the utmost importance that Panchayats are adequately staffed and equipped with the necessary infrastructure.</p>
+<p>eGramSwaraj eGramSwaraj functions as the digital collaborative platform for PRIs and all other stakeholders. It has been monumental in bringing together a tech-based, integrated system of information collection, micro-level planning, and work-based accounting for Panchayats, the grassroot level of self-governance In less than two years, the platform has amassed about 2.75 lakh entities (PRIs or equivalent) with user base of about 7 lakh, distributed across 28 States and 8 Union Territories.</p>
+<p>The platform is ever evolving as a result of continuous feedback from numerous key stakeholders including State Officials, PRI officials, Ministry of Panchyati Raj and other central line ministries.</p>
+<p>eGramSwaraj has improved the functioning of Panchayati Raj Institutions, providing citizens with a platform to connect with local representatives and participate in local governance. It has enabled greater transparency and accountability in the functioning of the Panchayats, which has been essential for ensuring effective implementation of various schemes and welfare programs.</p>
+<p>Key Modules Following are key modules of eGramSwaraj • Panchayat Profile Management: maintains a detailed socio-economic profile of the Panchayat, as well as information about its elected representatives and working committee • Gram Panchayat Development Plan Management: facilitates planning of activities and development works, as well as the creation of development plans • Financial Resource Envelope / Fund Management: facilitates panchayats to maintain availability of funds from different sources • Work Progress Reporting: records physical and financial progress of development works • e-Payment System: facilitates e-Payments of all payments being made by Panchayats using digitally signed payment orders • FPMS Integration: facilitates integration with PFMS for routing payments • Financial Accounting: facilitates work-based financial accounting and monitoring of funds expenditure via Treasury-PFMS integration. • Panchayat Asset Directory: facilitates management of database of all movable and immovable assets</p>
+<p>Key Features Following are key features of eGramSwaraj • Supports inter-operability with other Panchayat Enterprise Suite (PES) applications • Simple and user-friendly interfaces • Workflow enabled to manage repetitive processes and tasks • Supports asset visualisation on Gram Manchitra • Strong authentication mechanism • Built upon open-source technologies • Web-based and available 24/7</p>
+<p>Technical Specifications The deployment process for eGramSwaraj involves code building, committing it to subversion (SVN) repository, conducting alpha testing, and user acceptance (UA) testing before its release into production. An overview of the deployment procedure is provided in Fig 9.2.</p>
+<p>Software Architecture eGramSwaraj is designed with the following 3 key target user groups in consideration: • Local Bodies: both rural and urban local bodies forms the primary end user base for this application. They are the primary custodians of numerous critical processes such as work progress monitoring, vendor and employee management, formulation of Panchayat Development Plan (PDP) and financial management. • Line Departments: GPDP spans across 9 themes mapped with 29 constitutional subject areas. These departments are responsible for driving various social welfare programs and schemes. Data-driven planning and monitoring, naturally, forms the foundation of successful, last-mile, service delivery, especially for a robust financial management. • Citizens: Although Gram Panchayat is run by elected and designated representatives of citizens and administration, it is the right and responsibility of each citizen to be aware and vigilant of the progress and development works in their region.</p>
+<p>Considering above user personas, the following modules form the backbone of eGramSwaraj application:</p>
+<p>Panchayat Profile This module helps in maintaining the socio-economic profile of Gram Panchayat in addition to information related to panchayat elections, elected members, and working committees. • Maintains a holistic profile of Panchayat, including details of Sarpanch and Panchayat Secretary • Maintains the details of election and elected representatives • Maintains the details of working committees and its members</p>
+<p>Panchayat Development Plan Management This module helps in planning project activities and creation of development plans. • Wish List: captures ideas, suggestions, and resolutions presented during Gram Sabha meetings • Shelf of Activities: enables planning unit to maintain a list of activities to be taken up in a year plan • Resource Envelope: documents budgetary allocations of funds from a range of sources, such as government schemes at both the Central and State levels, as well as other funding streams • Convergence: pools funds from multiple sources to support the activities of panchayats. This ensures that available resources are fully utilized, reducing the risk of critical projects being abandoned due to inadequate funding • Action Plan: creates annual plan by allowing planning unit to take approved activities as per available fund in different schemes. Activity funding can be shared by multiple schemes. Priority can be set for each activity</p>
+<p>Work Management System • Technical Approval: analyzes and captures the technical aspect for an activity approval • Administrative Approval: captures administrative approvals for an activity with respect to source of funding</p>
+<p>Geo-tagging based Progress Reporting This module records the physical and financial progress of approved activities. • Progress Reporting: updates physical and financial progress of activities. Activities can be marked as ongoing, suspended, abandoned, or completed • Geo-tagging: captures location-based information and photos of assets created, which makes it easier to track the progress of asset-based activities. This sub-module is supported through a unique mobile app named as mActionSoft. It also allows for inter-module data flow for smooth physical and financial progress reporting.</p>
+<p>Financial Accounting This module facilitates work-based financial accounting and monitoring of funds expenditure. Complies with the 4-tier accounting classification system and reporting formats prescribed by Comptroller and Auditor General (C&amp;AG) under Model Accounting System (MAS) • Follows double-entry system of book-keeping wherein both the credits and debits are recorded for a transaction • Captures details of work, expenditure incurred on the work, advances given under a work etc. • Integrated with PFMS to register vendors under different Central and State schemes for payments • Facilitates closure of daily, monthly and yearly book of accounts and ensures necessary steps are taken to carry forward accounts to next cycle • Records transaction details through 4 vouchers: 1. receipt voucher: captures inflow of funds; 2. payment voucher: captures outflow of funds; 3. contra voucher: captures inter account transfer of funds; and 4. journal voucher: captures any rectification /book adjustment.</p>
+<p>Panchayat Asset Directory This module enables the prompt update of an asset’s status as changes happen. It acquires comprehensive asset information, such as the revised status (such as abandoned, active, demolished, damaged by natural disasters, out of use due to seasonal conditions, or theft), the rationale for the update, and the date of the status revision. The subsequent summary highlights its functions • Generates a unique Asset ID for identification of assets created / maintained / controlled by a planning unit • Captures asset details such as location, status, ownership, etc. • Displays the activity and voucher details linked with the completed asset • Provision to locate assets on Gram Manchitra GIS</p>
+<p>mActionSoft After commencing the activity, the assets are ready to be geo-tagged through the mActionSoft mobile app. Panchayat users have the ability to geo-tag any assets and take real-time photographs of the resulting assets. Geo-tagging is compulsory for payment and expenditure purposes related to the activity within the accounting module of eGramSwaraj.</p>
+<p>User Management It enables system administrators to manage user accounts and their extent of access to various modules and functionalities of the system, including managing user credentials for privileged access. Based on these modules and their functionalities, eGramSwaraj facilitates end-to-end digitization of the works planning and monitoring lifecycle for Gram Panchayats. This includes development plan creation, geo-tagged physical progress monitoring, and financial progress tracking, as well as PFMS-linked online disbursement of funds. Thus, eGramSwaraj serves as a one-stop solution for all critical stakeholders in the Gram Panchayat development ecosystem.</p>
+<p>IT Landscape eGramSwaraj is built upon best available open-source technology stack in the industry. Its architecture is multi-layered and modular as per the design principles, with components organised into multiple layers, and abides by the following architectural guidelines identified as global best practices: • Multi-layered and modular • Scalable and extensible • Adaptable architecture • Separate Interface layer with option for integration automation • Customisable user experience management • Separate sub-systems • Separate security and access control layer ensuring only authenticated role-based access • Data layer and access separated out and encapsulated • Tools for system and people learning The illustration (Fig. 5) depicts the functional architecture and various components of eGramSwaraj application.</p>
+<p>Impact Since the launch of eGramSwaraj in April 2020, majority of the states and UTs have adopted eGramSwaraj for carrying out various aspects of Panchayat functioning. As of now, • 2,53,605 Panchayat Development Plans created for 2022-23 across 3 tiers of Panchayats • 2,37,058 year-books closed for FY 2021-22 across 3 tiers of Panchayats • 2,07,405 month-books closed for FY 2022-23 across 3 tiers of Panchayats • 2,03,612 PRIs made online payments through eGSPI for 2021-22 • 1,78,854 PRIs made online payments through eGSPI for 2022-23 • 1,15,608 Audit Reports generated across 3 tiers of Panchayats for audit period 2019-20 • 1,62,179 Audit Reports generated across 3 tiers of Panchayats for audit period 2020-21</p>
+<p>Accolades eGramSwaraj has won the Gold Icon National e-Governance Award by Department of Administrative Reforms and Public Grievances, Government of India under “Excellence in Government Process Re-engineering for Digital Transformation” category for 2021-22.</p>
+<p>Way Forward The increasing adoption of eGramSwaraj in Panchayats presents an opportune moment to strengthen and enhance digital governance at the grassroots level. In keeping with national trends, eGramSwaraj is being integrated with the Government eMarketplace (GeM) to provide Panchayats with a seamless procurement and accounting experience, while promoting transparency through standardized pricing and contract award processes. To further enhance transparency and accountability, the Ministry is planning to develop eGramSwaraj 2.0 with additional features to address current challenges faced by stakeholders. The Ministry has also launched a data sharing initiative, which involves porting Panchayat-wise beneficiary and asset details of various Central Ministries’ schemes / programs into the eGramSwaraj application. This initiative aims to make beneficiary / asset details available on a public portal, which will be further discussed in Gram / Ward / Mahila Sabhas for developmental discussions in the presence of Line Department officials. Currently, data from 8 Central Departments / Ministries and 20 schemes have been successfully ported.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="agriculture-information-management-system-aims-improving-sustainability-and-profitability-in-agriculture-through-digitization-april-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Agriculture Information Management System(AIMS) Improving Sustainability and Profitability in Agriculture through Digitization</span></a><a class="article-nav-link next" href="nicler-reimagining-education-through-technology-april-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NICler Reimagining Education through Technology</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

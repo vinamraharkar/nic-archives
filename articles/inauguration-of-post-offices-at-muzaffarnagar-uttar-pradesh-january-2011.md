@@ -1,0 +1,12 @@
+---
+title: "Inauguration of Post offices at Muzaffarnagar, Uttar Pradesh"
+publication: "Informatics"
+issue_date: "January 2011"
+pages: [42]
+author: "Gaurav Tyagi"
+section: "In the NEWS"
+---
+
+## Inauguration of Post offices at Muzaffarnagar, Uttar Pradesh
+
+THROUGH NIC Video link Minister of State for Communication and Information Technology Sh. Sachin Pilot on 20th November 2010 dedicated 5 post offices under the Project Arrow scheme of the Department of Posts to the people of Western UP. These post offices would have uniform brand hierarchy and a sin-gle window service system to reduce the waiting time for customers. The inauguration function was held at the City post office, Muzaffarnagar from where the other four post offices were inaugurated through a NIC video link. The other posts offices are at Dhampur (Bijnore), Behat (Saharanpur), Rampur and J P Nagar (Amroha). Muzaffarnagar MP Sh. Qadir Rana was also present during the inauguration. Video Conferencing equipments were set up by NIC Muzaffarnagar in a record time of 12 hours. NIC Muzaffarnagar got the special lease line laid by BSNL. Router & modems were arranged from nearest swan cen-ter. Video conferencing camera of NIC Muzaffarnagar was interfaced with the communication equipments installed at post office.. Auxiliary camera was attached with VC camera to cover entire function. Extra LCD display unit was attached with VC camera for public viewing. Minister appreciated the video support of NIC district unit. Local print media widely covered the event. Sh. Pankaj Jain, DIO/TD NIC-Meerut was also present for support. Muzaffarnagar SWAN team also technically supported the function. Sh. Sanjay Arora, DIO/TD, Bijnore, Sh. Nalin Kaushik, DIO/J P Nagar, Sh. Ravinder Chauhan, DIO/Rampur and Sh. Jagpal Kaushik, DIA/Saharanpur contributed at remote ends to make this event success. Speaking on the occasion Sh. Pilot assured that the Department of Posts would continue to upgrade other post offices in the in the western Uttar Pradesh. He said a large number of post offices throughout the country are getting transformed under Project Arrow. He said under the project the post office employees have been sensitised and imparted training in soft skills and information technology. All the upgraded post offices are being equipped with broad band connectivity to provide web-based services of the Department such as e-money order, Western Union money transfer, instant money order and e-post to name a few.

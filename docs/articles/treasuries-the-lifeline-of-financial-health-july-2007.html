@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TREASURIES - The Lifeline of Financial Health — Informatics July 2007</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2007"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2007/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2007/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2007/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2007/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2007/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2007/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2007/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2007/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2007/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2007/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2007/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2007/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2007.html">July 2007</a><span class="breadcrumb-sep">&rsaquo;</span><span>TREASURIES - The Lifeline of Financial Health</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">TREASURIES - The Lifeline of Financial Health</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Pratibha P Joag, Anshu Rohatgi &bull; pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2007.html">July 2007</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Finance Management is the key to economic stability and development of rural &amp; urban infrastructure. Inorder to discharge its functions &amp; cater to requirements of economic development the Government needs to address the issues related to finance management in a time bound approach. No wonder, the modernization of the Finance Sector is the top priority of the Government. Treasury is a very important component of the country's Financial System. All financial transactions of the state government are mainly carried out through the treasuries. Treasury is also the basic unit and focal point for recording the initial financial transactions of the government and is the main starting point of public accounts. As such the data entered at the treasuries needs to be managed properly and efficiently for better results, and accounts information needs to be provided in proper time and formats for a robust financial system.</p>
+<p>Treasury Linkages As an integral part of the Finance Department, treasuries play a vital role of authorizing, distributing and accounting the payments &amp; receipts on behalf of State Government. In some of the states, treasuries are also responsible of disbursing the pension payments and are primarily linked with the Directorate of Accounts &amp; Treasuries, District Treasury &amp; Sub-Treasury Offices, the Finance Department, the User Departments, Pensioners, Accountant General's Office, RBI and SBI and other designated banks. The Finance Department plays a vital role in overall prosperity of the state by implementing innovative revenue earning processes &amp; proper fund management. It is also responsible for fostering fiscal discipline in the state. The treasury offices are required to maintain up-to-date records of each and every financial transaction of the Government after careful scrutiny related to budget provisions etc. The User Departments handle their expenditure under various budget heads through the DDO's and are required to reconcile the figures with the AG Office. The AG office is the record keeper of all the receipts and payments it receives from the treasuries and the user departments. Finally, the banks are responsible for making the payment and receiving revenue receipts on behalf of the State Government.</p>
+<p>The Manual System During the manual era, it was almost impossible to have any financial discipline in the treasury. Improper fund management was the order of the day and delays in preparation of monthly treasury accounts was a regular feature This resulted in serious impact on the overall planning of the Government and caused other financial implications. Moreover, it was very difficult task to monitor the Expenditure and Receipts at a given point of time as there was no mechanism for data convergence from treasuries and its collation at the level of Finance Department. There was no allotment monitoring, no transparency in treasury functioning, and the verification of correctness of the treasury accounts was difficult. The preparation of PF and Pension accounts was delayed by months causing a great discomfort to the senior citizens, pensioners and government employees.</p>
+<p>ICT in Treasuries The inadequately maintained finance management system, inherent systemic deficiencies in the manual system, ever increasing threat of frauds, over spending and misappropriation of funds by the unscrupulous elements, compounded by the lack of institutional mechanism to check or to identify such incidences prompted the Government to search for comprehensive solution seizing the technological advantages available. The choice zeroed down to Information Technology which provides unlimited opportunities by introducing an element of transparency, accountability, convenience and effectiveness in governance, thereby making major enhancement in the delivery of services and improving performance. IT can streamline the processes to meet deadlines, compile information at a fast rate and provide the necessary tools to the administration for monitoring, planning and control. It also possesses the capability to provide a networked solution wherein there are no geographical boundaries and the entire treasury system, with all its linkages, works as a single virtual office. The Treasury Information System (TIS) can be visualized as a comprehensive application covering all categories of transactions in the finance department, treasuries and its related offices. However, the overall functionality of TIS can be outlined by the following modules. Payment &amp; Receipt Audit &amp; Account Pension/ PPF Cheque Drawl/ECS payment Delivery &amp; Reconciliation Personal Ledger Accounting Bill Tracking Master Maintenance Online status (FMIS for PAO/ Treasury Officer)</p>
+<p>Benefits Accrued Streamlined Treasury Operations After computerization, the treasuries are submitting their Monthly Treasury Accounts within the scheduled dates. The verification regarding the correctness of the accounts has become easier and the cases of discrepancies between the treasury figure with the bank figure have decreased sharply. Efficient and effective funds mobilization The real time information of funds available has helped the state government in keeping a track of the cash inflow and outflow. This has helped in facilitating better planning of funds &amp; effective budgetary monitoring, management &amp; control. The timely availability of accounts data for monitoring and analysis on desktop has helped in decision-making and efficient mobilization of funds.</p>
+<p>Transparency &amp; Customer Satisfaction The Government is finally delivering on its promise of effective and transparent governance to its citizens, employees and customers. The Treasury Information Systems have provided an efficient, transparent mode of payments &amp; clearances, and facilitated faster payment processes, saving time and money. The treasury websites are keeping customers well informed while the computerization of Pension, PF etc. have brought a welcome relief to the senior citizens and employees.</p>
+<p>Awards — Silver ICON to e-Khazana, Bihar, &amp; Bronze ICON to Double Entry A/cing System from Himachal Pradesh for Professional Excellence in Process Reengineering in 2007. — Silver ICON for Professional Excellence in Process Reengineering to Koshwahini, Maharashtra, in 2006. — Golden Icon for Innovative Operation &amp; Best Practices to ePension, Himachal Pradesh in 2006. — Oracle e-Governance Excellence Award to ITSANIC, Uttar Pradesh &amp; TAS, Gujarat in 2006 — Microsoft e-Governance Award for OTIS, Haryana in 2006 — The 'Integrated Treasury Accounting System' of MP &amp; 'Khazane' of Karnataka have also received Golden ICON &amp; Silver ICON awards respectively in different categories.</p>
+<p>Infrastructure Introduction of IT has transformed treasury offices from a typical, massive paper loaded office to a more comfortable office with a desktop. Large scale training programmes for finance officials has resulted in a large pool of IT trained manpower at each state. Many other benefits have accrued to the society and the government. It has been a win-win situation for all stake-holders.</p>
+<p>The Road Ahead Standardisation There is a need to develop a National Treasury Product identifying the common and specific functions of central and state government. The project will have a modular design. It will adopt 'Plug &amp; Play' kind of approach for tackling difference in functionality and adopt standard protocols &amp; tools for framing requirement specification, design and handling interoperability between various parts of treasuries and other agencies. The system will have a common architecture for all states and will undergo a series of testing and quality certifications. System Integration The approach needs to be broadened from excellent software packages to an end-to-end solution that meets the overall functionality of the Treasuries System. The applications of different stake-holders will need to be integrated with each other to have a complete networked system.</p>
+<p>Statewide Implementations Many state governments have implemented some or all of these modules of the Treasury Information System and networked the operations to streamline the processes that are routine or time critical, coupled with G2G and G2C interfaces to bring about greater level of transparency in treasury functions. These applications have brought about fiscal discipline and removed the bottlenecks to a great extent.</p>
+<p>Koshwahini - Maharashtra KOSHWAHINI is an e-Governance initiative of the Finance Department, Government of Maharashtra, to create a data warehouse, information and accounting backbone System for the Accounts and Treasury operations of the State. Koshwahini has introduced high degree of professionalism in the working of the 33 Treasury Offices and 295 Sub Treasury Offices through a highly evolved network flow.</p>
+<p>ITSANIC - Uttar Pradesh The Integrated Treasury System Application of NIC (ITSANIC) is a user-friendly application, which has completely automated the treasury operations in Uttar Pradesh. Launched in the year 1994 in 93 treasuries of undivided UP, the project has played a key role in bringing about revenue efficiency &amp; controlling government's overall expenditure. The software also conforms to the standards, security, scalability and reliability norms of ISO and was certified in the year 2004 http://koshvani.up.nic.in</p>
+<p>Treasury Accounting System - Gujarat TAS is a Client/Server application developed to carry out all the functionalities of District Treasuries and Sub Treasuries of Gujarat. It has 6 Modules and 37 Sub Modules. Apart from Monthly Accounts (Expenditure &amp; Receipt) it also takes care of Pension Bills, Letter of Credit Maintenance and Stamps Inventory through around 200 reports. http://treasury.guj.nic.in</p>
+<p>Online Treasury Information System - Himachal Pradesh Treasury Computerisation started in Himachal in 1993-94. Besides compilation of payment &amp; receipt accounts, the application functions in a workflow methodology for online passing of bills, verification of DDO's signatures and photographs of messengers, preparation of deduction register in respect of LIC, PLI &amp; GIS and creation of data files for transmission to AG Office. http://himachal.nic.in/finance</p>
+<p>Online Treasury Information System - Haryana OTIS is a workflow based Treasury System implemented in 20 district treasuries and 83 sub-treasuries of Haryana. A separate module (OTISB) is implemented in all banks linked with the treasuries. OTIS has improvised the treasury operations by making the payment processes transparent, updation and sharing processes efficient and data collection consistent. http://hrtreasuries.gov.in</p>
+<p>e-Khazana - Bihar e-KHAZANA is the tool to automate the treasuries and sub-treasuries of Bihar. The system facilitates online fund management, reconciliation with budget, timely submission of classified accounts and sharing of accounts with excise, registration, commercial taxes and transport department. It has a powerful 'fire-and-forget' capability whereby if certain steps are ensured, the accounts are accurate and dependable. Accounting software for maintaining GPF A/cs of government employees 'Bhavishyanidhi' has also been integrated with the treasury system. http://finance.bih.nic.in</p>
+<p>Integrated Pay &amp; Accounts Office - Uttarakhand Uttarakhand has converted the Treasury Information System into Integrated Pay &amp; Accounts Office. The IPAO software has been implemented in all the treasuries of the state and the online database of about 1.10 lakh government employees is available on Internet. http://ua.nic.in/finance</p>
+<p>Technology Advancements There are many other applications like Treasury Information System in Punjab, Khazane of Karnataka, E-Karuvoolam in Tamil Nadu, Integrated Treasuries Computerisation Project of Madhya Pradesh, Treasury Info System at Kerala, O-Tracs of Orissa, Treasury Computerisation at Andhra Pradesh, e-Kosh of Chattisgarh, OTIS of Jharkhand, TMIS of Chandigarh, Integrated Accounts System of Goa, Treasury Computerisation System of Rajasthan, Treasury Information System of West Bengal &amp; JAKTMIS of Jammu &amp; Kashmir which have computerized the treasury operations and its linkages to bring about financial discipline in their respective states and evolve a system that is beneficial to the businesses, public and government. Data security infrastructure needs to be strengthened and advance technologies like biometric authentication, digital signatures, barcode, electronic clearing system, tax collection through NET banking have to be deployed to have a more secure treasury system.</p>
+<p>Accolades... “I am happy to state that the Koshwahini website is now in operation on the intranet. It gives unprecedented control to each Mantralaya department over its budget allocations and brings about complete transparency in the working of the treasuries not to mention accuracy and speed in the compilation of accounts. A word of appreciation of the work done by the NIC team and the staff of the Directorate of Accounts &amp; Treasuries on this pioneering task will not be out of place here”. Extract of Budget Speech March-2003 by Finance Minister, Maharashtra</p>
+<p>Story compiled and Edited by: Anshu Rohatgi Regional Editor - Informatics</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="from-you-to-us-july-2007.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">From You to Us</span></a><a class="article-nav-link next" href="national-transport-project-smart-e-governance-july-2007.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">National Transport Project 'SMART' e-Governance !!</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

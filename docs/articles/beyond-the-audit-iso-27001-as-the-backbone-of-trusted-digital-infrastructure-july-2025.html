@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond the Audit - ISO 27001 as the Backbone of Trusted Digital Infrastructure — Informatics July 2025</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2025"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/july-2025/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="../pages/july-2025/page-35.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;36</div><a href="../pages/july-2025/page-36.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-36.jpg" alt="Page 36" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-36.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;37</div><a href="../pages/july-2025/page-37.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2025/page-37.jpg" alt="Page 37" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2025/page-37.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2025.html">July 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Beyond the Audit - ISO 27001 as the Backbone of Trusted Digital Infrastructure</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Technology Update</div>
+          <h1 class="article-title" data-pagefind-meta="title">Beyond the Audit - ISO 27001 as the Backbone of Trusted Digital Infrastructure</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Naveen Kumar, Arpita Barman, Nadeem Akhtar &bull; pp. 34–37</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2025.html">July 2025</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">As India’s digital governance accelerates, so do the risks of managing sensitive citizen data, vast IT infrastructure, and outsourced development. While most government apps undergo basic security audits, these often focus narrowly on code flaws—overlooking compliance gaps, weak controls, and unmonitored infrastructure.</p>
+<p>This is where certifications like ISO/IEC 27001 matter. Unlike routine audits, ISO 27001 offers a holistic framework—covering cybersecurity, infrastructure, HR protocols, documentation, and legal compliance—within a unified Information Security Management System (ISMS). It’s about designing secure, accountable, and resilient systems from the ground up.</p>
+<p>This article explains why surface-level audits are no longer enough—and why ISO 27001 is now crucial for the credibility, sustainability, and public trust of e-governance platforms.</p>
+<p>India’s expanding digital governance needs more than routine audits, which often miss infrastructure gaps, weak access controls, and policy lapses. ISO/IEC 27001 offers a robust, enforceable framework with defined controls, ongoing audits, and role-based accountability. Drawing from real-world audits and case studies, it highlights how certification ensures legal compliance, operational resilience, and public trust. For government bodies handling sensitive data, ISO 27001 isn’t optional—it’s essential.</p>
+<p>Case Study: DST Infrastructure Audit In 2024, under the direction of MeitY, NIC initiated a large-scale cyber security infrastructure audit across several ministries and government departments at Central, State and District levels. Centre for Development of Advanced Computing (CDAC) had been entrusted to conduct Cyber Security Audit of Department of Science and Technology (DST) network in Technology Bhawan.</p>
+<p>The audit aimed to assess the overall cybersecurity posture of DST’s IT ecosystem—beyond just application-level vulnerabilities.</p>
+<p>Scope of Audit • Asset Identification and Discovery • Network Architecture Review • Endpoint Security and Configuration Review • Internal and External VAPT (Vulnerability Assessment &amp; Penetration Testing) • System and Device Log Review • Review of Cybersecurity Policies and Standard Operating Procedures (SOPs) • Network Traffic Analysis • Review of Network and Security Device Logs • Risk Management Assessment</p>
+<p>Adherence to Best Practices and Auditor Recommendations During the audit, teams from CDAC and NIC Cyber Security conducted a pre-audit assessment to understand the existing IT infrastructure as per MeitY issued guidelines and, while the NIC team at DST shared details such as asset lists, network diagrams, configurations, security measures, whitelisted applications, logs, and incident history.</p>
+<p>CDAC team collected and reviewed existing asset list, architecture diagram, and device configurations. Interacted with the concerned IT Teams to understand current network infrastructure, network connectivity, followed practices, procedures, and configurations. The audit was conducted based on this information and further validated through onsite visits and system reviews.</p>
+<p>CDAC submitted its audit report in April 2025, highlighting vulnerabilities categorized as critical, high, medium, and low, which DST is expected to address. This was the initial step towards strengthening cyber security and will require follow-up after compliance actions are taken.</p>
+<p>Findings The exercise achieved most defined objectives and, for the first time, resulted in complete documentation of DST network, identifying key security gaps. This serves as a foundation for comprehensive gap analysis and implementation of the Cyber Crisis Management Plan.</p>
+<p>The result? A clear, actionable roadmap to: • Well documented assets and network details • Streamline security processes • Align with MeitY and CERT-In guidelines • Support crisis management planning Though the IT Infrastructure Audit is done, this audit cannot be considered as Information Security Audit as it has not covered other IT applications and portals used for implementation of its schemes and projects.</p>
+<p>Mixed Response Across Departments Some departments acted on the audit findings; others treated it as a mere formality. Without mandatory certification, follow-through was weak—especially under the assumption that government cloud hosting made formal certification unnecessary. The audit revealed a hard truth: infrastructure vulnerabilities are real, often undocumented, and remain unaddressed without systematic certification.</p>
+<p>The Limitations of Application Application security audits have long been a standard requirement for government portals and e-governance platforms to be hosted in National Data Centers. These audits typically review code vulnerabilities, test for common cyber threats as per OWASP guidelines and provide a certificate that clears the application for deployment—often seen as the final green signal.</p>
+<p>However, these audits are not sufficient to ensure real-world security, compliance, or long-term sustainability. Here’s why.</p>
+<p>Common Gaps Observed Despite years of mandated application security audits across ministries, several critical vulnerabilities and policy violations continue to go unchecked. These gaps highlight the limitations of conventional audits and the urgent need for structured certification frameworks like ISO 27001.</p>
+<p>Limited Scope of Application Security Audit Most application audits focus on code-level issues as per OWASP guidelines —like SQL injection, XSS vulnerabilities, or insecure APIs—but rarely evaluate the application: • Whether it follows government-approved security guidelines (like NISPG or eSAFE). • If personal data processing adheres to Digital Personal Data Protection (DPDP) Act, 2023. • If the system is designed for required performance and availability. • Does the system follow standard Change Management Policy? • If disclaimers or user consent mechanisms exist before collecting personal data. • Whether change management or SOPs are documented and followed. • Whether the hosting system is hardened. • Any performance monitoring or reporting mechanism implemented.</p>
+<p>Insecure Authentication, Weak Identity and Access Management Many applications continue to operate with: • Poor Identity and password management. • Basic username-password logins (often with just CAPCHA). • No multi-factor authentication (MFA). • Default admin credentials or shared logins. • Non-enforcement of periodical password change.</p>
+<p>Poor Design and Broken Workflows Even when code is audited, functional flaws go unnoticed, leading to poor service delivery. For instance: • Auto-logout mechanisms don’t work. • Role-based approvals are bypassed. • Logging mechanisms are incomplete. • No standard support and redressal mechanism.</p>
+<p>Non-Compliance with Accessibility Laws Despite completing STQC certification, many portals: • Do not meet WCAG 2.1 guidelines. • Do not comply to DBIM guidelines. • Violation of Web Accessibility Guidelines has enforced the Supreme Court ruling to implement WCAG 2.1 on priority. Violation may lead to monthly penalties.</p>
+<p>Absence of Confidentiality Safeguards • Non maintenance of Non-Disclosure by implementing agencies and outsourced employees. • No documentation exists for human resource onboarding, offboarding, or data access boundaries.</p>
+<p>Lack of User Consent and Data Sharing Disclaimers Applications routinely collect sensitive user data but: • Do not display Terms of Use or data-sharing consent notices. • Do not have policies for cross-system data exchange, putting departments at risk under the DPDP Act.</p>
+<p>Poor Readiness for Legal Compliance More than 80% of audited applications are not equipped to demonstrate: • Data retention and deletion policies. • Log monitoring or breach detection systems. • Compliance with the DPDP Act or IT Act 2000.</p>
+<p>ISO 27001: What It Covers In a digital ecosystem where data is the lifeblood of governance, security must extend beyond code-level audits and isolated technical fixes—it demands an integrated, holistic approach. True resilience demands a structured, organisation-wide commitment to protecting information at every stage of its lifecycle. That’s where ISO/IEC 27001 steps in—not merely as a standard, but as a strategic framework for managing information security in a measurable, repeatable, and certifiable way.</p>
+<p>Globally recognized and widely adopted across public and private sectors, ISO 27001 offers a blueprint for establishing a comprehensive Information Security Management System (ISMS). Unlike routine audits that often provide a narrow technical assessment, ISO 27001 looks at the entire organisation—its people, policies, infrastructure, and technology—to ensure end-to-end accountability and risk management.</p>
+<p>The ISO 27001 Certification Lifecycle ISO 27001 certification is not a single event but a continuous lifecycle of building, validating, and improving an organisation’s Information Security Management System (ISMS). It integrates internal discipline with third-party oversight and evolves as your organisation grows, changes, and faces new risks.</p>
+<p>The Four Pillars of ISO 27001 The 2022 revision of ISO/IEC 27001 organizes 10 clauses, with 93 security controls into four well-defined domains, each covering a critical area of information security. This structured approach ensures that all dimensions of an organisation—people, processes, infrastructure, and technology—are systematically secured. Clauses 1 to 3 pertain to scope and references, Clause 4 to the Context of the organisation. The breakdown of the domains and their focus areas are:</p>
+<p>ISO 27001: 2022 Domains and Controls Domain: Organisational. Clauses: 5. Controls: 37. Area: Policies, Role &amp; Responsibilities, Risk &amp; Asset management, Access control and identity management, Supplier relationship security, Incident response, Business continuity, Compliance with legal and regulatory requirements. Domain: People. Clauses: 6. Controls: 8. Area: Pertaining to HR screening &amp; qualifications before employment, T&amp;C of Employment, ISMS Awareness, Training, Disciplinary Process, Responsibilities After Termination or Change of Employment, Confidentiality or Non-Disclosure, Remote Working, Information Security Event Reporting. Domain: Physical. Clauses: 7. Controls: 14. Area: Physical security perimeters like entry/ exit controls, physical security of the location, security monitoring, security of assets on-off premise, cabling security, equipment maintenance, secure disposal or reuse etc. Domain: Technological. Clauses: 8. Controls: 34. Area: Access Control, Securing sensitive data, both in transit and at rest, Endpoint Protection, Logging and Monitoring, Backup and Recovery, Secure Development, Configuration Management, Data Deletion and Masking, Web Filtering and Secure Coding etc.</p>
+<p>Clause 9 is related to Performance evaluation and Clause 10 for improvement.</p>
+<p>The lifecycle can be broken down into three key stages:</p>
+<p>Stage 1: Build the ISMS This is the foundation phase where the organisation prepares itself for certification: A. Identify Gaps and Train Staff: Begin with a gap analysis and launch awareness training to build a security-first culture. B. Identify and Assess Risks and Assets: Map critical assets and evaluate threats, vulnerabilities, and impacts through a detailed risk assessment. C. Create Documents and Policies: Draft and finalize the necessary security policies, SOPs, access control guidelines, and risk treatment plans required for your ISMS. D. Statement of Applicability (SoA) Making Controls Traceable: SoA is a key document that outlines which of the information security controls listed in Annexure A of the standard, the organisation has chosen to implement—and which ones it hasn’t, along with the reasons why. Organisations are required to provide clear documentation, demonstrate tested implementation, and justify why any control has been excluded or deferred. Here’s what the SoA typically includes: • A list of all Annex A controls. • Whether each control is applicable or not. • Justification for inclusion or exclusion. • The current implementation status of each applicable control. • References to how each control is implemented (e.g., policies, procedures, tools).</p>
+<p>Stage 2: Pass Your External Audit E. Internal Audit and Management Review: Usually internal auditing is conducted by certified Lead Auditor or auditing agency. The team prepares the Audit Checklist as per the SoA and Implementation guidelines given in ISO 27002. Identify non-conformities, address them, and review the Statement of Applicability (SoA).</p>
+<p>The auditor coordinates with all the stakeholders and prepares an internal assessment report as per SoA. Typical Internal Assessment reports include: • Clause and Sub-clause number as per the ISO 27001 framework. • Standard Verbatim: Clause’s exact description. • Audit point: The point to verify. • Status: Whether the organisation is meeting compliance. NC means Nonconformity, C means Conformity, Under process and Not Applicable. • Stage: 1st time and consecutive post review. • Department: Which department/ division is responsible for implementation. • Supporting documents: Like MOA, MOU, SOP, Configuration, other relevant certificate etc. • Document type: Internal External Issues.</p>
+<p>During Internal Auditing the following documents are prepared for submission to the ISO 27001 Certifying bodies: • Introduction: Purpose and scope as per Clauses 1–3. • General Information: Overview of the organisation, its business, and stakeholders. • Internal Audit Report: Control verification status for Clauses 4–8. • Supporting Documents: SOPs, ToRs, WOs, NDAs, and other relevant records. • Clause-wise Conformance List: Control-wise status under Clauses 4–10, categorized by Organisation, People, Physical, and Technology. • Nonconformity List: Controls deemed non-applicable or accepted as risk by the organisation. • Corrective Actions: Measures planned for addressing nonconformities.</p>
+<p>F. ISO 27001 External Audit: Undergo an external audit by an accredited body for ISO 27001 certification. This involves document checks, interviews, site inspections, and testing of your ISMS in practice. Passing this phase results in official certification. In India there are around 11 ISO 27001 certifying bodies including STQC.</p>
+<p>Stage 3: Sustain and Improve Certification is only the beginning. Maintaining it requires active involvement: • Implement corrective actions by addressing audit findings and refining security controls accordingly. • Continuously monitor for new risks and update the risk register and asset inventory to reflect changes. • Provide ongoing employee training on security protocols, phishing threats, and role-based responsibilities. • Conduct regular internal audits with experts to test control effectiveness and identify emerging risks. • Undergo annual surveillance audits and tri-annual re-certification to keep the ISMS aligned with evolving standards.</p>
+<p>ISO 27002: Turning Policy into Practice While ISO 27001 defines what needs to be done, its companion standard, ISO/IEC 27002, explains how to do it. This implementation guideline provides detailed instructions for implementation of ISO 27001 Controls.</p>
+<p>Think of ISO 27001 as the “security constitution” and ISO 27002 as the “operations manual.” Together, they enable not just compliance—but security maturity.</p>
+<p>Benefits of Certification Over Routine Audits Routine audits are like snapshots—brief glimpses into a system’s surface vulnerabilities. In contrast, certifications like ISO 27001 offer a full diagnostic scan, addressing the organisation’s security posture across people, processes, policies, and infrastructure.</p>
+<p>Here’s how certification goes beyond compliance and becomes a strategic enabler of secure governance:</p>
+<p>Strengthened IT Governance ISO 27001 requires departments to document, implement, and routinely review their policies and procedures. This improves: • Accountability at every level. • Role clarity for stakeholders. • Alignment between business objectives and IT operations. • Building trust and assurance.</p>
+<p>Enhanced Security Coverage While routine audits test application-level code, ISO certification ensures: • Infrastructure hardening (servers, VMs, firewalls). • Log monitoring and retention. • Secure access management across systems. • Physical and human safeguards are enforced. It closes the loop on vulnerabilities that arise not from code—but from configuration, behavior, or oversight.</p>
+<p>Legal and Regulatory Compliance Certification helps departments proactively comply with: • The Digital Personal Data Protection (DPDP) Act, 2023. • CERT-In and NISPG guidelines. • International standards like GDPR, WCAG 2.1, and ISO 27002. These aren’t just checklists—they’re auditable commitments, enforceable during breach investigations or RTI responses.</p>
+<p>Improved Operational Efficiency Certifications mandate: • Defined Standard Operating Procedures (SOPs). • Change control, backup, and incident handling protocols. • Structured communication between development, deployment, and audit teams. This reduces rework, improves service uptime, and helps systems evolve with fewer disruptions.</p>
+<p>Better Risk Management Every control under ISO 27001 maps to a risk treatment objective. This forces departments to: • Acknowledge known risks. • Apply mitigation or accept them formally with justification. • Maintain a live risk register linked to measurable actions. ISO does not eliminate all risks. It ensures risks are visible, owned, and managed.</p>
+<p>End-to-End Data Integrity and Confidentiality Certification includes hardening of: • Hosting environments (e.g., patching and VM isolation). • Admin-level access (with logs and justifications). • Encryption standards and retention policies. It ensures that even if application code is secure, the environment and operations remain secure too.</p>
+<p>Recommendations for Government Agencies To truly secure India’s digital infrastructure and citizen-facing services, government departments must move from reactive audits to proactive certifications. Here are few Policy and Practice Recommendations: • Mandate ISO 27001 for all major G2C and G2B platforms: Especially those handling financial transactions, personal data, or integration with external APIs. • Include certification requirements in RFPs and vendor contracts: Third-party developers and data handlers must hold valid ISO 27001 / CMMI / WCAG certifications. • Train internal teams in certification-readiness: Appoint internal ISO leads or auditors who can conduct pre-certification assessments and maintain compliance. • Establish a central repository of SoAs and audit results: Enable transparency and knowledge-sharing across ministries. • Integrate SOPs and ISO controls into Agile workflows: Encourage secure-by-design thinking rather than last-minute audits. • Tie funding and renewals to certification compliance: Make ISO compliance a condition for continued budget allocation and hosting approvals.</p>
+<p>Conclusion In today’s digital era, trust is as critical as technology. Citizens expect not only faster services but also secure, accountable systems that respect their data and rights. Routine audits may tick a box, but only certifications like ISO 27001 can guarantee that an organisation has done the hard work—building security into its infrastructure, its people, its processes, and its mindset.</p>
+<p>For India’s digital governance to mature, security cannot remain an afterthought. It must be embedded, enforced, and externally validated. Certification is not just a stamp—it’s a statement. A declaration that the government values privacy, accountability, and excellence in public service delivery.</p>
+<p>Contact for more details Arpita Barman Senior Technical Director &amp; HoD Science and Technology (DST &amp; DSIR) Informatics Division NIC HQ, A-Block, CGO Complex Lodhi Road, New Delhi - 110003 Email: hod-mst@nic.gov.in, Phone: 011-24305400</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="cyber-hygiene-at-scale-securing-government-lan-and-endpoints-using-mogles-caar-july-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Cyber Hygiene at Scale - Securing Government LAN and Endpoints using MOGLES &amp; CAAR</span></a><a class="article-nav-link next" href="getotp-a-smart-companion-for-reliable-otp-delivery-july-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">GetOTP - A Smart Companion for Reliable OTP Delivery</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

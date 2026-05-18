@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PEHCHAN - Simplifying the Civil Registration in Rajasthan Digitally — Informatics October 2018</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:October 2018"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/october-2018/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2018/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2018/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/october-2018/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2018/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2018/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/october-2018/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2018/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2018/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/october-2018/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2018/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2018/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2018.html">October 2018</a><span class="breadcrumb-sep">&rsaquo;</span><span>PEHCHAN - Simplifying the Civil Registration in Rajasthan Digitally</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">E-GOV. PRODUCTS &amp; SERVICES</div>
+          <h1 class="article-title" data-pagefind-meta="title">PEHCHAN - Simplifying the Civil Registration in Rajasthan Digitally</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By SARBJEET SINGH (Editor), TARUN TOSHNIWAL, Dy. Director General &amp; SIO, AMIT AGARWAL, Technical Director, AKHIL ARORA, Principal Secretary, Planning and IT &amp; Communication, Rajasthan, Dr. OM PRAKASH BAIRWA, Chief Registrar (Birth-Death) &amp; Registrar General (Marriage), Rajasthan &bull; pp. 17–20</p>
+          <p class="article-issue-link">
+            From <a href="../issues/october-2018.html">October 2018</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Birth registration is one of the fundamental and vital aspects of the democratic process of a government. It is the recognition of a new member in a society, who is entitled for all the rights and responsibilities of a valued citizen. Similarly important are Death and Marriage Registrations, which entitle a person to receive various citizen benefits. Without an efficient civil Registration System, it is virtually impossible to plan or implement effective development strategies. The Government of Rajasthan, in technical collaboration with NIC has thus introduced the online system of Registration called Pehchan with the objective of having timely registration of Birth-Death and Marriage and effective monitoring of the system.</p>
+<p>ABOUT REGISTRATION As per the Registration of Births &amp; Deaths Act, 1969, it is mandatory to register every birth/ stillbirth and death with the concerned state/ UT Government within 21 days of its occurrence. The government, accordingly has provided a well-defined system for registration of birth, with the Registrar General at the centre and the Chief Registrars in the States, running through District Registrars and Registrars to the Panchayats and Town Registrars at the periphery. In Rajasthan, Registration of births and deaths is compulsory as per provisions of Registration of Births &amp; Deaths Act, 1969 and Rajasthan Registration of Births &amp; Deaths Rules, 2000.</p>
+<p>Registration of Marriage is being done under the Rajasthan Compulsory Marriage Registration Act, 2009.</p>
+<p>PROJECT PEHCHAN The Registrars, appointed by government in every Gram Panchayats and Urban Local Bodies have been earlier carrying out registration of Birth &amp; Death or Marriage manually by entering details in registers and issuing paper certificates. The challenges faced in this process such as time delays, inefficiency in monitoring, and lack of transparency have led to the concept of Pehchan, which is a unified Web Portal for birth, death, still birth and Marriage Registration in Rajasthan. Developed by NIC, Pehchan has the access mechanism to every rural and urban Registrars for registration of Birth, Still Birth, Death and Marriage. This web-based application reaches right up to grassroots level i.e., Gram Panchayat, which is within the convenient reach of every rural citizen. Pehchan aims to reduce information gap between Registrar and Government and to reach the un-reached digitally. It also serves by building up the capacity of the Panchayat for prompt and responsive e-service delivery.</p>
+<p>Pehchan has the facilitation of role-based login for Registrars, Sub Registrars, Block Statistical Officer, District Registrars and the Chief Registrar. About 1.26 Crore Registrations have been carried out through the portal so far. The system has been integrated with UIDAI for Aadhaar authentication and has the facility to provide digitally signed/ e-Signed Certificate by Registrars and Sub Registrars. SMS alert is sent to applicant on Registration and digitally signed certificate is delivered to the applicant’s email ID. About 941 private hospitals have also been authorized to apply online for registration of the events occurred in their respective hospitals. The Portal also provides about 100 types of monitoring reports to District Registrars and Chief Registrar. Toll free helpline is available to answer the queries of citizens on the registration through the portal.</p>
+<p>There are about 10,000 rural and urban Birth, Death and Marriage Registrars in Rajasthan. The Government has also authorized about 2200 medical institutions (PHC/ CHC/ Government Hospitals) as Birth &amp; Death sub-registrars to register the Birth-Death events within 21 days of occurrence in their respective institutions.</p>
+<p>OBJECTIVES ✦•IT enablement of Civil Registration System ✦•Timely registration of birth, stillbirth, death and marriage ✦•Delivery of computerized certificates ✦•Capacity building ✦•Monitoring up to grass-roots level ✦•Timely Reporting of events online by citizens ✦•Timely progress reporting ✦•Availability of vital statistics</p>
+<p>STAKEHOLDERS Citizens ✒✒Can apply for registration Online or Offline at Registrar Office. ✒ Track the application/ registration status and download certificate through portal or mobile App. ✒ Take print of the digitally signed computerized certificate.</p>
+<p>Private Hospitals ✒✒Authorized to make entry of events occurred in their hospitals without the need of sending the hard copy of event to Registrar Office. ✒ Print Registration Certificates.</p>
+<p>e-Mitra Kiosks ✒✒Authorized by Government of Rajasthan facilitate applying online, on behalf of citizens. After registration by concerned registrars, kiosks delivers the digitally signed certificate to citizens, downloadable from the portal.</p>
+<p>Registrar ✒✒Makes entry of birth, stillbirth, death, marriage on portal and issues certificate. ✒ Performs correction after approval by District Registrar. ✒ Add child name and registers adopted child. ✒ Also makes entry of Legacy Registrations. ✒ Generates progress report and required statistical report as per the provisions in the Act.</p>
+<p>Sub Registrar ✒✒Registers birth, death, stillbirth within 21 days of the event on portal and issues certificate. After 21 days, registration can only be done by respective Registrar Office. ✒ Generates progress report and required statistical report as per the provisions in the Act</p>
+<p>Block Statistical Officer ✒✒Monitors registration of events within their block. ✒ Generates MIS report for speedy and effective monitoring</p>
+<p>District Registrar ✒✒Monitors events within the District. ✒ Have the authority to approve modifications in the registration requested by Registrar online. ✒ Generates MIS reports and required statistical reports as per the provisions in the Act</p>
+<p>Chief Registrar ✒✒Overall responsibility for registration of Birth/ Death/ Stillbirth/ Marriage events in the State. ✒ Proposes enhancement or modification in the registration rules to Government and issue notifications. ✒ Generates MIS report and various vital Statistics online as per the provisions in the Act. ✒ Reports vital statistics of State to Registrar General of India (RGI)</p>
+<p>National Informatics Centre (NIC) ✒✒Technical consultant for design, development, hosting and maintenance of the system. ✒ Advise improvement of services time to time.</p>
+<p>KEY MODULES Registration Module ✒✒Facilitates registering birth, death, stillbirth and marriage and generates certificate.</p>
+<p>Legacy Registration Module ✒✒Facilitates registering of the already registered registration manually or by any other means; with the portal keeping the original registration number intact.</p>
+<p>Baby Name Addition Module ✒✒Facilitates adding baby name, which is applicable for 15 years from date of birth. Portal generates new certificate after addition of baby name.</p>
+<p>Adopted Child Registration Module ✒✒Facilitates registering of an adopted child and provisioning to Registrars, enabling them issuance of Registration Certificate with name of new parents of the child. Child adoption, usually is through an agency or relative.</p>
+<p>Language Change Module ✒✒Facilitates to generate bilingual certificate or to update the language from Hindi to English or vice-versa. Such certificates are necessary for the requirement of Passport etc.</p>
+<p>Widow Registration ✒✒As per norms, a woman, whose husband has expired can make widow registration. The portal has the facility to generate Marriage Certificate by suffixing “Late” to the name of the deceased spouse.</p>
+<p>Reporting Module ✒✒Facilitates role-based logins and hence various reports are generated based on the user role. Nearly 100 reporting formats are prepared and made available to various users.</p>
+<p>Online Applications ✒✒Facilitates the citizens to apply for the registration online from any place; the module then generates an application form with the unique reference number. The application is then verified and registered by registrar and issues digitally signed certificate.</p>
+<p>Digitally Signed Certificate System has the facility to generate digitally signed; dongle based or Aadhaar based e-Signed certificate, which can be downloaded from portal, mobile App or nearest CSC/ e-Mitra kiosks.</p>
+<p>Search Registration Module allows keeping track of the Registration.</p>
+<p>SALIENT FEATURES ••System can be used as a product by any State &amp; save development efforts ••Unique Registration Number across the State ••Role-based login for Registrar, Sub Registrar, Block Offices, District Registrars and Chief Registrar office ••Option to maintain legacy registration ••Facility for bilingual registration certificate ••Online workflow for selective changes request by Registrar and approval by District Registrars ••Uploading of scanned affidavit and reporting forms ••Periodical progress report ••Periodical checklists and generation of birth-death register ••Facilitates delayed registration only with proper affidavit ••Facilitates Aadhaar enabled registration ••Facility to register twin children birth and death ••Facility to register adopted child ••Facility to save draft of registration for Registrar and Sub Registrars ••Option for unclaimed (Lawaris) death registration ••Birth registration of foreign national’s child settled in India under Section 20 started ••Facility to register widow registration in marriage ••QR code implementation on all certificates ••PVC birth card facility through eMitra Kiosks ••Certificate repository in Raj eVault ••SMS alert facility for citizens (on application/ objection/ registration) ••SMS alert for the date of physical presence of groom and bridegroom with Registrar office ••Responsive &amp; device friendly portal ••Toll free centralized Helpline</p>
+<p>BENEFITS ••Uniform process of registration across the State ••Transparency in civil registration system ••Minimized duplicity of registration ••Online application facility to citizens through portal and mobile App ••Digitally signed certificate at doorsteps ••Online searching of registration by citizens ••Issuance of certificates on same day ••Bilingual registration certificate ••Printing on normal stationary avoiding preprinted stationary ••Quick circulation of instructions, notifications etc. to all Registrars/ District Registrars ••No delayed reporting from private hospitals ••Real-time availability of various vital statistics and MIS to District Registrar and Chief Registrar</p>
+<p>TECHNOLOGY ••Application is developed in ASP.Net with C# and JAVA script using framework 4.0 ••Backend database is SQL Server 2012 ••Far DR site at Delhi</p>
+<p>MOBILE GOVERNANCE Android and IOS based Apps are available to facilitate citizens to apply through mobile phone, download digitally signed certificate, search registration, application status, forms download etc.</p>
+<p>OUTCOME AND SUCCESS ••Digital service delivery eliminated long queues at Registrar Offices ••Institutional deliveries in government hospitals are registered immediately ••Family gets birth certificate from private hospitals at the time of discharge ••Insurance companies now settles the claims by verifying the death certificate through the QR Code ••Hassle-free marriage registration process ••Enables data analytics of vital statistics ••Convenience of having birth certificate on PVC card</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="e-niyantran-online-time-card-system-to-save-the-migrating-wildlife-of-assam-s-kaziranga-national-park-october-2018.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-NIYANTRAN: Online Time Card System to save the migrating wildlife of Assam’s Kaziranga National Park</span></a><a class="article-nav-link next" href="journey-of-benefits-transfer-in-haryana-1966-2018-strengthening-and-enhancing-dbt-service-in-the-interest-of-beneficiaries-october-2018.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">JOURNEY OF BENEFITS TRANSFER IN HARYANA (1966-2018): Strengthening and enhancing DBT service in the interest of beneficiaries</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

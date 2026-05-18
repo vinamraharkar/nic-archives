@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TS-eMining Geological &amp; Mineral Resources Planning — Informatics April 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/april-2024/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="../pages/april-2024/page-35.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;36</div><a href="../pages/april-2024/page-36.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-36.jpg" alt="Page 36" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-36.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2024.html">April 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>TS-eMining Geological &amp; Mineral Resources Planning</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">eGov Products &amp; Services</div>
+          <h1 class="article-title" data-pagefind-meta="title">TS-eMining Geological &amp; Mineral Resources Planning</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Ajay Madhukar Joshi, Govardhana Srikanth, Aravind Nehru Lankamsetty, Ravi Bandi &bull; pp. 34–36</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2024.html">April 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">TS-eMining stands as an encompassing and cohesive solution crafted by NIC, Telangana, specifically tailored for the Department of Mines and Geology under the Government of Telangana. The Department plays a pivotal role in the advancement of mineral resources, encompassing tasks such as the exploration of mineral deposits, regulation of mineral activities within the state, and the collection of mineral revenue. This initiative introduces a robust and stream-lined approach to mineral resources planning and management through a series of online modules. These modules, integrated into the department’s web portal at https://mines.telangana.gov.in, are designed to enhance the ease of conducting busi-ness while ensuring effectiveness and transpar-ency in operations. The system caters to various stakeholders within the mining sector, including mining and quarry lease holders, mineral dealers, temporary permit holders, entrepreneurs, and chief-engi-neering divisions of government departments. By offering a user-friendly interface and com-prehensive features, eMining aims to modernize operations, simplify processes, and foster a con-ducive environment for all involved parties.</p>
+<p>Objectives The key objectives of integrated Mines &amp; Mineral Resources Planning System are as follows:</p>
+<p>• To support major functions of the Department include Promotion, Regulatory &amp; Mineral Rev-enue Collections by maintaining the data of all stakeholders and their activities • Development of Standard Operating Proce-dure &amp; End to end tracking of mineral extraction to consumption • Simplify mineral administration, effective real-ization of revenue &amp; curb leakages • Decision Support System for Managerial level staff and transactional details for Operational staff • To collect District Mineral Fund (DMF) online from the leaseholders and maintain all develop-ment activities using DMF funds for the interest, benefit and sustainable development of areas affected by mining or mining related operations • Collecting State Mineral Exploration Fund (SMET) from the leaseholders for geological in-vestigation, mapping, exploration and develop-ment of mineral resources in the State • Disseminating geological and mineral informa-tion of the mineral resources to promote miner-al based industries and overall development of mineral sector in the State • Auto Approval of online ePermits, Online Transfer &amp; Renewal of Lease Applications</p>
+<p>Implementation The scope of the eMining Project is to design, develop, test and to implement all the activities related to mines and mineral resources planning. The software comprises all major functionalities to address the ICT requirements of the Depart-ment of Mines and Geology. The Department is determined to go for a full-fledged e-Governance Solution aiming for total ‘paperless’ mineral ad-ministration in the State of Telangana. eMining provides users with real-time access to mineral service information, introducing transparency and efficiency to the department, ultimately ben-efiting citizens and stakeholders alike. To achieve the same following web application modules are being implemented:</p>
+<p>• Grant of Minor Mineral Concessions (Quarry Leases) through Auction through Telangana State eAuction Platform • Online Mineral e-Payment &amp; e-Permit System. • Online payment of statutory amounts • Issue of e-permits (now Auto Approval) • Mineral Revenue Assessments etc. • Online grant of Transit Passes generation Transit Forms for Lease Holders. (Printing on Secured Stationery) • Online issue of Temporary Permits for Minor Minerals • Grant of Quarry Leases in case of QL Applications wherein Letter of Intent (LoI) has been issued • Online Filing, Receipt, Processing and Approval of Renewal Mineral Concession Applications • Online Filing, Receipt, Processing and Approval of Transfer Mineral Concession Applications</p>
+<p>TS-eMining application has digitized and streamlined mineral resource management processes in Telangana. It facilitates transparent governance, efficient concession management, and sustainable mining practices through real-time data access and integrated systems, fostering economic growth and environmental stewardship in the sector.</p>
+<p>Department of Mines &amp; Geology, Telangana designed TS-eMining software which is developed by NIC eMining Team, and being implemented for ‘ease-of-doing-business’ under G2G, G2B &amp; G2C. Facilitated mineral concessions through auction, online payments, permit system, mineral dealer registration &amp; transit passes for dispatch of finished mineral, appeals etc. in online mode with accountability &amp; transparency in the form of SLAs (Service Level Agreement) and intimation (SMS) all levels of approvals. TS-eMining Mobile APP implemented to check Mineral Transporting Vehicles, and in case violation, the penalty will be collected through online process. P. Katyayani Devi, ias Director of Mines &amp; Geology Telangana State</p>
+<p>• Online Filing, Receipt, Processing and Approval of Quarry Lease for Minor Minerals in Patta Land • Appeals – Online Filing, Processing &amp; Disposal of Appeal Applications • Zero Permits for Government Works • Show-Cause Module – In case of QL Notice/Determination of breach of lease conditions, online issue of Show Cause Notice and for non-rectification of the breach, online Determination of Quarry Lease • Implementation of eOffice – Processing and disposal of files through NIC eOffice Platform • Online filing of Application for Registration of Brick Manufacturing Kiln and Mangalore Tiles • Online filing of Application for Renewal of existing Mineral Dealer License • Registration of Mineral Transporting Vehicles in the State • Reports: Various MIS &amp; Data verification reports are developed and implemented for dealing hands, concerned authorities and Assistant Directors at district, regional and state level for regular day-to-day monitoring of various activities being undertaken at respective levels which includes: • Mineral Revenue Report • Permit-wise Revenue Reports • Daily Permit Reports • Daily Passes Reports • Bank Transactions Reports • Income Tax Reports • MDL Permit Report • NMET (National Mineral Exploration Trust) Report • SMET (State Mineral Exploration Trust) Re-port • DMF (District Mineral Fund) Report</p>
+<p>TS-eMining Mobile App TS-eMining MobileApp is a robust and dynamic in nature, being enriched continuously with new functionalities that empowered by latest technol-ogy and standard practices. This Mobile App is an effective and integrated mineral transport solu-tion that provides access to all the stake holders related to mineral transport services. It facilitates online verification of transit form, transit pass, road inspection etc. The Mobile App provides a platform that empowers inspection teams to per-form inspection of minerals during transporta-tion by vehicles. • TS-eMining Mobile App serves the field officers at District level (Assistant Director’s, Assistant Geologist’s Royalty Inspector’s Technical Assis-tant’s,) to verify the validity of the transit forms/ passes, sand way bills, brick transportation etc. issued by the Department • The Mobile App facilitates auto calculation of statutory payments based on the quantity, type and variety of mineral, in case of detection of unauthorized mineral transportation. An online payment link shall be sent through SMS to the owner of the vehicle to pay penalty online • It provides online payment facility for the pen-alty imposed due to non-availability of passes or excess quantity that being transported • Owners/defaulters shall be communicated through SMS to avoid manual interface including handling of cash by the officers in the field. • Online Receipts and Reports shall be generat-ed by the concerned authorities The TS-eMining Mobile App was ceremoni-ously launched on September 30, 2023, at B.R. Ambedkar Telangana State Secretariat. Leading the inauguration were distinguished figures in-cluding Shri P. Mahender Reddy, Hon’ble Minister for Mines &amp; Geology and Information and Public Relations (I&amp;PR); Smt. A. Santhi Kumari, IAS, Chief Secretary to the Government of Telangana; Smt. P. Katyayani Devi, IAS, Director of Mines &amp; Geology; and the dedicated eMining Team of NIC Telanga-na. This significant event marked a milestone in advancing technology for efficient management and oversight of mining activities in the region.</p>
+<p>Fig 10.1 : Launching the TS-eMining Mobile App by Shri P. Mahender Reddy, Hon’ble Minister for Mines &amp; Geology and Information and Public Relations (I&amp;PR) at BR Ambedkar Telangana State Secretariat on September 30, 2023</p>
+<p>Fig 10.2 : TS-eMining Mobile APP screens</p>
+<p>Technologies Used • Front-end: HTML, CSS, JS, and Bootstrap • Back-end: Microsoft.NET ASP .NET and C# • Database: Microsoft SQL with • Mobile App: Android Server</p>
+<p>Innovations Applied The ICT solution implemented for the Depart-ment of Mines &amp; Geology in Telangana, accessible through the ‘https://mines.telangana.gov.in’ web portal, represents a significant stride towards governance modernization. Its robust architec-ture provides a comprehensive repository of information pertaining to mineral resources, ad-ministration, policies, regulations, revenue, and production. Functioning as a centralized resource hub, the portal plays a pivotal role in facilitating stream-lined access to mining-related data for stake-holders, entrepreneurs, and the general public alike. From initial application to final disposal, the management of mineral concessions is seam-lessly handled online, bolstered by Service Level Agreements (SLAs) and SMS notifications that en-sure transparency throughout the process. Through the elimination of redundancies and the enhancement of data integrity, the portal simplifies information gathering by employing standardised proformas. Moreover, it optimises the frequency of data collection and empowers decision-makers through the provision of Man-agement Information Systems (MIS) and analysis reports. The integration of mining activities and data-bases within the portal creates a cohesive user experience, standardised processes, and pri-oritises user-friendliness, thereby promoting hassle-free operations. This comprehensive ap-proach not only enhances efficiency but also fos-ters a culture of transparency and accountability within the mining sector in Telangana.</p>
+<p>Benefits The Telangana state government has estab-lished district offices (32 in total) to streamline mineral administration, ensuring accessibility for mining entrepreneurs down to the micro-level. Oversight is provided by three regional offices dedicated to regulating mineral activities. Un-der the e-Governance policy, the department is implementing Information &amp; Communication Technology (ICT) solutions to enhance service delivery, communication, and integration across government functions. This initiative aims to ben-efit government entities, citizens, and stakehold-ers by facilitating transparent, efficient, and con-venient mineral services. The complete rollout of the eMining software was achieved through collaborative efforts, involving stakeholders in discussions, design, and development to mitigate initial resistance. Customized training modules were deployed at multiple levels, and employees were engaged step by step in the rollout process to identify and address challenges promptly. Software performance was rigorously evaluated post-implementation to ensure effectiveness.</p>
+<p>Awards At the 8th National Digital Transformation Conclave and Awards-2022, held on December 9, 2022, in Guwahati, Assam, the TS-eMining Project team from NIC Hyderabad, Telangana, and the Mines and Geology Department, Government of Telangana, received the Digital Transformation Award in the Government Initiative in IT catego-ry. This recognition by GovConnect highlights the Centre’s dedication to nurturing a strong Digital Transformation ecosystem.</p>
+<p>Target Ahead All major activities of mineral administration are digitized. Emerging technologies like AI, ML and Big Data are yet to be explored in mineral ad-ministration, regulation to optimize production, exploration processes, improve supply chain, lo-gistics and increase sustainability, with emphasis on environmental friendly mining and conserva-tion. As the huge amount of data available to pro-cess, the digital tools, such as advanced process control, AI, Big Data, digital twins, augmented re-ality, and IoT may come into play and may facil-itates to take better decisions. The department is planning to launch Mining Tenement System (MTS) in tune with the guidelines of Ministry of Mines, Government of India, which would primar-ily involve automating the entire mineral con-cession life-cycle, starting from identification of area and ending with closure of the mine, and connecting various stakeholders, for real time transfer of electronic files and exchange of date. This may enable effective management of miner-al concession regime and transparency in mining operations, transportation of ore with the help of online electronic weighbridges. The department also taking steps to imple-ment Mining Surveillance System (MSS) in tune with the guidelines of Ministry of Mines, Govern-ment of India for geo-referencing of mining and quarry leases and mineral bearing areas in the State. The MSS enable to detect and curb illegal mining and transportation activities.</p>
+<p>Fig 10.3 : Department of Mines &amp; Geology officials, along with the NIC team, honored at the 8th National Digital Transformation Conclave and Awards-2022 on December 9, 2022</p>
+<p>Contact for more details Ajay Madhukar Joshi State Informatics Officer NIC Telangana State Centre, A Block, BRKR Bhavan Tank Bund Road, Hyderabad - 500063 Email: sio-ts@nic.in, Phone: 040-23494700</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="online-policy-based-transfers-system-a-comprehensive-system-for-implementation-of-bulk-transfers-april-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Online Policy-Based Transfers System A Comprehensive System for Implementation of Bulk Transfers</span></a><a class="article-nav-link next" href="ueba-an-in-depth-exploration-of-user-and-entity-behavior-analytics-april-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">UEBA An In-depth Exploration of User and Entity Behavior Analytics</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

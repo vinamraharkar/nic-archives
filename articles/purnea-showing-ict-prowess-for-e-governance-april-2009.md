@@ -1,0 +1,32 @@
+---
+title: "Purnea - Showing ICT Prowess for e-Governance"
+publication: "Informatics"
+issue_date: "April 2009"
+pages: [32, 33]
+author: "Gautam Kumar Mishra, Prashant Belwariar"
+section: "District Informatics"
+---
+
+## Purnea - Showing ICT Prowess for e-Governance
+
+Traversed by several rivers flowing from the mighty Himalayas, prominent among are 'The Kosi' and 'The Mahananda', Purnea, the north-eastern district of Bihar state, has rich loamy soil of alluvial formations making it ideal for the cultivation of jute and banana, both being the major agricultural products of the district. It is believed that the name of the district was derived from the lotus flower, which was once found in abundance in the past in the canal of the two major rivers.
+The district has two subdivisions: Purnea and Dhumdaha and comprises eleven blocks: East Purnea, Krityanand Nagar, Banmankhi, Kaswa, Amaur, Bainsi, Baisa, Dhamdaha, Barhara Kothi, Rupauli, Bhawanipur.
+NIC, Purnea came into being in the year 1989. Since inception, the District centre, has developed and implemented many ICT projects and Decision Support System, which has helped the district administration to be transparent, better informed and render timely services to the people, thus paving way for ICT enabled e-governance in the district.
+Network Support:
+Video Conferencing & e-mail: The Video Conferencing service has been provided using VSAT as well as Leased Line connectivity. The NICNET connectivity has also been provided to different offices in the district facilitating e-mail utility to all senior officials for faster communication and exchange of important documents. These services are available on 24x7 basis.
+Excerpt of the letter from Sh. Sridhar C. IAS, DM& Collector, Purnea, Bihar
+I am happy to note that the e-Governance projects of Purnea District will be published in Informatics; Quarterly Newsletter of NIC, a source of sharing information on IT based technology in India. Since its inception in the year 1989, NIC is providing best technical services for delivery of better services to the common man & the local administration. My tryst with computerisation started in 2002 when I first came to NIC District Centre Purnea as IAS Probationer and completed my various assignments using matured IT tools available in the centre. It is team efforts of NIC that the District Purnea is marching forward in implementation of meaningful e-governance projects like e-Khazana, transport, bhavisyanidhi, vinayak & others.
+Time is not far-off when a remote district like Purnea shall emerge as a frontline IT hub in the region with the joint coordination of District Administration & NIC.
+Website Support: Websites of the district administration, police department, rural development, Jawahar Navodaya Vidyalaya etc were designed and developed by the center. The Rural development website http://rdd-purnea.bih.nic.in gives details of various rural development schemes like Indira Awaas, NREGA, BPL etc. apart from useful links to other government sites.
+Major ICT Projects
+Registry Office Computerisation: “Vinayak Software” designed and developed by NIC Bihar state center was implemented for the computerisation of Registry Office. Based on the PPP model, the project was successfully implemented at the SRO office, Purnea. Biometric devices like finger print scan and web camera are being used to capture images required for deed registration. The software, developed using VB6.0 and SqlServer database, has been a major e-governance initiative in the district making registration of various types of documents fast and simple.
+Old Age Pension / Family Benefit Scheme: The application of ICT in the social sector has had great impact on the welfare of common man. Details of about 18735 beneficiaries under 'Social Security Pension Scheme” have been entered year wise using MS-Access software. Priority level of beneficiaries were marked thus making the scheme more transparent. List of BPL beneficiaries eligible for 'Aam Admee Bima Yojna' are regularly prepared.
+Online Treasury Computerisation: “e-Khazana”, the treasury computerisation software was implemented at Purnea well before others thought about it in this crucial sector. Electronic advices are generated daily. Monthly accounts of Treasury are being prepared as per schedule. Treasury data are loaded at the site http://treasury.bih.nic.in on regular basis. The software was developed on Visual basic and SqlServer database.
+MIS for General Provident Fund: Calculation of account slip, collateral evidence and checklist of govt. employees are printed after the data is captured from the District treasury. The software was developed on VB 6.0 and MS Access database, which has enabled G2E services in the district.
+BPL Database Computerisation: The below poverty line databases of Rural and Urban population were created as per the prescribed guidelines. Software was developed which uses the BPL-Urban Development database created for the purpose. The software was replicated at other district centres of the state. Thus, IT services have been used for the benefit of the common people.
+Arms Licensing Software: Database of all arms license holders of the district were created. Software was developed for handling various types of queries. Reports, as per requirement of the district administration, are generated through the software. The software, incorporates legacy data, is highly user friendly and has been replicated at other districts of Bihar. The customized application was developed using MS-Access in the early nineties.
+NREGA Soft: Purnea took a lead in implementing the NREGA Soft Project in the state. Online data entry is ensured from all blocks of the district. This has resulted in better planning and monitoring of NREGA soft project by the district administration.
+IT Support to District Election: IT support has been provided to District Election Office, Purnea to cater its different activities as per guidelines of the Election Commission of India. To prepare photo-embedded voter list, NIC Purnea has taken lead to finish and publish the same within the stipulated time.
+Other Major ICT Activities : Support to Rural Development Department, Support to District Revenue Department, MIS for Divisional Level Meeting, MIS for District Level Janta Darbar, MIS for District Nazarat, Computerisation of District Consumer Forum (CONFONET), Computerisation of District Transport Office, Common Integrated Police Application (CIPA).
+For further information contact:
+sio-bih@nic.in

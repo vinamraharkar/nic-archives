@@ -1,0 +1,12 @@
+---
+title: "Financial Management Informatics Project"
+publication: "Informatics"
+issue_date: "October 1992"
+pages: [2, 3]
+author: null
+section: "Leaf of NICPLAN"
+---
+
+## Financial Management Informatics Project
+
+The Eighth Five Year Plan of the National Informatics Centre is a blue print of action of the Organization. Each 'Leaf of NICPLAN' presents an extract from the Plan to provide the Reader with an insight into just how the Organization visualizes the future. In this issue we present the Financial Management Informatics Project. The integrated Financial Management System for a State comprises of the following: a) Treasury Accounting System. b) Accounting of Central Transactions and State Transactions put through by AGs. c) Financial Resources Information System (Sales Tax; Land Tax and other revenues) d) Budget System interface to account and Financial Resources Management System. The magnitude and volume of the financial transactions in the Government necessitated the availability of a reliable management information system for accounts. The system will assist the management in monitoring and analysis of plan schemes, programmes and activities, and securing itemised control over expenditure and serve as a tool for effective management of the various operations entrusted to the Treasury. When this information is linked to the Budget Information System, it will provide to the State Governments an online information system relating to availability of financial resources. To begin with, the development of a computer-based MIS on financial transactions taking place at the district level is required. The implementation of this project has already been taken up on a pilot basis through NIC funds in the State of Maharashtra in all its districts and four districts of Madhya Pradesh. During the Eighth Five Year Plan period, this will be implemented in all the States. When enhanced NICNET is made available through packet radio extension, the stage is set for the implementation of the Financial Management Information System in every State starting from the tehsil level, going up to the District level and consolidated at the State level. The rest of the investment required for creating the necessary databases can be taken up by the State Governments which can utilize the enhanced NICNET facility without having to make additional investments in hardware and software.

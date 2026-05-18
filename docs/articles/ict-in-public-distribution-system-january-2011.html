@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT in Public Distribution System — Informatics January 2011</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2011"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2011/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2011/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2011/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2011/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>ICT in Public Distribution System</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">ICT in Public Distribution System</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Vivek Verma, Dr. Ranjna Nagpal &bull; pp. 4–7</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2011.html">January 2011</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The primary policy objective of the Department of Food &amp; Public Distribution (DoF&amp;PD) is to ensure food security for the country through timely and efficient procurement and distribution of essential commodities across the country. This involves procurement of various food grains, building up and maintenance of food stocks, their storage, movement and delivery to the distributing agencies and finally distribution to the intended beneficiary. TARGETED Public Distribution System (TPDS) has evolved as a system of management of scarcity and for distribution of food grains at affordable prices. TPDS is an important constituent of the strategy for poverty eradication and is intended to serve as a safety net for the accepted number of BPL families. KEY COMPONENTS OF THE PDS INCLUDE Procurement, Storage and Movement: Food Corporation of India (FCI) moves the commodities and ensures its availability at various FCI godowns and depots for onward distribution within the state. State Government further lifts the stock as per their requirement for further allotment to Fair Price Shop (FPS) and finally for distribution to beneficiaries. Fair Price Shop Operations: Sale of commodities to ration card holders is achieved through government approved fair price shops. Ration Card Issuance and Delivery of Food grains to Beneficiaries: Ration cards are issued by the State Food Department based on the beneficiary identification criteria decided by the government. It is critical, as many of the benefits of the PDS system are lost due to challenges like exclusion errors, duplicate cards etc. which may lead to diversions and leakages. Licensing and Regulation: The objective of licensing process is to issue and renew licenses for FPS, Kerosene oil Depots and Wholesale dealers. And also monitor and regulate the operations of FPS. Grievance Redressal: A well-functioning Grievance Redressal process builds the confidence of the beneficiaries regarding PDS. ICT interventions such as Call centres, online grievance registration, SMS etc can increase transparency in the system and bring in efficiency, effectiveness and accountability. ICT INITIATIVES BY CENTRAL GOVERNMENT DoF&amp;PD has initiated three schemes namely Integrated Information System for food grain Management (IISFM) system for FCI operations, Smart card based delivery of commodities in State of Haryana &amp; Chandigarh UT and the 'Computerization of TPDS Operations' in three districts each of pilot States of Andhra Pradesh, Assam, Chhattisgarh and Delhi. INTEGRATED INFORMATION SYSTEM FOR FOODGRAINS MGMT Food Corporation of India operates through a country-wide network with its corporate office in New Delhi, 5 zonal offices, 23 regional offices, 166 district offices, and nearly 1700 food storage depots. The project which comprises of different sub-modules such as DIISFM (District Information System for Foodgrains Management), IRRS (IISFM Rapid Reporting Services), DCMS (Depot Code Management System) have been deployed suiting the business logics of FCI. Following are the salient features of the work flow application: Basic data collections and Transactions regarding Receipts, Issues &amp; Dispatches of food grains at the depot level. Off-take against allocation of food-grains on different schemes of the Govt. of India. Movement of food grains through rail. Information related to chemical treatment/infestation carried out on the food grains, stored in the depot. Information related to trucks carrying food grains coming in and going out of the depot, gunnies, chemicals etc. SMART CARD BASED PDS (SCBPDS) IN HARYANA AND CHANDIGARH The then Hon'ble Union Finance Minister announced in his budget speech of 2008 about replacement of paper based Ration Cards with SCBPDS in Haryana and Chandigarh. It is targeted to automate certain manual operations happening in PDS through online software application with minimum manual intervention, ready availability of reports and making the distribution process highly transparent. Objectives: Timely and need based allocation of commodities. Induction of transparency and accountability in operations. Reduction of redundant workload. MIS for monitoring and quick decision making. Integrating information relating to operations handled by different agencies. Salient features: Introduction of SCOSTA compliant Smart Cards for all the stakeholders. Web enabled, role and workflow based Application Software on Open Source platform. Distribution of commodities at FPS through PoS terminals using biometric authentication to check genuineness of beneficiary. — Dr. Y K Sharma, Deputy Director General, NIC. Public Distribution System is targeted to feed millions of poor and hungry people. Numerous stake-holders make the system work through a chain of intermediaries, which also results in the need to have a robust monitoring mechanism. With the government's objective to bring in transparency, efficiency, accountability in the whole distribution process, Smart Card based delivery of commodities to beneficiaries was launched in Chandigarh (UT) and Haryana state. Integration of Allocation with the Stock Management System of Food Corporation of India and state agencies shall provide an end-to-end solution for food chain management for PDS. Application Software: After detailed System &amp; Process Study carried out in Haryana and Chandigarh, generic software was developed by Central Team at NIC Headquarter. Implementation is taken care of by the respective state team in consultation with the central team. It can easily be customised for replication in other states. Various modules are - Data Digitization Software Centralized Application Software having six modules; namely Allocation and Distribution, Ration Card Management System, FPS Licensing including renewal, Key Management System (KMS), PoS Operations Management, Smart Ration Cards personalization &amp; Printing Grievances Redressal KMS Infrastructure has been established at FSDs and KMS based Smart Cards for key stakeholders has been finalized and are being printed &amp; personalized. ITC IN PDS IN OTHER STATES Tamil Nadu: A number of web based reporting systems have been implemented for streamlining activities for better management and control, and to introduce more transparency and efficiency. Various modules are - Monthly PDS Allotment Software takes care of monthly PDS Allotments for all FPS, monthly online data entry/updation of card statistics, and offtake and sales particulars. Follow-up Module takes care of back end activities by the depart ment officials like follow-up of the complaints and submission of reply to the complainant by the con cerned office. Reporting System for Enforcement Cell enables online reporting of cases detected, prosecutions made, commodities and vehicles seized. Uttar Pradesh: Covering 1/6th of the country's population, it is perhaps the largest distribution network of its kind strengthen-ing about 73,000 FPS. Digitization of all ration cards and making entire data accessible to public has been done. 21.6 lakhs bogus and ineligible ration cards and 2.6 lakh wrongful cards have been cancelled. SMS alerts are provided to ration card holders on lifting of rations which makes working of the department more accountable and transparent. For the convenience of citizens, there is an option to lodge grievances/suggestions through web-site, which is monitored at all levels. Chhattisgarh: The food grain supply chain from paddy procurement at 1588 procurement centres to delivery of Rice and other PDS commodities to 10500 FPS has been computerised. The three distinct areas are - Paddy Procurement and Milling module handles, through online and offline mode, the process of paddy procurement and milling. At remote areas where connectivity is an issue, innovations in form of motor cycle riders carry data and manage transmission. Unified Ration Card Database and issue of PDS commodities to FPS module manages Ration Cards and distribution of commodities. Ration cards are barcoded to bring in efficiency. For issuance, shopwise allocation and per card allocations are automated. Based on allocation and stock, the actual amount of PDS commodities to be issued to the FPS is calculated and a delivery order issued. A truck challan indicating truck number, driver's name, quantity dispatched etc is also generated. Citizen Participation website, Call centre and Complaint Monitoring System, e-mail and SMS alert are some of the features making the whole system transparent and accountable. Maharashtra: MAHAFOOD is a workflow based application, to provide an effective e-Governance tool for decision making and monitoring the progress of allotment, lifting, offtake and distribution of essential commodities under various schemes with the help of progressive and summarized information. The benefits accrued are optimization of allotment of essential commodities, summarization, consoli-dation of the information and Information sharing. Kerala: Targeted Efficient Transparent Rationing and Allocation Public Distribution System (TETRAPDS), is a comprehensive package for automating the activities of 69 Civil Supplies offices. Details of 70 lakh Ration card holders, in Unicode format, is maintained in the central database which is synchronized with the distributed ration card databases of TSOs/CROs. This consolidation also helps generate MIS reports, share the data with other government departments, national authorities and securely allow citizen access to their respective data. Various agencies would use Ration Card Verification Service to provide citizen centric services like new electricity connection, water connection, building permit, LPG connection, telephone/mobile connection etc. The four main modules of TETRAPDS application are: e-Services for Ration Cards enable citizens to apply on-line or at Citizen Service centre (Akshaya Centres) for various services like new ration card, addition/deletion of members, change of address, renewal of ration etc. Ration Card Management System provides a workflow based solution for all citizen services which include issue of new ration cards, issue of surrender and reduction certificates, addition and deletion of members in the card, splitting of ration cards etc. Allocation covers food grains allocation from the TSOs, Inspection by authorities and Monitoring of Permits and licenses. In addition, online calculation of allotment under different schemes, online generation of Authority for FCI, Authority list for wholesale dealers and generation of proceedings for TSOs are also incorporated in the application. Website provides information about the department, PDS, stock details of dealers and links to the websites of its related offices. It also takes care of Inspection Monitoring, Offtake, Demand Collection and Balance and Allotment of Food grains. Orissa: An initiative has been taken in Paddy Procurement where modules for Miller Registration and Self Disclosure of paddy lifted, rice delivered and gunny bags used has been developed. Paddy is procured through a number of agencies which use an Integrated application for capturing the details of farmer, quantity sold, number of bags, Bank account no, Branch Name, Cheque no and date issued to farmer and SMS is sent to different level of officers. Another module keeps track of the acceptance note of paddy and rice which takes care of the quantity of paddy handed over to miller and quantity of rice delivered to Rice Receiving Centres. Computerization of Delivery verification / Enforcement Certificate and Delivery Certificate facilitates entry of paddy and rice related information by enforcement officer which makes verification by collector and CSO easier. Madhya Pradesh: ePDS Allotments, Lifting &amp; Distribution Monitoring System facilitates Monitoring of the PDS for the State, District and FPS level monthly allotments, lifting and distribution of essential commodities like Wheat, Rice, Sugar, Salt and Kerosene to over 20000 FPS. Allocation process covers district and FPS level allocation by Directorate and district level officials. Cooperative societies lifts the commodities on the basis of allotment and reports online through the system which is monitored by DFSO. The distribution is carried out by FPS and reporting is done by District Central Cooperative Banks. Civil Supplies Movement System module caters to movement of commodities from FCI Base Depot to MPWLC godowns, Issue Centres to FPS movement, Transport Order, Release Order, Delivery Order for receipt and dispatch of Foodgrains. FPS Management and beneficiaries' Management module takes care of FPS and beneficiaries management. Ration card data is being used in the UID enrolment camps where biometrics are captured. The department envisages providing bar-coded Food coupons to each beneficiary according to their entitlement. The food coupons will be electronically read after submission at the FPS by the beneficiary for consumption reporting. — Shri. C. Vishwanath, Joint Secretary (BP, PD &amp; WDRA), Department of Food and Public Distribution. One of the key reforms in Targeted Public Distribution System is with widespread usage of Technology based applications. Rapid and phased roll out of Information Technology in PDS is being given top priority. Use of GPS technology, SMS alerts, CCTV monitoring are some of the other applications used for proper monitoring of PDS. Andhra Pradesh: The Stock &amp; Accounting package takes care of the Procurement, Transportation and Supply of essential commodities to FPS. It covers all activities starting from release of funds by Government, procurement, transportation to stock points, sale to FPS, billing for transportation, recording all vouchers in various accounting books and generating various schedules &amp; reports. It covers all ledgers like Receipts, Payments, Petty cash, Journal etc and adapts corporation approved double-entry accounting system. Various MIS Reports are also generated. Gujarat: A web based solution was implemented in all talukas covering more than 1.2 crore families. The ration card functionalities covered are Issuance, amendments, cancellation, division, change in category, transfer from one FPS to another and printing. However, a new ration card and PDS system is under development which would give bar-coded ration cards to the beneficiaries. Biometrics details along with photograph will also be captured. CONCLUSION: One can thus see that there have been lot of efforts in many states for automating various components of Public Distribution System, there is a need for organising these efforts and drawing a big picture to have effective use of ICT tools. The software modules for different components should be integrated and an end to end solution should be developed to build an efficient PDS. It has also been recommended in the Task Force Report on Computerisation of PDS, 'standards should be developed for processes, data and meta-data and accordingly a single unified solution should be developed that shall be used by all States'. NIC has accordingly been assigned this man-date by DoF&amp;PD, GoI.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="message-from-the-director-general-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message from the Director General</span></a><a class="article-nav-link next" href="xgn-xtended-green-node-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">XGN - Xtended Green Node</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

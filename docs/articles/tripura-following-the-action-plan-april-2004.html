@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRIPURA – following the Action Plan — Informatics April 2004</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2004"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;1</div><a href="../pages/april-2004/page-1.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2004/page-1.jpg" alt="Page 1" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2004/page-1.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/april-2004/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2004/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2004/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/april-2004/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2004/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2004/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/april-2004/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2004/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2004/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2004.html">April 2004</a><span class="breadcrumb-sep">&rsaquo;</span><span>TRIPURA – following the Action Plan</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">State in Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">TRIPURA – following the Action Plan</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By C.K.Dhar &amp; Pradip Roy, NIC Tripura &bull; pp. 1–10</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2004.html">April 2004</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Tripura is one of the seven states in the north eastern part of India and is famous for its abundant natural beauty, rich cultural heritage and handicrafts. National Informatics Centre saw its emergence in the State in 1989 and since then it has left no stone unturned in rendering various ICT services to the State and Central Government offices located in Tripura. Now the NIC-Tripura State Centre is regarded as Total IT Solution Providers of Government of Tripura and is actively involved in most of the ICT enabled applications and tirelessly motivating the State Government to make use of the latest state-of-art IT tools in their day to day activities.</p>
+<p>E-Governance Action Plan NIC has prepared an E-Governance Action Plan for the state of Tripura with an aim to accelerate ICT infusion into Government functioning. NIC specialists conducted field level study to assess the present status of ICT implementation in the state and future requirements &amp; chalked out a road-map. The Action Plan, with an estimated cost of Rs 18 Crores envisions the setting up of cost effective ICT infrastructure for different layers of the administration and quick deployment of a few prioritized applications for major State Government departments. The implementation of the first phase of the Action Plan has already been initiated. It is the first initiative of its kind in a North-Eastern State.</p>
+<p>Infrastructure Creation In line with the E-Governance Action Plan, NIC-Tripura has also implemented an ICT Project targeting five citizen centric applications at state level. The Project has been executed and implemented at a cost of Rs.1.35 crores having the following major deliverables: Commissioned OFC backbone for Secretariat Campus Area Network with an interface to high-speed NICNET gateway at Agartala for Internet services. Agartala City Area Network consisting of 20 LANs located in different state level offices/ bhawans and interconnecting such LANs through a 11 mbps wireless (RF) media to Secretariat Campus Area Broadband LAN. A Network Operation Control Centre (NOCC) at NIC-State Centre for Security Management, Access Control and Network Management. Passive Hub based Secretariat LAN has been upgraded to state-of-the art intelligent gigabit switch (L2, L3) based broadband Secretariat Campus LAN. Commissioned and configured Intranet servers for Web Publishing, E-Mail Server, Proxy services, Instant Messaging (IM) and database services on high-end servers. Data replication and regular backup over the wireless (RF) media for five state level E-Governance applications on a high-end RAID based server. Commissioned servers, clients and other peripherals for deployment of Intranet applications of different departments in the Secretariat LAN</p>
+<p>Citizen centric Services A G2C Application has been developed for Agartala Municipal Corporation with wireless media based Touch Screen Kiosk Interface at market place. Similar application has been developed for the Transport Department. Gramoday- Village level resource database for grass root level planning. This is a G2G &amp; G2C web enabled Database application in Bengali script. Khatian/Records of Right for Land owners with touch screen interface &amp; web interface Hospital Management System: Blood Bank, OPD Registration and Central Cash counters</p>
+<p>Transport Computerization The operational features of the system, implemented for the office of the Deputy Transport Commissioner (DTC), Agartala, include Motor Vehicle Registration, Tax Calculation and Collection, Learners’ Licensing and Commercial permit etc. Touch Screen Kiosk interface for IT enabled Services (ITeS) deployed at a market place for viewing Tax Dues and Tax Calculation etc. has become very popular among vehicle owners in Agartala. Recently, Govt. of India (MoST &amp; H) prescribed VAHAN software, developed by NIC, New Delhi, has been adopted after customization; and all existing databases have been successfully ported into VAHAN format. The various modules of this application software are Vehicle Registration, Fitness, Fee &amp; Tax, Permit and Challan.</p>
+<p>Community Information Centres (CICs) In Tripura, 29 CICs have been established and are functional since August, 2002. Each CIC is well equipped with computers, VSAT, TV, Web camera, printers, UPS etc. Two qualified operators are managing each CIC. CICs have been imparting IT training programs for school students, staff of the Block Development offices, elected representatives of 3-tier Panchayat Raj Institutions and common people in rural areas. Services being offered by CICs include Computer Awareness training, E-mail/ Internet, Access to Govt. Services (G2C) like Status of different govt. services, Exam Results, Farmers’ Tips, Tender Notices, Job Advertisements, Educational Notifications and so on.</p>
+<p>e-Suvidha - Single Window Interface for SDM Offices NIC-Tripura has developed and implemented e-Suvidha software for Service Facilitation Centre (SFC) for SDM offices where common people visit to avail different types of services. e-Suvidha software process, maintain and monitor activities on-line relating to issue of certificates of various natures required by the citizens and such requirements are growing exponentially day by day.</p>
+<p>Presently twenty two types’ of citizen services have been configured and operationalised. The new version of the software called e-Suvidha Ver. 2.00 has been released recently which is based on a generalized model that makes the application software easily configurable/ suitable for implementation in any Government organization having Citizen-Centric-Interface. Software runs on client-server architecture on a LAN environment.</p>
+<p>Healthcare Services Booking System A web enabled software which provides advance booking facility for different types of diagnostic tests and specialist consultation from the G.B.P Hospital, the state level referral hospital located at Agartala. Booking is provided to rural patients through Block level 29 Community Information Centre (CICs) &amp; private Kiosk in Tripura. The Application software is designed and developed by NIC-Tripura and hosted on state level web server.</p>
+<p>Purbasha Portal It is well known that Tripura state is famous in Handicraft, Handloom and Sericulture products produced by rural artisans. NIC-Tripura has developed an e-Commerce marketing portal (http://www.purbasha.nic.in) for entire range of handloom, handicraft and sericulture products of PURBASHA for strengthening the marketing of such products through on-line showcasing and purchasing, thus adhereing to the concept of RuralBazar Portal. Discussions with banks are on to integrate on-line payment gateway.</p>
+<p>Other Projects RuralSoft A web based application software for monitoring of S.G.R.Y scheme of Rural Development Department has been implemented in Tripura state through all 29 Community Information Centres. Gram Panchayet wise scheme details are available at http://tripura.nic.in/rd. The software has been designed and developed by NIC HQ which is powered by free text search tool.</p>
+<p>Computerization of Salary Bill Pay Bill Package developed by NIC-Tripura has been implemented in many state Govt. departments/ offices in Tripura. The package ensures accuracy and timeliness in generation of Pay Bills, Pay Slip, GPF &amp; other loan schedules etc.</p>
+<p>Computerized Land Records System (JAMI) With the objective to maintain and update the land records data at Revenue Circle offices and making available Record of Right (ROR) to land owners and other users, Government of Tripura has prioritized the Computerization of Land Records (CLR) project. NIC-Tripura has developed the Land Records Information System software for the state of Tripura which is called Jami in Bengali script using latest software technology and tools. The Jami software has been released after a rigorous field level test by a group of Land Revenue officials of Govt. of Tripura for deployment. A web enabled module for Kiosk based Land Information System is also ready for deployment. The software supports the recording and processing of all types of mutation pertaining to land transactions and generate ROR, MIS reports etc. Digitization of Land Records data is nearing completion and shall be ready for Revenue Circle level deployment by April, 2004. The application software has been deployed at one Tehshil in South Tripura district on a pilot basis.</p>
+<p>Computerized Land Acquisition Awarding System (CLAAS) CLAAS software developed by NIC-Tripura covers backend processing of all the mandatory stages involved in Land Acquisition -starting from initiation of proposal for the acquiring department to disbursement of awarded amount (compensation) to the land owner. All the forms, notices and letters relating to the process of Land Acquisition are generated by CLAAS software. Online status of Land Acquisition Cases are available to common people over the net.</p>
+<p>Revenue Cases Monitoring System (RCMS) The Revenue cases (Case under section 95 and 96 of TLR &amp; LR Act) are filed in the court of District Magistrate &amp; Collector are being processed and monitored using the RCMS software. The software generates letter to the concerned Sub Divisional Magistrate (SDM) for field level enquiry, wherever required with a copy to the applicant. The software has a provision to generate the pendency list to the SDMs once in a month. Online status of such cases is available over the net to citizen to know his/ her case status through CICs.</p>
+<p>Character Verification Cases Monitoring System (CVCMS) A large number of Verification Roll/ Attestation Forms are being received from different Govt. organization for verification of Character and antecedence of the person selected for government job. Such cases need to be quickly verified and sent to the concerned offices. The CVCMS software has been developed and implemented in North Tripura District. All activities are effectively handled by the system to process such cases for disposal and various MIS Reports can be generated.</p>
+<p>Passport Cases Monitoring System (PMS) The personal particulars of the Applicant of Indo-Bangla/ International passport are verified by the Nodal officer of Passport through the SP, DIB. The records of all these applicants are maintained by this software. All the letters of correspondence with Police as well as Regional Passport offices are generated by PMS.</p>
+<p>Extremist Violence Cases Monitoring System The records of the victims affected by extremist violence are maintained by this software. They are given either financial assistance or a Govt. job according to the qualification of the survivor. The software takes care of all these administrative processes/ sub-processes, reports &amp; letter of correspondences involved in giving a job or financial assistance to the victim.</p>
+<p>Agartala Municipal Council With the implementation of Computerized Tax Collection System, Agartala Municipal Council has become the first Municipal in North East to go for IT enabled services to citizen.</p>
+<p>e-Purasabha, a comprehensive suite of software solutions, developed by NIC-Tripura has the following modules: Property and Water Tax Collection System– Distributed counters at different locations over RF network Births &amp; Deaths Registration System- Acknowledgement, Verification and Certificate Printing over the counter. AMC Website: Municipal Profile &amp; Maps, Grievance lodging, Development works, Budget Information, Downloadable Forms, Procedures, Tax Calculation, Online Electronic Demand Note generation etc. Touch Screen Kiosk Interface- Tax Payable and Receipt details</p>
+<p>Gramoday A panchyet level web-enabled resource database (in local script) comprising of 18 parameters for grass root level resource based planning purpose. Database is kept at the state Secretariat server and updated by field level official using CIC network.</p>
+<p>NIC at High Court- Agartala Bench List of Business Information System (LOBIS) has been implemented in Agartala bench of Gauhati High Court. The various activities of the system include filing of fresh cases both for original and Appellate sides, Generation of weekly/ Daily Cause List, Updating of case status on a continuing basis, Caveat entry and searching etc. The weekly Cause List is also available over the Internet (http://tripura.nic.in)</p>
+<p>Milk Card NIC-Tripura has developed web enabled e-Milk software in collaboration with state Government for Tripura Milk Producers’ Union Ltd for selling Milk Card over the net through authorized E-Governance Kiosk agents for milk retailers and end-customers.</p>
+<p>Blood Donor Information System NIC-Tripura has developed web enabled application software for Blood Donors Association and different Blood Banks and hosted on NICNET state level web server (http://tripura.nic.in/blood) which is a unique C2C and C2G application.</p>
+<p>Training NIC Tripura’s well equipped training center conducts regular training on different topics for the officers and staff of the state and central Govt. organizations located in Tripura. In house training for NIC officials on the latest technology and tools is also a regular feature.</p>
+<p>Websites Dynamic websites have been developed by NIC for the Tripura State Government as well as many departments, CICs and District Administrations in the State. Various Online services have been made available through these websites which may be accessed through the URL htt://tripura.nic.in.</p>
+<p>NIC Infrastructure in the State VSAT: SCPC (DAMA) for Data and Videoconferencing at State level and DVB VSAT at District Centres with dial-up facility for Internet services at District level LAN &amp; MAN: OFC and RF backbone based 450 nodes Agartala Town Area Network spread across 22 buildings/ offices Email: SMTP and web based E-mail server (trp.nic.in) Internet: Web Server, Database Server and Proxy Servers Video Conferencing: Studio based Videoconferencing facility at New Secretariat Building Dial-Up: Cisco Router based dial-up access facility for Internet services.</p>
+<p>In the words of Sh.S.K Roy, Commissioner-cum-Secretary (I&amp;C), Govt. of Tripura “IT solutions provided by NIC-Tripura for Transport Department, Agartala Municipal Council and e-Suvidha for SDMs’ offices are a few of its kind where ordinary citizens, through computerized services (ITeS) at the counters, could be the direct beneficiary of the State Government’s IT initiatives. Quick deployment of such application software demonstrates NIC’s dedication and capability to further the causes of IT initiatives of the State Government.” For further information, please contact The State Informatics Officer NIC-Tripura State Centre, Office Lane, Agartala-799001 Tripura E-mail: chayan@hub.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="tenders-online-a-comprehensive-solution-for-publishing-tenders-april-2004.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Tenders Online - A Comprehensive Solution for publishing Tenders</span></a><a class="article-nav-link next" href="virtual-private-networks-vpns-april-2004.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Virtual Private Networks (VPNs)</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Panchayat Sabha A digital workplace for Gram-Panchayat Meeting — Informatics April 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2024"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/april-2024/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/april-2024/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/april-2024/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2024/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2024/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2024.html">April 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>e-Panchayat Sabha A digital workplace for Gram-Panchayat Meeting</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">eGov Products &amp; Services</div>
+          <h1 class="article-title" data-pagefind-meta="title">e-Panchayat Sabha A digital workplace for Gram-Panchayat Meeting</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By Dr. Ashok Kumar Hota, Mamata Khamari, Rama Krishna Sahoo &bull; pp. 25–27</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2024.html">April 2024</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Panchayati Raj Institutions (PRIs) are constitutionally mandated bodies for decentralised area based development planning and execution at the local level and to govern the rural areas to ensure economic development &amp; social justice to all the inhabitants at different tiers of Rural Local Governance. Gram Panchayat level meetings must be held at regular intervals as per statutory provisions for the successful planning and implementation of a large number of schemes and services to be catered to the citizens in the rural areas. To ensure accountability, transparency, efficiency and reliability of various activities conducted in meetings at the Gram Panchayat level e-Panchayat Sabha application has been introduced by Government of Odisha. The e-Panchayat Sabha Web Application is a digital workflow-based meeting process at the Gram Panchayat level. The functionalities cover all meeting-related end-to-end activities starting from system-generated scheduling of meetings to despatch of minutes of meeting (MoM) as role-wise detailed below. •  The Admin user is at GP, Block, District and State level, who has the role in creating user, ed- itting user profile, activating / deactivating user, Pushing Special Agenda from higher level to GP Level Meeting etc. •  The Assistant / GRS / DEO has the functional role for entering data in the context of agenda, capturing agenda-wise data, despatching notice of meeting with agenda, uploading signed atten-dance and photo of the meeting, entering Minutes of Meeting (MoM) and Despatching MoM. •  Panchayat Executive Officer (PEO) has the re-sponsibility of initiating meeting schedule, se-lecting participants of the meeting, preparing agenda, verification/ vetting of agenda-wise data, sending the schedule and agenda to Sarpanch for approval, sending meeting schedule with agenda for despatch, verification of draft MoM prepared, sending the MoM to Sarpanch for approval and finally sending approved MoM for despatch. •  Sarpanch (Presiding Officer) has the role of approval of meeting schedule, agenda and MoM.</p>
+<p>System Functionalities This workflow-based product covers all meet-ing-related end-to-end activities starting from system-generated scheduling of meetings to despatch of minutes of the meeting as detailed below. •  System-generated meeting scheduling with Meeting ID on 28th of every month for a meeting to be held next month. •  Initiation of the meeting with schedule (Date, Time and Venue) •  Managing agenda and list of participants •  Managing data details as per the Agenda •  Approval of meeting with agenda •  Generation of notice/ letter of meeting with agenda •  Sending of meeting notice / letter with agenda to the participants of the meeting through Sandes Mobile App •  Managing attendance •  Preparation of MoM using the template •  Approval of MoM •  Sending of MoM to the participants of the meeting through Sandes Mobile App •  User Management •  MIS Report generation •  Pushing of Special Agenda from the higher lev-el authorities (State/District/Block) to GP Level Meeting •  Pushing of Special Meeting with Agenda from higher level authorities (State/District/Block) to GP Level Meeting</p>
+<p>e-Panchayat Sabha is a digital workflow-based meeting pro-cess which facilitates strength-ening the process of conducting meetings at the Gram Pancha-yat (GP) level by providing a digital interface. The applica-tion ensures better governance through effective monitoring and implementation of devel-opment schemes and social welfare measures. The mobile application, as a supportive and complementary solution, facil-itates GP officials to attend to meeting related functions and other stakeholders to access meeting related information and documents anytime – any-where. These Applications are currently being used by all 6,794 GPs across Odisha. These have replaced paperwork associated with the conduct of statutory monthly/quarterly/half-yearly meetings and improved gover-nance and transparency.</p>
+<p>Agenda Details Agenda No. Agenda description Periodicity<em> A01 Confirmation of the proceedings of the last meeting M A02 Compliance of decisions taken in the last meeting M A03 Letters received &amp; issued and Business transacted since last meeting M A04 Presentation/ Approval of Monthly receipt &amp; expenditure statement M A05 Presentation of Demand Collection Balance in FORMAT-VIII M A06 Discussion on MGNREGA M A07 Discussion on Drinking Water M A08 Discussion on Sanitation M A09 Discussion on Street lighting M A10 Payment of Electricity Dues M A11 Own Source of Revenue M A12 Discussion on Livelihood Mission Q A13 Discussion on Public Distribution System Q A14 Discussion on MBPY/ IGNOAP/ IGNDP/ IGNWP/NFBS Q A15 Discussion on Rural Housing Q A16 Compliance of Inspection Note, Audit Reports &amp; Visiting remarks Q A17 Compliance of the decisions taken in the Grama Sabha Q A18 Discussion on pendency of Utilization certificate Q A19 Discussion on Women &amp; Child Development Q A20 Discussion on Primary Education Q A21 Discussion on activities undertaken on Agriculture and allied matters Q A22 Presentation and Approval of Reports of Various standing Committee H A23 Discussion on Minor Forest Product H A24 Discussion on Disaster Management M A25 Others (As per approval of Sarpanch /anyone who presides the meeting) </em> Periodicity: M- Monthly, Q- Quarterly, H- Half-Yearly</p>
+<p>e-Panchayat Sabha web application is transforming Gram Panchayat (GP) into a digitally empowered Institution. This IT solution facilitates conduct of meetings including fixing of meeting date, issue of notices with agenda, circulation of minutes of meeting at GP level through a digital platform. It caters 5T (Transparency, Technology, Teamwork, Time and Transformation) governance model of Government of Odisha in local governance in GP Level and empowers as well as streamlines functioning of PRI Institutions for better developmental planning and project execution in a timely manner. I would like to congratulate NIC, Odisha team for providing technical support and Officials of Panchayati Raj &amp; Drinking Water Department for making this project a successful. Sushil Kumar Lohani, ias Principal Secretary Panchayati Raj &amp; Drinking Water Department Government of Odisha</p>
+<p>Salient Features •  Application available in both English and Odia to facilitate the ease of operation at Gram Pan-chayat level •  Different MIS reports can be generated with respect to the schemes and agendas of the meet-ings •  Dashboard for State Administrator, District Administrator, Block Administrator, GP Adminis-trator, Sarpanch (Presiding Officer), Panchayat Executive Officer and Data Entry Operator login •  Track meetings •  Geo-tagged photo and attendance uploading through mobile app •  Configurable to implement in PAN India</p>
+<p>Integrations •  NIC Chart Interface (NICCI) chatbot has been integrated •  SMS integrated at strategic processes •  OTP based authentication system •  Sandes (Government Instant Messaging Sys-tem) mobile app integrated to receive notice with agenda and MoMs by the Participants of the meeting •  Integration of Odisha map with regards to data pertaining to e-Panchayat Sabha</p>
+<p>Color Definition Meeting Not Initiated Meeting Not Completed Meeting Completed</p>
+<p>NABARANGAPUR No. of Panchayats : 189 Not Held : 52 Initiated : 121 Completed : 16</p>
+<p>0/30 Meeting Not Initiated 6/30 Meeting Not Completed 24/30 Meeting Completed Fig 7.1 Real-time Meeting Status across Odisha</p>
+<p>Technologies Used Web Application • Server : Linux – Ubuntu-20, Apache Tomcat 10 • Database : PostgreSQL • Development Platform : Java Spring Boot • JSP Mobile app • Flutter, Android SDK-26 Deployment Environment • Cloud Deliverables • Intimation /alert on meetings to all / targeted stakeholders through Sandes App • Intimation /alert on cancellation of meetings to all / targeted stakeholders • 25 types of agenda with periodicity of monthly, quarterly and half yearly have been incorporated. • Data formats for different agenda have been de-signed to be used uniformly • Issue notice with agenda with all / targeted stakeholders • Sharing information on new / priority schemes intimated from State / District / Block through Special meeting with agenda / Special agenda • Share MoM with all / targeted stakeholders • Share compliance report of last meeting with all / targeted stakeholders • MIS Reports • Incorporate data / information of different de-velopment schemes in the related points of MOM • Attendance of the participants and Photo-graph of meeting would be annexed in the MOM • System generated MoM</p>
+<p>Key benefits • Strengthening of Process of Conduct of Meet-ings of Gram Panchayats • Improved efficiency and transparency of Pan-chayat Administration • Ensures better governance through effective monitoring and implementation of development schemes and social welfare measures. • Members empowerment through availability of information • Create digital records of all meetings held for better analysis at Block / District / State level</p>
+<p>Implementation and Impact Government of Odisha Since the launch of e-Panchayat Sabha web application on 5th March, 2023, almost all Gram Panchayats have adopted e-Panchayat Sabha for conducting meeting at GP level. It has enhanced the performance of governance by effective mon-itoring and implementation of different develop-ment schemes and social welfare measures. It has strengthened the process of conduct of regular meetings of gram panchayats, improved efficiency and transparency of panchayat ad-ministration. Members’ empowerment has been achieved through availability of information. It creates digital records of all meetings held at GP.</p>
+<p>Way Forward Alerts to higher officials on meetings not held, eSign / DSC Integration for signing of agenda and MoMs, Integration of Speech to Text AI in region-al language, API Integration of different Schemes etc. are in pipeline to expand the scope the ap-plication. An end-to-end application is being envisioned with similar functionalities to be made available at Panchayat Samiti and Zilla Parishad level and thus disseminating the development process with bottom to top approach. • Scan to view docu-mentary on e-Panchayat Sabha Web Application • Scan to view docu-mentary on e-Panchayat Sabha Mobile Applica-tion</p>
+<p>Contact for more details Mamata Khamari Sr. Technical Director NIC Odisha State Centre Sachivalaya Marg, Unit-IV, Bhubaneswar - 751001 Email: m.khamari@nic.in, Phone: 0674-2508438</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="compose-comprehensive-operations-and-management-of-presses-over-secure-environment-april-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">COMPOSE: Comprehensive Operations and Management of Presses Over Secure Environment</span></a><a class="article-nav-link next" href="nexgen-darpan-transforming-complex-government-data-into-compelling-visuals-april-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NexGen DARPAN Transforming Complex Government Data Into Compelling Visuals</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

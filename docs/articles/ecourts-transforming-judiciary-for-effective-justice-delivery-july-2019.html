@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eCourts: Transforming Judiciary for Effective Justice Delivery — Informatics July 2019</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2019"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/july-2019/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/july-2019/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2019/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2019/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/july-2019/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/july-2019/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/july-2019/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/july-2019/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2019/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2019/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2019.html">July 2019</a><span class="breadcrumb-sep">&rsaquo;</span><span>eCourts: Transforming Judiciary for Effective Justice Delivery</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">In Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">eCourts: Transforming Judiciary for Effective Justice Delivery</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By S.B. SINGH, ASHISH J. SHIRADHONKAR &bull; pp. 21–28</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2019.html">July 2019</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The eCourts integrated Mission Mode Project is one of the National e-Governance projects implemented in District and Subordinate Courts of the country. The project facilitates services to litigants, lawyers and Judiciary through universal ICT enablement of District and Subordinate Courts. In line with the Digital India Programme of the Government of India, eCourts aims to deliver efficient, affordable and time-bound citizen-centric services. Citizens can access information about cases from any remote locations. Applications like e-Filing, e-Pay, and National Judicial Data Grid (NJDG) have facilitated real-time availability of judiciary data for monitoring and decision-making.</p>
+<p>“I am glad that the complete eco-system of the Indian Judiciary, covering the Supreme Court, the High Courts and the District and Subordinate Courts, is brought under a single portal i.e., ecourts.gov.in. I compliment NIC for this commendable work. e-Committee, constituted by the Supreme Court of India for ICT implementation in High Courts, District and Subordinate Courts is doing a great job towards ensuring a robust and citizen-friendly system for the entire country, and I am confident that the joint cooperation between e-Committee and NIC will ensure that we collectively achieve our common goal of easy and affordable justice for all.” RAVI SHANKAR PRASAD Hon’ble Union Minister Law &amp; Justice, Communications and Electronics &amp; Information Technology</p>
+<p>eCourts, a Mission Mode Project of the Government of India, has set an example of successful e-Governance project reaping rich dividends to litigants and citizens of the country. The eCourts project was conceptualized on the basis of the “National Policy and Action Plan for Implementation of Information and Communication Technology (ICT) in the Indian Judiciary – 2005”, submitted by e-Committee (Supreme Court of India), with a vision to transform the Indian judiciary by ICT enablement of courts. The project is implemented at High Courts and all the District and Subordinate Courts of the country. Phase-I of the project was approved in 2010, and it enabled the computerization of 14249 District and Subordinate Courts by 2015. During this phase, ICT infrastructure improvements were completed. ICT infrastructure, covering computer hardware, Local Area Network (LAN), Wide Area Network (WAN), UPS and power backups, was provided to all District and Subordinate Courts. Phase –II of the project, which envisions further enhancements, was commissioned in 2015 for a period of four years. This phase lays great emphasis on service delivery to litigants, lawyers and other stakeholders. It involves the creation of improved ICT infrastructure in courts, video conferencing etc., and ensures optimum automation of judicial and administrative processes. The project has set up a consolidated nationwide judicial data warehouse with real time updations and availability, which is being used to provide citizen-centric services and inputs for policy making and decision support to the management.</p>
+<p>Objectives ••To provide efficient and time-bound citizen-centric service delivery ••To develop, install and implement decision support system in courts ••To automate judicial processes to provide transparency in accessibility of information to its stakeholders ••To enhance judicial productivity both qualitatively and quantitatively ••To make justice delivery system affordable, accessible, cost effective, predictable, reliable and transparent ••To make policy for managing caseloads for effective court management and case load management ••To provide interoperability and compatibility with systems like Interoperable Criminal Justice System ••Installation of video conferencing facility and recording of witness through VC ••To connect all courts in the country to National Judicial Data Grid (NJDG)</p>
+<p>Key Implementation Statistics Districts covered: 627 Court complexes covered: 3,093 Court establishments covered: 6,645</p>
+<p>••To provide citizen-centric services through various platforms for service delivery such as web portal, Mobile App, judicial service centre, kiosks, SMS, automated emails etc.</p>
+<p>Case Information System (CIS), Application for District Courts and High Courts India is a multilingual country, with 22 official languages and 12 scripts. The benefits can reach common man only when software tools are made available in people’s own language. As eCourts project is implemented at the last mile courts i.e., the District and Taluka Courts, the software is developed in bilingual mode to suit the localization requirements. Services to litigants are available in local language over touch screen kiosks, installed at courts or over query counter available at every court complex. The application is implemented in English and local language scripts like Devanagari, Kannada, Tamil, Gujarati etc. Apart from the linguistic part, every High Court also has a different set of rules and procedures to administer and manage their subordinate judiciary. Keeping in view the differing procedures from one High Court to another, the software is developed as a single product catering to such diversified requirements of the country. The mechanism has helped achieve central citizen interface in the form of eCourts portal, Mobile App and National Judicial Data Grid. eCourts project adopts the core-periphery approach of software development. The core part of the software is developed centrally, and flexibility is provided to the respective High Courts to develop the periphery part. The Core CIS application caters to complete functionalities of courts, viz. Case Filing, Case Registration, Case Scrutiny, Case Listing, Court Proceedings, Case Disposal, Process Generation, Lok Adalat etc. Currently, CIS National Core 3.1 is implemented at District and Subordinate Courts, and CIS National Core 1.0 is implemented at High Courts of India.</p>
+<p>Key features of CIS ••Use of Free and Open Source (FOSS) technology ••Unique 16 characters Case Number Record (CNR) for each case in the country ••Dashboard for users and report generation mechanism ••Enabled with National Masters ••Electronic process generation with QR Code ••eFiling and ePay integration ••Integrated Lok Adalat/ Mediation Module ••In-built templates for orders and judgments ••Integrated with ICJS ••Automated SMS and emails on case events ••Operates in bilingual mode</p>
+<p>Use of Open Source Technology The entire project is built on the foundation of open source technology. FOSS, without any licensing/ subscription charges, has been adopted for deploying ICT solutions at courts.</p>
+<p>Platforms for Service Delivery eCourts portal Showing the status of cases, cause lists, judgments, daily orders etc., eCourts portal (http://ecourts.gov.in) is a one-stop solution for all stakeholders such as litigants, advocates, government agencies, police and common citizens. Citizens can locate a case arising from any court across the country using various search criteria available on the website. The website records more than 10 lakh hits daily. It is bilingual, accessible friendly and compliant with Guidelines for Indian Government Websites (GIGW). ✒ Single unified portal across the country ✒Quick delivery of court services - case status, next hearing date, cause lists, orders and judgments ✒Easy and efficient access to case information anytime, anywhere</p>
+<p>Total cases available on eCourts: 11,19,32,511<em> Total Orders available on eCourts: 8,52,83,327</em> Total High Courts covered: 21 Total hits on eCourts per day: 10,00,000<em> eCourts Mobile App downloads: 25,00,000</em> Note: The figures are up to May 2019</p>
+<p>Mobile App eCourts Services Mobile App provides facility for all stakeholders, particularly advocates and institutions/ organizations (having multiple cases), to create a portfolio of interested cases and track those for future alerts. The Android and iOS App also features a search option to track a case by QR Code. More than 20 lakh downloads of the App have been recorded. A user can create a portfolio of cases by bookmarking important cases. Calendar feature is the latest enhancement provided in the App wherein advocates can view a diary of cases listed in court.</p>
+<p>SMS push SMS push facility is provided to stakeholders like litigants and advocates to get SMS on occurrence of each event in a case like filing, registration, adjournment, scrutiny, listing, transfer of case, disposal, uploading of order etc., on their mobile registered with the court.</p>
+<p>SMS pull SMS pull facility can be used by a stakeholder to send 16 characters CNR number of a case to 97668-99899, and get its current status.</p>
+<p>Automated emails Litigants, advocates and police stations daily get cause lists (pertaining to their cases), events like next dates, transfer of case, disposal, copy of order, copy of judgment etc., in .pdf format on their email ids registered with court.</p>
+<p>Touch screen kiosks and service centre Touch screen kiosks are installed at various court complexes across the country. Litigants and advocates can view case status, cause lists etc., on kiosks. Same information can also be obtained from Judicial Service Centre established at each court complex.</p>
+<p>ePayment Online payment of court fees, fine, penalty and judicial deposits has been initiated online through a portal (https://pay.ecourts.gov.in), thereby eliminating the use of stamps, cheque and cash. ePayment portal is also integrated with state specific vendors like SBI ePay, GRAS, eGRAS, JeGRAS, Himkosh etc.</p>
+<p>eFiling The e-Committee of the Supreme Court of India has designed and set up e-Filing system (https://efiling.ecourts.gov.in/), which enables electronic filing of legal papers. Promoting paperless filing, eFiling aims to create time and cost saving efficiencies by adopting technological solution to file cases before the courts. Using the system, cases (both civil and criminal) can be filed before High Courts and District Courts that adopt eFiling system. A user can also pay court fee online through it. eFiling module is integrated with CIS application implemented at District and Subordinate Courts as well as High Courts.</p>
+<p>“The eCourts Project is a collaborative effort of the Supreme Court of India and the Government of India through the National Informatics Centre and is one of the most successful Mission Mode Projects. The Project has enabled information and data availability to every litigant through the National Judicial Data Grid. As a part of continuing benefit to the common people, a transformative concept of a Virtual Court is being pilot tested for deciding traffic offences. Each High Court will nominate a Virtual Judge to preside over a Virtual Court and deal with traffic offences in the State. In fact, a computer system operating 24x7 will assist the Virtual Judge in deciding cases. Fines imposed in the Virtual Court can be paid online and if someone contests the challan, the case will be sent to the regular court for adjudication. It is hoped that by this process, not only will an estimated 20 lakh traffic cases be decided very quickly, but henceforth, there will be no delay in disposal of such cases.” JUSTICE (Retd.) MADAN B. LOKUR Chairman, e-Committee Supreme Court of India</p>
+<p>National Judicial Data Grid (NJDG) Growing frustration of common man is about the efficiency of the system. Citizens are curious about the pendency in courts. Tracking of litigation pendency at the level of District Courts is also made open to the general public, researchers, academicians and society at large. The figures of pendency at national level, state level, district level and at individual court level is now open to be accessed by anyone visiting the National Judicial Data Grid portal (http://njdg.ecourts.gov.in). NJDG also serves as a decision support system to the management authorities like Supreme Court, High Court, and Central and State Government to monitor pendency on varied attributes for effective decision-making. Management authorities can now track pendency of a remotest court of the country. ••Enables transparency in tracking of pendency of cases on attributes like age, case type, stage, delay reason etc. ••Data from all District Courts and High Courts is available on the grid. ••Serves as national judicial data warehouse ••Provides timely inputs for making policy decisions to reduce delay and arrears</p>
+<p>National Service and Tracking of Electronic Processes (NSTEP) National Service and Tracking of Electronic Processes is a mechanism consisting of a centralized process service tracking application and a Mobile App for bailiffs. NSTEP is used for speedy delivery of processes and reducing inordinate delays in process serving. NSTEP Mobile App, provided to bailiffs, helps in real time and transparent tracking of service. ••Once the process is published through CIS software by the respective court, it becomes available at NSTEP in electronic format. ••Through NSTEP web application, published processes are allocated to bailiffs, if service is within the jurisdiction. It may be allocated to the respective court establishment if the service is outside jurisdiction i.e., inter-district or inter-state. ••The allocated processes can be viewed by bailiff on the NSTEP Mobile App. ••Special Personal Digital Assistants (PDAs) are being provided to bailiffs for process service and interconnecting to the courts process service modules. Bailiff, on reaching the location of receiver, captures GPS location, photo (of the receiver or door lock) signature of receiver and reason for not service. The data captured is instantly communicated to the central NSTEP application. ••Real time updates from remote locations reduce inordinate delays in process service. ••Inter-district or Inter-state service of process is electronic, thereby reducing the time required to send by post.</p>
+<p>Integration with Other Systems UMANG Unified Mobile Application for New-age Governance (UMANG) is a Mobile App that provides a single platform to citizens to access pan India e-Gov services ranging from Central to Local Government bodies and other citizen-centric services. eCourts services are now integrated with UMANG App and launched for District and Subordinate courts. All the APIs required by UMANG were shared by eCourts team. Now case status, orders/ judgments, cause lists etc., are also available through UMANG App to common citizens.</p>
+<p>Common Service Centres Common Service Centres (CSCs) are access points for delivering services to citizens from rural and remote parts of the country. eCourts API is shared with CSCs. Citizens can now get the status of their cases through these centres.</p>
+<p>Interoperable Criminal Justice System (ICJS) Interoperable Criminal Justice System (ICJS) is an ambitious project, aimed at integrating the Crime and Criminals Tracking Network and Systems (CCTNS) project with eCourts and e-Prisons databases, as well as with other pillars of the criminal justice system such as forensics, prosecution and juvenile homes in a phased manner. eCourts has become interoperable with other pillars of the criminal justice delivery system. In a landmark achievement, a pilot was inaugurated on 15th December 2018 by Hon’ble Shri Justice (Retd.), Madan B. Lokur, Chairman of Interoperable Criminal Justice System (ICJS) and Judge-In-Charge, e-Committee, Supreme Court of India, through video conferencing in Warangal city of Telangana through live electronic exchange of data between courts and police. Courts can consume live data of FIR and chargesheet from police. If FIR is ready in electronic form in the system of police, ICJS interface will indicate to the court about readiness of FIR data to be consumed. On consumption, court will get FIR number, names of accused, details of offence, time, date, place of occurrence, details of arrest etc. Court will be able to consume this live electronic data from police. In reciprocation, court will send all remand details, bail details, property release etc., to police. Police will be able to see the update of each FIR and orders passed by the court in remand, bail or release of property. When the chargesheet is ready in electronic form with police, it will be notified through ICJS interface, and court will consume the chargesheet data. On such consumption, court will get names of the accused and their details, names of victim and their details, names of witnesses and their details, name of investigating officer etc. Apart from these details, acts, sections, date of arrest, on bail or in jail, other details of offence, chargesheet number, FIR number will be sent to court. Court can consume this data and accept the same in Case Information System. In reciprocation, court will send CNR number link to police. The link of CNR number will give all details of the case, parties, advocates, date of registration, first hearing and next hearing date and entire history of the case and business recorded.</p>
+<p>“eCourts is a Mission Mode Project conceptualized as a part of the National e-Governance Plan (NeGP) of the Government of India for Indian judiciary to provide ICT enablement of courts to facilitate reduction of pending cases, enhancement of judicial productivity, and to make justice delivery system easily accessible, accountable, affordable, transparent, and cost-effective. The project is being implemented under the strategic guidance of e-Committee of the Supreme Court of India, in collaboration with the technical and infrastructure expert team of National Informatics Centre (NIC). Key objectives of eCourts MMP are: e-Registration of cases, Copies of judgment, Preparation and delivery of decrees, Generation of automated cause list, Generation of court diaries, Availability of case status, and Generation of daily orders.” S.B. SINGH Deputy Director General &amp; HoG eCourts, NIC</p>
+<p>Stakeholders The project is manned and managed by court staff. Judges are using the system to deliver justice speedily. Advocates, litigants, government agencies and citizens are real consumers of the project. The involvement of court staff and judicial officers has ensured effective service delivery to stakeholders.</p>
+<p>Court staff and judicial officers Judicial officers and the court staff members posted at remote District and Taluka Courts are the real service providers and change agents in the project. With challenges ranging from digital literacy to infrastructure requirements such as electricity power and internet connectivity, spectacular results are produced by the judicial fraternity of the country.</p>
+<p>Court staff The ministerial staff members at District and Taluka Courts are trained in using ICT and are efficiently using the system. These staff members are responsible to capture case data and events in the case life cycle. It has considerably reduced the work load of the ministerial staff in generating cause lists, processes, judgment templates, maintaining several registers, generation of statistical returns, certified copies, financial management and several such activities. Business process re-engineering on the part of courts procedures will further increase the benefits of ICT.</p>
+<p>Court staff members working as system administrators: Example of capacity building As it is difficult to get technical manpower to work at remote Districts and Taluka Courts of the country, two ministerial staff members from every District Court are selected to function as District System Administrators (DSAs). Trained with technical knowledge, they are capable of handling all technical activities at court complexes like Server Management, Network Management etc. These DSAs are now working as IT managers at District Courts of the country.</p>
+<p>Judicial officers Capacity building exercise was undertaken by e-Committee and all judicial officers in the country (more than 14000) are now trained in using ICT. Judicial officers are efficiently managing pendency through the use of ICT. Monitoring of court activities and overview of case proceedings have given more control on the cases. Various alerts provided by the system help judicial officers in better decision-making. JustIS Mobile App, provided to judicial officers, helps them to monitor pendency and disposal at finger tips. Alerts on undated cases are also provided to them through SMS. Use of digital signatures for signing orders/ judgments/ notices is initiated.</p>
+<p>Services to Stakeholders Litigants/ Citizens The motto of judiciary is to promote transparency and provide access to information to all the stakeholders in the justice delivery system. The litigants were generally clueless as to why their cases languish for years together. They find it difficult to understand why courts require their presence on several dates without any business being transacted on those dates. The queries ranging from what has happened in the court on a particular date as to when the case is listed next and for what purpose were asked by the litigants to the ministerial staff. It becomes further more difficult a litigant when they are not aware of the judicial case number. Such issues are now resolved and the queries can now be answered through multiple service delivery channels such as website, Mobile App, SMS, email, kiosk, and query counter. Citizens need not visit court or even enquire the advocate about the case status. Services like case status, cause list and orders/ judgments from courts in the country are available to citizens on the web portal (http://services.ecourts.gov.in). The entire history of a case is also available. Litigants can view the business transacted on the date and check orders/ judgments given by court. They can also check the reason for adjourning the case. Searching of the case even by a litigant’s name has ensured ease in searching of case by a layman without having any judicial knowledge. It has been ensured that the services cater an all-inclusive approach. The eCourts Services portal is also accessible to differently abled persons. Web Content Accessibility Guidelines (WCAG) are followed. While transparency is provided to citizens at large, privacy concerns of individuals are also addressed. In the disputes of private nature like family matters, or those mandated by law, a facility is available to mask names of litigants, thereby hiding identity of individuals from the public. Services are also provided by alerting users through SMS or email proactively. Various events of case life cycle are triggered through SMS/ email to litigants. For those who don’t have access to website or SMS, touch screen kiosks and query counters are established at local Taluka/ District Courts to help individuals visiting courts find case information. Mobile App has further enabled litigants to fetch case details on mobile. A case can be saved and refreshed in mobile to update the current status.</p>
+<p>Advocates/ Lawyers Advocate is a link between judiciary and the litigant. Advocates are main consumers of the system. Case information is currently provided to lawyers through web and mobile SMS, email and Mobile App. Copies of judgments and orders are available online. Collective information of all the cases pertaining to a particular advocate and advocate-wise cause list is also available. Advocates need not maintain case diary physically. The communication between courts and advocates is one way i.e., from courts to advocates. It has to be both ways. As advocates are becoming more and more tech-savvy, the effective use of ICT will further improve. The inception of new modules like eFiling and submission of eDocuments and eApplications have ensured the communication of advocates to courts in a speedy manner and in digital format with flexibility of submitting documents 24X7 from the comfort of advocates’ own office. Court fee and all other fee payments are now made through digital mode instead of judicial stamps or currency. Mobile App is serving as a boon to advocates. It has also ensured speedy access to cases by searching on various criteria including advocate bar registration number. Advocates can create portfolio of their own cases for tracking them easily. Facility like calendar has eliminated the use of maintaining diary. Viewing the occupancy in calendar is further assisting advocates to fix case dates. e-Filing facility helps advocates file case without even physically presenting the case in court.</p>
+<p>Police/ Government departments/ Financial institutions Police, government departments and financial institutions are major stakeholders in justice delivery system. More than 50% criminal cases where police/ state is stakeholder are pending in the country. Suit filed by or against government departments or financial institutions forms another major part of pendency. A facility is available to these major stakeholders to track cases through service delivery channels such as website, Mobile App, automated emails, SMS and kiosk. Special facilities are available to police to track cases by selecting respective police station or by entering the FIR. Similarly, government departments can track cases by selecting case type, e.g., land ref cases. Financial institutions such as insurance companies can track cases just by selecting MACP Case Type. Further, a facility is available to these stakeholders to search cases using their acts/ sections. All these facilities are available on public service delivery mechanism such as website and Mobile Apps. Respective government departments can track cases remotely, and the management authorities can also track cases of courts or their department scattered across the state at finger tips. Open APIs are being published for these departments to further develop their own monitoring and compliance mechanism/ software to track and manage their cases. This will help major stakeholders proactively take actions on the courts’ directions and comply accordingly.</p>
+<p>Workshop for eCourts NIC Coordinators A workshop for eCourts NIC coordinators was held at NIC Pune from 12th to 14th June 2019 and was attended by all the NIC coordinators working at High Courts. Sessions on new technologies on Cloud Computing, Linux, PostgreSQL, Elasticsearch, Data Centre and Network Management were conducted by subject experts. Participants also discussed about new technologies and their usage in the implementation of eCourts project.</p>
+<p>Awards and Accolades [Image: Digital India Award for Best Mobile App 2018] [Image: Gems of Digital India Award 2018 (Jury’s choice) for Excellence in e-Governance]</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="integrated-financial-management-system-ifms-july-2019.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Integrated Financial Management System (IFMS)</span></a><a class="article-nav-link next" href="pfms-pension-e-ppo-july-2019.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">PFMS-Pension (e-PPO)</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

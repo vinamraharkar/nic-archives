@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karnataka- Towards Digital Empowerment — Informatics April 2007</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:April 2007"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/april-2007/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2007/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2007/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/april-2007/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2007/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2007/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/april-2007/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2007/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2007/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2007.html">April 2007</a><span class="breadcrumb-sep">&rsaquo;</span><span>Karnataka- Towards Digital Empowerment</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">State in Focus</div>
+          <h1 class="article-title" data-pagefind-meta="title">Karnataka- Towards Digital Empowerment</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By M Manivannan, S. Lakshmeesha, A Venkatesan &bull; pp. 10–12</p>
+          <p class="article-issue-link">
+            From <a href="../issues/april-2007.html">April 2007</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Situated in the southern part of India, the State of Karnataka spreads over the Deccan Plateau. It accounts for a sixteenth area of India &amp; has a population of about 52 million. Its language is Kannada &amp; its people are known as kannadigas. The three distinct regions are a narrow coastal area along Arabian Sea; high hills, the Western Ghats &amp; sprawling plains towards the east. Bangalore, located on the southern Deccan Plateau, is the capital of the State. The city, home to over 6 million people, is India’s fifth largest. As a thriving business center, focusing on information technology (IT), Bangalore is considered the IT capital of India, often called the “Silicon Valley of India”.</p>
+<p>Following are the various G2G, G2C projects taken up by the NIC, Karnataka State Centre VATsoft – The VAT processing system, known as VATsoft, has been designed and developed for processing and monitoring the tax collection under VAT. It is a web based, workflow system with a user-friendly interface. This application has been successfully developed and implemented throughout Karnataka in a very short span of time. This has helped the department in improving the tax administration and is also assisting the department in detecting the tax evasion cases. NIC Tamil Nadu and Puducherry have taken this application for customization. - VAT e-filing system (VAT-eFS) has been developed for returns and documents filing by the dealers directly. This is under pilot implementation. Checkdoc – The Checkdoc is an application for check post computerisation for the Commercial Taxes Department. Presently 9 check posts are using this module. In the second phase, all the remaining check posts will be covered with state-of-art technology which is a combination of web, EDI, online and barcode based system to capture and verify the document details online. Handheld devices are getting integrated in this phase for verification at the mobile check posts. Vahan and Sarathi: The Vehicle Registration and Driving Licenses software for the Transport Department have been in wide use in Gulbarga, Mandya, Mysore, Mangalore, Dharwad. Tumkur, Chitradurga and Belgaum districts of the state. Plans are underway for replicating them in the entire State covering around 54 Transport Offices. Introduction of Smart card/Smart Optic cards for Driving Licenses and Registration Certificates is also under consideration. In essence, the department desires to achieve enhanced quality of service delivery and build reliable MIS for Motor Vehicles in the State. Nemmadi - Rural Digital Services – RDS is a single window system for delivery of services to the villagers. The request for a service and the printing of the certificate / order after processing happens at the village itself. In the first phase 32 services including issuance of certificates such as death/birth, caste, income, residence etc; issuance of orders in respect of Social Security Schemes such as old age pension, widow pension, freedom fighter pension etc. are provided. One can also obtain information about various schemes and procedures, status of one’s application etc. RDS application is an n-tier application built using web-services. It supports Bio-metric authentication, dual language interface and data capturing, acceptance of requests even in the absence of connectivity, workflow process, zero-touch deployment of patches at remote clients, digital signing of documents and issuance of certificates over the counter if the previously issued certificate is within the validity period. Provision to scan the application along with supporting documents and reports of the field verification is made to move to less paper movement when sufficient bandwidth is available. 800 telecentres are being established at the hobli level through Public Private Partnership. Back offices are established at the 177-taluk offices for backend processing of the application. Bhoomi – Computerised Land Records has been operational in Karnataka since 1995 in all the taluks of Karnataka. It is an on-line system to carry out mutations on live data. The requests for mutations go through a workflow process moving the requests from one official to another. Features include bio-metric authentication, provision to scan mutation order &amp; notice served copy, local language user interface &amp; data entry support, processing of requests in First In First Order (FIFO) and digitally signing the RTC &amp; mutation extracts. Bhoomi is integrated with various other agencies such as banks and sub registrar’s office. Details of the registration of land that is done in the sub registrar’s office is sent electronically at the end of the day through the State Data Centre to the respective taluk office and pushed as transactions into the Bhoomi system. Similarly, declarations from banks stating loan sanctioned or pledge released details are electronically sent via SDC to the taluk Bhoomi system. Village tele-centres are now issuing digitally signed Bhoomi records. Petition monitoring system at Chief Minister’s office: Petitions received by the Chief minister’s office from general public, people representatives and other agencies are captured in this system. Suitable instructions for the officers who would act on such petitions are also captured and sent to them. A web-enabled system to capture the action taken on such letters is in place to monitor the implementation of CM’s directives. A complete system for sanctioning Relief fund from Chief Minister’s Relief Fund (CMRF) is also in place. Underprivileged people approach the CMRF office for medical treatment expenses either directly or through people representatives. The details of such applicants are captured and submitted to the CM for approval. Daily balance statement and beneficiaries list is also generated from the system WSSB Ganakekrutha Grahakara Seve (BGS) - is the complete online system of the Revenue Billing and Collection System of BWSSB (Bangalore Water Supply and Sewerage Board). This system has been running since April 2003 and has won the Bronze award of Government of India for 2003. The three major modules are meant for Cash Counter, Sub-Divisions and the Chairman’s office. Each Subdivision data is maintained at the subdivision server and they are connected through leased lines to the central server at the Head office. The main features of the system are • Biometrics Security for the application • Error free Bar coded Bills for revenue collection • Anytime, Anywhere Payment System through SEVAK (KIOSK) • Online system with no manual intervention • Better services to consumers through ECS • Automated online data synchronization between subdivision and Head Office servers • Consumer satisfaction • BESCOM payments at SEVAK (KIOSK) Cash counter module is deployed at 5 counters (others replaced by KIOSKS), Subdivision module is installed in 17 subdivisions and the Head Office module in Head office server at BWSSB The enhancements planned are Meter Make Module, Lorry Load Module, New Connection Module, Data Centre &amp; Internet Payment. Directorate of Municipal Administration - A web based application has been developed to • Collect various parameters from ULBs on General Profile (area, population, park etc.), services (road, water, electricity, etc), financial details &amp; employee’s details. • Finding the people and employee ration in each ULB for executing various schemes • To monitor the schemes being implemented in each ULB • Personnel Information System • SJSRY (Swarna Jayanthi Shahari Rozgar Yojana) • Transfer Module MAAS – Mineral Activities Administration System with INTRAMINE – INTRAMINE, the Intranet based system for Department of Mines and Geology deals with the administration of activities related to the management of Mining Leases, Quarry Leases, Reconnaissance Permits, Prospecting Licenses, Permits for transportation of minerals, inspections and enforcement and other related activities and functions of the department. Digital signatures, bar coded permits, control stationery and holograms are some of the features of the permits to regulate the illegal transportation of minerals and introduce better systems for enforcement activities. The software is on trial run at Tumkur district and will be hosted from the state data centre after security audit. Smart Card based Digital Signatures along with VPN accounts are being taken for employees who use the software from remote offices. Six more district offices have been identified for pilot implementation out of 23 district offices and 20 check posts.</p>
+<p>VAHANA-VIMA (Motor Vehicles Insurance System for Karnataka State Insurance Department) VAHANA-VIMA software has been developed to manage the insurance policies of Government vehicles and vehicles owned by Government employees purchased with advances from Government. The software supports new policies, renewal of policies, counter functions and has a rich set of reports.</p>
+<p>PATRAM – Postal Accounts TRAnsaction Maintenance The PATRAM is a package developed by NIC Chennai for reporting and accounting the activities of the Cash Certificates section of the Postal Accounts Office. Databases on issues, invoices, and discharges have been taken up starting from April 1999. The Karnataka Postal Circle has achieved the maximum number of invoice entries touching more than three crores as of 07-03-2007 and is current upto 31.01.2007</p>
+<p>Integrated Budget Information System for Finance Department NIC, Karnataka has been providing ICT support for the preparation of Annual Budgets for the last 14 years. The Integrated Budget Information System is developed to computerize Budget Preparation, data Transfer to Treasury, data porting from AG Office for receipt/expenditure accounts, data porting from Planning department for District Plan data and updation of all the statements that will be hosted on the website of FD after the budget presentation. All the Bi-Lingual (Kannada, English) budget documents are generated through this software. The system prepares the Summary Statement of the Financial position for the budget year, detailed estimates of Receipts, detailed Estimates of Expenditure, Statement of Demands for Grants, Zilla Panchayat estimates for plan/non-plan components, Salary Estimates, supplementary estimates statements etc.</p>
+<p>Computerization of High Court of Karnataka The Litigant Management System running in the High Court includes computerization of various counters and sections like the cash counter, filing counter, scrutiny, pending section, certified copy counters, court halls etc. The entire process-taking place at the various sections is computerized bringing in accuracy, transparency and timeliness in the system. Effective management of posting cases has reduced the pendancy in the system. Display boards have been introduced outside each court hall indicating the case number and stage of the case taken up in that court hall. Also LCD displays indicate the cases currently going on in the various court halls. The website http://karnatakajudiciary.kar.nic.in has information about the sitting code, daily causelists, case status, certified copy status, notifications, selected judgements, and causelists of the subordinate courts. Dissemination of case status information through IVRS in English and Kannada is also being carried out.</p>
+<p>Computerization of Karnataka Lokayukta Computerisation of Karnataka Lokayukta was taken up by NIC in 2002 and most of the regular activities of Lokayukta like Complaint registration, acknowledgement to complainant, notice generation and stage updation till the final report submitted to Govt. are automated. When Lokayukta visits district offices, he takes a word file with pre-defined format and calls for comments from respondents, which are imported into SQLServer database. The website http://kar.nic.in/lokayukta contains information about acts, rules and reports of lokayukta and also the current stage of any case registered. Numerous statistical reports are also generated which are useful to the lokayukta during assembly sessions and press statements. A package to track the submission of assets and liabilities of MLAs/MLCs to Lokayukta is also implemented.</p>
+<p>AASTHI – Property Tax Software AASTHI - Property Tax software is designed and developed for the 5652 Gram Panchayats in the state. Among other activities, these GPs are mainly involved in collecting the Property Tax and other taxes like vehicle tax, Advertisement tax, Entertainment tax etc from tax payers living in the villages coming under their purview. Property tax is levied on the owners based on certain criteria like dimension of the site/built area, type of building (RCC/thatched/Sheet) etc. The Aasthi software shall include features such as entry and modification of village &amp; habitation details, the zones in the villages of the Gram Panchayat, the annual rental value (ARV), tax rates, water rates and cess. Provision to enter the arrears for the properties before the computerization activity will also be provided. The details of the owner of the property, the area and the type of the building, the type of water facility for the house are also captured through the system. The tax is calculated automatically based on the ARV, tax rate, the area of the property and zone (Location in the village). The notices and the registers such as property list, daily collection registers can be generated. Payment details can be entered in the computer. The citizen can view the details of the tax; the payments made and tax due on the computer.</p>
+<p>KREGS – Karnataka Rural Employment Guarantee Scheme Karnataka Rural Employment Guarantee Scheme software is a web-based application customized using National Level NREGA Software. This software is available in local Language and is implemented at Gram Panchayats of 5 NREGA districts of Karnataka. It captures information about the families and their members who are in need of employment and issues job-cards. This software also has the features to collect the information about the works undertaken under this scheme, allocate work to the job-card holders and generate various reports as per the requirement of State and Central Government for monitoring purpose.</p>
+<p>For more information, contact Sh. A Venkatesan State Informatics officer, NIC Karnataka 6th &amp; 7th floor, Mini Tower Dr Ambedkar Road, Bangalore -760001 Email: sia@kar.nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="nic-elite-2007-glimpses-april-2007.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">NIC Elite 2007 Glimpses</span></a><a class="article-nav-link next" href="ict-in-south-goa-administration-a-successful-endeavour-april-2007.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">ICT in South Goa Administration - A Successful Endeavour</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

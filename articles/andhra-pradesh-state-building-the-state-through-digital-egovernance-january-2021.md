@@ -1,0 +1,175 @@
+---
+title: "Andhra Pradesh State - Building the State through digital eGovernance"
+publication: "Informatics"
+issue_date: "January 2021"
+pages: [10, 11, 12, 13, 14, 15]
+author: "REUBAN K"
+section: "From the States"
+---
+
+## Andhra Pradesh State - Building the State through digital eGovernance
+
+National Informatics Centre, Andhra Pradesh has always been at the forefront in guiding the State Government concerning the computerization of the processes in various Government Departments. NIC, Andhra Pradesh played a key role in the design, development and implementation of many flagship Projects for the State besides implementing several e-Governance Projects for the Central Government Departments and Public Sector Undertakings. After the bifurcation of the State in 2014, the usage of new technology has picked up momentum and NIC Andhra Pradesh is playing a key role in many of the new initiatives being taken up by the State Government. Apart from software development for various State Departments, the NIC Andhra Pradesh State Centre is providing several ICT Services such as Videoconferencing, Email Services, Network Services and NKN.
+
+The State of Andhra Pradesh has made significant contributions in various sectors over the decades. With the advent of the Information Technology Age, the State has started making good use of the Technology in the more efficient running of the Administration and the implementation of various Government Schemes. After the Bifurcation of the State in 2014, the State has embarked on a new beginning and has taken up many developmental activities in right earnest. The State has also initiated several new projects aimed at Ease of Doing Business and faster dissemination of services to the Citizens.
+
+ICT Initiatives in the State
+Apart from developing and implementing eGov applications and other customised software, a host of Services are offered at the NIC state centre. These include Video Conferencing and Virtual classrooms and supporting various ICT initiatives for state and central government organizations in Andhra Pradesh. Besides, Data Centre Services, Network & Internet Services, Email Services, NKN Services are also provided.
+
+Video Conferencing and Virtual classrooms
+VC services are being provided by NIC AP to central and state government offices in the state headquarters and 13 districts. VC services were extensively used by the state government during the Covid-19 Pandemic. During the period of March – November 2020 a total of 2342 conferences with a duration of 4017 hours were conducted with 41 VVIP sessions including 2 sessions of Hon’ble President of India with Hon’ble Governor of AP, 9 sessions of Prime Minister of India with Chief Minister of Andhra Pradesh and 30 sessions of Cabinet Secretary with Chief Secretary of AP.
+
+Network/ NKN Services:
+After the new state centre is established, the Network Operations Centre (NoC) started functioning at APSC, Amravati. NKN PoP is established at AP Secretariat by shifting backbone links from NKN Hyderabad to NIC, AP with an established redundant 1 Gbps links from Hyderabad & Chennai NKN POPs. All the 13 district links were shifted to NIC AP from Hyderabad with redundancy links from Hyderabad, Chennai, Bangalore & Bhubaneswar NKN POPs. AP NOC was created with operations including maintenance of AP state NICNET operations, ISP coordination and Cisco and Juniper device installation/ up-gradations.
+
+Messaging & Data Centre services:
+NIC, AP is successfully providing complete email services in the state including on-boarding and migration of mailbox and domains to NIC email services for paid and free users including state government departments, corporations and universities. Email troubleshooting along with DNS record updation, security controls, e-forms support, application integration and user coordination is regularly carried out. NIC SMS services for AP state including application integration is being taken up. Datacenter services like VM Hosting, Network and Storage services. Provisioning testing and development platforms for open-source application developers based on Linux environments like Ubuntu, CentOS. Providing system and security administration services like OS tuning, Web deployment, App deployment, SSL services and Audit.
+
+Land, a scarce natural resource, has been regarded as a measure of wealth, status and power, from time immemorial. A good land records system is the necessity for any harmonious and progressive society. A modern, comprehensive and integrated land record system to provide citizen-centric services has been developed in Andhra Pradesh, with about 2.70 crore survey numbers. Some of the highlights are Meebhoomi, Sarkarbhoomi, e-Passbook, loan charge module, services through Meeseva, auto mutation, RSR data purification, Aadhaars seeding, water tax levying and collection, sharing of land information to different departments, to arrive at the list of beneficiaries under central and state government schemes.
+
+Government of Andhra Pradesh has taken up Resurvey activity in the entire state, after a century. Land Records is the basic source of information for resurvey so that textual and spatial data would be integrated. It is planned to create an integrated system covering Revenue, Survey and Registration departments together, for the hassle-free and speedy delivery of services to the public as well as other land-related Government departments.
+
+NIC Andhra Pradesh, the technical partner for Land Records Programme, has been playing a significant role in many ways to achieve the above goal by extending services. I appreciate the NIC-Andhra Pradesh team, headed by Dr. E. Iniya Nehru, SIO for their positive contribution and proactive ICT services. I look forward for their continued support in the future as well and wish them all the best in their endeavours.
+NEERABH KUMAR PRASAD, IAS, Chief Commissioner of Land Administration & Special Chief Secretary, Government of Andhra Pradesh
+
+D-Krishi (e-Seed - Aadhaar Enabled Seed Distribution System)
+The distribution of Seeds on subsidized rates to farmers had been a hectic task for the past few years. To ensure smooth distribution of seed to eligible farmers, NIC, AP has developed and implemented an Aadhaar enabled seed distribution system. Based on the total extent held by the farmer, the eligibility of seeds to be issued is decided by the system. The farmer can avail the seeds in person or can authorize his/ her family member to take the seeds after successful biometric authentication at the counter. On successful Aadhaar authentication using NIC ASA service, the system allows issuing coupons with pre-printed numbers allotted for each counter in each mandal. The coupon is submitted at the godown to take the delivery, where, the QR image on the coupon is scanned to populate the number automatically.
+Impact
+• Around 20 lakh farmers across the state getting the seed in a hassle-free manner every season since 2017
+• Bogus Pattadar passbooks and Double benefit eliminated.
+• Middlemen and Recycling of stocks avoided
+• No long queues at any point of time
+• All eligible farmers covered
+• Very positive response from Media/ Farmers/ Public Representative
+
+Punarvas and PM Kisan
+Punarvas Project is designed and developed by NIC AP State Centre for payment of compensation to the eligible project displaced families and project affected families by constructing the Nuclear Power Plant at Kovvada, Srikakulam District. Beneficiaries are identified by the District Administration and the data had been captured through the web applications. Android application is developed for Aadhaar Authentication of the beneficiaries to pay the compensations for different awards. Modules under the Punarvas project are Land Acquisition, Land Alienation, RRAward, Structure and Tree Compensations. The same is replicated for the BRR Vamsadhara project of Srikakulam District. It received the National e-Governance award 2018 (Gold Category) under District level IT Initiatives.
+
+e-Pds -Targeted PDS system
+NIC Andhra Pradesh has developed a fully automated Public Distribution system from Supply chain Management to Distribution of food grains to BPL Families. Andhra Pradesh NIC digitized and generated about 1.44 crore Rice cards with 100% Aadhaar seeding and 99.9 % ekyc verification. It has fully automated 29,783 Fair price shops catering to 4.3 crore people. All the transactions are based on Biometric authentication and can draw anywhere in the state under the portability option. All the transactions are captured in real-time through e-pos machines. The ration is also being issued to MDM and Aganwadi schools. All the entitlements, allotment of stocks, RO generation, issue of stocks, issue of food grains, and closing balances are fully automated with real-time reports at various levels. Andhra Pradesh e-Pds system has won many state and national level awards.
+
+Andhra Pradesh has always been at the forefront of adopting ICT for e-Governance and Citizen services. After the bifurcation of Andhra Pradesh, when the Andhra Pradesh Government decided to shift its Capital to Amaravathi, NIC quickly rose to the occasion and provided all necessary ICT support by way of providing much needed NKN connectivity and other computing facilities, NIC’s E-mail, VC facilities, e-Office etc., and facilitated the smooth transition of Governance. TPDS is one of the flagship programmes and having achieved 100% Aadhaar enabled public distribution, it has immensely helped in curbing leakages. During COVID-19, we could successfully reach the needy families through a robust system developed by NIC AP. Andhra Pradesh is the first state in the Country issuing rice cards within 10 days of application anywhere in the State through Gram/Ward Secretariats with 100% eKYC verification in a very transparent manner with the help of NIC, AP. Andhra Pradesh has also become the first state to adopt the One Nation One Ration card in the Country.
+KONA SASIDHAR, IAS, Secretary (FAC), Information Technology, Electronics and Communication Department & Secretary & Commissioner of Civil Supplies, Government of Andhra Pradesh
+
+CARD (Computer-aided Administration of Registration Department)
+CARD provides a transparent method of valuation of properties and calculation of stamp duties, simplified the registration procedures, enhanced speed, reliability and consistency of the system. It reduced delays by replacing the manual systems of copying, indexing and accounting. Scanning of documents replaced manual copying. Retrieval of the documents and obtaining copies is made instantaneous. The overall effect is a smooth public interface.
+Recent Initiatives
+• Auto Mutation, CRDA Integration, CFMS Integration, Sada Bainama
+• Online EC & CC, Inventory Stamps Module, Anywhere Registration, Ease of Doing Business (EODB)
+• Registration Services at Gram Sachivalaya
+
+Land Records Management System
+As part of Good Governance, the Government has given utmost importance for simplification of Government procedures and to achieve complete transparency in administration. Keeping in view of the same, Revenue department has initiated a various set of reforms by way of : 1. Digitization of Land records, 2. Purification, 3. Computerization of various services of Revenue Department. 4. Reforms for simplifying the Existing Laws, Rules and Procedures and 5. Innovations
+Special features
+• Each Government land is uniquely identifiable, by 34 different categories with 2.70 Crores Survey Nos.
+• Records are digitally signed by a competent authority
+• Approvals in the workflow are done with biometric authentication and digital certificates
+• FMBs, Village Maps, Adangal, 1B
+• Single source of truth to many Government stakeholders
+• Downloadable e-Passbooks with QR code
+• Bhushodak mobile app to verify the genuineness of the data, from the central server
+• e-Crop booking through webland data, being used assessment of crop sown, damage if any, and crop insurance
+• Payment of Direct Benefit Transfer to the beneficiaries of PMKISAN and YSR Rythu Bharosa
+• Collection of Water tax
+• Issue of different land-related certificates through CSCs
+• Integration of Revenue and Registration under Auto mutation
+Achievements
+• Computerised Adangals issued through CICs till date: 2.77 Crores
+• Record of Rights(ROR-1B) Certificates issued till date: 2.66 Crores
+• Mutations and Printing of Title Deed cum PPB: 52.5 Lakhs
+• Rectifications of Entries in Record of Rights: 54 Lakhs
+• Addition of Survey nos. in Adangal and 1B: 2.86 Lakhs
+• Number of Views of Public Portal (Meebhoomi): 10.6 Crores
+• Number of Auto mutations Done Since Oct 2019: 2.45 Lakhs
+• Major component for achieving Ease of Doing Business Rank.
+
+Arogya Setu app and S3 portal have helped AP Government in contact tracing and medical resources effectively at hospitals. NIC Andhra Pradesh state center has provided excellent support to AP Government during the Covid-19 pandemic by providing uninterrupted video conference services which helped us to effectively co-ordinate during the Covid-19 pandemic at AP. Now, our government is planning to implement eHospital application across all GGH & PHC in the state.
+BHASKAR KATAMNENI, IAS, Commissioner, Health & Family Welfare, Government of Andhra Pradesh
+
+MEDHAS – Medical Education & Health Administrative System
+MEDHAS is an end-to-end solution provided by NIC-APSC for Dr.NTR University of Health Sciences (Dr. NTRUHS) which is the first Health University in India established in 1986 at Vijayawada, Andhra Pradesh. It conducts various courses like UG/ PG Degree/ PG Diploma/ Post Doctoral Fellowship/ Ph.D under Medical/ Dental/ AYUSH/ Nursing/ Physiotherapy/ Para Medical streams. There are 292 colleges affiliated with Dr. NTRUHS. It has been provided NKN connectivity with BSNL and STPI as a backup for providing bandwidth. NIC is also taking steps for e-Counselling to the admissions of Medical/ Dental/ AYUSH courses from next year.
+Key Features of MEDHAS
+• e-Affiliation (Colleges Affiliation Monitoring Module)
+• E-Admission (Students Admission Monitoring Module)
+• E-Pareeksha (Examination Monitoring Module)
+• E-QPODS (Electronic Question Paper Online Delivery System)
+• E-Results (Results Processing and Publishing Module)
+• E-Services (Online Certificates Delivery Monitoring Module through ServicePlus)
+• E-Sandesh (Messaging to Principals/ Students Monitoring Module)
+• E-OPTMIS (Online Payment Transactions Monitoring Module)
+• E-Chanakya (Employees Administration Monitoring Module)
+• E-GPF (GPF Monitoring Module)
+• E-Office (Online File Movement Monitoring Module)
+
+I am extremely happy to say that MEDHAS developed by NIC has been providing a transparent, smooth and effective mechanism in bringing end-to-end solutions seamlessly. Dr. NTRUHS has been benefited a lot from the digital workflow among Academics, Admission, Examination, Confidential, Finance and Administration wings.
+Dr. SYAMA PRASAD PIGILAM, Vice Chancellor, Dr. NTR University of Health Sciences, Vijayawada
+
+APMCORS- Andhra Pradesh Medical Council Online Registration System
+Andhra Pradesh Medical Council is a Body corporate established by an Act of the State Legislature. The Council was first constituted by a notification issued in G.O.Ms.No.662 on 19th December 1991. NIC has been entrusted with the Online Registration activities of APMC in January 2020 which includes importing all existing registration into living. NIC –APSC developed a web-based application to make the digital workflow of different stakeholders – Medical College Principals, Students, Doctors and APMC Staff.
+Salient Features:
+• End to End Solution for all stakeholders like Medical Colleges, Medical Students and the APMC to make the entire workflow in digital mode
+• Renewal of Registration certificate. Issue of NOC, Temporary Registration, Issue of Good Standing Certificate
+
+WaterSoft
+WaterSoft– is a comprehensive web-based MIS designed & developed by NIC, APSC for the Department of Rural Water Supply and Sanitation, Govt of AP. The application software integrates all the RWSS offices and its laboratories across the State of AP including the RWSS head office and the Secretary‘s office. This application aims to bring in accountability and transparency. The application under one name WaterSoft is being continuously subject to changes with many more new enhancements to the existing modules and the development of new modules to suit the requirement of the field level users to the strategic users for monitoring, planning and decision making. The application can be accessed with the url: http://rwss.ap.nic.in.
+
+Online Filing of Applications for POLYCET entrance exam
+This application program is to file the application, facilitates the candidate to pay the requisite fee, automatic Exam Centre Allocation and Hall Ticket download for the candidates who want to write POLYCET entrance exam. State Board of Technical Education and Training is the user department, which conducts the Polytechnic Entrance Test (POLYCET) for admission into 3, 3½ years polytechnic diploma. Simply from anywhere with an internet facility, the student can have on the spot Hall Ticket in the desired town of his choice by paying the requisite fee through the payment gateway.
+
+WEB Counseling
+This application is for admission of the candidates to the various professional courses based on their rank in the respective entrance examination, reservation, gender, local/ non-local etc., and their order of preference given for the colleges and courses. This activity is supervised by the department, Andhra Pradesh State Council of Higher education (APSCHE) and monitored by the Conveners appointed by the APSCHE for each CET (Common Entrance Test).
+
+Jeevandan
+A Portal to facilitate the management of Cadaver organ harvesting and transplantation on an end-to-end basis. It provides information and alerts to users on a real-time basis, ensuring efficiency, effectiveness and transparency in the entire operations which are part of the Jeevandan Scheme and is built on an N-tier. Online transparent end-to-end solution to facilitate the Management of Cadaver Organ Harvesting and Transplantation has been designed developed and deployed successfully.
+
+e-Office
+eOffice is a step forward into an era of paperless administration in the Government of Andhra Pradesh. It is a Digital Workplace Solution that has replaced the existing manual handling of files and documents with an efficient electronic system. eOffice is being implemented in all the departments of AP. Secretariat, 13 Districts and 83 HoDs/ 157 AOs/ 23 SUs. At present, there is no physical file movement in the Government. ITE&C Dept has successfully implemented the project and are extended to 1,428 departments in Districts up to Gram Panchayats level and has created a total of 66,07,427 of files in both State and District level.
+
+Pension Settlement and Management Information System (PSMIS)
+This application is to calculate and release the pensionary benefits to the retired/ nominee of the deceased State Government Employees, Central government employees deputed for State (IAS, IPS, and IFS) and Judicial employees of the State. This application is used by the Account General’s office who is the releasing authority of the pensionary benefits. Right from registration of the case till dispose of the case is taken care of by the application.
+
+Digital Panchayat Services
+Commissioner Panchayat Raj and Rural Development, Govt. of Andhra Pradesh has initiated Digital Panchayat services to provide Online Gram Panchayat Services and to offer the technology. PRRD is offering series of APIs to Government Departments (G2G) as part of Ease of Doing Business (EoDB). Entrepreneurs can obtain a “No Objection Certificate for Small, Medium and Large Scale Industries” through the Single Desk Portal of Industries and Commerce department. Marriage Registration APIs for Pellikaanuka Scheme for financial assistance to marginalized families and to offer Marriage Certificate. The citizen can also obtain Birth and Death Certificates, Marriage Certificates and NOC for Small Medium and Large Scale Industries services at “Grama Sachivalyams”. The citizen can avail Gram Panchayat services through the Internet. The list of Statutory Services of Gram Panchayat are 1. House Tax Payments 2. Property Valuation Certificate 3. Water Tap Connection 4. Trade License 5. Mutation 6). NOC for Small, Medium and Large Scale Industries 7. Marriage Certificate 8. Building Permission 9. Layout Permission.
+
+AP High Court
+NIC, AP is providing IT support for implementing e-Court Services, CIS and other peripheries developed by e-Committee, NIC – Pune and NIC Andhra Pradesh State Centre. The High Court servers were temporarily installed at NIC AP State Centre for running the CIS core application and other peripheries. Permanent servers are to be set up at High Court for running peripheries and CIS. New VMs are set up at National Data Centre, Shastri Park, New Delhi for deploying the website and related applications for dissemination of information. The main application & peripheries implemented at High Court are Core Information System (CIS) and various peripheries such as KIOSK application, SR, IA, USR Allotment, Scrutiny of Vakalat, File Movement etc. Hon’ble Chief Justice of Andhra Pradesh, Sri Justice Jitendra Kumar Maheshwari has launched the Website of High Court on 08th January 2020 in the august presence of Hon’ble High Court Judges, Registrar General & CPC, Registrars of High Court, Assistant Registrar IT and Dr. E. Iniya Nehru, Deputy Director-General and SIO, NIC, Andhra Pradesh. Website for High Court of Andhra Pradesh was redesigned as per the GIGW standards During the COVID-19 pandemic, the NIC AP High Court team has developed e-Filing software. This system is designed as per the request of the Hon’ble Chief Justice of Andhra Pradesh. An E-filing system was launched to facilitate Advocates and other people. E-filing of court cases is newly implemented at the High Court of Andhra Pradesh. After seeing its success and huge response from the public, it was extended to Subordinate Courts. A provision to know the status of the case filed is provided. During the COVID-19, virtual courts were implemented using various Blue Jeans in all 19 courts. Five Video Conferencing studios are set up in the High Court for conducting State level and National level VCs.
+
+APBOCWWB (Andhra Pradesh Building & Other Construction Workers Welfare Board)
+The main objective is to automate the process of Distributing Benefits to Building & Other Construction Workers under various schemes. This application enables construction workers to register online for availing various govt scheme benefits, get enrolled for skill development training and submit a request for claims and process the same through a workflow & role-based system. Construction Workers, Assistant Labor officer (ALO), Deputy Commissioner of Labor (DCL) and Board Members are the actors of the system. Workers apply for training and claims which are verified by ALO within their jurisdiction and forwarded to DCL at district & Board at Hq level for further process. As of today, around 20 Lakh construction workers are registered on this portal. During Covid-19 this data has been extensively utilised to provide additional benefits to workers.
+
+DCA (Drug Control Administration System)
+Drugs Control Administration regulates the sale and distribution of drugs in the state of Andhra Pradesh. It is workflow-based software designed to automate processes and issue/ generate license online. This software facilitates online Submission of Applications, License fee Payment, Verification by officials, Grant/ Renewal of Drug License, Amendments to existing licenses, Application Status tracking and monitoring, etc. Drug Firm owners/ directors apply online for various types of licenses like retail, wholesale, restricted, mobile, schedule by submitting desired documents online and making fee payment online. This application is being used by 105 Drug Inspectors and 13 Assistant Directors across the state. As of today, around 45000 drug licenses are issued by this system. APIs have been developed for Authenticating Pharmacist Registration and Identifying Pharmacist Location to Pharmacy council. Another API is in the process of development for drug license issues through a single desk portal (SDP) of AP Govt as part of EoDB.
+
+ITI Admission
+This application is designed to make the ITI admission life cycle process online, simple and transparent. The main modules of this application are Student Application, Scrutinize the applications, Merit list generation, Seat Matrix allocation, Seat Allotment and Admission Slip Generation. Around 500 ITIs of both government and private institutes use this system for the admission process every year. Normally around 50,000 students get admitted every year. This year during the Covid-19 period, a special module has been designed for students to apply and submit documents online. This has eliminated the process of student visit various ITIs for document verification during this pandemic. APIs have been designed to get SSC marks data from the board and update student details on the central skill development portal.
+
+Sarathi & Vahan
+Sarathi and Vahan Services in Andhra Pradesh has started to take its shape. Currently, it is in testing mode. The new e-KYC module which is going to be introduced in Andhra Pradesh is the first of its kind.
+
+ICJS – Interoperable Criminal Justice System
+The Inter-operable Criminal Justice System (ICJS) is an initiative of the e-Committee to enable seamless transfer of data and information among different pillars of the criminal justice system, like courts, police, jails and forensic science laboratories, from one platform. Andhra Pradesh has recently bagged 2nd place in the awards announced by the National Crime Records Bureau – NCRB.
+
+e-Prisons
+Andhra Pradesh has 82 active prisons. central prisons 4 District jails 8 PAC 1 and Spl. Prisons for Women 2, Spl. Sub jails 11, Sub jails 56. E-prisons software is being implemented in these prisons and digitized 11.00 lack backlog cases. This software covers the entire life cycle of a prisoner.
+
+e-Prosecution
+All the 13 districts of Andhra Pradesh are covered with the e-Prosecution software and all the Public prosecutors were trained to utilize the software for information flow from FIR data, legal opinion to integrate with e-Courts software. This software provides easy access to the Director of Prosecutions at state Head Quarters to monitor the progress of various cases.
+
+e-Forensics
+Andhra Pradesh is having 7 Forensic labs currently. e-Forensics software is being used by all 6 forensic labs and State Hq laboratory to register, acknowledge and report various samples sent from the Investigating officers.
+
+Special IT support during Outbreak of Pandemic COVID-19
+Ensuring round-the-clock networking & email services, smooth execution of Video Conferencing meetings of Hon’ble PM, Hon’ble President with all state CMs & UT Administrators regarding COVID-19 were conducted at CM Camp Office for Hon’ble Chief Minister, Chief Secretary of AP. Regular review meetings through VC on Covid-19 by Central Cabinet Secretary with Chief Secretary, Health Secretary and Administrators of all States and UTs, DGP, we conducted through VC services provided by NIC APSC. 24 x 7. NICNET/ SWAN/ NKN internet services were ensured with constant monitoring of all the websites and other applications. VPN provided to staff to facilitate work from home during the lockdown. In addition to these, various indigenous s/w applications and mobile apps were developed by NIC, APSC and NIC District Centres to support different Covid-19 related activities across the state.
+
+Accolades
+• RWSS Department, Government of Andhra Pradesh and NIC Andhra Pradesh State Centre received the “Award of Excellence” during elets National Water Innovation Summit 2020
+• ePanchayat Puraskar – 2020 - Panchayat Enterprise Suite & Digital Panchayat - Ministry of Panchayatraj Puraskar for efficient usage of IT for 2018-19
+• eGovernance Award for Punarvas– Land Acquisition & Rehabilitation at National e-Governance award 2018 (Gold Category) under District level IT Initiatives
+• CSI-Nihilent Award for the application DKrishi
+• Hon’ble CM AP Appreciation to WEBLAND and AePDS applications. The technical team received CM appreciation and felicitation during November 2018
+• CSI-Nihilent Award for CARD(Computer-Aided Registration Department)
+• National e-Governance Award (Gold Category) for the Loan Charge Module of Webland
+
+Way Forward
+National Informatics Centre, Andhra Pradesh State Centre has always been the backbone of the major technology initiatives in the State and has been its technology partner in rolling out many Projects. Looking ahead, the focus is on new paradigm shifts in terms of more efficient e-governance services delivery. We look forward to embracing emerging technologies such as Edge Computing, Deep Learning, Blockchain, AI and ML and using them effectively in future Projects.
+For further information, please contact: STATE INFORMATICS OFFICER NIC, 3rd Floor, R & B Building, MG Road Labbipet, Vijayawada - 520010 ANDHRA PRADESH Email: sio-ap@nic.in, Phone: 040-23494300

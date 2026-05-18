@@ -1,0 +1,12 @@
+---
+title: "E-VISITOR FACILITY INAUGURATED AT HIGH COURT OF DELHI"
+publication: "Informatics"
+issue_date: "January 2014"
+pages: [43]
+author: "Rajiv Prakash Saxena, Delhi"
+section: "In the News"
+---
+
+## E-VISITOR FACILITY INAUGURATED AT HIGH COURT OF DELHI
+
+e-Visitor software, developed by NHRC & e- Prisons Project Division at NIC, was inaugurated by the Hon’ble Justice Shri Madan B. Lokur, Judge, Supreme Court of India on 25/10/2013 in the auspicious presence of the Chief Justice of India. Earlier, the visitors intending to visit the court complex find it quiet harrowing and hassled while issuance of the pass. But with launch of e-Visitor facility, the visitors can now register their requests for visiting High Court of Delhi online by clicking on the option for the “Registration” shown on the main page of the website. The registration number and approval status so generated is further communicated to the visitor through SMS/email. The registration would be verified by the concerned advocate for the case mentioned by the proposed visitor through SMS/email. The current status of the visit can be ascertained from the menu “Status & Print” given above by entering the registration number. The status of the visitor approval can be ascertained from this link by entering the registration number. In cases where the concerned advocate for some reason could not approve the proposed visit, the intending visitor can take a print-out of the request from the facility provided under the option “Status & Print” shown above and get the same approved at the Gate Pass Counter of the High Court of Delhi. The registration number/print-out of the registration would have to be presented by the intending visitor at the Gate Pass Counter of High Court of Delhi, along with the original proof of identity. After verifying the documents and after capturing the photograph of the intending visitor, visitor pass will be issued. Another benefit of the facility is that on subsequent visits, the visitor can use the same registration number for the issuance of the visitor pass/gate pass for a different date. The key modules of the system include online registration facility for the general public; SMS and email integration; check current status of visit approval; real time status of visitors in the complex; barcode integration for security purpose, and tracking of all visitors’ movements through gate management modules.

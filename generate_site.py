@@ -1,93 +1,210 @@
 #!/usr/bin/env python3
-"""Generate a static HTML site from NIC Archives 1992 newsletter articles."""
+"""Generate a static HTML site from all NIC Archives newsletter articles.
+
+Outputs:
+  docs/index.html              — main index with all issues + Pagefind search
+  docs/issues/{slug}.html      — per-issue table of contents
+  docs/articles/{slug}.html    — individual article pages (Pagefind-indexed)
+"""
 
 import json
 import os
 import re
 import shutil
+from collections import defaultdict
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ARTICLES_DIR = os.path.join(BASE_DIR, 'articles')
-METADATA_DIR = os.path.join(BASE_DIR, 'metadata')
-DOCS_DIR = os.path.join(BASE_DIR, 'docs')
-DOCS_ARTICLES_DIR = os.path.join(DOCS_DIR, 'articles')
+try:
+    from PIL import Image as PILImage
+    _PIL_AVAILABLE = True
+except ImportError:
+    _PIL_AVAILABLE = False
 
+CROP_PADDING_PX = 12   # pixels of x-padding added around column in highlight view
+CONTEXT_PX      = 150  # pixels of y-context shown above/below article in highlight view
+
+BASE_DIR        = Path(__file__).parent
+ARTICLES_DIR    = BASE_DIR / 'articles'
+METADATA_DIR    = BASE_DIR / 'metadata'
+DOCS_DIR        = BASE_DIR / 'docs'
+DOCS_ARTICLES   = DOCS_DIR / 'articles'
+DOCS_ISSUES     = DOCS_DIR / 'issues'
+DOCS_PAGES_DIR  = DOCS_DIR / 'pages'
+
+MONTH_ORDER = {
+    'January': 1, 'February': 2, 'March': 3, 'April': 4,
+    'May': 5, 'June': 6, 'July': 7, 'August': 8,
+    'September': 9, 'October': 10, 'November': 11, 'December': 12,
+}
+
+# ---------------------------------------------------------------------------
+# CSS — Newspaper-archive aesthetic, full-width layout
+# ---------------------------------------------------------------------------
 CSS = """
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    background: #1a0f07;
-    color: #1e1408;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 17px;
-    line-height: 1.7;
-    min-height: 100vh;
-    padding: 3rem 1.5rem 5rem;
-}
-
-/* ── Page card (cream vellum sheet on dark leather) ── */
-.page {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 3.5rem 4rem;
     background: #f7f0d8;
-    box-shadow: 0 6px 60px rgba(0,0,0,0.75), 0 2px 8px rgba(0,0,0,0.5);
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
 }
 
-/* ── Double-border masthead frame ── */
-.book-frame {
-    border: 3px solid #b8892a;
-    padding: 4px;
-    margin-bottom: 2.5rem;
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
 }
-.book-frame-inner {
-    border: 1px solid #b8892a;
-    padding: 2.5rem 2rem;
-    text-align: center;
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
 }
-.masthead-title {
-    font-size: 2.6rem;
-    font-weight: 900;
-    letter-spacing: 0.25em;
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
     color: #7a1f1f;
     text-transform: uppercase;
     line-height: 1;
     white-space: nowrap;
 }
-.masthead-ornament {
-    color: #b8892a;
-    font-size: 1.1rem;
-    margin: 0.6rem 0;
-    letter-spacing: 0.4em;
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
 }
-.masthead-sub {
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
     font-size: 0.95rem;
     font-style: italic;
-    color: #8a7355;
-    margin-top: 0.2rem;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
 }
-.masthead-meta {
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    color: #8a7355;
-    margin-top: 0.3rem;
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
 }
 
-/* ── PDF link ── */
-.pdf-link {
-    display: inline-block;
-    margin: 0.5rem 0 0;
-    padding: 0.5rem 1.4rem;
-    border: 1px solid #b8892a;
-    color: #7a1f1f;
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.06em;
-}
-.pdf-link:hover { background: #ede6c0; }
-
-/* ── Table of Contents heading ── */
-.toc-heading {
+/* ── Section rule ── */
+.section-rule {
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -95,12 +212,135 @@ body {
     color: #1e1408;
     border-bottom: 2px solid #b8892a;
     padding-bottom: 0.35rem;
-    margin-bottom: 0.5rem;
+    margin: 2rem 0 1rem;
 }
 
-/* ── TOC list ── */
-.toc {
-    list-style: none;
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
 }
 .toc li {
     padding: 0.65rem 0;
@@ -114,10 +354,11 @@ body {
     font-style: italic;
     min-width: 2.5rem;
     flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
 }
 .toc-section-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #7a1f1f;
     border: 1px solid #7a1f1f;
@@ -129,37 +370,106 @@ body {
 .toc a {
     color: #1e1408;
     text-decoration: none;
-    font-size: 1.02rem;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 .toc a:hover { color: #7a1f1f; text-decoration: underline; }
 .toc-meta {
     font-size: 0.78rem;
     color: #8a7355;
     font-style: italic;
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
 }
 
-/* ── Back link (sits on dark background above page card) ── */
-.back-wrap {
-    max-width: 720px;
-    margin: 0 auto 1rem;
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
 }
-.back-link {
-    display: inline-block;
-    color: #c9a96e;
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
-}
-.back-link:hover { color: #f7f0d8; text-decoration: underline; }
 
-/* ── Article page header ── */
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
 .article-header {
     padding-bottom: 1rem;
     margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
 }
 .article-section-badge {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #7a1f1f;
@@ -167,11 +477,13 @@ body {
     padding: 0.1rem 0.35rem;
     display: inline-block;
     margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 h1.article-title {
-    font-size: 2.1rem;
-    font-weight: 800;
-    line-height: 1.25;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
     color: #7a1f1f;
     margin-bottom: 0.5rem;
 }
@@ -181,43 +493,50 @@ hr.title-rule {
     margin: 0.7rem 0;
 }
 .article-byline {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #8a7355;
     font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
 
 /* ── Article body ── */
 .article-body p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
     text-align: justify;
     hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
 }
-
-/* Drop cap on first paragraph */
 .article-body p.first-para::first-letter {
     font-size: 3.8em;
     float: left;
     line-height: 0.82;
     color: #7a1f1f;
-    font-weight: 900;
-    margin: 0.05em 0.12em 0 0;
-}
-
-/* Section headings with gold ornamental prefix */
-.article-body h3.section-heading {
-    font-size: 0.9rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #7a1f1f;
     margin: 2rem 0 0.7rem;
 }
-.article-body h3.section-heading::before {
-    content: '\2014 ';
-    color: #b8892a;
-}
-
-/* Ornamental section divider */
+.article-body h2.section-heading::before { content: '\\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
 .ornament {
     text-align: center;
     color: #b8892a;
@@ -226,6 +545,42 @@ hr.title-rule {
     margin: 1.5rem 0;
 }
 
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
 /* ── Figure / image ── */
 figure.article-image {
     margin: 1.5rem 0;
@@ -233,18 +588,8 @@ figure.article-image {
     background: #ede6c0;
     padding: 0.75rem;
 }
-figure.article-image img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto 0.6rem;
-}
-figure.article-image figcaption {
-    font-size: 0.8rem;
-    color: #8a7355;
-    font-style: italic;
-    line-height: 1.5;
-}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
 
 /* ── Footnotes ── */
 .footnote {
@@ -254,119 +599,108 @@ figure.article-image figcaption {
     padding-top: 0.6rem;
     margin-top: 2rem;
     font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
-.footnote sup {
-    font-size: 0.7rem;
-    vertical-align: super;
-    margin-right: 0.2rem;
-}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
 
-/* ── Mobile ── */
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
 @media (max-width: 600px) {
-    body {
-        padding: 1rem 0.5rem 3rem;
-    }
-    .page {
-        padding: 2rem 1.25rem;
-    }
-    .book-frame-inner {
-        padding: 1.5rem 1rem;
-    }
-    .masthead-title {
-        font-size: clamp(1.2rem, 7.5vw, 2.6rem);
-        letter-spacing: 0.12em;
-    }
-    .masthead-meta {
-        font-size: 0.75rem;
-    }
-    h1.article-title {
-        font-size: 1.6rem;
-    }
-    .article-body p.first-para::first-letter {
-        font-size: 3em;
-    }
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
 }
 """
 
-ARTICLE_ORDER = [
-    'cover-role-of-nic-in-the-election-process.md',   # p.1
-    'misc.md',                                          # p.2 left col (editorial)
-    'financial-management-informatics-project.md',      # p.2 right col
-    'around-the-nic-world.md',                          # p.3 left col
-    'all-set-for-tax-computerization.md',               # p.3 right col top
-    'keeping-monkeys-at-bay.md',                        # p.3 right col bottom
-    'nics-election-experience-a-rich-harvest.md',       # pp.4–5
-    'products.md',                                      # p.6
-    'projects.md',                                      # p.7
-    'the-lakshadweeps-not-so-far-away.md',              # p.8
-]
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
-def roman(n):
-    """Convert integer to Roman numeral string (supports 1–10)."""
-    vals = [(10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')]
-    result = ''
+def roman(n: int) -> str:
+    vals = [(10,'X'),(9,'IX'),(5,'V'),(4,'IV'),(1,'I')]
+    r = ''
     for v, s in vals:
         while n >= v:
-            result += s
-            n -= v
-    return result
+            r += s; n -= v
+    return r
 
 
-def extract_images():
-    """Returns dict mapping normalized description text -> base64 string."""
-    doc_path = os.path.join(BASE_DIR, 'document.md')
-    with open(doc_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-
-    # Split into page blocks on '\n---\n'
-    pages = content.split('\n---\n')
-
-    result = {}
-    for page_idx, page_block in enumerate(pages):
-        page_num = page_idx + 1
-
-        # Find all base64 image data URIs on this page
-        b64_list = re.findall(
-            r'!\[Image\]\(data:image/jpeg;base64,([^)]+)\)',
-            page_block
-        )
-        if not b64_list:
-            continue
-
-        meta_path = os.path.join(METADATA_DIR, f'page_00{page_num}.json')
-        with open(meta_path, 'r', encoding='utf-8') as f:
-            meta = json.load(f)
-
-        image_blocks = [b for b in meta['blocks'] if b['layout_tag'] == 'image']
-        image_blocks.sort(key=lambda b: b['reading_order'])
-
-        for b64, block in zip(b64_list, image_blocks):
-            normalized = re.sub(r'\s+', ' ', block['text']).strip()
-            result[normalized] = b64
-
-    return result
+def page_display(pages: list) -> str:
+    if not pages: return ''
+    if len(pages) == 1: return f'p. {pages[0]}'
+    return f'pp. {pages[0]}–{pages[-1]}'
 
 
-def parse_frontmatter(text):
+def html_escape(text: str) -> str:
+    return (text
+            .replace('&', '&amp;').replace('<', '&lt;')
+            .replace('>', '&gt;').replace('"', '&quot;'))
+
+
+def inline_md(text: str) -> str:
+    text = re.sub(r'\$_\{[^}]+\}\$', '', text)
+    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+    text = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
+    return text
+
+
+def parse_frontmatter(text: str) -> tuple:
     """Parse YAML-like frontmatter. Returns (meta_dict, body_text)."""
     if not text.startswith('---\n'):
         return {}, text
-
     parts = text.split('---\n', 2)
     if len(parts) < 3:
         return {}, text
 
-    fm_text = parts[1]
-    body = parts[2]
     meta = {}
-
-    for line in fm_text.splitlines():
+    for line in parts[1].splitlines():
         m = re.match(r'^(\w+):\s*(.+)$', line)
-        if not m:
-            continue
-        key = m.group(1)
-        val = m.group(2).strip()
+        if not m: continue
+        key, val = m.group(1), m.group(2).strip()
         if val == 'null':
             meta[key] = None
         elif val.startswith('"') and val.endswith('"'):
@@ -375,200 +709,318 @@ def parse_frontmatter(text):
             inner = val[1:-1]
             meta[key] = [int(x.strip()) for x in inner.split(',') if x.strip().isdigit()]
         else:
-            try:
-                meta[key] = int(val)
-            except ValueError:
-                meta[key] = val
-
-    return meta, body
+            try: meta[key] = int(val)
+            except ValueError: meta[key] = val
+    return meta, parts[2]
 
 
-def html_escape(text):
-    return (text
-            .replace('&', '&amp;')
-            .replace('<', '&lt;')
-            .replace('>', '&gt;')
-            .replace('"', '&quot;'))
+def get_issue_date(meta: dict) -> str:
+    """Normalise: new pipeline uses issue_date, 1992 articles use date."""
+    return meta.get('issue_date') or meta.get('date') or 'Unknown'
 
 
-def inline_md(text):
-    """Convert inline markdown (**bold**, *italic*) to HTML."""
-    # Strip LaTeX-style subscript artifacts like $_{20}$
-    text = re.sub(r'\$_\{[^}]+\}\$', '', text)
-    # Bold: **text**
-    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-    # Italic: *text* (not ** and not inside bold)
-    text = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
-    return text
+def make_issue_slug(issue_date: str) -> str:
+    return issue_date.lower().replace(' ', '-')
 
 
-def md_to_html(body, images):
-    """Convert article markdown body to HTML string."""
+def issue_sort_key(issue_date: str) -> tuple:
+    parts = issue_date.split()
+    if len(parts) == 2:
+        return (int(parts[1]), MONTH_ORDER.get(parts[0], 0))
+    return (0, 0)
+
+
+def extract_images() -> dict:
+    """Extract base64 images from document.md (1992 issue only)."""
+    doc_path = BASE_DIR / 'document.md'
+    if not doc_path.exists():
+        return {}
+    with open(doc_path, encoding='utf-8') as f:
+        content = f.read()
+
+    pages = content.split('\n---\n')
+    result = {}
+    for page_idx, page_block in enumerate(pages):
+        page_num = page_idx + 1
+        b64_list = re.findall(r'!\[Image\]\(data:image/jpeg;base64,([^)]+)\)', page_block)
+        if not b64_list: continue
+
+        meta_path = METADATA_DIR / f'page_00{page_num}.json'
+        if not meta_path.exists(): continue
+        with open(meta_path, encoding='utf-8') as f:
+            meta = json.load(f)
+
+        image_blocks = [b for b in meta['blocks'] if b['layout_tag'] == 'image']
+        image_blocks.sort(key=lambda b: b['reading_order'])
+        for b64, block in zip(b64_list, image_blocks):
+            normalized = re.sub(r'\s+', ' ', block['text']).strip()
+            result[normalized] = b64
+    return result
+
+
+def md_to_html(body: str, images: dict) -> str:
+    """Convert article markdown body to HTML."""
     lines = body.splitlines()
     html_parts = []
     pending_para = []
     first_para_emitted = False
-
-    # State for collecting multi-line image descriptions
     in_image = False
     image_desc_lines = []
+    in_list = False
+    list_tag = 'ul'
 
     def flush_para():
         nonlocal first_para_emitted
         if pending_para:
             text = ' '.join(pending_para).strip()
             if text:
-                if not first_para_emitted:
-                    html_parts.append(f'<p class="first-para">{inline_md(html_escape(text))}</p>')
-                    first_para_emitted = True
-                else:
-                    html_parts.append(f'<p>{inline_md(html_escape(text))}</p>')
+                cls = '' if first_para_emitted else ' class="first-para"'
+                html_parts.append(f'<p{cls}>{inline_md(html_escape(text))}</p>')
+                first_para_emitted = True
             pending_para.clear()
 
+    def flush_list():
+        nonlocal in_list
+        if in_list:
+            html_parts.append(f'</{list_tag}>')
+            in_list = False
+
     def render_image(desc_text):
-        """Render a figure element for the given description."""
         normalized = re.sub(r'\s+', ' ', desc_text).strip()
         b64 = images.get(normalized, '')
-        escaped_desc = html_escape(normalized)
+        escaped = html_escape(normalized)
         if b64:
             html_parts.append(
                 f'<figure class="article-image">'
-                f'<img src="data:image/jpeg;base64,{b64}" alt="{escaped_desc}">'
-                f'<figcaption>{escaped_desc}</figcaption>'
-                f'</figure>'
+                f'<img src="data:image/jpeg;base64,{b64}" alt="{escaped}">'
+                f'<figcaption>{escaped}</figcaption></figure>'
             )
         else:
-            # No image data found; render as text callout
             html_parts.append(
-                f'<figure class="article-image">'
-                f'<figcaption>{escaped_desc}</figcaption>'
-                f'</figure>'
+                f'<figure class="article-image"><figcaption>{escaped}</figcaption></figure>'
             )
 
     for line in lines:
-        # ── Collecting multi-line image description ──
         if in_image:
             stripped = line.rstrip()
             if stripped.endswith('*'):
-                # End of description
                 image_desc_lines.append(stripped.rstrip('*'))
                 render_image(' '.join(image_desc_lines))
-                in_image = False
-                image_desc_lines = []
+                in_image = False; image_desc_lines = []
             else:
                 image_desc_lines.append(stripped)
             continue
 
-        # ── Skip ## article title ──
+        # Skip ## article title heading
         if re.match(r'^## ', line):
             continue
 
-        # ── ### Subheading ──
+        # ### subheading → h2 for correct document outline (h1 is article title)
         m = re.match(r'^### (.+)$', line)
         if m:
-            flush_para()
-            heading = html_escape(m.group(1).strip())
-            html_parts.append(f'<h3 class="section-heading">{heading}</h3>')
+            flush_para(); flush_list()
+            html_parts.append(f'<h2 class="section-heading">{html_escape(m.group(1).strip())}</h2>')
             continue
 
-        # ── Image blockquote: > **[Image]** *desc* ──
+        # Image blockquote
         m = re.match(r'^> \*\*\[Image\]\*\* \*(.+)$', line)
         if m:
-            flush_para()
+            flush_para(); flush_list()
             rest = m.group(1)
             if rest.rstrip().endswith('*'):
-                # Single-line description
                 render_image(rest.rstrip().rstrip('*'))
             else:
-                # Multi-line: start collecting
-                in_image = True
-                image_desc_lines = [rest]
+                in_image = True; image_desc_lines = [rest]
             continue
 
-        # ── Footnote: [^N]: text ──
-        m = re.match(r'^\[\^(\d+)\]: (.+)$', line)
+        # Bullet list item: - text or * text
+        m = re.match(r'^[-*]\s+(.+)$', line)
         if m:
             flush_para()
-            num = m.group(1)
-            text = m.group(2)
+            if not in_list:
+                html_parts.append('<ul class="article-list">'); in_list = True; list_tag = 'ul'
+            html_parts.append(f'<li>{inline_md(html_escape(m.group(1).strip()))}</li>')
+            continue
+
+        # Numbered list item: N. text
+        m = re.match(r'^\d+\.\s+(.+)$', line)
+        if m:
+            flush_para()
+            if not in_list:
+                html_parts.append('<ol class="article-list">'); in_list = True; list_tag = 'ol'
+            html_parts.append(f'<li>{inline_md(html_escape(m.group(1).strip()))}</li>')
+            continue
+
+        # Footnote
+        m = re.match(r'^\[\^(\d+)\]: (.+)$', line)
+        if m:
+            flush_para(); flush_list()
             html_parts.append(
-                f'<div class="footnote"><sup>{num}</sup> {inline_md(html_escape(text))}</div>'
+                f'<div class="footnote"><sup>{m.group(1)}</sup> {inline_md(html_escape(m.group(2)))}</div>'
             )
             continue
 
-        # ── Blank line → flush paragraph ──
+        # Blank line
         if line.strip() == '':
-            flush_para()
+            flush_para(); flush_list()
             continue
 
-        # ── Normal text ──
+        # Normal text — if we were in a list, close it first
+        if in_list:
+            flush_list()
         pending_para.append(line.strip())
 
-    flush_para()
+    flush_para(); flush_list()
     return '\n'.join(html_parts)
 
 
-def page_display(pages):
-    """Format page list for display: [4, 5] → 'pp. 4–5', [3] → 'p. 3'"""
-    if not pages:
-        return ''
-    if len(pages) == 1:
-        return f'p. {pages[0]}'
-    return f'pp. {pages[0]}–{pages[-1]}'
+# ---------------------------------------------------------------------------
+# Page renderers
+# ---------------------------------------------------------------------------
+
+_SEARCH_ICON = (
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    '<circle cx="11" cy="11" r="8"/>'
+    '<line x1="21" y1="21" x2="16.65" y2="16.65"/>'
+    '</svg>'
+)
 
 
-def render_article_page(meta, html_body, filename):
-    """Return full self-contained HTML page string for an article."""
-    title = html_escape(meta.get('title', 'Article'))
-    author = meta.get('author')
-    section = meta.get('section')
-    pages = meta.get('pages', [])
-
-    byline_parts = []
-    if author:
-        byline_parts.append(f'By {html_escape(author)}')
-    if pages:
-        byline_parts.append(page_display(pages))
-    byline_html = ' &bull; '.join(byline_parts)
-
-    section_badge = ''
-    if section:
-        section_badge = f'<div class="article-section-badge">{html_escape(section)}</div>'
-
-    byline_block = ''
-    if byline_html:
-        byline_block = f'<p class="article-byline">{byline_html}</p>'
-
+def _base_html(title: str, body: str, depth: int = 0) -> str:
+    """Wrap body in full HTML document. depth=0 for docs/, depth=1 for subdirs."""
+    pagefind_path = '../' * depth + 'pagefind'
+    root_path = '../' * depth
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} — Informatics, Vol. 1 No. 2</title>
+<title>{html_escape(title)}</title>
 <style>{CSS}</style>
+<link href="{pagefind_path}/pagefind-ui.css" rel="stylesheet">
+<script src="{pagefind_path}/pagefind-ui.js"></script>
 </head>
 <body>
-  <div class="back-wrap">
-    <a class="back-link" href="../index.html">&larr; Back to Issue</a>
-  </div>
-  <div class="page">
-    <div class="article-header">
-      {section_badge}
-      <h1 class="article-title">{title}</h1>
-      <hr class="title-rule">
-      {byline_block}
-    </div>
-    <div class="article-body">
-      {html_body}
-    </div>
-  </div>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="{root_path}index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="{root_path}index.html" aria-label="Search">{_SEARCH_ICON}</a>
+</nav>
+{body}
 </body>
 </html>"""
 
 
-def render_index(articles):
-    """Return full HTML index page string."""
-    items_html = []
+def render_index(issues_data: list) -> str:
+    """Main index: newspaper nameplate + search + year filter + issue card grid."""
+    years = sorted({issue_sort_key(d['date'])[0] for d in issues_data})
+    most_recent = issues_data[-1]['date'] if issues_data else ''
+    total_issues = len(issues_data)
+    total_articles = sum(d['count'] for d in issues_data)
+
+    filter_pills = '<button class="filter-pill active" data-year="all" onclick="filterYear(this,\'all\')">All</button>'
+    for y in years:
+        filter_pills += f'<button class="filter-pill" data-year="{y}" onclick="filterYear(this,\'{y}\')">{y}</button>'
+
+    cards = []
+    for issue in issues_data:
+        slug = make_issue_slug(issue['date'])
+        year = issue_sort_key(issue['date'])[0]
+        count = issue['count']
+        cover_path = DOCS_PAGES_DIR / slug / 'page-1.jpg'
+        cover_html = (
+            f'<div class="issue-card-cover">'
+            f'<img src="pages/{slug}/page-1.jpg" alt="{html_escape(issue["date"])} cover" loading="lazy">'
+            f'</div>'
+        ) if cover_path.exists() else '<div class="issue-card-cover"></div>'
+        cards.append(
+            f'<a class="issue-card" href="issues/{slug}.html" data-year="{year}">'
+            f'{cover_html}'
+            f'<div class="issue-card-info">'
+            f'<div class="issue-card-date">{html_escape(issue["date"])}</div>'
+            f'<div class="issue-card-count">{count} article{"s" if count != 1 else ""}</div>'
+            f'</div>'
+            f'</a>'
+        )
+
+    grid = '\n'.join(cards)
+
+    body = f"""
+  <header class="nameplate">
+    <hr class="nameplate-rule-heavy">
+    <hr class="nameplate-rule-thin">
+    <div class="nameplate-grid">
+      <div class="nameplate-side">Est.&nbsp;1989<br>Quarterly Newsletter<br>New&nbsp;Delhi,&nbsp;India</div>
+      <div class="nameplate-center">
+        <div class="nameplate-title">Informatics</div>
+        <div class="nameplate-subtitle">National Informatics Centre &bull; Government of India</div>
+      </div>
+      <div class="nameplate-side right">Most&nbsp;recent:&nbsp;{html_escape(most_recent)}<br>{total_issues}&nbsp;issues&nbsp;archived<br>{total_articles}&nbsp;articles</div>
+    </div>
+    <hr class="nameplate-rule-gold">
+  </header>
+
+  <main id="main-content" class="home-content">
+    <div class="search-wrap">
+      <div class="search-offline-warning" id="search-offline-warning">
+        Search requires a local server. Open a terminal and run:<br>
+        <code>python3 -m http.server 8765 --directory docs</code><br>
+        Then visit <strong>http://localhost:8765/</strong> in your browser.
+      </div>
+      <div id="search"></div>
+    </div>
+
+    <p class="archive-blurb">
+      <strong>NIC Informatics</strong> is the quarterly newsletter of India's
+      <a href="https://www.nic.in/" target="_blank" rel="noopener">National Informatics Centre</a>
+      — the government body that has powered e-governance since 1975.
+      This archive makes 30+ years of that history searchable for the first time.
+    </p>
+
+    <p class="section-rule">Browse by Issue</p>
+    <div class="filter-bar">{filter_pills}</div>
+    <div class="issues-grid" id="issues-grid">
+      {grid}
+    </div>
+  </main>
+
+  <script>
+    if (location.protocol === 'file:') {{
+      document.getElementById('search-offline-warning').style.display = 'block';
+    }} else {{
+      new PagefindUI({{ element: "#search", showSubResults: true, placeholder: "Search 30 years of NIC Informatics\u2026" }});
+    }}
+    function filterYear(btn, year) {{
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.issue-card').forEach(card => {{
+        card.style.display = (year === 'all' || card.dataset.year === year) ? '' : 'none';
+      }});
+    }}
+  </script>"""
+
+    return _base_html('Informatics — NIC Archives', body, depth=0)
+
+
+def render_issue_page(issue_date: str, articles: list, page_images: list = None) -> str:
+    """Per-issue TOC page: smaller nameplate + thumbnail strip + two-column TOC."""
+    slug = make_issue_slug(issue_date)
+
+    strip_html = ''
+    if page_images:
+        thumbs = []
+        for n in page_images:
+            img_rel = f'../pages/{slug}/page-{n}.jpg'
+            thumbs.append(
+                f'<a class="page-thumb" href="{img_rel}" target="_blank" title="Open page {n}">'
+                f'<img src="{img_rel}" alt="Page {n}" loading="lazy">'
+                f'<div class="page-thumb-label">p.&thinsp;{n}</div>'
+                f'</a>'
+            )
+        strip_html = f'<div class="page-strip">{"".join(thumbs)}</div>'
+
+    items = []
     for idx, (meta, filename) in enumerate(articles, start=1):
         title = html_escape(meta.get('title', 'Untitled'))
         author = meta.get('author')
@@ -576,117 +1028,411 @@ def render_index(articles):
         pages = meta.get('pages', [])
         stem = filename.replace('.md', '.html')
 
-        badge = ''
-        if section:
-            badge = f'<span class="toc-section-label">{html_escape(section)}</span>'
-
+        badge = f'<span class="toc-section-label">{html_escape(section)}</span>' if section else ''
         meta_parts = []
-        if author:
-            meta_parts.append(f'By {html_escape(author)}')
-        if pages:
-            meta_parts.append(page_display(pages))
-        meta_line = ''
-        if meta_parts:
-            meta_line = f'<div class="toc-meta">{" &bull; ".join(meta_parts)}</div>'
+        if author: meta_parts.append(f'By {html_escape(author)}')
+        if pages: meta_parts.append(page_display(pages))
+        meta_line = f'<div class="toc-meta">{" &bull; ".join(meta_parts)}</div>' if meta_parts else ''
 
-        items_html.append(
+        items.append(
             f'<li>'
             f'<span class="toc-num">{roman(idx)}.</span>'
-            f'<div>'
-            f'{badge}'
-            f'<a href="articles/{stem}">{title}</a>'
-            f'{meta_line}'
-            f'</div>'
+            f'<div>{badge}<a href="../articles/{stem}">{title}</a>{meta_line}</div>'
             f'</li>'
         )
 
-    items = '\n'.join(items_html)
+    items_html = '\n'.join(items)
+    count = len(articles)
 
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informatics — Vol. 1, No. 2 (October 1992)</title>
-<style>{CSS}</style>
-</head>
-<body>
-  <div class="page">
-    <div class="book-frame">
-      <div class="book-frame-inner">
-        <div class="masthead-title">Informatics</div>
-        <div class="masthead-ornament">&#10022; &#10022; &#10022;</div>
-        <div class="masthead-sub">Quarterly Newsletter</div>
-        <div class="masthead-meta">Vol.&nbsp;1, No.&nbsp;2 &nbsp;&bull;&nbsp; October 1992 &nbsp;&bull;&nbsp; National Informatics Centre</div>
-        <div style="margin-top:1.2rem;">
-          <a class="pdf-link" href="NIC Archives.pdf">&#10022;&nbsp; Download Original PDF</a>
+    body = f"""
+  <header class="nameplate nameplate-sm">
+    <hr class="nameplate-rule-heavy">
+    <hr class="nameplate-rule-thin">
+    <div class="nameplate-grid">
+      <div class="nameplate-side"><a href="../index.html">&larr; All Issues</a></div>
+      <div class="nameplate-center">
+        <div class="nameplate-title">Informatics</div>
+        <div class="nameplate-subtitle">{html_escape(issue_date)} &bull; {count} article{"s" if count != 1 else ""}</div>
+      </div>
+      <div class="nameplate-side right">National Informatics Centre<br>Government of India</div>
+    </div>
+    <hr class="nameplate-rule-gold">
+  </header>
+
+  <main id="main-content" class="issue-toc-page">
+    {strip_html}
+    <p class="section-rule">Table of Contents</p>
+    <ul class="toc toc-grid">{items_html}</ul>
+  </main>"""
+
+    return _base_html(f'Informatics — {issue_date}', body, depth=1)
+
+
+def get_issue_pages(issue_slug: str) -> list:
+    """Return sorted list of page numbers with images available for an issue."""
+    page_dir = DOCS_PAGES_DIR / issue_slug
+    if not page_dir.exists():
+        return []
+    pages = []
+    for p in page_dir.glob('page-*.jpg'):
+        m = re.search(r'page-(\d+)', p.name)
+        if m:
+            pages.append(int(m.group(1)))
+    return sorted(pages)
+
+
+def _load_coords(issue_slug: str) -> dict:
+    """Load coords.json for an issue, or return {} if not found."""
+    coords_path = DOCS_PAGES_DIR / issue_slug / 'coords.json'
+    if coords_path.exists():
+        return json.loads(coords_path.read_text())
+    return {}
+
+
+def _has_overlapping_y(article_slug: str, coords: dict, page_n: int) -> bool:
+    """Return True if this article's bounding box overlaps another article in BOTH x and y.
+
+    Articles in different columns legitimately share the same y-range, so a y-only check
+    produces false positives for multi-column layouts. We require x-range overlap too:
+    only articles that occupy the same column AND the same vertical band are truly
+    conflicting (Gemini error). In that case the highlight would be misleading.
+    """
+    this = coords.get(article_slug, {}).get(str(page_n))
+    if not this:
+        return False
+    for slug, pages in coords.items():
+        if slug == article_slug:
+            continue
+        other = pages.get(str(page_n))
+        if not other:
+            continue
+        y_overlap = this['y_start'] < other['y_end'] and this['y_end'] > other['y_start']
+        x_overlap = this['x_start'] < other['x_end'] and this['x_end'] > other['x_start']
+        if y_overlap and x_overlap:
+            return True
+    return False
+
+
+def _make_crop(page_path: Path, bbox: dict, crop_path: Path) -> bool:
+    """Crop page_path to the article bounding box and save to crop_path.
+
+    Adds CROP_PADDING_PX of padding on all sides (clamped to image bounds).
+    Returns True on success.
+    """
+    if not _PIL_AVAILABLE:
+        return False
+    try:
+        img = PILImage.open(page_path)
+        w, h = img.size
+        x0 = max(0, bbox['x_start'] - CROP_PADDING_PX)
+        y0 = max(0, bbox['y_start'] - CROP_PADDING_PX)
+        x1 = min(w, bbox['x_end']   + CROP_PADDING_PX)
+        y1 = min(h, bbox['y_end']   + CROP_PADDING_PX)
+        cropped = img.crop((x0, y0, x1, y1))
+        crop_path.parent.mkdir(parents=True, exist_ok=True)
+        cropped.save(crop_path, 'JPEG', quality=88)
+        return True
+    except Exception as e:
+        print(f'    [crop error] {crop_path.name}: {e}')
+        return False
+
+
+def _make_column_crop(page_path: Path, bbox: dict, crop_path: Path) -> bool:
+    """Crop page to the article's column with CONTEXT_PX above/below for highlight display.
+
+    The resulting image shows the article in context; a CSS overlay is drawn on top
+    to highlight the exact article region. This avoids hard y-boundary errors from Gemini.
+    """
+    if not _PIL_AVAILABLE:
+        return False
+    try:
+        img = PILImage.open(page_path)
+        w, h = img.size
+        x0 = max(0, bbox['x_start'] - CROP_PADDING_PX)
+        x1 = min(w, bbox['x_end']   + CROP_PADDING_PX)
+        y0 = max(0, bbox['y_start'] - CONTEXT_PX)
+        y1 = min(h, bbox['y_end']   + CONTEXT_PX)
+        col_crop = img.crop((x0, y0, x1, y1))
+        crop_path.parent.mkdir(parents=True, exist_ok=True)
+        col_crop.save(crop_path, 'JPEG', quality=88)
+        return True
+    except Exception as e:
+        print(f'    [column crop error] {crop_path.name}: {e}')
+        return False
+
+
+def get_scan_panel_html(issue_slug: str, pages: list, article_slug: str = '') -> str:
+    """Left-column scan panel: full-page JPGs on parchment background, no highlight overlay."""
+    if not pages:
+        return ''
+
+    page_dir = DOCS_PAGES_DIR / issue_slug
+    items = []
+    for i, n in enumerate(pages):
+        full_name = f'page-{n}.jpg'
+        page_path = page_dir / full_name
+        if not page_path.exists():
+            continue
+
+        full_rel = f'../pages/{issue_slug}/{full_name}'
+        divider = '<hr class="scan-divider">' if i > 0 else ''
+        items.append(
+            f'{divider}'
+            f'<div class="scan-panel-item">'
+            f'<div class="scan-panel-label">Original scan &middot; Page&nbsp;{n}</div>'
+            f'<a href="{full_rel}" target="_blank" title="Open full resolution">'
+            f'<img src="{full_rel}" alt="Page {n}" loading="lazy">'
+            f'</a>'
+            f'<div class="scan-panel-caption">'
+            f'<a href="{full_rel}" target="_blank">Open full resolution &nearr;</a>'
+            f'</div>'
+            f'</div>'
+        )
+
+    if not items:
+        return ''
+
+    return (
+        f'<aside class="scan-panel" data-pagefind-ignore>'
+        f'{"".join(items)}'
+        f'</aside>'
+    )
+
+
+def get_scan_viewer_html(issue_slug: str, pages: list, article_slug: str = '') -> str:
+    """Return HTML for the original-page scan viewer, or '' if no images exist.
+
+    When coords.json has a bounding box for this article, crops the page image
+    to the exact article region and shows the crop. Falls back to the full-page
+    image when no coords are available.
+    """
+    if not pages:
+        return ''
+
+    page_dir = DOCS_PAGES_DIR / issue_slug
+    coords = _load_coords(issue_slug)
+    art_coords = coords.get(article_slug, {}) if article_slug else {}
+
+    items = []
+    for n in pages:
+        full_name = f'page-{n}.jpg'
+        page_path = page_dir / full_name
+        if not page_path.exists():
+            continue
+
+        bbox = art_coords.get(str(n))
+
+        if bbox and article_slug:
+            crop_name = f'{article_slug}-p{n}-crop.jpg'
+            crop_path = page_dir / crop_name
+            if not crop_path.exists():
+                _make_crop(page_path, bbox, crop_path)
+
+            if crop_path.exists():
+                rel = f'../pages/{issue_slug}/{crop_name}'
+                full_rel = f'../pages/{issue_slug}/{full_name}'
+                caption = f'Page {n} scan &mdash; <a href="{full_rel}" target="_blank" style="color:#8a7355;">view full page</a>'
+                items.append(
+                    f'<div class="scan-page">'
+                    f'<a href="{full_rel}" target="_blank" title="Open full page">'
+                    f'<img src="{rel}" alt="Page {n} — article scan" loading="lazy" style="display:block;width:100%;border:1px solid #c9b870;">'
+                    f'</a>'
+                    f'<div class="scan-page-caption">{caption}</div>'
+                    f'</div>'
+                )
+                continue
+
+        rel = f'../pages/{issue_slug}/{full_name}'
+        caption = f'Page {n} &mdash; click to enlarge'
+        items.append(
+            f'<div class="scan-page">'
+            f'<a href="{rel}" target="_blank" title="Open full resolution">'
+            f'<img src="{rel}" alt="Page {n}" loading="lazy" style="display:block;width:100%;">'
+            f'</a>'
+            f'<div class="scan-page-caption">{caption}</div>'
+            f'</div>'
+        )
+
+    if not items:
+        return ''
+
+    pages_html = '\n'.join(items)
+    return f'''
+    <div class="scan-viewer">
+      <div class="scan-viewer-label">Original Newsletter Pages</div>
+      <div class="scan-pages">
+        {pages_html}
+      </div>
+    </div>'''
+
+
+def render_article_page(meta: dict, html_body: str, filename: str,
+                         prev_article=None, next_article=None) -> str:
+    """Individual article page: 50/50 scan+text split, breadcrumb, prev/next nav."""
+    title = html_escape(meta.get('title', 'Article'))
+    author = meta.get('author')
+    section = meta.get('section')
+    pages = meta.get('pages', [])
+    issue_date = get_issue_date(meta)
+    issue_slug = make_issue_slug(issue_date)
+    article_slug = filename.replace('.md', '')
+
+    byline_parts = []
+    if author: byline_parts.append(f'By {html_escape(author)}')
+    if pages: byline_parts.append(page_display(pages))
+    byline_html = ' &bull; '.join(byline_parts)
+
+    section_badge = f'<div class="article-section-badge">{html_escape(section)}</div>' if section else ''
+    byline_block = f'<p class="article-byline">{byline_html}</p>' if byline_html else ''
+
+    scan_panel = get_scan_panel_html(issue_slug, pages, article_slug=article_slug)
+
+    breadcrumb = (
+        f'<nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore>'
+        f'<a href="../index.html">Informatics</a>'
+        f'<span class="breadcrumb-sep">&rsaquo;</span>'
+        f'<a href="../issues/{issue_slug}.html">{html_escape(issue_date)}</a>'
+        f'<span class="breadcrumb-sep">&rsaquo;</span>'
+        f'<span>{title}</span>'
+        f'</nav>'
+    )
+
+    nav_links = []
+    if prev_article:
+        prev_title = html_escape(prev_article[0].get('title', 'Previous'))
+        nav_links.append(
+            f'<a class="article-nav-link prev" href="{prev_article[1]}">'
+            f'<span class="article-nav-dir">&larr; Previous</span>'
+            f'<span class="article-nav-title">{prev_title}</span>'
+            f'</a>'
+        )
+    if next_article:
+        next_title = html_escape(next_article[0].get('title', 'Next'))
+        nav_links.append(
+            f'<a class="article-nav-link next" href="{next_article[1]}">'
+            f'<span class="article-nav-dir">Next &rarr;</span>'
+            f'<span class="article-nav-title">{next_title}</span>'
+            f'</a>'
+        )
+    article_nav = (
+        f'<nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore>{"".join(nav_links)}</nav>'
+        if nav_links else ''
+    )
+
+    body = f"""
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:{html_escape(issue_date)}"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    {scan_panel}
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        {breadcrumb}
+        <div class="article-header">
+          {section_badge}
+          <h1 class="article-title" data-pagefind-meta="title">{title}</h1>
+          <hr class="title-rule">
+          {byline_block}
+          <p class="article-issue-link">
+            From <a href="../issues/{issue_slug}.html">{html_escape(issue_date)}</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
         </div>
+        <div class="article-body" id="article-body">
+          {html_body}
+        </div>
+        {article_nav}
       </div>
     </div>
+  </div>"""
 
-    <p class="toc-heading">Table of Contents</p>
-    <ul class="toc">
-      {items}
-    </ul>
-  </div>
-</body>
-</html>"""
+    return _base_html(f'{meta.get("title", "Article")} — Informatics {issue_date}', body, depth=1)
 
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 def main():
-    # Create output directories
-    os.makedirs(DOCS_ARTICLES_DIR, exist_ok=True)
+    # Clean stale generated files so old articles don't accumulate in the index
+    if DOCS_ARTICLES.exists():
+        for f in DOCS_ARTICLES.glob('*.html'):
+            f.unlink()
+    DOCS_ARTICLES.mkdir(parents=True, exist_ok=True)
+    DOCS_ISSUES.mkdir(parents=True, exist_ok=True)
 
-    # Copy PDF
-    pdf_src = os.path.join(BASE_DIR, 'NIC Archives.pdf')
-    pdf_dst = os.path.join(DOCS_DIR, 'NIC Archives.pdf')
-    if os.path.exists(pdf_src):
-        shutil.copy2(pdf_src, pdf_dst)
-        print(f'Copied PDF → docs/NIC Archives.pdf')
-
-    # Extract images from document.md
     print('Extracting images from document.md...')
     images = extract_images()
     print(f'  Found {len(images)} images')
 
-    # Process articles
-    articles_meta = []
-    article_files = []
-
-    # Use defined order, falling back to any remaining files
-    md_files = set(os.listdir(ARTICLES_DIR))
-    ordered = [f for f in ARTICLE_ORDER if f in md_files]
-    remaining = sorted(md_files - set(ARTICLE_ORDER))
-    all_files = ordered + remaining
-
-    for filename in all_files:
-        if not filename.endswith('.md'):
-            continue
-        filepath = os.path.join(ARTICLES_DIR, filename)
-        with open(filepath, 'r', encoding='utf-8') as f:
+    # Load all articles
+    all_articles = []
+    for md_path in sorted(ARTICLES_DIR.glob('*.md')):
+        with open(md_path, encoding='utf-8') as f:
             text = f.read()
-
         meta, body = parse_frontmatter(text)
-        html_body = md_to_html(body, images)
-        page_html = render_article_page(meta, html_body, filename)
+        all_articles.append((meta, body, md_path.name))
 
-        out_filename = filename.replace('.md', '.html')
-        out_path = os.path.join(DOCS_ARTICLES_DIR, out_filename)
-        with open(out_path, 'w', encoding='utf-8') as f:
-            f.write(page_html)
+    print(f'Loaded {len(all_articles)} articles')
 
-        article_files.append(filename)
-        articles_meta.append((meta, filename))
-        title = meta.get('title', filename)
-        print(f'  → articles/{out_filename}  ({title})')
+    # Group by issue date
+    by_issue: dict = defaultdict(list)
+    for meta, body, filename in all_articles:
+        issue_date = get_issue_date(meta)
+        by_issue[issue_date].append((meta, body, filename))
 
-    # Write index
-    index_html = render_index(articles_meta)
-    index_path = os.path.join(DOCS_DIR, 'index.html')
-    with open(index_path, 'w', encoding='utf-8') as f:
-        f.write(index_html)
-    print(f'Written: docs/index.html')
-    print(f'\nDone. Open docs/index.html in your browser.')
+    # Sort issues chronologically
+    sorted_issues = sorted(by_issue.items(), key=lambda x: issue_sort_key(x[0]))
+
+    issues_data = []
+    total_articles_count = 0
+
+    print('\nGenerating pages...')
+    for issue_date, issue_articles in sorted_issues:
+        slug = make_issue_slug(issue_date)
+        # Sort articles within issue by first page number
+        sorted_arts = sorted(issue_articles, key=lambda x: (x[0].get('pages') or [999])[0])
+
+        # Generate article pages with prev/next context from issue order
+        for i, (meta, body, filename) in enumerate(sorted_arts):
+            html_body = md_to_html(body, images)
+            prev_art = None
+            next_art = None
+            if i > 0:
+                prev_meta, _, prev_fn = sorted_arts[i - 1]
+                prev_art = (prev_meta, prev_fn.replace('.md', '.html'))
+            if i < len(sorted_arts) - 1:
+                next_meta, _, next_fn = sorted_arts[i + 1]
+                next_art = (next_meta, next_fn.replace('.md', '.html'))
+            page_html = render_article_page(meta, html_body, filename, prev_art, next_art)
+            out_path = DOCS_ARTICLES / filename.replace('.md', '.html')
+            out_path.write_text(page_html, encoding='utf-8')
+            print(f'  → articles/{out_path.name}')
+
+        # Generate issue TOC page
+        article_metas_files = [(m, fn) for m, _, fn in sorted_arts]
+        issue_pages = get_issue_pages(slug)
+        issue_html = render_issue_page(issue_date, article_metas_files, page_images=issue_pages)
+        out_path = DOCS_ISSUES / f'{slug}.html'
+        out_path.write_text(issue_html, encoding='utf-8')
+        print(f'  → issues/{slug}.html  ({len(sorted_arts)} articles)')
+
+        issues_data.append({
+            'date': issue_date,
+            'slug': slug,
+            'count': len(sorted_arts),
+            'articles': [m for m, _, _ in sorted_arts],
+        })
+        total_articles_count += len(sorted_arts)
+
+    # Generate main index (issues_data is in chronological order)
+    print('\nGenerating index...')
+    index_html = render_index(issues_data)
+    (DOCS_DIR / 'index.html').write_text(index_html, encoding='utf-8')
+    print('  → index.html')
+
+    print(f'\nDone. {total_articles_count} articles across {len(sorted_issues)} issues.')
+    print('Next: npx pagefind --site docs/')
+    print('Then: open docs/index.html')
 
 
 if __name__ == '__main__':

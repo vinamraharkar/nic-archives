@@ -1,0 +1,12 @@
+---
+title: "Single Window Solution for Ease of Doing Business launched by Governor of Punjab"
+publication: "Informatics"
+issue_date: "July 2017"
+pages: [46]
+author: "VIVEK VERMA, CHANDIGARH"
+section: "In the News"
+---
+
+## Single Window Solution for Ease of Doing Business launched by Governor of Punjab
+
+His Excellency Shri V.P. Singh Badnore, Governor Punjab and Administrator, Union Territory of Chandigarh inaugurated the Single Window Solution for Ease of Doing Business (http://eodb.chd.gov.in) on 14th June 2017 at Chandigarh. Also present on the occasion were Shri Parimal Rai, IAS Adviser to Administrator, Sh M P Singh, IAS Principal Secretary to the Administrator, Sh Maninder Singh, IAS Chairman CHB, Sh Anurag Agarwal, IAS Home Secretary, Smt. Kavita Singh, IAS Secretary Industries, Dr. Tapasya Raghav, IAS Director Industries and other senior officials of the UT. The Single Window Solution for Ease of Doing Business (EODB), developed by NIC Punjab has been adopted by Chandigarh Administration and customized by NIC Chandigarh UT Unit as per the requirements. This initiative has been taken by Industries Department, Chandigarh Administration so as to enable the investors to get online permissions and approvals in a time bound schedule from concerned departments like Estate Office, Labour Department, Excise & Taxation Department, Chandigarh Municipal Corporation and Engineering Department. Investors would be able to get permissions from the various departments of Chandigarh Administration for setting up of new business or for the renewal required under various acts of the existing business. This solution shall cut down unnecessary delays in setting up of new business and also to carry out the existing business without many hassles. The system sends alerts through SMS and eMail and is integrated with Payment Gateway for making online payments for fees required to get various permissions/approvals. Advisor to the Administrator appreciated Industries Department for understanding the problems faced by the investors and getting a robust solution developed and he also praised the NIC Chandigarh UT Unit for the efforts put in delivering the solution in a very short time. The Secretary, Industries informed that the Online Single Window System is unique as it would also enable get renewals of permissions related to industry from concerned departments within a fixed time period which shall make the System for Ease of Doing Business popular and need based amongst the Industry & Business.

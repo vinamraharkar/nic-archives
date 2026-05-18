@@ -1,0 +1,12 @@
+---
+title: "MINISTRY OF TRIBAL AFFAIRS WEBSITE BAGS NATIONAL AWARD FOR BEST ACCESSIBLE WEBSITE"
+publication: "Informatics"
+issue_date: "January 2014"
+pages: [44]
+author: "H. S. Hora, Delhi"
+section: "In the News"
+---
+
+## MINISTRY OF TRIBAL AFFAIRS WEBSITE BAGS NATIONAL AWARD FOR BEST ACCESSIBLE WEBSITE
+
+Website of Ministry of Tribal Affairs (http://tribal.nic.in) won National Award for the empowerment of persons with Disabilities, 2013 under the category – “Best Accessible Website” (Government Sector). The National Award (a Shield & a Certificate) was presented by the H.E. Shri Pranab Mukherjee, President of India in a function held in the Plenary (Main) Hall, Vigyan Bhawan, New Delhi, on 03rd December, 2013. There were total 3 awards in this category. One award each was given to an eligible (i) Government Organization (ii) Public Sector Undertaking/Autonomous/Local Govt. Body and (iii) Private /Non-Governmental Organization, who was having their websites accessible to the persons with disabilities. The website of the ministry is provided with Text Alternatives with all the moveable objects having Play and Stop options. The website is navigable, readable and compatible with assistive technologies (Screen reader). It meets level AA of WCAG 2.0 guidelines. Persons with visual disability can use screen reader software while persons having difficulty in using mouse can use voice recognition software which enables working on computer with verbal commands. The website has facilities to change the size, colour and spacing of the text. The website can be accessed through mobile phone and easily accessible on all browsers (Internet Explorer, Mozilla Firefox, Google Chrome) and Disabled Specific Devices. The process flow in Content Management System (CMS) module facilitates Web Manager, Content Approver, Content Publisher responsible for their respective activities. The website has greater potential user-base which will include the disabled, elderly (having vision problems) and non-English speaking part of the population. State wise ST Population Map is made dynamic using population database. All ST population in India & Abroad, Research Scholars & other target population are benefited. The regularly updated website is developed using Accessibility Compliant Content Management System and hence all the pages generated through the CMS will have provision for entering page title, meta keywords, meta description etc. With this, there is also provision for defining all tags for informative images.

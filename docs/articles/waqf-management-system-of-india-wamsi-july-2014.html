@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waqf Management System of India (WAMSI) — Informatics July 2014</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:July 2014"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/july-2014/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2014/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2014/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/july-2014/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2014/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2014/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/july-2014/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2014/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2014/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2014.html">July 2014</a><span class="breadcrumb-sep">&rsaquo;</span><span>Waqf Management System of India (WAMSI)</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">E-Gov Products and Services</div>
+          <h1 class="article-title" data-pagefind-meta="title">Waqf Management System of India (WAMSI)</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By MOHAN DAS VISWAM (Edited by), GAUTAM GHOSH, DINESH CHANDRA, NAEEM AHMED &bull; pp. 13–15</p>
+          <p class="article-issue-link">
+            From <a href="../issues/july-2014.html">July 2014</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">Waqf is the permanent dedication by a person professing Islam, of movable or immovable properties for any purpose recognized by the Islamic law as pious, religious or charitable. Waqf Management System of India (WAMSI) is an integrated on-line work flow based Information System for the management of Waqf Properties under the control of various State/ UT Waqf Boards.</p>
+<p>Waqfs are the national resources which are meant to be used for the development of the institutions and raise funds for various welfare activities. In a large number of cases, Waqf properties are observed to be inefficiently managed and often faces the threat of encroachment, litigation, alienation and sometimes sold-out. Cases of blatant corruption abound and selling of land for buildings, hotels, malls or factories for a pittance or handling out for meager rents to satiate commercial interests has become quite common these days. A Joint Parliamentary Committee or JPC on Waqf in its 9th Report had recommended the computerization of the records of State/UT Waqf Boards. In order to ensure transparent management of all the Waqf Properties and computerize the core functions of all State/UT Waqf Boards (SWBs), Government of India has launched “Scheme of Computerization of Records of State/UT Waqf Boards” in December 2009. In this scheme, Central financial assistance is given to the State Waqf Boards for setting- up of ICT Infrastructure, deployment of Technical Manpower for initial hand-holding period for managing &amp; operating the ICT Infrastructure and Software Applications, and for imparting training and knowledge transfer to the staff of the SWBs. The Phase-I of the scheme involves compliance to annual return filing of each assessable Waqf Property and implementation of the work flows for leasing processes and tracking litigations. Digital archiving of legally admissible documents pertaining to Waqf Properties that establishes the Ownership Right as Waqf to the SWBs, is another important component of this phase.</p>
+<p>NIC, New Delhi is the key technology associate in designing, development, implementation and maintenance of the Software Systems (WAMSI) for the scheme in close consultation with the Ministry of Minority Affairs, Government of India.</p>
+<p>The phase-I of the project entails to accomplish the following objectives:</p>
+<p>(a) To maintain up-to-date correct inventories for Waqf Properties. (b) To facilitate cross checking of Waqf Property Records with other databases maintained at State/UT level especially those of Revenue Records and Civic Bodies. (c) To track the revenue generated from individual Waqf Properties by ensuring timely reminders for submission of Annual Returns by Waqf Properties’ Managers. (d) To transparently manage the leasing process of Waqf Properties and to monitor the pending payments from lessees thereof. (e) To track the litigations on Waqf Properties by ensuring timely pleading in the Hon’ble Courts. (f) To digitally preserve the documents establishing the Waqf Properties Ownership rights. (g) To facilitate easy retrieval of documents when required in case of litigations in Hon’ble Courts.</p>
+<p>Apart from the known benefits as part of objectives listed above, there would be many intrinsic benefits such as streamlining of record keeping at State/UT Waqf Boards, enhanced transparency in the existing system of Waqf Management, etc. Another anticipated benefit would be electronic access of valuable documents related to Waqf Properties that will reduce unnecessary handling of fragile documents, thus contributing to their long-term preservation.</p>
+<p>The project is a landmark one and is allowing the development of Waqf Properties to increase the revenues which can then be utilised for an all-round development.</p>
+<p>The greatest benefit will be the real time monitoring that can be carried out for each Waqf Property in the country to ensure that such Waqf Properties are not encroached and/or alienated.</p>
+<p>TECHNOLOGY FEATURES</p>
+<ol class="article-list">
+<li>The WAMSI On-line System for SWBs consists of the following modules:</li>
+</ol>
+<ul class="article-list">
+<li>WAMSI Registration Module</li>
+<li>WAMSI Annual Return Filing Module</li>
+<li>WAMSI Leasing Module</li>
+<li>WAMSI Litigations Tracking Module</li>
+</ul>
+<p>Technologies involved (Software)</p>
+<ul class="article-list">
+<li>Red Hat Enterprise Linux 5 (Operating System)</li>
+<li>Apache Tomcat 5.5 (Web Server)</li>
+<li>PostgreSQL 8.2 (RDBMS Database)</li>
+<li>JDK 1.5 (Programming Language)</li>
+<li>J2EE 1.4 ( JSP, JSTL)</li>
+<li>Oracle JDeveloper 10.1.3 (IDE)</li>
+<li>Strut 1.1 (Framework)</li>
+<li>SVN 5 (Collaboration and Versioning)</li>
+<li>Services of Google Map APIs</li>
+</ul>
+<p>Technologies involved (Hardware)</p>
+<ul class="article-list">
+<li>WAMSI On-line System is deployed at NIC-National Data Centre.</li>
+</ul>
+<ol class="article-list">
+<li>WAMSI Public Interface On-line System aims to search Waqf Properties and their present status any time by any one. The Software and Hardware specifications are similar to the WAMSI Online System.</li>
+</ol>
+<ol class="article-list">
+<li>WAMSI Off-line DMS System for SWBs consist of</li>
+</ol>
+<ul class="article-list">
+<li>WAMSI DMS System</li>
+<li>WAMSI BDU Utility</li>
+</ul>
+<p>Technologies involved (Software)</p>
+<ul class="article-list">
+<li>Red Hat Enterprise Linux 5 &amp; MS-Windows XP/7 (Operating System)</li>
+<li>Apache Tomcat 5.5 (Web Server)</li>
+<li>PostgreSQL 8.2 (RDBMS Database)</li>
+<li>DSpace Source Code 1.4.2 (Open Source DMS)</li>
+<li>Apache Ant 1.8.0 (Building Tools)</li>
+<li>JDK 1.5 (Programming Language)</li>
+<li>Eclipse (IDE)</li>
+<li>Net Beans 6.9.1 (IDE – BDU Development)</li>
+<li>Java Swing 2.0 ( Java – BDU Development)</li>
+<li>JRE 6.0 (for BDU run on PCs)</li>
+</ul>
+<p>Technologies involved (Hardware)</p>
+<ul class="article-list">
+<li>WAMSI DMS System &amp; WAMSI BDU Utility are deployed at individual SWB locations on PC/ Server Environment in compliance to the requirement of SWBs i.e., not to use Internet for Waqf Ownership Digital Documents delivery although technology supports this aspect.</li>
+</ul>
+<ol class="article-list">
+<li>Locations: Location of each Immovable Waqf Property is identified on the basis of Census 2011 Geographical Location Codes designed by MDDS Committee for the said purpose headed by Registrar General of India.</li>
+</ol>
+<ol class="article-list">
+<li>GPS Coordinates: GPS Coordinates of Immovable Waqf Properties are used to help SWBs to locate their Waqf Properties layouts and find out encroachments (if any) over the period of time using Google Maps/Earth APIs through different permutation and combination of parameters tightly integrated within the Application.</li>
+</ol>
+<p>IMPLEMENTATION As on May 31, 2014, WAMSI Project has been implemented in 28 SWBs across the country. In spite of various hurdles, the project is going on smoothly and leveraged with the continuous training &amp; motivation of SWBs officials/staff by the Members of PMU(WAMSI)-cum-Development Team stationed at NIC-HQ, New Delhi. The registration of Waqf properties in WAMSI On-line System has crossed the figure of 2,92,301 as on November 15, 2010.</p>
+<p>The contributions to SWBs have multiplied manifolds due to tracking of annual returns submission in SWBs. Madhya Pradesh and Assam SWBs have proved as an exemplar in this case. Digitization of Ownership Documents has been completed in Eleven SWBs namely Madhya Pradesh, Assam, Puducherry, Manipur, Lakshadweep, Bihar (Shia), Uttarakhand, Chattisgarh, Maharashtra, Kerala and Tamil Nadu.</p>
+<p>ACHIEVEMENTS</p>
+<ul class="article-list">
+<li>Nearly three lakh (2,92,301) data entries on immovable properties have been entered in the system so far through online web application http://waqf.gov.in/wamsi/ from respective State/UT Waqf Board interfaces with their own role-based credentials.</li>
+<li>Public Interface http://wamsi.nic.in/ has been created for searching the Waqf properties in India where anyone could know about the current status, location on map and annual returns, litigation, leasing details of the property in consideration. Public Interface is powered by online web application running for State/UT Waqf Boards.</li>
+<li>Open Source Technologies such as Java Programming Language, PostgreSQL Database, etc. have been intensively employed for the project.</li>
+<li>GPS coordinates are being used for drawing layouts of the Waqf Properties on satellite imageries with advanced search parameters like encroached and/or litigated Waqf Properties in a particular district/city/town/village.</li>
+</ul>
+<p>AWARDS WAMSI Project has received Skotch Digital Inclusion Award 2012 for being among Top-100 ICT Projects in India during the year 2012.</p>
+<p>For further information: NAEEM AHMED Technical Director Minority Affairs Informatics Division E-mail : naeem@nic.in</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="eitis-standardizing-industrial-training-institutes-in-punjab-july-2014.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">eITIs: Standardizing Industrial Training Institutes in Punjab</span></a><a class="article-nav-link next" href="launch-of-prime-minister-s-website-july-2014.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Launch of Prime Minister’s Website</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

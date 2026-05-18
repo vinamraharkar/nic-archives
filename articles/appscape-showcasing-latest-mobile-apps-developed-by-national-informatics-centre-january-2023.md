@@ -1,0 +1,12 @@
+---
+title: "Appscape: Showcasing latest mobile apps developed by National Informatics Centre"
+publication: "Informatics"
+issue_date: "January 2023"
+pages: [40]
+author: null
+section: "Appscape"
+---
+
+## Appscape: Showcasing latest mobile apps developed by National Informatics Centre
+
+Mobile technology has emerged as a primary tool for governments to serve their citizens. It has bypassed the need for traditional physical networks for communications and collaborations. Additionally, it is far more affordable and accessible, therefore strengthening the nation through better citizen-government interaction. To further nourish this interactivity, NIC has created a repository of more than 230 mobile apps available through both the Android and iOS platforms. This issue of Appscape covers some of the more popular mobile apps launched recently. These apps belong to different sectors such as Agriculture, Administration, Development, Finance, Public Distribution, Transportation, Tourism, Social Welfare, Health and Education.

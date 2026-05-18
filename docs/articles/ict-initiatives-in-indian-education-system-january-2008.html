@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Initiatives in Indian Education System — Informatics January 2008</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f0d8;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+    padding-top: 48px;
+}
+
+/* ── Slim fixed navbar ── */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: #1a0f07;
+    border-bottom: 1px solid #b8892a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+.navbar-brand {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #b8892a;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.navbar-brand:hover { color: #f7f0d8; }
+.navbar-search-link {
+    color: #b8892a;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.25rem;
+    transition: color 150ms;
+}
+.navbar-search-link:hover { color: #f7f0d8; }
+
+/* ── Newspaper nameplate masthead ── */
+.nameplate {
+    border-bottom: 1px solid #b8892a;
+    padding: 2rem 3rem 1.5rem;
+    background: #f7f0d8;
+}
+.nameplate-rule-heavy {
+    border: none;
+    border-top: 4px solid #1a0f07;
+    margin-bottom: 3px;
+}
+.nameplate-rule-thin {
+    border: none;
+    border-top: 1px solid #1a0f07;
+    margin-bottom: 1.25rem;
+}
+.nameplate-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 1rem;
+}
+.nameplate-side {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    line-height: 1.65;
+}
+.nameplate-side.right { text-align: right; }
+.nameplate-center { text-align: center; }
+.nameplate-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #7a1f1f;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
+.nameplate-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-top: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-side a { color: #8a7355; text-decoration: none; }
+.nameplate-side a:hover { color: #7a1f1f; }
+.nameplate-rule-gold {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin-top: 1.25rem;
+}
+
+/* Smaller nameplate variant for issue TOC pages */
+.nameplate-sm .nameplate-title { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+.nameplate-sm .nameplate-side  { font-size: 0.68rem; }
+
+/* ── Homepage content wrapper ── */
+.home-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── Archive blurb (plain text, no bordered box) ── */
+.archive-blurb {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #4a3820;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    text-align: center;
+}
+.archive-blurb strong { color: #7a1f1f; font-style: normal; }
+.archive-blurb a { color: #7a1f1f; text-decoration: none; }
+.archive-blurb a:hover { text-decoration: underline; }
+
+/* ── Search bar ── */
+.search-wrap {
+    max-width: 600px;
+    margin: 1.5rem auto;
+}
+.search-offline-warning {
+    display: none;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    line-height: 1.4;
+}
+/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
+#search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #7a1f1f;
+    --pagefind-ui-text: #1e1408;
+    --pagefind-ui-background: #ede6c0;
+    --pagefind-ui-border: #b8892a;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 2px;
+    --pagefind-ui-tag: #d4c090;
+}
+
+/* ── Section rule ── */
+.section-rule {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    color: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+}
+
+/* ── Year filter pills ── */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+}
+.filter-pill {
+    padding: 0.25rem 0.8rem;
+    border: 1px solid #c9a96e;
+    background: transparent;
+    color: #8a7355;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: all 150ms;
+}
+.filter-pill:hover, .filter-pill.active {
+    background: #7a1f1f;
+    border-color: #7a1f1f;
+    color: #f7f0d8;
+}
+
+/* ── Issues grid — 4 columns desktop ── */
+.issues-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.issue-card {
+    display: block;
+    border: 1px solid #c9a96e;
+    background: #ede6c0;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 200ms, box-shadow 200ms, transform 200ms;
+    cursor: pointer;
+    overflow: hidden;
+}
+.issue-card:hover {
+    border-color: #b8892a;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.issue-card-cover {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #d8cfac;
+    border-bottom: 1px solid #c9a96e;
+}
+.issue-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: opacity 200ms;
+}
+.issue-card:hover .issue-card-cover img { opacity: 0.88; }
+.issue-card-info { padding: 0.75rem 0.85rem 0.75rem; }
+.issue-card-date {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #7a1f1f;
+    line-height: 1.2;
+}
+.issue-card-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding: 0.5rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.page-strip::-webkit-scrollbar { height: 4px; }
+.page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
+.page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb img {
+    width: 140px;
+    height: 197px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #c9a96e;
+    display: block;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.page-thumb:hover img {
+    border-color: #7a1f1f;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.page-thumb-label {
+    font-size: 0.75rem;
+    text-align: center;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* ── Issue TOC page wrapper ── */
+.issue-toc-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2.5rem 4rem;
+}
+
+/* ── TOC list — two columns on desktop ── */
+.toc { list-style: none; }
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 3rem;
+}
+.toc li {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #c9a96e;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+.toc-num {
+    color: #b8892a;
+    font-style: italic;
+    min-width: 2.5rem;
+    flex-shrink: 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.toc-section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+.toc a {
+    color: #1e1408;
+    text-decoration: none;
+    font-size: 1.05rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.toc a:hover { color: #7a1f1f; text-decoration: underline; }
+.toc-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.2rem;
+}
+
+/* ── Two-panel article layout — 50/50 full-width ── */
+.article-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    min-height: calc(100vh - 48px);
+}
+
+/* ── Scan panel (left) — parchment background ── */
+.scan-panel {
+    background: #f7f0d8;
+    padding: 2rem;
+    position: sticky;
+    top: 48px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    border-right: 1px solid #c9a96e;
+    scrollbar-width: thin;
+    scrollbar-color: #b8892a #f7f0d8;
+}
+.scan-panel::-webkit-scrollbar { width: 4px; }
+.scan-panel::-webkit-scrollbar-track { background: #f7f0d8; }
+.scan-panel::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
+.scan-panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b8892a;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-item { margin-bottom: 1.5rem; }
+.scan-panel-item:last-child { margin-bottom: 0; }
+.scan-panel-item a { display: block; text-decoration: none; cursor: pointer; }
+.scan-panel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #c9a96e;
+    transition: border-color 150ms, box-shadow 150ms;
+}
+.scan-panel-item a:hover img {
+    border-color: #b8892a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.scan-panel-caption {
+    font-size: 0.72rem;
+    color: #8a7355;
+    font-style: italic;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.scan-panel-caption a { color: #b8892a; text-decoration: none; }
+.scan-panel-caption a:hover { text-decoration: underline; }
+.scan-divider {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 1.5rem 0;
+}
+
+/* ── Text panel (right) ── */
+.text-panel {
+    padding: 3rem 3.5rem 4rem;
+    background: #f7f0d8;
+}
+.text-panel-inner { max-width: 680px; }
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+    font-size: 0.78rem;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+}
+.breadcrumb a { color: #7a1f1f; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { margin: 0 0.35rem; color: #c9a96e; }
+
+/* ── Article header ── */
+.article-header {
+    padding-bottom: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid #c9a96e;
+}
+.article-section-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    border: 1px solid #7a1f1f;
+    padding: 0.1rem 0.35rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+h1.article-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #7a1f1f;
+    margin-bottom: 0.5rem;
+}
+hr.title-rule {
+    border: none;
+    border-top: 1px solid #b8892a;
+    margin: 0.7rem 0;
+}
+.article-byline {
+    font-size: 0.9rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link {
+    font-size: 0.85rem;
+    color: #8a7355;
+    margin-top: 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.article-issue-link a { color: #7a1f1f; text-decoration: none; }
+.article-issue-link a:hover { text-decoration: underline; }
+
+/* ── Article body ── */
+.article-body p {
+    margin-bottom: 1.1rem;
+    text-align: justify;
+    hyphens: auto;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+}
+.article-body p.first-para::first-letter {
+    font-size: 3.8em;
+    float: left;
+    line-height: 0.82;
+    color: #7a1f1f;
+    font-weight: 700;
+    margin: 0.05em 0.12em 0 0;
+    font-family: 'EB Garamond', Georgia, serif;
+}
+.article-body h2.section-heading {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin: 2rem 0 0.7rem;
+}
+.article-body h2.section-heading::before { content: '\2014 '; color: #b8892a; }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1rem 1.5rem; }
+.article-body li { margin-bottom: 0.35rem; font-family: 'Crimson Text', Georgia, serif; }
+.ornament {
+    text-align: center;
+    color: #b8892a;
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 1.5rem 0;
+}
+
+/* ── Prev/next article navigation ── */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #c9a96e;
+}
+.article-nav-link {
+    max-width: 45%;
+    text-decoration: none;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+    transition: color 150ms;
+}
+.article-nav-link:hover { color: #7a1f1f; }
+.article-nav-dir {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.25rem;
+    color: #b8892a;
+}
+.article-nav-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    line-height: 1.3;
+    display: block;
+}
+.article-nav-link:hover .article-nav-title { color: #7a1f1f; }
+.article-nav-link.next { text-align: right; margin-left: auto; }
+
+/* ── Figure / image ── */
+figure.article-image {
+    margin: 1.5rem 0;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    padding: 0.75rem;
+}
+figure.article-image img { max-width: 100%; height: auto; display: block; margin: 0 auto 0.6rem; }
+figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style: italic; line-height: 1.5; }
+
+/* ── Footnotes ── */
+.footnote {
+    font-size: 0.82rem;
+    color: #8a7355;
+    border-top: 1px solid #b8892a;
+    padding-top: 0.6rem;
+    margin-top: 2rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.footnote sup { font-size: 0.7rem; vertical-align: super; margin-right: 0.2rem; }
+
+/* ── Skip navigation ── */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: #b8892a;
+    color: #1e1408;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+
+/* ── Global focus ── */
+:focus-visible { outline: 2px solid #b8892a; outline-offset: 2px; }
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+    .issues-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .toc-grid { grid-template-columns: 1fr; }
+    .article-container { grid-template-columns: 1fr; }
+    .scan-panel {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        border-right: none;
+        border-bottom: 1px solid #c9a96e;
+        padding: 1.5rem;
+    }
+    .text-panel { padding: 2rem 1.5rem 3rem; }
+    h1.article-title { font-size: 1.9rem; }
+    .nameplate { padding: 1.5rem 1.5rem 1rem; }
+    .home-content, .issue-toc-page { padding: 0 1.5rem 3rem; }
+}
+@media (max-width: 600px) {
+    .issues-grid { grid-template-columns: 1fr; }
+    .nameplate { padding: 1rem; }
+    .nameplate-grid { grid-template-columns: 1fr; text-align: center; }
+    .nameplate-side { display: none; }
+    .home-content, .issue-toc-page { padding: 0 1rem 2rem; }
+    .text-panel { padding: 1.5rem 1.25rem 2.5rem; }
+    h1.article-title { font-size: 1.65rem; }
+    .article-nav { flex-direction: column; }
+    .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
+    .navbar { padding: 0 1rem; }
+}
+</style>
+<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="../pagefind/pagefind-ui.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav class="navbar">
+  <a class="navbar-brand" href="../index.html">Informatics Archive</a>
+  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+</nav>
+
+  <div class="article-container" id="main-content" data-pagefind-body
+       data-pagefind-meta="issue:January 2008"
+       data-pagefind-filter="issue[data-pagefind-meta]">
+    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2008/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2008/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2008/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2008/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/january-2008/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/january-2008/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+    <div class="text-panel">
+      <div class="text-panel-inner">
+        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2008.html">January 2008</a><span class="breadcrumb-sep">&rsaquo;</span><span>ICT Initiatives in Indian Education System</span></nav>
+        <div class="article-header">
+          <div class="article-section-badge">Lead Story</div>
+          <h1 class="article-title" data-pagefind-meta="title">ICT Initiatives in Indian Education System</h1>
+          <hr class="title-rule">
+          <p class="article-byline">By R. Gayatri &bull; pp. 4–9</p>
+          <p class="article-issue-link">
+            From <a href="../issues/january-2008.html">January 2008</a>
+            &nbsp;&bull;&nbsp; <em>Informatics</em>, National Informatics Centre
+          </p>
+        </div>
+        <div class="article-body" id="article-body">
+          <p class="first-para">The use of Information and Communication Technology (ICT) to improve and enhance the quality of education in India is gaining critical attention and is shaping up phenomenally in several states. The use of ICT is effectively enhancing learning where traditional models have failed. Successful management of ICT initiatives in strategic planning and positioning Indian education is demonstrating a clear picture of returns in terms of resources, time and money. Ministry of Human Resource Development, Government of India has brought about revolutionary changes in Education sector by introduction of ICT based technologies in management of its processes including delivery of Education in the remotest part of the country viz. Online counseling process for admission to professional courses like Engineering, Medical etc, Display of online availability and disbursement of scholarships, Provision of computer infrastructure including Internet facility at schools through ICT@Schools Scheme, Online affiliation process for Schools etc. Last year 7th All India School Education Survey results have been published indicating various gap areas which would facilitate decision makers for planning and effective policy making. GIS based tools are also being used for elucidating literacy levels, educational facilities and understanding the regional imbalances. NIC every year successfully hosts Academic and Entrance Examination results for various boards &amp; universities including CBSE, State Education Boards, GGSIP University, UP Technical University, AIEEE etc. Policies, strategies and programmes Sakshat– “A One stop Education Portal”, was launched in October 2006 by the former Hon'ble President of India as a show case of the efforts of the Government in offering open learning resources of world class content to students of all grades facilitating “any where any time learning “. The portal also provides conduct of online tests and assessment, online suggestions for academic excellence, testing and certification for vocational skill sets etc. The Ministry has also initiated use of ICT tools to monitor its efforts in the arena of Elementary Education, in which the School level data on Sarva Shiksha Abhiyan (Education for All –India), a Flagship Programme of GoI, is being compiled and analyzed for offering effective interventions to minimize drop outs and monitor provision of incentives and basic amenities to students with specific focus to Girl child. Similar efforts are underway for the automation of Mid Day Meal Scheme in Schools, Teacher Information System, etc. Through the unstinted efforts of various organizations under MHRD like CBSE, NCERT, CSTT, UGC, AICTE, etc., the students are also benefited through availability of online Text books , online examination results (X &amp; XII classes, AIEEE, AIPMT, etc.) and online submission of application forms for common entrance tests. The State Governments have also taken significant initiatives in using the potential of ICT in Education. Some major applications include Online conduct of entrance test and web based counseling operations taken up by Government of Haryana and Kerala, Online counseling on the pattern of AIEEE counseling for all professional courses, like, B.E., B.Arch., B. Pharm., MBA, MCA, MBBS, BDS, B. Ed., etc. are being conducted by Uttar Pradesh Technical University. Project Management Information System (PMIS) under Sarva Shiksha Abhiyan (SSA) designed and developed by States like Uttar Pradesh, Madhya Pradesh, Karnataka are using technologies like GIS, Digitization, portal management, architectural and structural designs and various innovative means for effective compilation, spatial presentations and analyse the effectiveness of various Schemes and Programmes. Current Level of ICT access and use Some of the projects done by NIC using ICT in Education sector can be broadly categorised as: Teaching and Learning Aids · NCERT Text Book Online http://www.ncert.nic.in/ textbooks/testing/Index.htm · Sakshat Portal http://sakshat.gov.in Examination Results http://results.nic.in Admission Process · AIEEE Examination System http://aieee.nic.in · AIPMT Examination System http://aipmt.nic.in · All India Medical Counselling · Centralised Counselling based on AIEEE http://ccb.nic.in · UPTU &amp; UP-CPMT Counselling http://uptu.nic.in · Haryana State Technical Education Board On line Entrance Examination/ Counselling http://tehadmissions.gov.in · Kerala State Counselling http://www.kerala.nic.in/ Administration · SARVA SHIKSHA ABHIYAN (http://ssa.nic.in) · Automation of CBSE Affiliation System http://cbseaff.nic.in · CBSE School Information System http://cbseaff.nic.in/SchoolDir/userview.aspx · 7th All India Educational Survey http://www.7thsurvey.ncert.nic.in/ Websites /Portals · Ministry of Human Resource Development http://education.nic.in · Central Board of Secondary Education http://cbse.nic.in · National Literacy Mission http://nlm.nic.in · National Council of Educational Research &amp; Training http://ncert.nic.in · Rashtriya Sanskrit Sansthan http://sanskrit.nic.in · Compendium of Scholarship (Education Support in India) http://educationsupport.nic.in · National Council for Promotion of Urdu Language http://urducouncil.nic.in · Commission for Scientific and Technical Terminology http://cstt.nic.in All India Engineering Entrance Examination (AIEEE) Examination System (http://aieee.nic.in) Under the National Policy on Education (NPE), the Ministry of Human Resource Development, Government of India, conducts a common entrance examination for admission to technical and professional courses. NIC has played a pivotal role in offering innovative total turnkey IT supports for the execution and effective implementation of this programme. Centralised Counselling for admission to professional courses based on AIEEE NIC has provided total turnkey IT solution for Design, Development and Implementation of the Online counselling System for admission to professional courses based on AIEEE 2007. The support services of NIC include Software and Network Management, Training of Counseling Centre staff at 17 locations across the country, Operation &amp; Processing of Off-Campus and On-Campus Online counselling, etc. Similar counselling processes have been adopted for UP and Haryana State Counseling. Automation of CBSE Affiliation System (http://cbseaff.nic.in ) This workflow based system aimed at automating the entire process of obtaining provisional and permanent affiliation has reduced the manual work, streamlined the operation and hence increased efficiency in planning, monitoring as well as the productivity of its offices at various levels. Schools could login to the system and submit their application in various phases or in one goes. The system will automatically acknowledge and also send various reports during different stages of processing for affiliation. The School could also login and obtain entire details of stages online. Home page of Central Counselling board The CBSE School Information System provides search facilities using keyword/ affiliation number/ state/district of school location and displays the complete details of the chosen school like contact details, enrolment, facilities, location of school, infrastructure details and faculty details. The system also provides the online facility of updation of various facets of School Developments and offers a wide variety of reports to CBSE management. ICT Applications &amp; Models in different states ? Seat Allotment System (SAS) for Professional Courses NIC, Port Blair has designed, developed and implemented the web based “Seat Allotment System” for online allotment of seats, to the candidates from 2007 academic year. The software that has been developed using open source tools in LAMP environment facilitates candidates of the Islands to undergo education in the professional courses in selected colleges in the country. The salient features of software are: ¡ Online Allotment of seats based on 5 categories (native, tribal, central govt. quota, etc.,) ¡ Allotment of seats for 16 types of courses and across more than 50 institutes in different states in the country. Professional courses include Medical, Engineering, Pharmacy, Nursing and allied courses ¡ Computerized generation of merit lists, allotment letters and nomination letters in defined formats ¡ Online allotment status dissemination through large screen projection systems at the allotment centre and through the Internet ¡ Dissemination of various announcements made by the Education Department relating to allotment process through the Internet Online seat allotment ? GIS Based Spatial Analysis System for Dept. of Education This Spatial Information System for Andhra Pradesh Education department assists the department to plan for the access, enrollment, retention, quality and monitoring aspects viz., integration of school infrastructure, facilities, budget &amp; expenditure, child information, teacher information, attendance, mid-day-meal particulars, results, school complexes along with required visuals. A Desktop GIS application on school information for Mulakalapalli Mandal, Khammam district &amp; Hyderabad district (with the existing data) has been implemented. GPS survey has been done for all schools. The schools are mapped and the available DISE (2006-07), Child Info (Attendance monitoring at MRC) database is integrated to have GIS analysis. ? Merging and Rationalisation of schools This is a spatial analysis system to merge and rationalise the schools which is being implemented as a pilot application for Nizamabad district with four mandals viz., Armur, Jakranapally, Sandpit, Makloor. Websites for Navodaya Vidyalayas in Kurnool, Gachibowli, Ranga Reddy District, Kendriya Vidyalayas and the Kendriya Vidyalaya Sangathan, Regional Offices are being hosted on NIC's servers. ? CEEP is an online application filing system for Polytechnic Common Entrance Examination. All the activities from the point of filing an application are generated with this system. ? CAPNIC (Centralized Allotment Process 2007) is a web enabled software for conducting on-line counseling for the allotment of seats for various professional courses, viz Medical, Engineering, B.Pharm. and Architecture BED in Kerala. It takes care of all the existing rules of Communal reservations, Special Reservations and Floating seat concept. The System is developed using the open source Linux-Apache-MySQL-PHP (LAMP) and hence is a cost effective and robust one. Sample of allotment memo ? Computerized Examination Management System The system caters to the need of Government of Kerala to calibrate the competence of students through public examinations conducted for classes 10 and 12. The following are the different modules of the system. ¡ CaRE@Schools ¡ Internal Marks Collection software ¡ Education Portal for DHSE ¡ Examination Management system for the directorates. ¡ Results Dissemination. ¡ SAY Registration. (Save A Year (SAY) Examination) ¡ U-ExPERT University Examination Planning Execution and Result Transmission developed for MG University, Kottayam ¡ TTC Examination Management System developed for Commissioner of Public examinations, Government of Kerala for examination management of TTC exam. ¡ KGTE Examination management System developed for Commissioner of Public examinations, Government of Kerala for examination management of KGTE exam. ¡ SWEET (School Work Experience Evaluation Tool) developed for the directorate of public education for evaluation of work experience exhibition conducted annually for all schools including primary, upper primary and high schools of Kerala. ? NIC Lakshdweep Unit is Providing Several ICT modules and strategies to bridge the gap arising due to the absence of professional Colleges/Polytechnics in the Islands. Provision for allotting seats is made for students to various state governments and central government institutions based on their nativity, employment status of their parents, place of study, no. of years they studied in the islands and the institution from which they have passed the qualifying examination. ? Scholarship management system developed and implemented by NIC Lakshadweep processes the applications and generates the sanction orders for scholarships claims for the students studying in various institutions outside Lakshadweep. The claims are received from the head of the institutions for all the Lakshadweep students studying in the institutions. The NIC Lakshadweep UT unit had provided active support for setting up Information Technology labs in all the high schools in Lakshadweep. ? 'Text Books Online' (www.textbooksonline.tn.nic) has the complete contents of all the 322 text books of Class I to XII of the Tamil Nadu State Board in PDF format. It has benefitted students, parents and teachers in going through lessons when the printed books are not available. Students living in other states or abroad can access the books online anywhere and at any time. The site will also be useful for getting feedback on the syllabus from a large group of users. Hon'ble Minister for School Education Sh. Thangam Thennarasu launching the website along with other key people ? The Common Entrance Test (CET) cell, Bangalore which conducts Entrance tests and carries out counseling for admissions to various professional courses like BE, B.Arch, MBBS, BDS etc has been provided Technical Consultation, software development and support by NIC Karnataka State Unit, Bangalore. Software developed and implemented by NIC Bangalore at the CET cell caters to the entire lifecycle of the admission process, starting from collection of applications to several rounds of counseling, till all the seats are filled. ? LPO (Less Paper Office) for Commissioner of Public Instructions, Karnataka is a web-based workflow management system to monitor/track the letter/file movement details in the Department. It is an n-tier system and works under Intranet cum Internet environment for internal workflow and public access for data dissemination respectively. ? “Student Internet World” is an annual event organized by the Department of IT &amp; BT, Government of Karnataka at all 27 districts of Karnataka, to run parallelly with the annual Bangalore IT, so as to educate the rural students on the boundless capabilities of the Internet. Students at the event ? “Online off-campus counseling Project for admission to all AICTE approved courses” for admission to more than 31000 seats spread over more than 300 technical institutions across the state of Haryana in which over one lakh candidates participated in multiple counseling has been a major success. It has resulted in a lot of transparency in fair allocation of seats, minimizing the hassles of traveling to various institutes and providing enough time to counselees for submission, change, delete, re-ordering of multiple choices from anywhere, any time. Online off-campus counseling in progress ? “Online Entrance Test” to conduct Paperless Entrance Examination for admissions to AICTE regulated courses of MCA, Pharmacy and Lateral Entry into Engineering, Pharmacy and Hotel Management institutes in Haryana drew a lot of appreciation. All steps, right from application to result declaration, were conducted online thus saving a lot of effort and time. Excerpts from letter written by Sh. Ajit M. Sharan, IAS, Secretary to the Govt. of Haryana, Technical Education Department to DG NIC - &quot;I am very happy to convey to you that despite of first time implementation of this kind of project on such a large scale, it has been successfully completed with in the scheduled period in the month of July 2007 i.e. with in a very short span of time by the joint endeavors of NIC and Haryana State Counseling Society (HSCS)&quot;. ? “RESULT THROUGH BINOCULAR”, is a web based solution to provide access through analytical tools to vast repository of data and information depending on the end user requirement. It was helpful in providing access to results, generating provisional certificates, online verification with data, interactive e-counseling and other such features. The website (http://chdeducation.gov.in), designed and hosted by NIC Chandigarh UT Unit, provides result information to candidates dynamically. It also provides information of interest to general public like School and College information with details like the locations, contact details, fee structure, enrolment status, forms and procedures. chdeducation.gov.in Though the present Indian Education system is gradually moving towards progress, the use of contemporary ICT modules is adding a whole new dimension to it, rearing to make India a 100% educated nation in the times to come. With the passage of time, it is being hoped that literacy pass musters every nook and corner of the Country.</p>
+        </div>
+        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="from-the-editor-january-2008.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">From the Editor</span></a><a class="article-nav-link next" href="upcoming-ict-events-january-2008.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Upcoming ICT Events</span></a></nav>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
