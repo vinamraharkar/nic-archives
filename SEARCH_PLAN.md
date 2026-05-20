@@ -406,7 +406,7 @@ mcp_server.py                 ← Phase 6
 
 | Phase | Status |
 |-------|--------|
-| 1 — Static JSON exports | ⬜ Not started |
+| 1 — Static JSON exports | ✅ Done — 3,865 articles, 131 issues |
 | 2 — Cloudflare setup + embeddings | ⬜ Not started |
 | 3 — Worker API | ⬜ Not started |
 | 4 — Frontend search UI | ⬜ Not started |
