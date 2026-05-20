@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-12.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-13.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Rainfall data plays an important roll of indicator for monitoring crop situation in a drought / flood year and Prediction. Prediction of a drought like situation and early warning required to be issued to farmers / public as early as possible to face a natural calamity. Analysis of rainfall is also required for long term agricultural planning. This needs a comprehensive database of the Rainfall with timely collection from the Rain recording stations and various analysis. Much of the information about the rainfall climatology of India is based on monthly, seasonal and annual rainfall data, which are derived from daily rainfall recorded at individual stations. It is of interest and importance to study the climatological aspects of the daily rainfall distribution over the country, which has a wide variety of rainfall regimes. Such information is of relevance for the efficient management of Water Resources System, Agricultural operations etc. as well as for a better understanding of the processes producing rainfall. Present prevalent methods of monitoring such information utilize manual observation and recording of data, which is highly error-prone. Conventional Method — Collection of Daily Rainfall Data from Rain recording stations geographically located in every CD Block through Telephone/ VHF — Compilation at District Emergency Control Room — Transmission to State Head HQ through Telephone/Fax/ Email Problems — VHF facility is not accessible directly from District Emergency Control Room to all the Blocks — It Takes 3 to 4 hours everyday for Collection / Compilation and Transmission of Data from all the stations at District Emergency Control Room — It Takes further time for Data Analysis i.e Daily, Weekly and Monthly Deviation Reports through manual calculation which needs valuable man hours — Frequent Data Manipulation at different levels is not ruled out. “Counting Rain Drops” - the Rainfall Monitoring System is an effort to transform the existing manual system to a technology based online system. This web-enabled solution facilitates Rainfall stations to enter data on the system, which in turn gets compiled, and analyzed time-wise and location-wise. The application generates various Reports and Graphs RR / District wise. The data may thus be made readily available to any interested department / organization via the Internet. This monitoring method can not only increase the reliability, but also improve the timely availability of data, and hence contribute significantly to the betterment of different sectors in day-to-day activities as well as for long-term planning. To add to its credit &amp; achievement, the application has bagged the Data Quest e-Governance Champion, Special Jury Award in 2008. Utilization of existing Infrastructure With the existing network infrastructure at Block &amp; District level the web based software has been conceived and hosted as http://rainfall.ori.nic.in On successful implementation of this System in Balangir District, Orissa in the year 2005, the project has been implemented across all districts of Orissa with following Long term &amp; short term objectives. Long Term Objective — To strengthen the timely Data collection and transmission procedure — To create comprehensive database of Rainfall — To have a proper computerized monitoring system — Planning and decision making for Implementation of Agri-Based Programme by Agriculture Department, Watershed Development, NGOs. Short Term Objective — To plan for quick mitigation measures for an eventual Drought like situation — To help in analysis of Crop condition and Weather situation for early warning to farmers Salient Features — Generation of various Reports for in-depth analysis and better management at Rainfall recording Station, District &amp; State level on Daily, Weekly, Monthly basis. — Generation of reports of Deviation from Normal and Meteorological drought class (Severe, Moderate, Mild, Normal) and Rainfall Pattern (Excess, Normal, Deficient, Scanty, No Rain). — Rain intensity Indicator Report using Colour codes to indicate alarming status i.e. No Rain, Very Light Rain, Light Rain, Moderate Rain, Rather Heavy Rain, Heavy Rain, Very Heavy Rain. — Facility to Collect Temperature data. — Generation of Negative and Normal Bar Graphs for Graphical Analysis. — Reminder email for Data Entry from District Administration account to defaulter Rainfall Recording (RR) Station, if any. — Data Log to keep track of changes in the updation of Rain Data, so that manipulation of data could be traced out. — RR stations which are not monitored by the SRC Office but existing in the district can be kept as Optional Stations for recording in the application. — Reports downloadable in Excel format for easy analysis at user level. Impact Analysis — As the existing Network infrastructure is being used, the investment is negligible and the return is in multiples of investment in terms of saving man-hours and Communication Cost. — Ease in Monitoring of Rainfall at RR Station wise, District and State. — Comprehensive Database of Rainfall of Orissa. — Reduced the time and cost of communication. — Reduced man-hours in collection and compilation of data. — Web application helped in Data sharing to Govt. Organizations, NGO's and Citizens as &amp; when required.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="judgment-information-system-for-high-court-of-karnataka-using-open-source-digital-repository-software-dspace-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Judgment Information System for High Court of Karnataka using open source digital repository software DSPACE</span></a><a class="article-nav-link next" href="cpis-a-personnel-information-system-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">CPIS : A Personnel Information System</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

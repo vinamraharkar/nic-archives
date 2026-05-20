@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-21.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-22.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-23.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2017/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">East Godavari NIC Centre provides ICT based solutions to the District Administration and various Central, State and Quasi Government offices located in the district. It is the first district in the Country to utilize Aadhaar based biometric authentication services for ‘Government To Citzens (G2C)’ Applications. East Godavari District Centre of NIC was established in the year 1988 and since then it has been extending its ICT based services to the District Administration and to various Central, State and Quasi Government offices located in the district. East Godavari District is the first district in the Country to utilize Aadhaar based biometric authentication services in ‘G2C’ Application. KEY ICT INITIATIVES Online Progress Card for Government School Students A web-based application for entering the examination wise, class wise and student wise marks has been developed. It allows various Master list entries like student, school, class and examination. It can also provide district, division, school, mandal, subject and student-wise marks dissemination report. Functionality for generating bar chart based Progress Card and pie chart-based attendance reports has been added and the entire application has been revamped with new parameters such as class medium-wise unique admission number etc. Court Case Monitoring System (CCMS) A software module has been developed by the District Centre for monitoring various courts cases pending in Apex Courts, Tribunals, High Courts, NRHMs etc. The counter-filing status, para-wise remarks sent status, disposal status, contempt status and appeal status of each case can also be known from the web application. It also alerts respondents about the next hearing date, with the help of the liaison officer who has the provision to enter the next hearing dates, disposal status and appeal status of each case. Provisions have also been made to enter the interim judgments of each case. Blood Bank Web Application &amp; Mobile App This application was developed for monitoring the blood stocks availability at the Blood Banks located around the district. This application is very useful for the District administration, District medical and health officials and the citizens. Blood Banks‘ and blood group wise blood units’ availability reports can be generated and a cross-platform mobile App has also been developed for this purpose. Activities of each Blood Bank can be monitored individually by the District administration and medical and health officials using this web application. Aadhaar enabled services, coupled with ICT systems, is the need of the present day. East Godavari has pioneered implementation of Aadhaar based services in all Government Departments. NIC East Godavari is playing a pivotal role in developing and implementing services. Further, spreading ICT in public services to improve accessibility and transparency is one of the main strategies of the district. — H. ARUN KUMAR, IAS District Collector, East Godavari District Web Portal NIC District centre has developed and maintains the official web portal of East Godavari District http://eastgodavari.nic.in. The portal provides various useful information and also is a one point source for accessing various web applications developed by the District Centre. It contains various informative pages on District profile, places of interest, RTI Act, population statistics, contact numbers and various important citizen centric information. District Collector’s Dashboard Collector’s Core Dashboard works as a tool for monitoring all the tasks, works and developmental activities being undertaken in the district. Department-wise performance indicators are shown in the form of the different types of live graphs. Seamless integration with various department databases has been carried out in this application making it very quick to use. In addition, Excel file uploading facility has also been provided. District Police Website The website has been developed for the benefit of the general public. Videos about various crime alerts, district police information, good detections, crime awareness and contact numbers of District, Divisional, Mandal and Stations level officials are available on the website. Google Charts services has been integrated with the Website for displaying the dynamic organization structures of District and divisional level police offices. Water Tax Demand Generation System The crux of the application is to fetch the survey numbers data and year-wise Pahani/ Adangal data from the Web Land database through web services. Village-wise revenue survey numbers can be fetched and stored in the local database. Survey number and year-wise Pahani/ Adangal/ Crop Data, as well as the Fasli-wise data can also be fetched and stored in the local database. Water Tax demand is generated and can be made online through Meeseva. This was inaugurated by Hon‘ble Chief Minister on 29th December, 2016. Recruitment Management System The District Centre has developed web modules for accepting applications from applicants for various posts to be filled in the departments. The Web application was incorporated with all the recruitment rules specified by the departments. The departments that use the module for Recruitments are: • Social Welfare Schools • Disabled Welfare Department • Horticulture Dept. Phase-1 and Phase-2 • Revenue Department (ST/SC Backlog Posts) • Medical and Health Department • NTR VidayMitra • UNICEF Program Coordinators • Recruitment of Ophthalmologists for District Blind Control Society • Data Entry Operators’ Recruitment for Department of Jail DBT Scheme of Government East Godavari is one of first 43 pilot districts selected across the country for the prestigious Government of India scheme, Direct Benefit Transfer (DBT). Since 1st January 2013, DBT has been operational in East Godavari District. Union Minister of Rural Development visited East Godavari District and inaugurated the DBT scheme implementation platform. The software modules developed for implementation of the DBT Scheme are as follows: • Deepam GAS connections monitoring system for DBT LPG implementation • Farmer information management system for input subsidy distribution • District UID Database – UID search utility • JSY beneficiaries‘ management system • LPG customers’ management information system • NPIC mapping details information database • MIS for bank camps conducted Election Software Modules A software module was developed for the 3 phase randomization and deployment of polling personnel, micro observers, zonal officers, route officer and other required polling staff for conducting the General Elections, 2014. Statutory orders of 1st Phase, 2nd Phase and 3rd phase randomization of polling personnel were generated. Statutory Orders for 1st phase and 2nd phase randomization of micro observers were also generated using this software module. A software module was developed for 3 phase randomization of electronic voting machines (EVMs). In the 0th phase randomization, parliamentary and assembly election-wise allotments were done. In the 1st Phase randomization EVM Allotment, constituency-wise allotment was done while in the 2nd phase Randomization, polling station-wise allotments were done using this software module in addition to all the statutory allotment orders pertaining EVMs. A software module was also developed for 2 phase Randomization and deployment of Counting Staff. Required statutory reports and allotment orders were generated using the software module. Apart from the General Elections, 2 other local body elections were held during May 2014. Separate software modules were developed for municipal elections and for ZPTC/ MPTC Elections 2014. All the statutory Reports and disseminations pertaining to these two elections were generated using said software modules. GPS Based Vehicle Monitoring System for Medical &amp; Health Department A web application for GPS based Vehicle Tracking System has been developed. The application captures data from GPS devices installed in vehicles. Daily trip sheets, time to time locations, vehicle odometer readings etc can be noted using this application. A TCP listener is developed for auto capturing of data from GPS devices. Google Map services was integrated and Panorama service of Google Maps is being used to find out the location of each vehicle. Digital India Program As a part of the Digital India week Programme, organized between 1st to 7th July, 2016, District, Block/ Mandal and Gram Panchayat Level Events were conducted as per the prescribed schedule. All the reports were uploaded to Digital India website. More than 10 thousand digital lockers were opened during the programme. A 2K run was organized for the promotion of the Digital India Programme. E-Office With the help of NIC-Hyderabad, a one day workshop on e-office implementation was conducted in the East Godavari District Centre of NIC. Continuous day to day training on different modules of e-Office has been provided to all the revenue staff and officers of East Godavari district. E-Office has been rolled out in around 78 departments in East Godavari District. This application is being implemented at all the Revenue offices right from District to the Tehsil Level. Land Records Management System WEBLAND A web-based land records application, WEBLAND has been developed to store land records digitally. Modifications have been made to the database and data of nearly 60 mandals has been converted from ORACLE 8i database to SQL Server database and successfully ported to the SQL Server database. The application is now operational. District Centre has been providing the technical support to all the Mandal, Division and District level officers in implementing the digital signature based applications. OTHER IMPLEMENTED/ DEVELOPED SOFTWARE • MIS for Swatch Sankalp Villages • Pilgrim Management System for Annavaram Devasthanam. • Land Records 6A and 22A information dissemination. • MIS for Revenue, Sadassulu • MIS for Convergence Meetings Monitoring • Petition Monitoring System &amp; call centre management • DIET-Bommuru, Government of AP Website • NIC-SMS Gateway Services Integration • Skill Development Registration and Enrollment • District Blind Control Society website • Web application for “Godavari Maha Puskhar-2015” • Integrated Socio-Economic Survey Application (ISES) • REAL Craft Project (Coastal Security Project) • Mother and Child Tracking System (MCTS) • CourtNIC, e-Court Information Systems: • National Animal Disease Registration System (NADRS) • MEESEVA (a citizen centric services oriented portal of government of AP) • Debt Waiver software module • National Food Security Act software module • Loan Chargers module of Webland • Sarkar Bhoomi software module • Various NKN Nodes (JNTU, RMC Kakinada, AKN University) • MEEKOSAM Citizen Grievance Monitoring portal • Electronic Public Distribution System (EPDS) SUMMARY The NIC District Centre has made a significant contribution in providing e-Governance solutions to the District Administration. However, with new challenges rising up to the horizon every day, the task of the the Centre is far from over. It will continue to take adequate steps towards making the lives of the general public easier and simpler by the services and products it provides with the prime objective of making the process of e-Governance more intuitive and accessible. For further information, please contact: SYED USMAN District Informatics Officer, NIC Collector Office, Kakinada East Godavari, Andhra Pradesh Email: apego@nic.in Phone: +91-0884-2378904</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="gurugram-haryana-raising-the-benchmark-of-district-informatics-january-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gurugram, Haryana: Raising the Benchmark of District Informatics</span></a><a class="article-nav-link next" href="indian-customs-edi-systems-ices-doing-business-in-international-trade-made-easier-january-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Indian Customs EDI Systems (ICES): Doing Business In International Trade Made Easier</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-18.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-19.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-20.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">The district Jhabua is a tribal dominated district situated in the South-Western corner of Madhya Pradesh. Rajasthan lies in its North and Gujarat state in the West. The district headquarters is at a distance of about 350 Kms. from Bhopal, the state capital. The district of Jhabua, in many ways, is a unique district, not only in Madhya Pradesh but also in the Country as a whole. Despite being faced with stark realities of extreme poverty, socio-economic backwardness, migrating population in search of employment during slack season, and an extremely difficult geographical terrain, the District still retains a unique kind of tribal culture. The vagaries of weather, poor soil conditions and uneven topography put a lot of challenges before the government, social workers and voluntary agencies. The literacy rate of the District, as per the 1991 census, is a mere 19.01 %, which is the lowest in the Country. Illiteracy is the root cause of poverty and most of the socio-economic problems in the region. The total area of the District is 6458 Sq.Km having eight tehsils and 1357 villages. Out of the total population of 11,30,405, the tribal population has an overwhelming ratio of 85.96 %. NIC in Jhabua The NIC District Centre at Jhabua was established at the Collectorate during 1988-89 to extend informatics services to all the Government Departments in the district. The primary aim of the NIC district centre is to assist the district administration in overall computerization of different administrative processes and procedures, so that the related information for decision making is readily available at all the levels. Spreading the informatics culture in a district having the lowest literacy rate was by no means an easy task. But true to the spirit of NIC, the Jhabua District Unit took it up as a challenge and since its inception, it is providing effective support services in the areas of design, development implementation of appropriate MIS/Databases for district level applications, training, assistance in electronic communication, processing of various data, etc. Project Profile NIC Jhabua district centre not only provides the E-mail facility to the user departments but also helps in maintaining and analyzing important information and provides training to the officers of various user departments in the district. The coordination between the NIC District Centre Jhabua and the District Administration has resulted in the evolution of a number of computer facilities, which has helped the District Administration in carrying out its routine work effectively to a great extent. The district centre has already taken up various projects in order to extend technical support and guidance to the various Departments &amp; developed the software, viz., Merit list of Lower Division Teachers (Tribal Welfare Department), Rural Development Information System (RDIS), Time Limit Papers System (TLP), Computerization of Arms Licences, Rajeev Gandhi Watershed mission (Plantation software), Panchayat Management Information System (PMIS), etc. Beside the Payroll System which facilitated the computation of the employee’s pay and preparation of their pay bills, many other areas have already been covered in the district. Some of them are Preparation of Budget, Preparation of monthly progress report on Total Literacy Campaign, Providing Census’91 data &amp; necessary reports to all Government Departments, Researchers &amp; Private users, Daily reception &amp; transmission of E-mails, Word Processing facility to the staff of Collectorate, etc. These may be considered to have significantly contributed towards office automation in the Collectorate and various departments in the district. The NIC district centre implemented various national and state level projects successfully in the district with planned and organized approach. Besides implementation of national &amp; state level projects, DIC has also actively participated in the Pulse Polio, Immunization, Primary Health checkup, Exit Poll data, Election Result data, etc. and played important role in their success. Computer based satellite network (NICNET) is extensively used by the district administration for communication purposes. Fullfilling the Purpose It would be right to say that the computer and communication facility established at NIC District Centre, Jhabua is fulfilling its aim by aiding the District Administration to function with greater efficiently and effectiveness. Today, NIC Jhabua is one of the busy and an indispensable NIC computer centre among others. Its sincere efforts have awakened the people in this remote area with its use and importance. NIC, Jhabua holds explicit future plans for computerization in important areas such as Panchayat Management Information System, District Court Computerization and providing Internet, E-mail facilities to the various Government departments in the district. The success story of informatics in Jhabua stands out as a living example of utility of advanced technology in relatively backward societies.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="working-group-on-it-for-masses-october-2000.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Working Group on IT for Masses</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

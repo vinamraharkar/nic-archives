@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;2</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-2.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-2.jpg" alt="Page 2" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-2.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;3</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-3.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-3.jpg" alt="Page 3" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-3.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-4.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-5.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-6.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-7.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-8.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2000/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">National Informatics Centre (NIC) introduced Information Technology (IT) in Rural Development (RD) sector in the year 1986 and since then the three entities have been going hand in hand leading to the evolution of Rural Informatics in India. It is worth mentioning that induction of IT in Rural Development and its subsequent evolution have not been easy tasks, owing to the unstructured nature of RD domain, slow pace of development reforms, low IT literacy and usual reluctance to adopt IT. Nevertheless, Rural Informatics has reached a stage today where IT finds a significant place in RD, not only in terms of expanse and magnitude of its application but also in terms of technological advancement. NIC's incessant efforts towards computerisation of RD sector have not only facilitated the planning and monitoring agencies but have also created a foundation for building IT services which are of direct significance to the public. Following is a windows view of major IT applications across various layers of administrative set up under the Rural Development sector. Application Software packages Database Applications Some of the database applications developed by NIC for the Ministry of Rural Development include Financial Release software for Integrated Rural Development Programme (IRDP) &amp; National Social Assistance Programme (NSAP), Inventory Control System and Concurrent evaluation of IRDP, Training of Rural Youth for Self Employment (TRYSEM), Jawahar Rozgar Yojana (JRY), Indira Awaas Yojana (IAY) and Million Wells Scheme (MWS) Besides, Below Poverty Line (BPL) Survey Computerisation has been done for various DRDAs in the country. Management Information System (MIS) to process data related to poverty alleviation schemes, known by the product name of RuralSoft, has also been designed, developed and operationalised at 15 pilot DRDAs in the country. Web-based Applications Web Sites for Ministry of Rural Development (www.rural.nic.in), Council for Advancement of People's Action and Rural Technology (CAPART) (http://capart.nic.in), National Institute of Rural Development (NIRD) (www.nird.org) have been prepared. Web Sites have also been developed for Rural Development Departments of various States like A. P, U.P etc. Programme Status Report (PSR) providing physical and financial status of rural development schemes with supporting maps and charts have been designed and developed for MRD (http://vikas.delhi.nic.in) 'Daily' is a dynamic web based application focussing on day-to-day activities and requirements of the MRD officials like file monitoring, lodging infrastructure related complaints etc. GIS Application A Geographic Information System (GIS) based analysis has been carried out for some of the watersheds in East Distt. &amp; North Distt. (Sikkim), Raipur, Etah, Udaipur, Salem, and Pune Districts. A cadastral level spatial database has been developed for Tintek block, East District, Sikkim, which has been suitably integrated with attribute data to evolve a Management Information System Multimedia Applications Several multimedia applications have been developed to cater to the training and monitoring needs of Rural Development Institutes, which include Ministry at a Glance, Convergence of Services and Hill Area Development with Specific Reference to Uttarakhand. IT Infrastructure Local Area Network All three Bhawans viz. Krishi Bhawan, Nirman Bhawan and Paryavaran Bhawan, where offices of Ministry of Rural Development (MRD) are located have been provided with Local Area Network (LAN) and Internet connectivity. Many of the District Rural Development Agencies (DRDAs) are also provided with LAN. LAN facility with Internet Connectivity has recently been extended to 30 blocks in North Eastern States, under Community Information Centre (CIC) Project. Wide Area Network Krishi, Nirman and Paryavaran Bhawans have been connected with States and Districts through NICNET. NICNET connectivity has also been extended up to Block level in Kerala and up to village level in Warna Nagar, Maharashtra. Videoconferencing System A State-of-the-Art Videoconferencing system has been installed at Conference Room ('Unnati') of Krishi Bhawan. Training Several training programmes have been conducted for various applications software and related technologies to clients and end users across all layers of administrative set up. National Level Projects - A Glance Computerised Rural Information Systems Project (CRISP) (www.crisp.nic.in), Council for Advancement of People's Action and Rural Technology (CAPART) Computerisation (http://capart.nic.in), Providing Multimedia and communication facilities at National Institute of Rural Development (NIRD) and State Institutes of Rural Development (SIRDs), Integrated Management Information System (IMIS) for Rajiv Gandhi National Drinking Water Mission (RGNDWM) and Land Records' Computerisation (LRC) are some of the National level Projects in the Rural Development Sector. Taking IT to the Masses Convergence of IT efforts at various layers of RD administrative set up, as described above, also termed as backbone computerisation, has made it possible to bring the relevant information and services into the public domain, thereby easing the life of a common man. On top of the backbone IT services, application software packages of direct public relevance are being developed to form a Citizen-IT interface. Following are some of the examples where IT has reached the unreached to reduce the need of visiting Govt. offices for trivial purposes and help the citizen take more informed decisions. RuralSoft2000 RuralSoft2000 is a GUI based software, which, aims at capturing data related to poverty alleviation schemes. The software has been developed, as a part of ongoing efforts under CRISP, to meet the needs of monitoring agencies like DRDAs etc. It is a scalable solution and can be installed at the levels of Panchayats, Blocks, DRDAs and States depending upon the availability of computing and communication environment. Beside facilitating the monitoring agencies, the software generates information of public interest, which has been put on the web and can be accessed on anywhere-anytime basis using an Internet browser. The information includes Below Poverty Line (BPL) summary data, status of Loan application filed by a beneficiary under Swarn Jayanti Gram Swarozgar Yojana (SGSY), physical and financial progress of various poverty alleviation schemes etc. Rural Bazar A Prototype of Rural Bazar has been developed (http://164.100.219.3) which shall host information about products designed and manufactured by rural artisans. Ministry of Rural Development has taken this initiative to provide a platform for marketing the rural products. An e-commerce version of this site is under construction to support on-line transactions for buying and selling these products, which will be implemented after necessary approval from MRD's. Wired Villages - Warana Wired Villages of Warana have turned into reality the concept of automated villages. The primary objective of the project is to demonstrate the effective contribution of IT infrastructure in accelerating socioeconomic development of a cluster of 70 contiguous villages around Warana in the Kolhapur and Sangli Districts. Facilitation Counter A Facilitation Counter has been established at Gate No. 6, Krishi Bhawan, Ministry of Rural Development, New Delhi to provide information to the visitors about various activities of the Ministry. Summing up the Yesteryears NIC has been setting the tone of e-governance in the Rural Development sector for over a decade now. A wide range of software applications, adequately supported by IT infrastructure have been developed during this time to aid planning, monitoring and sharing of information among various agencies. And a Peek into the Future The future efforts in Rural Informatics would be targeted towards Sustaining the on-going efforts Providing better communication facilities Extending full Geographic Information System (GIS) support Providing e-commerce solutions Developing Expert System for Rural Development Schemes Bird's Eye View ..... Having built a sound base of IT services, NIC is now instrumental in establishing a direct Citizen-IT interface, so that a common man is also benefited by the technological advancements that have taken place in RD. IT will thus provide a hand-shake between the governing bodies and the people governed, thereby bringing in total e-governance in Rural Development.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link next" href="tamil-nadu-maps-on-the-web-october-2000.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Tamil Nadu Maps on the Web</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-4.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-5.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-6.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-7.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-8.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-9.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2025/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Assam, the vibrant north-eastern state, known for its rich cultural heritage, its tea, the one-horned rhinoceros and the mighty Brahmaputra River, has emerged as a digital transformation leader in the Country. The State has been rapidly making strides in the domain of e-governance, bringing the power of technology to deliver better governance across all levels of administration. The National Informatics Centre (NIC) has been the government’s most trusted and prominent technology partner, powering end-to-end digital solutions to strengthen administrative efficiency and deliver a wide range of Government-to-Citizen (G2C) services. The NIC Assam State Centre started functioning from 1986, and by the mid-Nineties, NIC had a District Unit in each district of the State. The advent of online technologies in the latter half of the second decade of the Twenty-First Century saw Assam and NIC perfectly poised to extract maximum advantage of the situation. Assam stands at the forefront of digital innovation in India, leveraging technology to create a more transparent, efficient, and citizen-friendly government. Working hand in hand since 1986, the NIC Assam State Centre and the State Government have built a comprehensive digital ecosystem with multitude of diverse ICT initiatives, transforming the lives of millions of citizens. The state government proactively embraced digital innovations in its vision to ensure that technology-driven governance reached every corner of Assam, from urban centres to remote villages. NIC stepped in to make the vision a reality. Aligning its progress with the vision of Digital India, Assam and NIC worked hand in hand to implement comprehensive digital initiatives across diverse government departments ranging from e-governance solutions, contactless citizen services, data-driven dashboards to next-generation infrastructure and automation. NIC Assam has been pivotal in developing scalable IT solutions, establishing robust digital infrastructure, and creating innovative applications to establish itself as the technological backbone supporting the state’s digital journey. The scale of NIC’s involvement in Assam’s digital transformation is truly significant. A substantial part of Assam’s Information and Communication Technology (ICT) initiatives are developed and implemented by NIC. These including 29 state-specific projects, 12 national projects customized for local requirements, and establishment of critical core infrastructure including services and security frameworks. Rubaiyat Ul Ali Sr. Technical Director &amp; SIO rubaiyat@nic.in Maitreyee Sarma Scientist - B &amp; SMC maitreyee.sarma@nic.in ICT Initiatives in the State Digitization of Panchayat Electoral Rolls and Elections The foundation of democracy lies in transparent and efficient electoral processes. However, that very foundation was standing on shaky grounds of obsolete and cumbersome manual systems. The Online Electoral Roll Management System (OERMS), Election Management and Monitoring System, and Polling Personnel Management System (PPMS) revolutionized how the State Election Commission conducts elections by digitizing the entire electoral roll preparation and polls management process. The system has covered 2,192 Gaon Panchayats and 25,046 polling stations, with 18,091,705 voters enrolled. During the elections, the platform processed 7,174 nominations for Anchalik Panchayat and Zilla Parishad positions, accepted 6,610, rejected 179, and recorded 385 withdrawals. This Government-to-Government (G2G) initiative has brought transparency and efficiency to grassroots democracy in Assam. CM Dashboard The CM Dashboard is an innovative approach for the state topmost leadership to monitor and evaluate government performance. This unique API-based platform enables real-time, data-driven monitoring and performance evaluation of districts, transparently showcasing best and worst performing districts with actual figures through dynamic, automated data collection. The dashboard monitors 43 Central Schemes, 37 State Schemes, and 1 Externally Aided Project (EAP) covering 38 projects, with 17 archived schemes. It is an indispensable tool for the Hon’ble Chief Minister and senior officials to track implementation progress and make informed decisions based on real-time data. Sewa Setu Sewa Setu stands high as Assam’s flagship citizen services platform, offering an unprecedented 815 services by integrating more than 20 portals and 10 national platforms including UMANG, Aadhaar, ePramaan, and DigiLocker. This Government-to-Citizen (G2C) platform has processed 1.94 crore applications, with 1.75 crore applications successfully disposed. The platform includes an integrated Appeal and Grievance Management System and leverages an in-house Service FlowMaster for efficient back-end workflow management. Demonstrating commitment to accessibility, Sewa Setu complies with WCAG and GIGW 3.0 standards, featuring a UX4G-designed accessibility menu. The platform’s technical architecture leverages microservices for scalability and DevSecOps for secure continuous integration and deployment, making it a model for citizen-centric digital governance. EoDB The Ease of Doing Business platform has positioned Assam as a Top Aspirant in the Department for Promotion of Industry and Internal Trade (DPIIT) EoDB Rankings 2020. This unified G2G/G2B platform offers more than 300 online services—273 end-to-end and 27 external—across 21 departments and 42 sub-departments. The platform has delivered 26.65 lakh services with an impressive 98.28% disposal rate. The system has registered 3.4 lakh Common Application Forms (CAFs) and processed 27.12 lakh applications, significantly reducing the time and complexity involved in obtaining business approvals and clearances. ePrastuti Assam became the first state in India to implement a standardized website framework for all government websites through ePrastuti. This initiative has standardized the government’s web presence, ensuring consistency in design, accessibility features, and information architecture across all official websites, making government information more accessible and user-friendly. ePrastuti covers 299 websites, including those for departments, districts, the state portal, and the governor’s portal. eMantriSabha eMantriSabha has transformed cabinet governance in Assam by digitizing the entire process from proposal submission to decision tracking and implementation, making cabinet meetings 100% paperless. The system seamlessly integrates Digital Signature Certificates (DSC), eParichay, and Aadhaar authentication, with Bharat VC integration underway. Since implementation, the platform has facilitated 181 meetings, recorded 3,497 decisions including archived cabinet decisions, significantly improving the efficiency and transparency of the state cabinet. Chief Minister’s Atmanirbhar Asom Abhijan Addressing unemployment through entrepreneurship, the Chief Minister’s Atmanirbhar Asom Abhijan focuses on empowering youth with self-employment opportunities and fostering inclusive socio-economic development. This G2C initiative has registered 2,29,145 individuals, received 1,04,091 applications, and benefited more than 25,000 individuals with support for starting their own enterprises. Integrated Land Records Management System (ILRMS) Land records form the foundation of property rights and agricultural governance. The ILRMS has digitized the land record management processes with a comprehensive suite of integrated applications including Basundhara, Dharitree, Bhunaksha, eKhazana, Chitha, SVAMITVA, NOC, Landhub, NGDRS, Survey/Resurvey, and RCCMS. The online G2C services are facilitated to citizens through the Sewa Setu portal. Nirman Sakhi Nirman Sakhi simplifies worker registration, ensures transparent claims processing, Direct Benefit Transfer (DBT) disbursement, standardized process assessment, and streamlined welfare delivery for Assam’s construction workers under the Labour Department. The first application to be integrated with an Aadhaar vault, Nirman Sakhi has received 1,35,387 total applications, including 96,471 onboarding applications and 38,916 new applications. Assam eGRAS The Government Receipt Accounting System (eGRAS) enables citizens and departments to make online payments for Assam government services, streamlining eChallan generation, multi-head payments, and receipt accounting for both Treasury and Non-Treasury heads. This G2G/G2C platform has generated 2,05,69,390 eChallans in Financial Year 2024-25, collecting a total of ₹84,446.97 Crores. Digital ITI Platform Recognizing that skilled workforce development is crucial for economic progress, the Digital ITI Platform represents a unified digital suite for Industrial Training Institute operations. The platform features three integrated components: an MIS Portal that tracks academics, students, and administration in real-time; an Affiliation Portal that digitizes the ITI approval and compliance process; and an e-Counselling Portal that powers fair, paperless, merit-based ITI admissions. Kritagyata Kritagyata has positively impacted pensioners by increasing transparency and reducing hurdles in the pension sanction and payment process. This G2E (Government-to-Employee) platform has added 59,722 retirees, processed 55,610 cases by HoDs, and approved 51,552 Pension Payment Orders (PPOs). With 4,058 cases pending for PPO approval, the platform maintains an impressive 92.70% PPO approval rate, ensuring that government servants receive their pension benefits promptly and with dignity after years of service. eSamiksha eSamiksha serves as a critical monitoring tool used by the Hon’ble Chief Minister (HCM), Ministers, and Department Heads to track the progress of various schemes and projects. This platform has facilitated the Hon’ble Chief Minister’s 215 meetings generating 3,062 action points, Deputy Commissioner’s Conference with 116 action points, HCM Notes with 395 action points, HCM Tour Direction with 180 action points, and CM Conclave with 42 action points. This systematic approach to monitoring ensures that decisions taken at the highest levels are tracked through implementation, with clear accountability mechanisms. ePrayukti Sewa ePrayukti Sewa represents an innovative approach to grassroots digitization by offering a one-stop mobile app-building service for quick, customizable, and efficient app development. Featuring an integrated portal for registration, requirements gathering, and real-time service status tracking, this easy to use system enables various departments to digitize their services through mobile applications without extensive technical expertise. JalTarangini JalTarangini addresses the critical challenge of flood management and water resource monitoring through IoT technology. The system monitors water levels in real-time, transmits data via RF/LoRa from shadow areas, and triggers alerts at critical thresholds. This platform built on IoT-enabled RF/LoRa technology is copyright registered and patent filed by NIC Assam and set for deployment by the State Disaster Management department. The system has won prestigious awards including Gold at the NIC Innovation Challenge 2018 for Emerging Technologies and Silver at the ET DigiTech Awards 2023 for Climate/Disaster Resilience, highlighting its potential to save lives and property through early warning systems. Assam Civilian Awards Facilitating the conferment of the highest Civilian Awards of the Government of Assam, this dedicated online system streamlines award nominations through a digital platform. This portal received 90 applications in 2023 and 266 applications in 2024, demonstrating increasing public participation in recognizing exemplary citizens. Drugs Free Assam Drugs Free Assam is a mobile app empowering citizens to report drug-related suspicious activities, persons, or transportation to police. Users can anonymously report complaints with photographic evidence and GPS location tagging. The platform has received 1,624 complaints to date, demonstrating strong community participation in combating the drug menace through technology-driven public participation in supporting law enforcement efforts. Sadbhavana Sadbhavana represents a major initiative by the Government of Assam for expeditious disposal of files. Pending matters in all physical files are resolved and files marked closed through the Sadbhavana portal. This platform received 316 applications, disposed of 242, with 74 under process, maintaining an impressive 76.58% disposal rate. Examination Results NIC Assam has successfully published the Secondary Education Board of Assam (HSLC &amp; AHM) and Assam Higher Secondary Education Council (HSSLC) results for 12 consecutive years, handling more than 23 lakh website visitors on result day and managing 12,000 hits per minute after release, demonstrating robust infrastructure and scalability. Medical Asset Management System Med-AMS has reformed and optimized medical asset management in medical facilities through seamless asset entry, real-time transparency, and vendor integration. Tracking of assets from procurement to disposal is done ensuring proper maintenance, availability and utilization. It is used across 16 medical college and hospitals, registering 3,408 major assets (93% functioning) and 44,227 minor assets (92% functioning), ensuring accountability and optimal utilization of medical equipment. State Award to Teachers This platform honors exceptional educators of the state, every year on Teacher’s Day. It has a streamlined 3-step comprehensive self-nomination process for teachers, automated assessment and evaluation against predefined criteria, for easier decision making by administration. This G2C platform received 273 applications in 2024 and 427 applications in 2025, selecting 13 awardees in 2024 and 15 in 2025, recognizing teaching excellence across the state. Matsya Baibhav Under Assam’s “Ghare Ghare Pukhuri, Ghare Ghare Maach” (GGPGGM) scheme, the Fishery Assets portal and the Matsya Baibhav mobile application enables complete digital asset mapping through GPS-based geo-tagging of all ponds and tanks created under GGPGGM. This robust mobile solution systematically captures beneficiary demographics, precise pond dimensions, geographic coordinates, and real-time photographic documentation. The application has successfully covered 9,083 ponds/ tanks under GGPGGM, with 9,029 geo-tagged, achieving 99% completion and demonstrating transparent monitoring of government assets. State Public Procurement Portal Launched on August 22, 2022, by Hon’ble Chief Minister Dr. Himanta Biswa Sarma, SPPP serves as Assam’s unified tender access platform under the Assam Public Procurement Act, 2017. This platform integrates Assam Tenders, PMGSY, GeM, and manual tenders, enabling departments to publish NITs, documents, and corrigenda online while allowing citizens to freely access tender details and dashboards, promoting transparency in public procurement. RTI Online Portal Launched by the Administrative Reforms, Training, Pension &amp; Public Grievances Department, the Right to Information Online Portal offers a transparent, paperless platform for submitting and tracking RTI requests and First Appeals. Till date rtionline.assam.gov.in has received 2,812 RTI requests and 527 First Appeals, with 1,548 citizens registered and 1,313 public authorities onboard. Integrated with eGRAS for secure payments, it ensures timely access to information and streamlines processing for both citizens and officials. RurbanSoft RurbanSoft represents Assam’s contribution to national e-governance, serving as the Management Information System for Shyama Prasad Mukherjee Rurban Mission (SPMRM) under the Ministry of Rural Development. Entirely developed in Assam and implemented across all 26 states and 8 Union Territories, this G2C platform streamlines ICAP/ DPR planning, PFMS-enabled payments, and geo-tagged asset tracking through the Geo-Rurban app. Though new works onboarding is now closed, the system remains active until all vendor payments are settled, demonstrating Assam’s capability to develop nationally scalable solutions. Manav Sampada Manav Sampada, aptly named for Human Capital, provides a comprehensive ICT solution for the government sector, addressing key personnel management needs. Currently rolled out in Panchayat and Rural Development department, this G2E platform has registered 3,126 service books, received 5,696 leave applications, and created 2,109 Annual Confidential Reports (ACRs), streamlining human resource management in government departments. eDAK eDAK is a centralized, role-based platform for managing official letters received in the CM Secretariat. It facilitates diarization, management, and tracking of communications with role-based access and workflows. The system handles both diarized and legacy letters, ensuring streamlined letter management across departments with centralized tracking capabilities. Matri Pitri Vandana The Matri Pitri Vandana initiative, launched in 2022, grants Assam government employees two days of special casual leave annually to spend quality time with parents and parents-in-law. After availing leave, employees must upload signed leave applications approved by department heads and photographs taken with parents during the leave period on the portal, ensuring accountability and genuine utilization of this family welfare initiative to promote work-life balance and familial values among employees. Niyukti Niyukti is a Software as a Service (SaaS) based recruitment solution for government departments to conduct hiring drives. Recruiting agencies can quickly onboard as authorized recruiters and initiate hiring processes with minimal configuration. The platform ensures faster, efficient, and transparent recruitment management. It has processed 2,50,000 applications, completed 84 recruitments across 900+ positions, streamlining government hiring statewide. National Projects Customized for Assam Beyond state-specific initiatives, NIC Assam has successfully customized and implemented 12 major national projects to suit local requirements and linguistic needs. The eOffice initiative has achieved 100% eFile adoption across all departments up to the directorate level, creating 811,640 eFiles, 4,516,764 receipts, and issuing 1,373,667 letters while converting 137,787 files, enabling efficient and transparent governance with anytime, anywhere file access. The eTransport platform, branded as CM-TRANS, positions Assam as a nation leader in transport automation with 73 contactless services. The comprehensive system integrates Speed Limiting Device, eChallan and eDAR. It includes MoRTH’s cashless treatment scheme as a pilot initiative, alongside full automation of transport services. The Inter-operable Criminal Justice System (ICJS) is a successful initiative in Assam, integrating police, e-Courts, e-Prisons, e-Forensics, and e-Prosecution including includes the Medico Legal Examination and Post Mortem Reporting System (MedLEaPR), for seamless data sharing under ‘one data, one entry’ principle, ensuring speedier and transparent justice delivery. Jeevan Pramaan provides biometric-enabled digital life certificates with Assamese language support, recording 32,708 successful submissions, while Real Estate Regulatory Authority (RERA) Application facilitates real estate regulation with 1,115 registered projects, 83 registered agents, and 405 complaints (262 disposed). The Public Distribution System ensures food security for 70,86,456 ration card holders covering 2,46,78,138 beneficiaries through 35,055 Fair Price Shops. Centralized Public Grievance Redress and Monitoring System (CPGRAMS) positions Assam as second in the Northeast, and third nationally, for grievance disposal, while NextGen e-Hospital connects 129 health facilities processing over 14.723 million OPD registrations with implementation in 687 health facilities in the pipeline. SPARROW streamlines performance management with 5,720 APARs registered, reviewed, and accepted, while eProcurement has facilitated 71,057 tenders worth ₹2,96,701 Crores since its 2014 launch in Assam. The eJagriti platform empowers consumer protection with 7,144 complaints filed and 4,877 disposed (68.27% disposal rate). These demonstrate NIC Assam’s ability to adapt national solutions to state-specific contexts while maintaining interoperability and standards. National Data Centre for NER Strengthening the computing capacity of the region, the National Data Centre for the Northeast, with 4 MW total load, is being implemented by NIC and NICSI. This strategic infrastructure development represents a major leap forward in regional digital capabilities. With a capacity of more than 200 server racks (expandable to 400) with high-end connectivity, on-demand cloud infrastructure, and secure data hosting, processing, and data management, it will create a robust digital backbone for the entire north-eastern region support the growing demands of e-governance initiatives. Core Services Core services such as NICNET, NKN, video-conferencing, and webcasting are available extensively throughout the state. NICNET has been the digital backbone of the Government of Assam since 2003, with an extensive network of 21,388 nodes delivering round-the-clock uninterrupted connectivity. The robust Assam Secretariat LAN infrastructure has over 5,000 nodes with unrestricted Internet bandwidth and IPV6 compliance. Video conferencing services have been part of NIC Assam’s portfolio since 1995, which proved invaluable during the Covid-19 pandemic with 950 video conferences conducted in 2025 (as of September) and 1,619 conferences held throughout 2024. The state’s digital infrastructure is further strengthened by robust email services supporting over 50,000 users across assam.gov.in and assampolice.gov.in domains, backed by all round technical support through a dedicated service desk ticketing system. The National Knowledge Network (NKN) Point of Presence in Assam has been operational since 2011, connecting to 12 core networks and offering 10/2.5 Gbps bandwidth with 80G bandwidth capacity and high availability systems, linking 64 premier educational and research institutions. Regional Application Security and Audit RASA, the Regional Centre for Application Security &amp; Audit located in Jayanagar, Guwahati, provides comprehensive services including application security audits, vulnerability assessment, and penetration testing. Conclusion NIC Assam has emerged as the state government’s most trusted technology partner, powering end-to-end digital solutions to strengthen administrative efficiency and public service delivery, extending from the state headquarters to remote districts. The State Centre’s achievement of handling a majority of ICT initiatives of the Government of Assam, developing solutions that scale nationally, and pioneering innovations such as Jal Tarangini demonstrate the potential of committed partnerships between the government and NIC. Assam’s digital transformation journey, powered by NIC’s technical expertise and the state government’s visionary leadership, serves as an inspiring model for other states, particularly in challenging geographical and infrastructural contexts. Contact for more details State Informatics Officer NIC Assam State Centre First Floor, Composite Building, Last Gate, Dispur Guwahati, Assam - 781006 Email: sio-asm@nic.in, Phone: 0361-2237164</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="disclaimer-october-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Disclaimer</span></a><a class="article-nav-link next" href="strengthening-roots-with-digital-growth-october-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Strengthening Roots with Digital Growth</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

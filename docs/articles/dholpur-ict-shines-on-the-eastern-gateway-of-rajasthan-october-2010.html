@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;38</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-38.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-38.jpg" alt="Page 38" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-38.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-39.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-40.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Situated in the eastern part of Rajasthan bordering Uttar Pradesh and Madhya Pradesh, Dholpur earlier called Dhavalpur, was carved out of Bharatpur in 1982. It is famous for its sandstone and ravines which are part of Chambal legacy. The famous Dholpur House (UPSC HQ), President House and many other buildings have been built using Dholpur stone. It is well connected by roads and railways, Mumbai - Delhi line and NH 3 passes through the district headquarter. N IC centre was estab- lished in 1990 and has played a pivotal role in supporting District Administration in its e-Governance initiatives by making innovative use of technology to reach out to the masses. DISTRICT WEBSITE Dholpur district's website http://dholpur.nic.in is a rich source of information covering history, cul- ture, temples, industry, census 2001, accessibility and administration. Facility to lodge grievances and checking its status through &quot;Samadhan&quot; is also available. Forms, tenders and district news are other details which are instantly updated and are of interest to the citizens. PROJECTS / ACTIVITIES Public Grievance Monitoring System (Samadhan): &quot;Samadhan&quot;, an initiative undertaken in the dis- trict, is a generalized Public Grievance Monitoring System, which has enhanced the speed of disposal of Public Grievances. Each complaint lodged is individually monitored and tracked until it is finally disposed. Footfall to the collectorate is also reduced as the status is available online, on telephone and through touch screen kiosks. So far more than 16500 cases have been disposed off and the software is running suc- cessfully in dozen districts of Rajasthan. Workflow Grievances received are entered by the Vigilance section (JAN SAMASYA PRAKOSTH) of the Collectorate. The software automati- cally generates a covering letter which is attached with the grievance and sent to the concerned depart- ment. The department is also given a sys- tem generated deadline (generally 6 days) within which the matter has to be disposed. When the concerned department takes action, the details of the same are again entered into the system and a reply is sent to the concerned citizen about the action taken in his/her matter. The software also generates reminders for pending grievances and also generates a department wise pen- dency statement. A meeting, chaired by the Collector, is conducted every month to discuss the pending cases. Facility to check the status of com- plaint through various channels helps the complainant to avoid visits to the district HQ thus saving his precious time and money. Salient Features Scan option for document scan- ning Hindi interface Generates covering letter, Reminder letter, Notice letter etc. Search option for finding griev- ance Status available online, through touch screen kiosk and telephone Various reports like summary report, category wise and OIC wise Conclusion Samadhan has proved to be a rugged and successful solution in its 8 years of operations. Intended to benefit thou- sands of citizens, it doesn't entail any cost upon the citizens or the depart- ments and has also been adopted by 12 districts. With citizen centricity the focus, the objective of the application to ensure a swift and concrete response to the citizen on his griev- ance has been very successfully met. Availability of status through multiple channels makes it very innovative and convenient for citizens. User friendli- ness of the application makes it very convenient for the staff and citizens alike and an efficient reporting module makes it very time saving for the deci- sion makers. OTHER DISTRICT LEVEL PROJECTS In addition to state level implementa- tions, there have been many innova- tive initiatives taken in the district. Some of these projects are - Rajasthan State Pensioners Medical Fund (RPMF): An appli- cation to monitor pensioner's med- ical diaries to check for duplicity and discrepancies. It's implementa- tion has helped in reduction of expenditure on RPMF fund by 50% and is now being implemented in other districts of state. Sanctions Monitoring System: Developed for Directorate of Pension &amp; Pensioners Welfare to cater to requests for limit extension of pensioners and generation of sanction orders. Also, various type of reports as desired by Government for effective monitor- ing of pensioners medical funds, can be generated. Paper under Consideration Monitoring System (PUCMS): A workflow based application to mon itor DAK (Letters) received in Collectorate which is then forward- ed to concerned section. Login based access is provided to each sec- tion. District collector monitors the disposal through his login. File Tracking System: A central repository of all files created is maintained with each file having a unique id number and a bar code. A hand held infra-red optical bar code reader is used to read the file details. The FTS system ensures that all the files and registers that have been created by the different sections have been completely accounted for and there is mini- mum risk of a file being lost/mis- placed. The system has been extremely useful in monitoring file movement. District Monitoring System: It's an easy to use management tool where reports, databases and MPR's of various departments are stored. In addition to it some of the applica- tions like Arms, Samadhan, estab- lishment status etc have also been integrated. &quot;Scrap book&quot; feature helps in managing &quot;To do&quot; list and also monitoring of weekly tasks allotted to different departments. Paramarsh Kendra Monitoring System: Helpdesk manned by trained volunteers to aid citizens with writing applications, filling forms, informing about beneficiary schemes and moni- toring Public Grievances. A software has been installed in the center to keep track of citizens, which kind of people are being helped. It has also helped in cutting down the role of 'mediators' and other middlemen who profit from citizens’ troubles. Smart card based Personnel Information System: All employ- ees have been issued digital smart cards to view their basic data related to personnel Section. It is being used to login into personalised account of employees to see important details like EL/PL , CL Basic Salary, Pan No and other useful informa- tion. Identity Card Generation System: A generalized software to generate I-cards and is in use by State Unit and many other departments. Arms Licenses Monitoring System: This system is in use to process all the applications for new license and renewal. The details of around 5000 arms licensee are available. Touch Screen Kiosk: Touch screen Kiosk has been deployed in the Collectorate for the use of citizens. The public grievance database, Land record database and district profile has been linked to a touch screen kiosk with Hindi interface. Citizens can know the status of their application. Land Record data base of district has been kept and Jamabandi can be viewed by citi- zens with various searching and sorting options. Smart Card Reader has been attached with the Kiosk and login has been created for col- lectorate employees, they can view their basic data related to Personnel Section. Video Conferencing Services: Video Conferencing Services are being provided to district adminis- tration and its various depart- ments. Senior Officers of different departments of Secretariat and HODs use this facility to review the status of various developmental schemes or ongoing projects through their officers placed in the district. The Collectorate LAN: A LAN of around 50 nodes has been estab- lished in the collectorate, which is connected to all sections providing access to various applications. CENTRALIZED PROJECTS Projects implemented successfully are - Vahan And Sarthi (District Transport Office) E-gram Online Information system E-Mitra Project Treasury Computerisation System National Land Record Modernisation Programme Data Depository System District Court Computersation Agriculture Marketing Network Pay Bill of Govt Departments Election Monitoring System Rajcrest Sub registrar Office Various Campaigns of State Government Consumer Forum Network Employment Exchange Monitoring System Revenue Court Computerization Web based Applications of Various departments Medical department, PWD, Bharat Nirman Mid Day Meal Excerpt of the message from Collector and District Magistrate, Dholpur, Sh. V. Sarvan Kumar, IAS NIC DISTRICT UNIT Dholpur, an ISO 9001 certified (the first in the state) has been very effective in aiding and assisting the District Administration in its able management and decision making through its database management and staff sensitization. Commendable work has been done in land record computerization and in citizen centric grievance redressal through its 'Samadhan' initiative. As a further step, arms monitoring system is being revamped to help in avoiding any duplication and to speed up new applications along with renewal. &quot;Samadhan&quot; project initiative was led by Mr Dinesh Sharma SSA and supported by Mr Gaurish Kumar Vashistha, Scientific Officer For further information District Informatics Officer NIC District Center Collectorate, Dholpur Rajasthan 328001 Ph: 05642-22007,220871 rajdho@nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="imphal-east-e-governance-deep-rooted-with-land-records-cics-october-2010.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Imphal East: e-Governance Deep Rooted with Land Records &amp; CICs</span></a><a class="article-nav-link next" href="saudi-arabia-launches-electronic-employment-and-work-licenses-services-october-2010.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Saudi Arabia Launches Electronic Employment and Work Licenses Services</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

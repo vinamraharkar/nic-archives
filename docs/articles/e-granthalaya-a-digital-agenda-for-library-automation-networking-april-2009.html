@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-13.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-14.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2009/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Libraries are the social institutions as they provide various kinds of services to the users and citizen of the city / country. They have been the essential part of the education system in the society since early days. In the modern India, libraries have become the integral part of not only educational institutions but also other government setup like ministries, departments, district centres, etc. Keeping in view the large number of Public and Government libraries in India and also the high cost of commercial software, it becomes imperative to provide zero-cost software along with free support, training and services. NIC has been a pioneer source to design, develop and support ICT tools and services for the Indian Libraries since its existence as the latter are integral part / divisions of the ministries, departments and other Government organizations. From 1994 to 2000, NIC distributed the Techlib Plus / Bassis Plus software to Indian libraries. During 2002 it was found that NIC had developed over 30 different library automation software for various ministries and Government departments. All such software were designed by various NIC groups for their respective ministries without following the standards, rules and practices as prevalent in Indian libraries. Later it was decided by the Committee constituted under the chairmanship of Sh. M Moni, DDG(NIC) to use e-Granthalaya Software among the many from NIC and to further develop and promote by the NIC. e-Granthalaya e-Granthalaya is a Library Management Software facilitates to automate not only the in-house activities of the library but also the user services. The first version of the Software was developed by the Karnataka State center of NIC, Bangalore. Later, the development was taken over by the Library and Information Services Division at NIC NICHQs, New Delhi. The following table shows the release of various versions of the software. Ver. Year Technology/Platform DBMS 1.0 2003 VB6/ASP SQL Server 2000 2.0 2005 VB6/ASP SQL Server 2000 3.0 2007 VB.NET/ASP.NET 2.0 SQL Server 2005 <em>4.0 2010 ASP.NET 3.5 with Silverlight2 SQL Server 2008 </em>future version Release of e-Granthalaya Software Why e-Granthalaya Free There is no such a designated agency in India, either Governmental, Professional or Private, which can provide a free software and services to these libraries. Central Governments as well as State Governments seem no serious for Indian Libraries development. Similarly, professional bodies in LIS always engaged in over-glorifying the profession and not provided the solution / tools even after 35 years of Post-Ranganathan era. Also, there are many Library Networks (DELNET, ADINET, CALIBNET, PUNENET, MYLIBNET, INFLIBNET, etc) in existence; however, very few provide the library services in a network environment. The simple reason is that these networks have not developed any tool/software to automate the Indian libraries and provide the services to them; they are financially poor and thus can not purchase commercial tools also. So, at it had been decided to develop a good library automation software and to provide the same at zero cost to the Indian libraries. Moreover, we understand that the libraries are non-profit making and social institutions and serve the society for its development. Few library automation software are LibSys, Alice For Window, SLIM, Autolib, EasyLibSoft, Gyanodaya, Libra 2000, Librarian, Libris, LibSuite, Nalanda, NewGenLib, NexLib, SOUL, SWIRL, VTLS, CDS/ISIS, DelDOS / DelPlus. Architecture e-Granthalaya Ver. 3.0, released during 2007 has been designed keeping in view the requirement of “Networking of libraries” to share the records (Shared Cataloging) among a cluster of libraries. Thus, it has been decided to use a common/single database for a group of libraries / branch libraries and a common search interface i.e. Web OPAC for Union Catalog kind of search. It will facilitate to avoid the duplicate entries of catalogs and other authority files data such as Authors, Publishers, Subjects, etc. Every record is identified by the Unique LIBRARY CODE which is assigned uniquely to each and every participating library in the cluster. Besides, it has been decided to make it a 3-tiers application as given below:- — Presentation Layer Windows Forms (WPF) — Business Logic Layer (BLL) — Data Access Layer (DAL) To make the application ready for WAN Based data entry also, it has been decided to use WCF technology (Windows Communications Foundation) which wraps the BLL and DAL Layers in it and is installed on the Server PC. At one end, WCF layer make connection to the back-end database (MS SQL Server 2005) specified in the “Web.Config” while on the other end, it serves to the Front-end data entry program of e-Granthalaya. For Deployment of the software on client PCs, “Click-Once” technology has been used which deploys the application directly on the client PCs. This technology is also useful in up-dation of the client software automatically whenever latest updates are there on the web site. Some Specials Features include — Multi-lingual, UNICODE compliant database — Stand-Alone/ LAN / WAN based data entry solution — Covered all in-house activities and user services — Common database for cluster of libraries — Common web based search interface (Web OPAC) — Authority files for common data e.g. Authors, Publishers, Subjects, Type of Documents, etc — Member Registration with unique entitlement and due days — Single form for circulation of all kinds of documents and Inter Library Load (ILL) — Bar Code generation facility — Automatic generation of journals Schedule Standards Followed While designing the e-Granthalaya Software, it has been kept in mind the workflow used in the Indian libraries while processing the records in books and serials acquisition. Also it has been tried to make the application well integrated, no need of duplication data, even across the participating libraries in a common database. Besides, as there are many international standards prevalent in the field, so it has been decided to make use of such standards like AARC2, MARC21, UNICODE etc. The software does not impose any catalog standard, although, the data entry of the catalog records are inclined towards the AACR2, an international standard for Cataloging. While designing the software, it has also been kept in view the fields/data elements suggested by the AACR2/MARC standards are included in the internal structure of the database to make it compliant with MARC 21 while making output (Export) and import options. Keeping in view the common search of the library catalogs within the cluster of libraries as well as across the cluster, it has been decide to make use of the current technology from Microsoft i.e. SRW (Search and Retrieve Web service) which aims to integrate access to various networked resources, and to promote interoperability between distributed databases, by providing a common utilization framework. SRW is a web-service-based protocol which is regarded as the big brother of implementation of the Z39.50 Information Retrieval protocol with recent developments in the web technologies arena. SRW features both SOAP and URL-based access mechanisms (SRU) to provide for a wide variety of possible clients ranging from Microsoft's .Net initiative to simple Javascript and XSLT transformations. It leverages the CQL query language which provides a powerful yet intuitive means to formulate searches. The protocol mandates the use of open and industry-supported standards XML and XML Schema, and where appropriate, XPath and SOAP. SRW has been developed by an international team, minimizing cross-language pitfalls and other potential internationalization problems Training and Support NIC organizes regular training of 3-days duration for e-Granthalaya and NewsNIC users in various centres of the NIC. Many of the training have also been organized by the Users organization or some other Government Departments. Users of the software may also organize training in their respective organization where faculty from NIC participates for the benefit of the users. Besides, One-Day seminars, DEMO, and e-Learning Session are also organized for the software users. An e-Granthalaya mail forum https://lsmgr.nic.in/mailman/listinfo/egranthalaya_forum is also in existence to share the messages among the users. The e-Granthalaya web site http://egranthalaya.nic.in is a good source of the information about the software and is a medium to distribute the Updates of the software. The web site publishes the list of the e-Granthalaya and NewsNIC users also. Users Statistics e-Granthalaya and NewsNIC software users belong to all kinds of categories like Academic, Governmental, public and Corporate libraries. In the Academic sectors, the users are school, colleges, universities and other institutions libraries. The software is being used in the offices of the State as well as Central Government ministries and departments. Conclusion e-Granthalaya Software provides an opportunity to the Indian libraries to adopt the software for use in the libraries. The software, support and training is provided at zero cost and the software is updated regularly for new and improved utilities as well the technology. Those libraries which can not purchase a commercial software may use the software. Public libraries and Government libraries may also host their catalog/database in NIC server to make available their catalog online. Other organizations in the field like libraries NETWOKS and associations may join hands with the NIC to get the benefits of the NIC tools and services for Indian libraries. Joint efforts from all sorts of parties in library profession may change the future of the Indian libraries in this way. For further information contact: P .K . Upadhyay Technical Director &amp; OIC Library and Information Services Division National Informatics Centre pku@nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="evcs-over-nicnet-by-cabinet-secretary-moving-a-step-ahead-in-e-governance-april-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">EVCS over NICNET by Cabinet Secretary - Moving a Step Ahead in e-Governance</span></a><a class="article-nav-link next" href="mis-for-indira-gandhi-national-old-age-pension-scheme-april-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">MIS for Indira Gandhi National Old Age Pension Scheme</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

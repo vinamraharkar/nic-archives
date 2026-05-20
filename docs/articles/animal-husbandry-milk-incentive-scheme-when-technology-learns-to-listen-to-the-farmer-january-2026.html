@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-24.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-25.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">AHMIS is a comprehensive online system developed by NIC Himachal Pradesh for the Department of Animal Husbandry, Government of Himachal Pradesh, with the objective of ensuring Minimum Support Price (MSP) for cow and buffalo milk supplied by dairy farmers to eligible non-government milk societies. The system digitizes the entire incentive lifecycle—from milk supply recording to final payment—bringing transparency and predictability to dairy income. Verified milk supply details are entered into the portal by the respective milk societies and processed through a defined, role-based workflow within the Department. Based on this verified data, milk incentives are calculated and credited directly to the farmers’ bank accounts on a monthly basis through Direct Benefit Transfer. In parallel, freight subsidy for milk transportation is transferred directly to the bank accounts of the milk societies, ensuring timely reimbursement without intermediaries. The system keeps farmers informed at every step. Instant SMS alerts confirm credit of incentives to their registered bank accounts. Using secure OTP-based login, farmers can access the portal to view milk supply records, incentive payments, and any deductions made by the milk societies, along with the incentive released by the Government—placing information and transparency directly in their hands. In Himachal Pradesh, dairy farming is not just an occupation; it is a way of life, sustained largely by women. AHMIS is built on a simple principle: support must reach the farmer directly, on time, and without discretion. Developed by NIC Himachal Pradesh for the Department of Animal Husbandry, AHMIS is a paperless, end-to-end digital platform that enables transparent and timely transfer of milk incentives to dairy farmers, along with freight subsidies to milk societies. By replacing files and follow-ups with verified data and automated workflows, the system brings certainty, accountability, and trust to the entire process. Designed as a role-based, paperless platform, AHMIS provides dedicated interfaces for the Department of Animal Husbandry, Milk Societies, Treasuries, Banks, and Dairy Farmers. The application is seamlessly integrated with the State Budget and e-Bills systems, enabling automated bill generation, online submission to the Treasury, and fund transfer through banks. This integration ensures that no manual intervention is required at any stage, strengthening efficiency, accountability, and audit readiness. Key Stakeholders • Department of Animal Husbandry, GoHP: Responsible for processing and disbursing milk incentives and freight subsidies • Dairy Farmers: Beneficiaries who supply milk to registered milk societies and receive incentives directly in their bank accounts • Milk Societies: Responsible for recording milk supply data and verifying freight-related details • Treasuries and Banks: Treasuries handle bill processing and fund authorization, while banks verify beneficiary accounts and execute DBT transfers AHMIS is a gender sensitive software application as milk production is primarily a women-oriented enterprise and it has directly empowered the women milk farmers of the District. Now, the Dairy Cooperatives are also receiving more milk from the milk producers residing in the adjoining Districts. It has resulted in a win-win situation for all the stakeholders. Dr. Vivek Lamba Deputy Director (AH/B), District Solan Key Features of the Product AHMIS ensures transparent verification, timely disbursement, and direct benefit transfer through an integrated, end-to-end online mechanism, eliminating manual intervention and strengthening accountability. Its key features are: • End-to-end, workflow-based online system for processing milk incentives and freight subsidy in a structured and transparent manner • Paperless and fully automated solution ensuring digital processing at every stage, with zero manual intervention from data entry to payment disbursement • Online entry and verification of milk supply data by the respective Milk Societies, forming the basis for accurate incentive calculation • Built-in Maker–Checker mechanism to ensure correctness, validation, and reliability of milk supply data before further processing • Provision for DBT of milk incentives directly into the farmers’ bank accounts • Monthly automated payment processing to ensure timely, consistent, and predictable disbursement of incentives • Automated SMS alerts to farmers confirming credit of milk incentives to their registered bank accounts • Secure OTP-based login facility for farmers to view supply details, payments, and deductions made by the respective Milk Societies • Direct online transfer of freight subsidy to the bank accounts of Milk Societies, eliminating intermediaries and delays • Role-based access control with dedicated interfaces for the Department of Animal Husbandry, Banks, Treasuries, Milk Societies, and Dairy Farmers • Seamless integration with State Budget and e-Bills systems for automated bill generation, online submission to the Treasury, and electronic fund transfer through banks, ensuring a transparent and auditable workflow Technology Stack AHMIS software has been developed using Microsoft .NET technology with C# as the core programming language and MS SQL Server as the backend database. Leveraging the robustness, scalability, and security features of Microsoft technologies, the application is designed ensuring high performance and reliability for large-scale transactional processing. For security and usability, farmers access the portal through a secure SMS-based OTP authentication mechanism, ensuring safe and easy login without the need for complex credentials. The workflow-driven and role-based architecture of the AHMIS software, launched by Hon’ble Chief Minister of Himachal Pradesh, has been developed by NIC HP. It has given boost to dairy farming by providing employment and financial security through Minimum Support Price of milk. It has a very useful role-based dashboard and the software is very practical, paperless and facilitates verification, budget demands, bills preparation &amp; online submission to Treasury for transfer of incentive to the beneficiaries through banks. Dr. Vinod Kumar Kundi Deputy Director (AH/B), District Bilaspur the application ensures accountability, transparency, smooth processing, and an intuitive operational flow for all the stakeholders. The software follows a modular approach allowing independent yet interconnected components for data management, authentication, payments, notifications and reporting. End-to-end automation supported by API-based integration with State Budget and e-Bills platforms enables real-time fund processing and Direct Benefit Transfer without any manual intervention. Benefits and Impact AHMIS delivers impact where it matters most—on the ground. It: • Ensures paperless, transparent, timely and secure Direct Benefit Transfer (DBT) of milk incentives and freight subsidies • Boosts milk production and provides financial stability by assuring Minimum Support Price • Reduces administrative overheads and delivers a scalable, reliable and auditable solution with improved efficiency, accuracy and trust among all the stakeholders • Empowers Dairy Farmers and Milk Societies with real-time visibility and SMS alerts Way Forward Built on a robust, transparent and scalable foundation, the AHMIS aims to further enhance service delivery by strengthening real-time analytics, advanced dashboards and data-driven insights for policy making. Future enhancements will include API based integration with Him Parivaar Register, Cow Sanctuaries/Gaushalas and ‘Provision of Pregnancy Ration to Cows and Buffaloes Scheme’ of the State.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="west-siang-arunachal-pradesh-bridging-distance-with-digital-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">West Siang, Arunachal Pradesh: Bridging Distance with Digital Governance</span></a><a class="article-nav-link next" href="medleapr-transforming-india-s-medico-legal-ecosystem-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">MedLEaPR: Transforming India’s Medico-Legal Ecosystem</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

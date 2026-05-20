@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-22.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-23.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Since its inception, NIC West Siang has functioned as the digital backbone of the District Administration, steadily bridging the gap between governance and the people through technology-driven services. Operating in remote and challenging terrain, the District Centre has successfully implemented numerous State and Central projects, ensuring that distance and difficulty do not become barriers to service delivery. From imparting basic computer training such as MS Word to providing end-to-end technical support during Parliamentary and Assembly Elections, Informatics has remained present at every critical administrative touchpoint. NIC West Siang functions as the quiet digital backbone of the District Administration, enabling seamless governance through reliable e-Governance platforms, ICT support, election management, and capacity building. Operating in a challenging terrain, it ensures that technology bridges the gap between the administration and the people—consistently, securely, and without disruption. During the COVID-19 period, its role became even more vital. The District Unit supported the administration by creating databases of stranded citizens outside the state, disseminating online help information, and conducting awareness and training programs on the Aarogya Setu App— helping technology serve both governance and care when it was needed the most. Key Digital Initiatives in the District Several state and national projects are currently implemented and supported by NIC West Siang, forming the operational core of district-level e-Governance: Sarathi–Vahan The Sarathi–Vahan system has been successfully implemented in the Department of Transport for end-to-end digital services related to issuance and renewal of Driving Licences, registration of new vehicles, collection of road tax, and other transport-related services. The system has significantly streamlined citizen-facing transport services while ensuring transparency and efficiency. Arms License (ALIS) ALIS has been implemented for the issuance, renewal, and digital record management of arms licenses. The system enables systematic maintenance of licensee and weapon details, strengthening regulatory oversight and administrative control. TreasuryNET This application supports the complete computerization of treasury operations. NIC West Siang provides continuous technical support to the District Treasury for monitoring financial transactions, supervising budgetary activities, and ensuring smooth day-to-day functioning of treasury services. e-Services/ Jan Suvidha This framework is used for providing essential citizen services. Through e-Services and Jan Suvidha Centres, certificates such as ST, PRC, and TRC are issued digitally, reducing processing time and improving accessibility for citizens in remote areas. Payroll Software Payroll software has been implemented across the Accounts Section of the District Administration, hospitals, and various departments. The system ensures accurate and timely preparation of salaries, bringing uniformity, transparency, and efficiency to payroll management. NIC, West Siang has played a pivotal role in bringing the Digital transformation in the district. It has been instrumental in successfully implementing and delivering many e-governance services. This shifting of work culture to digital technology has significantly increased the efficiency of the service delivery system in the district. Shri Techu Aran, APCS (AG) Deputy Commissioner, West Siang District e-DAR The project has been successfully implemented to improve road safety management. It has enabled structured collection and analysis of road accident data and is actively used by the Police, Transport, and Highway departments for coordinated action and reporting. e-Prosecution NIC West Siang provides necessary technical assistance and training support to Assistant Public Prosecutors and the Office of the Deputy Director of Prosecution. The initiative aims to strengthen digital adoption and efficiency within the prosecution system. e-GRAS Training and hands-on support are provided to various departments for processing online challans and facilitating payment of government receipts through the e-GRAS portal. Citizens and officials are assisted to ensure smooth and secure online transactions. IVFRT (Form C) Training on Form C under the Immigration, Visa, Foreigners Registration and Tracking (IVFRRT) system has been provided to hotel owners and lodging establishments. This ensures systematic collection of data related to foreign nationals entering the district, supporting administrative monitoring and national security requirements. CPGRAMS District officials are trained to effectively use the Centralized Public Grievance Redress and Monitoring System (CPGRAMS) for timely and structured resolution of public grievances, strengthening accountability and citizen trust. District Website The official district website (https://westsiang.nic.in) serves as a comprehensive information portal, hosting details related to government schemes, ongoing projects, events, tourist destinations, and important public notices. The website is regularly updated to ensure citizens have access to accurate and current information. Infrastructure, Network and Web Services General Election Support (2024) During the simultaneous Parliamentary and Assembly Elections 2024, NIC West Siang provided comprehensive technical support for all critical online election-related activities. This included support for systems such as ENCORE for filing, scrutiny, and withdrawal of nomination papers; polling party management software; ETPBS; C-VIGIL; and other election applications, ensuring smooth and transparent conduct of the electoral process. ICT Training and Capacity Enhancement To improve work efficiency and digital proficiency, regular ICT training programs are conducted for officials of the District Administration. In addition to physical training sessions, NIC also facilitates and assists departments in participating in various online training programs, strengthening overall digital capacity within the district. Safer Internet Day Awareness Programme As part of the Safer Internet Day celebration, an awareness session was organised for approximately 100 college students. The programme focused on promoting responsible online behaviour, cyber safety, and awareness about digital risks, reinforcing the importance of safe internet practices among young users. Internet and Email Services NIC West Siang District provides reliable internet connectivity to the District Administration and other line departments, ensuring uninterrupted digital operations. Technical support is extended for the creation and maintenance of official Government email IDs used for secure communication. Support is also provided for key platforms such as SPARROW and e-Office, enabling smooth adoption of digital workflows and official correspondence across departments. Video Conferencing Services NIC West Siang provides end-to-end Video Conferencing support to the District Administration and line departments for official meetings, reviews, and training programmes. VC facilities are extensively used for high-level administrative interactions, including election reviews of Returning Officers and Assistant Returning Officers with the Chief Election Officer, Arunachal Pradesh. Key VC sessions coordinated by NIC West Siang include • e-PRAGATI meetings chaired by the Hon’ble Chief Minister • review meetings led by the Chief Secretary on matters such as urban safety, NCORD, Swachhata Hi Seva, and environmental monitoring • VC during Parliamentary and Assembly Elections; preparedness meetings for APCS/APSSB examinations; Panchayat Election coordination meetings; and refresher training programmes on transgender persons • Award and VC sessions related to the National Award for e-Governance organised by DARPG, Government of India Way Forward Across systems, services, and situations— routine administration, elections, emergencies, and public outreach—NIC West Siang District functions as a silent enabler of governance. Often working in the background, it ensures that technology remains dependable, secure, and accessible, allowing the administration to focus on service delivery and decision-making. In a district marked by geographical challenges, NIC’s consistent support has transformed digital infrastructure into an instrument of trust, continuity, and connection between the government and the people.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="kangra-at-dharmshala-himachal-pradesh-digital-pathways-for-empowered-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance</span></a><a class="article-nav-link next" href="animal-husbandry-milk-incentive-scheme-when-technology-learns-to-listen-to-the-farmer-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Animal Husbandry Milk Incentive Scheme: When Technology Learns to Listen to the Farmer</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

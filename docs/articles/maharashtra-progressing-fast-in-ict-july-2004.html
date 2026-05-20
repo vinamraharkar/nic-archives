@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-10.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-11.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Maharashtra is one of the most progressive states in India, in terms of commercialization of the economy. The state is famous for Industrial sector and Mumbai, its capital is known as the financial capital of India. Maharashtra is also famous for its rich cultural heritage. NIC in Maharashtra was established at New Administrative Building Mumbai in June 1998 as part of nationwide computer and communication network, NICNET. Memorandum of Understanding was signed with Government of Maharashtra in June 1988 to provide computer and communication services to State Government. Ever since, NIC has been in the forefront of e-governance initiatives in central and state government departments in Maharashtra upto the district and tehsil level. NIC district enters are located in 35 districts of Maharashtra in the Collector’s Office. NIC works as Total Solution Provider for IT projects of all departments of the State Government in close coordination with State IT department for providing overall Internet and communication services through NICNET. Major Services…. • Software Development • Web Services • Training • Video Conferencing • Web enabled Email • System Study and Consultancy € | ICT in Departments • Chief Minister’s Office (CMIS): CM Information System consists of file information system, registry information system, VIP letter information and CM relief fund monitoring system. • Food and Civil Supplies MAHAFOOD: Web based food grains allotment and lifting information system for the department of civil supplies and its 35 district offices. (http://maharashtra.nic.in/mahafood) RISFAD: A client server based reconciliation information system for the office of financial advisor of food and civil supplies department. • General Administration IASPIS: A web based application for establishment and personnel matters for the IAS cadre officers of Maharashtra implemented in the Secretariat LAN. IAS civil list is prepared using this package. HAS: Web based House allotment System for allotment of Govt. quarters to Maharashtra Government employees. • Law and Judiciary CCAS: A client server system for cases automation system for the office of chief presenting officer at Maharashtra State Tribunal. ACES: Web based application for Adjourned cases enquiry for the office of chief presenting officer at Maharashtra State Tribunal. (http://matmumbai.nic.in) NIS: A client server based system developed for Notary for issue and renewal of licenses. • Home KIS: This Software is used to generate daily board to deliver information of cases listed for various courtrooms in the office of Motor Accident Claims Tribunal Mumbai. • Finance Budget: Preparation of State budget and hosting on Web Site (http://finance.mah.nic.in). TIS: Treasury Information System is implemented in all treasury offices in the state. • Employment Web based registration is being implemented in the employment offices across the state. • Rural Development: Rural soft: Web based information system for monitoring schemes run by DRDA in Maharashtra. € | E-Governance in Maharashtra NIC Maharashtra Unit is actively involved in facilitating e-Governance which has been chosen as a key area of implementation by the State Government. NIC has setup e-Governance cell in the state unit to monitor the activities being carried out at District level NIC centres and state level projects. Some of the important activities include.. € | Infrastructure Development It is well known that without network and basic infrastructure it is difficult to develop IT enabled services. One of the major achievements in this regard is the Installation and Commissioning of Network Hub at NIC State Centre Mumbai as part of NICNET-MAHANET integration and Upgradation of MAHANET (Phase-I) and setting up of Studio Quality Video Conferencing facility at Chief Minister’s office, Chief Secretary’s office and Network Control Room. The same facility has been extended upto District level. It is also proposed to provide RF link between major offices at District level and necessary LAN components. The entire District NIC units are equipped with latest servers and clients as a part e-Governance promotion. € | Web Enabled IT services NIC is also involved in providing Web Services so as to enable statewide usage of NICNET. Following are the projects being carried out in the State. • A one stop mega portal for all projects has been developed for the officials to get information about the state centre activities (http://maharashtra.nic.in). • MAHASIM of NIC for consolidation all information from NIC District Centre. Templates have been created to enter data dynamically. • Online connectivity of District Treasuries with Directorate of Treasury, Mumbai. • Web based Allotment and Lifting Information System for Food, Civil Supplies and Consumer Protection Department Govt. of Maharashtra. URL : http://maharashtra.gov.in/mahafood • Development of software and portal for Directorate of Cotton Development Mumbai under DACNET project. (URL:http://dacnet.nic.in/cotton) • Monitoring System for Sanjay Gandhi Niradhar Yojana • Porting existing websites on http://district.nic.in for all districts to come under the district portal of India. € | eSecreteriat Following projects have been initiated as a part of Secretariat computerization in the State • Installation and Commissioning of Network Hub at NIC State Centre, Mumbai as part of NICNET-MAHANET integration and Upgradation of MAHANET (Phase-I) and setting up of Studio Quality Video Conferencing facility at Chief Minister’s chamber, Chief Secretary’s office and Network Control Room. • Incorporation of different types of periodic returns to MIS for Employment Guarantee Scheme of Govt. of Maharashtra • Web based Government Flat Allotment System for allotment of Govt. Quarters to the employees through General Administration Department. • eService-Book for All India Services Branch of General Administration Department. • Web based Inquiry System for Maharashtra Administrative Tribunal (MAT), Mumbai. • Support for generation of monthly Paybills and other accounts related consolidations of all departments in Secretariat. • Presentation of paper on “Impact of e-Governance in District Administration” at ICEG Conference. • State wide support to NIC district centre’s for the centrally sponsored projects like rural soft, BPL 2000 survey, habitation survey, PMSGY and other drinking water schemes. € | EGovernance implementation through35 NIC District Centres All the 35 NIC District centres in Maharashtra have been provided with Hardware resources with VSAT connectivity and these District Centres provide following services to the District Administration. 1. Citizens Facilitation Centre NIC has played a vital role in this prestigious project of State Government. The project, also known as SETU (a bridge between common citizen and Administration) has been implemented upto Tehsil level in all 35 Districts of Maharashtra. ‘Setu’ centre of Nanded District has been awarded with ISO9001: 2000 certificate, which may be the first of such kind in the country. NIC district centre acted as Management Representative for the ISO9001: 2000 project of Collectorate. 2. File Management a) File Monitoring System (FMS) This software enables to keep track of all the files pending for various reasons at various levels right from clerk to Collector. Presently this software is working on LAN and all the clerks having computers on desk can operate very easily. b) KIOSK Kiosk (touch screen) is being installed in Collector Office to make the following information available to the citizens of Nanded. • File Pendency and current status • File status with computerized token number • Status of MP/MLA works under Local Area Development 3. Land Records Computerization The entire ROR (7/12 extracts) and Property Cards for the State has been computerized. The software and technical expertise was provided by NIC. 4. District Court Computerization: All the District level courts have been computerized with help of NIC. For this NIC has provided District Court Information System from which status of all cases, daily registers can be taken out. 5. Collectorate 2000 Another landmark in the computerization of Collector Offices is successful implementation of Collectorate 2000 package consisting of following major applications: SWS: Single Window System caters to eight-two types of services from a single counter in Collector Office LAVS: Land Acquisition System is a powerful tool to monitor, scrutiny, inquiry, notification, approval, publication, valuation and award distribution of LA cases. SGY: Sanjay Gandhi Yojana to maintain database of beneficiaries under various schemes. CSS: Civil Supply System to maintain data of commodities and stores. TIS: Tapal Information System for inward/ outward department. EGS: Employment Guarantee Scheme Software to generate labor attendance, weekly/monthly progress reports. EIS: Establishment Information System to maintain database of employees and service records CEMS: Collectorate Expenditure Monitoring System generate periodic expenditure incurred by Collectorate. SSMS: Small Savings Monitoring System to maintain agent database calculation of incentives. 7. Zilla Parishad Computerization The rural department working at District level has an importance not less than Collector Office. For this sector NIC has developed Accounting System, Tapal System, Pensioners payroll and other utility software’s. At some places information and facilitation centre has been started. 8. Computerization in Municipal Administration Some of the Municipal Corporation / Councils have implemented single window system software and other Software like Accounting, Water taxes, House taxes etc developed by NIC for Municipal Administration. Information and Facilitation Counter at Nanded AGMARKNET Project being implemented in the State € | Central Government Projects in Mumbai and Rest of Maharashtra Various project teams and cells have been established for providing computerization support for implementation of software packages developed by NIC HQ such as Passport , Registrar of Companies, Central Excise, Customs and Excise, Textile Committee and Commissionerate, Postal Life Insurance, Fisheries Survey of India etc. As part of Agriculture Informatics 66 APMC’s have been provided with computers and linked to the website http://agmarknet.nic.in The Directorate of Cotton Development and Directorate of Marketing and Inspection are provided computerization support as part of DACNET project of NIC. The central AGMARKNET lab at Nagpur is also supported by NIC. € | Significant Achievements • Upgradation of Mahanet and its integration with NICNET for enhancement of data communication between District Collectorate and Mantralaya. • Establishment of NICNET-MAHANET hub centre at NIC State Centre Mumbai • Citizen Facilitation Centre ‘SETU’ at Nanded has been awarded for ISO9001:2000 certificate • Establishment of Studio quality video conferencing in all district and secretariat through NICNET. • Commissioning of single window web application for various projects of state centre and districts. € | New Projects in Pipeline • Establishment of OFC based WAN between Districts and Mantralaya. • RF connectivity between District Collectorates and allied offices in all Districts of State • Setting up District Collectorate LAN and Zilla Parishad LAN in the State. For more details mail to siomsu@hub.nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="glimpses-from-nic-at-elitex-2004-july-2004.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Glimpses from NIC at ELITEX’2004</span></a><a class="article-nav-link next" href="nic-s-strategic-initiatives-in-e-governance-applications-development-july-2004.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NIC’s Strategic Initiatives in E-Governance Applications Development</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

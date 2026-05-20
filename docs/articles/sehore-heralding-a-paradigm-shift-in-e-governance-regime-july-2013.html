@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-35.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;36</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-36.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-36.jpg" alt="Page 36" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2013/page-36.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -883,126 +952,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <p>Sehore lies in the foothills of Vindhyachal Range surrounded by of Malwa region in Madhya Pradesh. It is about 39 Kms away from the state capital Bhopal towards south and spread across 6578 Sq. Kms. Shaiva, Shakta, Jain, Vaishnav, Budhists and Nath priests made Sehore a significant seat of their deep meditation. The district is divided into 8 tehsils, 5 sub-divisions and 1080 villages with a population of little over 13.11 lakh. It has a high literacy rate of 72.1% and more then 1800 schools are involved in imparting education to the children of the district. NIC District Centre Sehore was established in year 1989 to serve the IT needs of district administration and to promote ICT culture among the government departments and citizens through the method of active participation and support. NIC Sehore implemented and developed many successful e-Governance projects leading to paradigm shift in the entire governance structure. Some major e-Governance initiatives in the district include - AttendAnce And LeAve Monitoring SySteM The district administration entrusted NIC with the responsibility to design and develop a web based application for daily monitoring of teachers attendance and leaves in the schools of Sehore. The Teachers Attendance and Leave Monitoring System is an effective, efficient and transparent system for monitoring of daily teachers attendance and leave records. This application captures and monitors the daily attendance of around 6000 teachers. Similarly, the Health Department is daily capturing and monitoring the presence of doctors in health institutes. e-SugAM e-Sugam is a web-based solution for monitoring of public grievances and departmental letters. The district administration receives the letters and applications as public grievances from various sources like – 1. Hon’ble Chief Minister, Ministers and other public representatives 2. Application received during weekly “Jan Sunwai” 3. Public Grievances application received other than “Jan Sunwai” 4. Letters received from Government departments under “Time Limit Paper” category A system has been developed and implemented for efficient monitoring of all categories of applications and letters on single platform. All the letters are entered and electronically forwarded to the concerned officers for redressal. The application is in use by district administration as well as by 125 district and block level offices. LAnd recordS coMputerizAtion The Bhu-Abhilekh and Bhu-Naksha applications of Government of Madhya Pradesh, to facilitate land records system in the state, have been implemented in the district Sehore. Bhu-Abhilekh comprises of a computerized master database of land records that stores plot-wise and owner-wise details of land, crops, land type, tenancy etc. While Bhu-Naksha takes care of the spatial component of the land records. In Sehore, a campaign was launched by district administration to update computerized land record data in time bound manner. NIC Sehore provided technical support in updation work. It installed the Bhu-Abhilekh application on 56 personal computers for data updation of Khasra records and also implemented the Bhu-Naksha application. The cadastral maps were updated on the vector sheets as per updated current record, due to this Revenue Department was able to provide digitized cadastral maps along with copy of the Record of Rights (ROR), Khatauni to the citizens. Efforts are also in progress for conversion of Patwari Basta into e-Basta in the district to improve the citizen interface as well as the efficiency of grass-root level employees of land records. e-upArjAn e-Uparjan is an initiative of Department of Food, Civil Supplies &amp; Consumer Protection to strengthen the procurement operations under MSP (Minimum Support Price) and to develop real-time reporting mechanism at various levels, besides decision support system for enhancing the forecasting, monitoring &amp; tracking capabilities of the Department. The system also ensures transparency along with development of a unified database of farmers of the state. Lpg cyLinder diStribution Monitoring SySteM In order to bring transparency in the LPG distribution system in the district, a database of Gas Agencies and customers has been prepared. Sehore has 11 Gas Agencies and more than 91,000 regular gas customers. These Gas Agencies have to enter their daily stock position i.e. number of cylinders received, number of cylinders distributed along with customer details and waiting list position for gas distribution on the application. Using this system, district authorities and citizens can monitor the stock position and distribution status with waiting list over the web at any point of time. e-SAMwAd e-Samwad (Desktop Video Conferencing System) is an electronic audio-video interaction between district administration, block level administration, citizens, farmers and students. It is an initiative by Collector and District Magistrate, Sehore Shri Kavindra Kiwayat to provide a platform to the administration and field level functionaries for effective interaction &amp; monitoring of government schemes up to the block level. For effective use of desktop video conferencing facility, the district administration has setup district and block level video conferencing studios. The district level VC studio has a seating capacity of 35 officials while the block level VC studio can accommodate around 100-125 participants. NIC, Sehore played a key role in establishment of VC studios in the district and provided all technical support for smooth conduction of video conferencing between district and blocks. NIC’s video conferencing portal has been extensively used for this purpose. The e-Samvad facilitates the following activities- e-Jansunwai, e-JanVarta, e-Samiksha, e-Training, e-Kissan Khet Pathshala, e-Shiksha etc. Since Aug 2012 till 31 December 2012, around 45 VC sessions (97 hours) have been conducted and around 320 employees from district headquarter and 9310 officers/employees/farmers/students have participated in the VC sessions. e-SchoLArShip District Sehore was selected for pilot implementation of state-level web based application “e-Scholarship”. About 25,000 online applications were received from students of 24 government/private colleges of the district and scholarship have been disbursed to student using the online portal. other nAtionAL And StAte projectS Many other national and state level projects have been implemented in the district, right up to the block level that have helped the district administration in its quest towards e-Governance. MP Public Service Guarantee Act, BRISC MIS (Bank Recovery Incentive Scheme), NADRS (National Animal Disease Reporting System), PARAKH, Jan Sunwai MIS, Social &amp; Economic Cost Census (SECC), Application for &quot;Jan Shruti Abhiyan&quot; and “Antyodaya Mela” are just a few from the exhaustive list of 30+ projects. webSite deveLopMent The official website of district Sehore has been designed &amp; maintained by the NIC district centre in coordination with the district administration. It is a major source of information about Sehore for the citizens. NIC Sehore is also providing the facility to develop website for various government departments in the district. During last couple of years, websites of six departments have been developed and hosted on NIC Server. trAining And workShopS NIC Sehore has conducted a spectrum of need based ICT training programmes from time to time besides organizing several seminars &amp; workshops. In the last three years, since January 2010, training has been imparted to more than 840 Government officials at various levels. The efforts of NIC Sehore have been continuously applauded by the district administration.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="the-importance-of-standards-and-its-use-in-healthcare-july-2013.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">&quot;The Importance of Standards and</span></a><a class="article-nav-link next" href="rohtas-empowering-the-masses-through-e-governance-july-2013.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">&quot;ROHTAS:</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-30.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-31.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-32.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">In India, ensuring equal access to internet technology and digital experiences is crucial, where around 2% of the population faces disabilities. Web Accessibility is essential for individuals with disabilities to access information and resources online. Inaccessible websites create barriers that hinder effective internet usage, impacting work, communication, learning, and social participation. Conventional testing approaches with manual validation and reliance on multiple formats and isolated systems can introduce inaccuracies and human errors. The absence of futuristic technologies like Artificial Intelligence limits growth, competitiveness, and cost-effectiveness. To overcome these challenges and enhance the accessibility of the Indian Government Websites, the Ministry of Electronics &amp; Information Technology (MeitY) launched an Innovation Challenge in 2021-22 for Startups. This challenge aimed to develop a Cloud-based Web Accessibility Reporting System. Several Indian startups participated, progressing through ideation, building a Minimum Viable Product (MVP), and ultimately developing a functional product. SugamyaWeb is a cloud enabled Web Accessibility reporting platform, which provides end-to-end web testing. The tool classifies and prioritizes accessibility issues based on end user impact along with recommendations on how to fix the issue. So, as to enable the teams to target the right to fix, instead of being buried in the bug reports. Alka Misra Dy. Director General amishra@nic.in Durga Prasad Misra Sr. Technical Director dpmisra@nic.in Lokesh Joshi Sr. Technical Director lokesh@nic.in During the ideation stage, a distinguished selection panel shortlisted five startups based on their innovative ideas. These selected teams were then tasked with developing the MVP. Eventually, two teams were chosen to build the Functional Product, and Sumatak Technologies was selected as the winner by the Grand Jury. The final tool, SugamyaWeb, was developed in consultation with NIC and was deployed at the NIC Cloud in December 2022. It leverages automation and system intelligence to streamline testing and decision-making processes, ensuring accuracy. It generates comprehensive audit reports with guidance, recommendations, root cause analysis, and advanced visualization capabilities. SugamyaWeb, is for the Divyangjan sisters and brothers who need support and facilities to prevent discrimination. It is a noble initiative by NIC as inclusivity and accessibility have always been our underlying principles. Alkesh Kumar Sharma Secretary Ministry of Electronics and IT Key Features &amp; Technology Comprehensive Testing: SugamyaWeb uses advanced test rules and human-like scanning to assess web pages for accessibility. It evaluates websites based on GIGW 3.0 and WCAG 2.1 guidelines, promptly reporting any accessibility issues for resolution. It also supports periodic tests to ensure ongoing accessibility readiness as websites evolve. Smart Reporting, Insights &amp; Analysis: Unlike typical accessibility tools, SugamyaWeb prioritizes issues based on impact and provides guidance for resolving them. User-specific dashboards display accessibility scores, trends, and outstanding issues. It generates alerts for delayed resolution of non-compliant issues. Intuitive and easy-to-use interface: This tool offers a user-friendly interface, reducing the learning curve and increasing productivity. The accessibility reports include fix recommendations, expediting accessibility compliance. Integration with Parichay SSO and the NIC ecosystem: SugamyaWeb seamlessly integrates with Parichay and the NIC ecosystem, streamlining the workflow from user onboarding to reporting and monitoring. It also allows API-based integration with existing systems for website onboarding, test triggering, and accessing results. Role based access: It provides role-based access to Web Information Managers (WIMs) and QA Testers Comprehensive accessibility testing: The tool has a test suite consisting of 170+ tests in 14 categories to assess accessibility criteria. These categories include keyboard, semantics, parsing, Accessible Rich Internet Applications (ARIA), name-role-value, color, structure, forms, language, time-and-media, sensory-and-visual-cues, text-alternatives, tables, and experimental. Each web page undergoes these tests to evaluate its accessibility readiness. Test Impact: Tests are categorized as minor, moderate, serious, or critical-based on their impact on users with disabilities. Minor impacts cause frustration, while moderate impacts hinder content access. Serious impacts lead to screen reader inconsistencies, and critical impacts render core content and features inaccessible. The global market for assistive technology is estimated to be worth 32 billion dollars. In India, the current market size stands at around INR 5000 crores. It is delightful to witness that MeitY is promoting Startup Ecosystem in the field of accessibility and the innovative contributions made by our young talent. Rajesh Aggarwal Secretary Department of Empowerment of Persons with Disabilities (Divyangjan) Technology: SugamyaWeb uses a microservices architecture and modern tech stack on open source and cloud computing for scalability. The test framework allows future custom test rules and can aggregate results and generate reports. It can integrate new test rules and framework to enhance its capabilities over time. Running Accessibility Tests Set Test Modes: There are 2 test modes – Single Page or Full Site. For a given URL, that page alone can be tested or the entire website with all the pages under that domain can be tested Set Guidelines: Tests can be configured to run against a specific WCAG Guideline (v2.0 or v2.1) and Level (A or AA or AAA) Schedule Test: Tests can be scheduled to run once or at a pre-set interval e.g. days, weeks, months Run Test: Tests can be triggered to start immediately or at a specific date-time Report Generation Once the test is completed, every website/ page undergoes an evaluation process, resulting in a test score and a summarized overview of the test results. The test score is determined by considering the impact and quantity of failures encountered during the test. A score of 0-39 is considered poor, 40-89 needs improvement, and 90-100 is good. The test report contains failures and warnings including: Non-Compliance: Elements on the webpage that don’t meet accessibility standards Snippets: Code blocks of the non-compliant elements that caused failures Screenshots: Visual representations of non-compliant elements with highlighted markers Recommendations to Fix: Resources such as test descriptions, reference links, and recommendations to address the issues Historical Dashboard The dashboard tracks accessibility improvements by showing the website’s overview, trends in accessibility scores, and issue count over time. It helps monitor the progress of accessibility changes implemented on the website. Limitations It must be understood that automated tools in general do not identify 100% of the accessibility issues. Manual intervention would be required in some cases to validate the test results. We are honoured to win the Innovation Challenge for a Cloud-based Web Accessibility Reporting Solution. This recognition validates our commitment to inclusive technology and empowers us to push boundaries in creating accessible solutions for all. As a startup we would keep striving to contribute in the digital transformation of India. Anand Kanagraj Cofounder &amp; Technical Lead Sumatak Technologies Conclusion SugamyaWeb empowers Indian government entities to evaluate the accessibility of their websites, promoting barrier-free access for all individuals. Its impact extends beyond government sites, inspiring private organizations to prioritize Web Accessibility as well. Through the Innovation Challenge and the deployment of SugamyaWeb, MeitY has taken significant steps towards enhancing web accessibility, empowering individuals and fostering inclusivity in the digital realm. Contact for more details Lokesh Joshi Sr. Technical Director NIC Headquarters, A Block, CGO Complex Lodhi Road, New Delhi - 110003 Email: lokesh@nic.in, Phone: 011-24305371</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="ihrms-punjab-tool-for-effective-hr-management-decision-support-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">iHRMS Punjab: Tool for Effective HR Management &amp; Decision Support</span></a><a class="article-nav-link next" href="rest-vs-messaging-for-microservices-discover-how-to-choose-the-right-communication-style-for-microservices-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">REST vs. Messaging for Microservices: Discover how to choose the right communication style for Microservices</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

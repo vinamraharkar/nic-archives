@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-6.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-7.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-8.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-9.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-10.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-11.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Established in 1988, NIC Bihar has been at the forefront of Bihar’s digital governance journey, acting as the key technology partner for the State Government. Working closely with almost all major departments, NIC Bihar has enabled the transition from manual, fragmented processes to integrated, transparent, and citizen-centric e-Governance systems. With a strong presence through the State Unit at Patna and district units across all 38 districts, NIC Bihar has institutionalized the use of ICT as a core enabler of governance, service delivery, and administrative reform. NIC Bihar has emerged as a key driver of digital governance in the state by designing and implementing mission-critical ICT platforms across diverse sectors including land records, justice delivery, mining, forests, infrastructure, welfare, agriculture, education, elections, local governance, and citizen services. Supported by robust networks such as NICNET and NKN, these initiatives have strengthened transparency, efficiency, and service reach through DBT, mobile governance, GIS integration, and paperless administration, earning NIC Bihar national recognition for its technological excellence. ICT Initiatives in the State BiharBhumi https://biharbhumi.bihar.gov.in/ Under the Digital India Land Records Modernization Programme (DILRMP), NIC Bihar has been implementing a comprehensive Integrated Land Records Management System through sustained ICT interventions. These efforts have enabled the automation of key revenue administration and land management processes. Core services—including Mutation, Lagan Payment, Jamabandi, Revenue Court Cases, Land Possession Certificate (LPC), Record of Rights (RoR), and Chalu Khatiyan— are now available online through secure, internet-based applications. This transformation has significantly reduced reliance on manual processes and registers, replacing them with robust, secure ICT solutions for mutation (including government land), LPC, Lagan, Khatiyan, Jamabandi Register (Register-II), Government Land Register, and Revenue Court management. Since 2017, approximately 15 software applications have been operational, managing over 40 million Jamabandi records along with hundreds of thousands of supporting legal documents in digital form. Court Case Monitoring System (CCMS) https://ccms.bihar.gov.in Monitoring and responding to the Court Cases filed against the State has always been a problem area for the state government and it has significant implication on the delivery of justice system and public at large. Many a times, there is delay in response from state government departments, which results in judgement/orders delivered against the State. There are many factors such as absence of a Centralized Database for Court Cases, a well-defined monitoring system and Lack of communication among stakeholders and limited access to the information, which leads to this situation. To address these challenges Court Case Monitoring System has been designed and developed fulfiling the vision of Department of Education and Information Technology Department of Government of Bihar. Salient features of CCMS • Role-based users • NJDG NAPIX platform integration • Case Management • Complete case history • Query Builder • Real-time updates • Letter Communication • Disposed Case Compliance tracking • Daily Case Board • Interim Orders and Final Judgements Key Implementations • Advocate General Office • Additional Solicitor General • All departments/ offices of GoB across the state • Chhattisgarh State Khanansoft https://khanansoft.bihar.gov.in/ KhananSoft is an integrated digital platform for managing and monitoring mining activities in Bihar, supporting G2G, G2B, C2G, and B2B services for seamless stakeholder coordination. The system offers 24×7×365 technical support, an on-demand slotting mechanism to reduce congestion and law-and-order issues, and real-time vehicle validation through Vahan integration. It enforces weighbridge integration to prevent overloading and mandates GPS-based, geo-fenced challan generation, ensuring challans are issued only for verified vehicles at authorized mining locations. Impact • Strengthening of mineral administration • Decline in illegal mining and overloading of vehicles • Real-time, IT-enabled monitoring of mining operations • Proper control mechanism of Challan Generation • Elimination of fake challans for unregistered vehicles • GPS-based monitoring of transporters • Improved transparency &amp; Administration RCD Online http://rcdonline.bihar.gov.in The Road Construction Department (RCD), Government of Bihar, has implemented an integrated Project Management Information System (PMIS) with GIS for online monitoring of road and bridge projects. The system enables real-time physical and financial progress tracking of works executed by RCD, BRPNNL, and BSRDC. The GIS component supports thematic mapping of road assets and cross-drainage structures, contributing to planning under the PM Gati Shakti initiative. Integration of GIS with PMIS allows map-based visualization of project progress, improving transparency, coordination, and data-driven decision-making. e-Office https://eoffice.bihar.gov.in/ The NIC eOffice system has been implemented to digitize file movement and official correspondence through eFiles, eReceipts, and knowledge management modules, enabling faster decision-making, greater transparency, and reduced paper usage. Officers and staff have been trained to ensure effective adoption. Replication CIS DB High Court NJDG NAPIX API Case ID CCMS New Case Entry CCMS DB AG Office (Linking AG no. to Case no.) Updated Case Status Fig 2.2 CCMS Process Flow The Government of Bihar, in partnership with the National Informatics Centre (NIC), has strengthened ICT-enabled governance to improve transparency, efficiency, and citizen service delivery. Through initiatives like the State Data Centre, BSWAN, BiharONE, cybersecurity frameworks, digital learning programs, and the Bihar AI Mission, the State has built a strong and future-ready digital ecosystem. NIC, Bihar has played a pivotal role in key e-Governance initiatives such as e-PDS, Bihar-Bhumi, VAHAN–SARTHI, DBT systems, and administrative dashboards. This continued collaboration with NIC remains central to Bihar’s digital transformation and inclusive development. Shri Abhay Kumar Singh, IAS Secretary, Dept. of Information Technology Government of Bihar The Government of Bihar has widely deployed eOffice across departments, directorates, and districts, promoting paperless governance, standardized workflows, and integration with digital signatures in line with State e-Governance initiatives and the Digital India Programme. eOffice has also been adopted by AIIMS Patna, as per the directives of the Ministry of Health &amp; Family Welfare, Government of India, and by institutions such as Dr. Rajendra Prasad Central Agricultural University (RPCAU), Pusa, and the Ganga Flood Control Commission (GFCC), Ministry of Jal Shakti, to streamline administration, improve inter-departmental coordination, and enable a fully paperless working environment. Jan Vitran Ann https://rconline.bihar.gov.in Jan Vitran Ann (JVA) is a secure, scalable digital platform approved by the Food &amp; Consumer Protection Department, Government of Bihar, and has been managing the state’s Ration Card Management System since 2017. Designed as a citizen-centric solution, it provides end-to-end online services—from application and tracking to approval and issuance of ration cards. JVA currently manages data for ~2.07 crore families and 8.35 crore members, making it one of Bihar’s largest welfare delivery platforms. Integrated with IMPDS, it has enabled the One Nation One Ration Card (ONORC) scheme since 2020, significantly benefiting migrant workers by ensuring inter-state portability of food grains. ICT Support Web Applications Development Training to Users on Applications &amp; Support for VC Mobile Applications Development FMIS Implementation &amp; Monitoring of Applications GIS Analysis of Forest Resources Fig 2.3 Overview of FMIS The platform is integrated with the AePDS central server for real-time, transparent distribution through ePOS devices and supports complete Fair Price Shop (FPS) management across ~54,000 FPS statewide. JVA is also integrated with DigiLocker (making Bihar the sixth state to offer digital ration cards) and Ayushman Bharat for family status validation. During the COVID-19 pandemic, JVA played a critical role in food security by facilitating food grain distribution to over 40 lakh ration cards. Key Features • Fully role-based, online system operational across all districts • End-to-end citizen services for ration card application, modification, and tracking • Secure handling of large-scale beneficiary data • Nationwide portability through ONORC (IMPDS integration) • Seamless food grain distribution via ePOS machines • Comprehensive FPS management for ~54,000 shops • DigiLocker integration for digital ration cards • Ayushman Bharat linkage for active family validation • Proven scalability during COVID-19 emergency operations Integrated Digital Systems for Election Management https://elecon.bihar.gov.in The Bihar Assembly Election 2025 witnessed the successful deployment of multiple large-scale, technology-driven platforms developed and implemented by NIC Bihar to ensure transparency, efficiency, accuracy, and compliance with the guidelines of the Election Commission of India (ECI). These systems collectively covered the entire election lifecycle, from personnel management and force deployment to vote counting and real-time field tracking. FMIS https://forestonline.bihar.gov.in/ FMIS (Forest management Information System) is a micro-level approach of managing information pertaining to forest plantations, nurseries, Joint Forest Management, forest offences, wildlife activities, Human Resource Management System and Eco-Tourism activities in the state through ICT use of integrated web, GIS and mobile. The project implementation covers all 4 Regions, 8 Circles, 28 Divisions, 110 Ranges, 416 Beats &amp; 1547 Sub-Beats offices of the department. Election Personnel Management Information System (EPMIS) EPMIS is a comprehensive web-based solution designed to digitize and streamline the management of polling and counting personnel. Key Features • End-to-end personnel lifecycle management: registration, verification, training, duty allocation, attendance, and communication • Automated data validation to eliminate errors such as: • Name–gender mismatches • Duplicate mobile numbers • Duplicate bank accounts • Rule-based randomization ensuring neutrality and compliance with ECI norms: • AC separation and office diversity for male personnel • Same AC deployment with minimum female representation for female parties • Automated party formation, AC/Booth/Table allotment • Generation of deputation orders and statutory reports • SMS-based real-time communication • Inter-district personnel transfer to address manpower shortages • Seamless integration with Force Randomization modules Force Deployment System The Force Deployment System is a highly scalable, decision-support platform for managing police and security forces during elections across Bihar. Core Functions • Planning and tracking of force movement across election phases Deployment of: State Police, Home Guards, CAPF/CPMF • Automated party formation and randomized deployment • Inter-district force transfers based on real-time demand • SMS alerts and live dashboards for monitoring EleTraces – Election Duty Tracking System https://eletraces.bihar.gov.in EleTraces is a GPS-enabled mobile and web-based platform for real-time tracking of election officials. Features • GPS-based task and route tracking (active-task based) • Incident reporting and map-based monitoring • Web dashboards for live supervision • SMS communication and consolidated reporting Common DBT Portal https://dbt.bihar.gov.in/wp/Default.aspx The Common DBT (Direct Benefit Transfer) Portal designed and developed by NIC, Bihar is used to manage and monitor the transfer of benefits directly to beneficiaries, without intermediaries. The portal ensures that government welfare benefits reach the right beneficiary, at the right time, into the right bank account. It covers approx. 135 schemes of 21 departments of Bihar. Salient Features of Common DBT Portal • Unified portal for entire state beneficiary Payment along with Vendors Payment (REAT). • Beneficiary Identification and approval at Field level • Integrated with PFMS, UIDAI, NPCI and other portal. • Verification of beneficiary through PFMS before fund transfer • Bulk fund transfer and no dependency of bank branches. • Actual fund transfer status to beneficiary through portal/SMS • Fund transfer cycle reduced to fortnight/month Impact of Common DBT portal Since 2017 till June 2025, more than ₹1,27,800 crores have been disbursed through common DBT Portal. S. No. Department Name Amount Total Transaction 1 BC &amp; EBC Welfare 19,82,97,2974 79,44,398 2 Minority Welfare 19,67,24,88,28 7,32,746 3 Health 2,15,43,22,93,81 1,62,79,878 4 Minor water Resource Department 14,99,58,7396 49,767 5 Social Welfare 43,05,58,47,4749 60,67,38,121 6 Rural Development 32,02,22,69,3188 7,81,20,037 7 Disaster Management Department 9,17,04,56,1299 8,50,71,906 8 SC &amp; ST Welfare 11,19,50,13,15 41,21,462 9 Urban Development 40,14,42,7403 55,27,209 10 Home 14,72,31,9000 96,425 11 Education 3,17,80,94,38,115 30,87,77,736 12 Labour Resource Department 27,27,57,9008 64,87,656 13 Department of Agriculture, Cooperation and Farmers Welfare 51,62,98,69,34 1,60,41,355 14 Planning 9,08,62,67,000 3,11,70,790 15 Cooperative 20,66,41,00,536 56,64,825 Total 12,78,00,22,97,126 1,17,28,24,311 Cane Care Portal (CCS Portal) https://ccs.bihar.gov.in Agriculture is the backbone of Bihar’s economy, and sugarcane remains one of its most important cash crops. The Sugarcane Industries Department of Bihar demonstrates its strong commitment to the growth and sustainability of the sugarcane sector through the Cane Care System (CCS) Portal, developed by NIC. The portal enables the department to effectively support farmers, streamline services, and drive the industry toward a prosperous and sustainable future. By prioritizing innovation, digital empowerment, and the adoption of progressive farming techniques, the department aims to enhance farmer welfare and productivity. Through these initiatives, Bihar aspires to emerge as a leading hub for sugarcane cultivation in the country. CCS is unified portal for Sugarcane industries department where many schemes like MGVY, Gur-Khadsari, Sugarcane Mechanization scheme, ZDC Scheme etc. of sugarcane department has been made online. This portal also covers application processing of all the schemes. Some recent activities of the department are: MedhaSoft https://medhasoft.bihar.gov.in MedhaSoft is a centralized, web-based application developed for the Education Department, Government of Bihar. The platform is designed to manage end-to-end student information, administer scholarship and incentive schemes, and enable Direct Benefit Transfer (DBT) to eligible beneficiaries. By integrating data collection, verification, and payment workflows, MedhaSoft supports transparency, accuracy, and timely delivery of educational benefits across the state. Key Objectives • To create and maintain a centralized, authentic database of students • To support the implementation and administration of scholarship and incentive schemes • To identify and eliminate duplicate, fake, or ineligible student records • To ensure seamless, transparent, and timely DBT payments • To provide real-time monitoring, analytics, and reporting for departmental decision-making Schemes Covered MedhaSoft supports the implementation of the following schemes: • Mukhyamantri Balak Poshak Yojana (APL), Classes 1–8 • Mukhyamantri Balika Poshak Yojana, Classes 1–8 • Mukhyamantri Balak Poshak Yojana (SC/ST/ BPL), Classes 1–8 • Mukhyamantri Balika Poshak Yojana, Classes 9–12 • Mukhyamantri Balika Cycle Yojana, Classes 9–12 • Mukhyamantri Balak Cycle Yojana, Classes 9–12 • Kishori Swasthya Yojana • Scholarship – General Category, Classes 1–8 CHANAKYA https://buhs.ac.in/buhschanakya/ CHANAKYA (University Registration &amp; Examination Management System) is a web-enabled, role-based, and workflow-driven ICT solution developed by the National Informatics Centre (NIC), Bihar for universities and educational institutions. It provides an integrated platform where all functional modules operate on a single, centralized database, eliminating the need for complex interfaces and ensuring real-time data integration with high accuracy and reliability. This unified architecture minimizes errors, improves transparency, and supports seamless coordination across the Registration and Examination branches of universities. As part of the digital transformation journey toward becoming a “Centre of Excellence”, CHANAKYA serves as a powerful enabling tool, strengthening governance, streamlining academic administration, and delivering faster, error-free services to students and stakeholders. ePanchayat - Bihar https://epanchayat.bihar.gov.in/ ePanchayat Bihar is a web-based accounting and governance platform developed to streamline the implementation, payment processing, and monitoring of government schemes across Bihar, promoting transparency, efficiency, and effective service delivery at the Panchayat level. Key Features of the ePanchayat - Bihar • Payment through Digital Signature for secure and authenticated transactions • Integration with PFMS REAT module to facilitate seamless fund transfers • Integration with Nodal Banks for efficient payment processing • SMS and Email Alerts to keep stakeholders informed in real-time • Mobile-based Inspection and Geo-tagging for on-site monitoring and verification • Online GSTIN Verification to ensure compliance and validity of vendor registrations Achievements: • Schemes Registered – 3,43,356 • Voucher Created – 9,44,322 • Vender Registered – 13,693 • Labour Registered – 4,34,511 • Payment Done – 51,78,81,68,662 (5000Cr. Approx) ‘Ikh Mitra’ Mobile Application A mobile application named “Ikh Mitra” has been developed to provide sugarcane farmers with facilities for grievance redressal, advisory services, and consultation with sugarcane experts. The active user is around 9800. The application is available on the Google Play Store. The link is as follows : https://play.google.com/store/apps/details?id=com.bihnic.eekhmitra&amp;hl=en Sugarcane Mechanisation https://sugarcanemech.bihar.gov.in/ Sugarcane mechanisation is a key initiative of the Sugarcane Industries Department, Government of Bihar, aimed at enhancing productivity, reducing cultivation costs, and addressing labour shortages in sugarcane farming. Under this initiative, modern agricultural machinery and equipment are promoted to support farmers at various stages of sugarcane cultivation, including land preparation, planting, intercultural operations, irrigation, and harvesting. By promoting mechanisation, the department seeks to modernize sugarcane cultivation, ensure sustainable agricultural practices, and improve the overall efficiency of the sugarcane sector in Bihar. BBOSE https://bboseonline.bihar.gov.in/ BBOSE (Bihar Board of Open Schooling and Examination) enables inclusive education in Bihar through open and distance learning, with a focus on marginalized communities. It promotes skill development by upskilling unskilled and semi-skilled youth into a market-ready workforce, in collaboration with industry partners, through diverse academic and vocational programs. The BBOSE web application is designed to digitize and streamline key academic and administrative processes, including student registration, examination forms, fee payments, and result processing. The platform ensures transparency, efficiency, accurate data management, and timely service delivery, while improving access to educational opportunities for students, study centres, and administrators across the state. e-District https://serviceonline.bihar.gov.in The Bihar e-District Mission Mode Project is a flagship ICT initiative of the Government of Bihar, implemented under the Digital India Program with technical support from the National Informatics Centre (NIC). The project aims to deliver high-volume, citizen-centric government services electronically across districts, subdivisions, blocks, circles and Gram Panchayats through a single, unified digital platform called ServicePlus. In Bihar, 67 services from multiple departments—including General Administration, Labour Resources, Home, Planning and Development, Tourism, Environment, Forest &amp; Climate Change, and Law—are already live on the portal (https:// serviceonline.bihar.gov.in). Additionally, 12 new services from the Department of Science, Technology and Technical Education are under implementation. Key services include issuance of caste, income, residence, EWS and non-creamy layer certificates, birth and death registration, character certificates, labour-related services, and department-specific citizen services. OFMAS: Transforming Agricultural Subsidy Distribution in Bihar https://farmech.bihar.gov.in The Online Farm Mechanization Application Software (OFMAS) is a digital platform developed to streamline the distribution of subsidized farm implements to farmers in Bihar. It ensures transparency and efficiency in interactions among farmers, dealers, and manufacturers, enabling fair and timely subsidy disbursement while minimizing delays and malpractices. Farmers submit applications online, which are verified through a multi-level workflow within the Agriculture Department—at the Panchayat, Block, and District levels. After successful verification, permits are issued by the district authorities, allowing farmers to purchase approved implements at subsidized rates. OFMAS caters to individual farmers and farmer groups, including Self-Help Groups and Jeevika, under various schemes covering: Single Implements, Groups of Implements and Agricultural Drones. e-Sahkari https://esahkari.bihar.gov.in/ The Department of Co-operation, Government of Bihar has undertaken comprehensive reforms to strengthen departmental operations, particularly food grain procurement through PACS, addressing issues such as process inefficiencies and delayed farmer payments. These reforms are supported through the Bihar Rajya Fasal Sahayata Yojana (BRFSY) and related initiatives. The integrated project digitizes the end-to-end workflow covering farmer registration, paddy procurement, and timely payments. It also manages crop damage assessment for paddy and other Kharif crops through Crop Cutting Experiments and enables compensation payments via DBT. Based on crop damage and land area, ₹1,000–₹20,000 is transferred directly to farmers’ bank accounts through the Aadhaar Payment Bridge. The platform further supports farmers by managing subsidies for agricultural machinery to enhance farm inputs and mechanization. A dedicated module monitors the procurement of subsidized agricultural equipment. Key Modules • BRFSY (Bihar Rajya Fasal Sahayta Yojana) • Procurement • MPPY (Mukhyamantri PACS Protsahan Yojana) • AMS (Asset Management System) • MHKSY (Mukhyamantri Harit Krishi Sanyantra Yojana) • COTS (Cooperative Officers Tracking System) • Society Registration • Cooperative Court Information System ICT Infrastructure &amp; Network Services NICNET NICNET is the dedicated e-Governance network backbone providing high-speed, secure connectivity from the Bihar State headquarters to all 38 districts. Built on a redundant 10 Gbps architecture, it ensures high availability and reliability. The network interconnects Central and State Government offices, district administrations, and field offices through leased links ranging from 34 Mbps to 1 Gbps, enabling seamless access to applications and data centres. NICNET supports government email, web services, secure online applications, and large-scale VVIP video conferencing, ensuring uninterrupted delivery of critical digital services. 24×7 support is provided through the State Network Operations Centre (0612-2547906) and the NIC Service Desk (https://servicedesk.nic.in | 1800 111 555). By enabling fast and reliable access to core e-Governance applications, NICNET improves service delivery, transparency, and data-driven decision-making. Integrated video conferencing and collaboration tools enhance coordination across Centre, State, District, Block, and Panchayat levels, significantly reducing travel time and costs. National Knowledge Network The National Knowledge Network (NKN) in Bihar provides a high-speed, multi-gigabit digital backbone connecting universities, research institutions, and government bodies through the State PoP at Patna. Integrated with NICNET, it enables seamless access to internet, intranet, video conferencing, and e-Governance applications across all districts. As part of the pan-India NKN initiative, Bihar’s NKN creates a common digital platform for institutions in education, research, healthcare, agriculture, and governance, supporting collaboration, data sharing, innovation, and participation in national and global research programs. The Patna State PoP serves as the core hub, extending connectivity through around 100 NKN links to district headquarters and institutions such as universities, medical colleges, hospitals, engineering and management institutes, research and training centres, judiciary sites, and government offices. A multi-TSP architecture (BSNL, RailTel, PGCIL) with a 10G backbone ensures redundancy, high availability, and reliable services. NKN-connected institutions benefit from services including internet and intranet access, email, web hosting, VoIP, VPN, DNS, and multipoint video conferencing, along with advanced offerings like virtual classrooms, virtual labs, digital libraries, collaborative research platforms, and cloud services. The Bihar NKN PoP team oversees monitoring, reporting, onboarding of new links, and SLA management, making NKN a robust backbone for higher education, research, and e-Governance in the state. Important Events Organized • Visit of Secretary, Ministry of Electronics and Information Technology (MeitY), Government of India Shri S. Krishnan, IAS at NIC, Bihar • Launching of Court Case Monitoring System (CCMS) Mobile App by Hon’ble The Chief Justice of Patna High Court Accolades NIC Bihar has earned national recognition for its excellence in e-Governance through multiple prestigious awards. Its initiatives have been honoured with • CSI Nihilent Award • CSI SiG e-Governance Award • Digital India Award Additionally, NIC Bihar received the National Award for Highest DBT Transaction, reflecting its robust, scalable, and reliable technology systems that have enabled large-scale, transparent, and timely direct benefit transfers across the state. Way Forward Going ahead, NIC Bihar can further consolidate its leadership in e-Governance by focusing on next-generation digital transformation. Key priorities include deeper adoption of emerging technologies such as AI/ML for predictive analytics and decision support, expanded use of GIS and satellite data for planning and monitoring, and strengthened cybersecurity and data governance frameworks for large-scale citizen data. There is also scope to enhance interoperability across platforms, promote data-driven policymaking, and expand mobile-first and multilingual citizen services to ensure inclusivity. Strengthening capacity-building initiatives for government officials, accelerating cloud adoption, and aligning state systems with national digital public infrastructure (DPI) frameworks will further improve scalability and resilience. With its strong institutional base and proven track record, NIC Bihar is well positioned to drive the next phase of smart, transparent, and citizen-centric governance in the state.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="dg-message-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">DG Message</span></a><a class="article-nav-link next" href="ladakh-ut-empowering-ladakh-through-digital-innovation-driven-by-technology-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Ladakh UT: Empowering Ladakh through Digital Innovation driven by Technology</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

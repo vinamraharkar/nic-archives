@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2010/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">In terms of public governance, India has been a laggard in the utilisation of ICT. There are several reasons for this. One is the monopolistic nature of public governance. It is the customer, in this case the &quot;aam aadmi&quot;, who has to like or lump whatever is offered by the public institution. He has no alternative. A second important reason for the slow start off the block, particularly of e-Governance, is that it enables transparency and cuts down avenues of corruption. E DUCATION as a sector has remained relatively untouched by e- Governance. This is most distress- ing, considering that education is the cornerstone of our efforts to build up the future generation. Even in the Right to Education Act there is little mention of implement- ing e-governance in our education system. As it stands today, our edu- cation system is chaotic, to say the least. It is characterised by a high dropout rate, teacher truancy, obso- lete syllabi, inadequate infrastruc- ture, unemployable graduates and the lot. The tiny proportion of quali- ty output that emerges from it is more a case of serendipity and the determination of the students belonging to this micro-minority. This is because the present system lacks means of continuous monitor- ing, meaningful evaluation of the teacher and the taught, constant feedback to the players concerned (administrators, faculty, parents and students) and appropriate timely control and correction mechanisms. If the quantity and quality of out- put from our education system have to be substantially improved, then there is no alternative to introducing e-Governance in this sphere. However, to be really effective, the e- governance system deployed will have to go beyond mere computeri- sation of records or processes. It has to be able to provide the manage- ment of the educational institution information about the Why of a hap- pening or a performance in the last two terms? Which teacher has pro- duced the best consistent results for his/her class? Then again, considering the pauci- ty of funds in our state-aided educa- tional institutions, an e-governance system which is inexpensive to install, simple to use, easy to main- tain and can be conveniently expand- ed will be much more acceptable If the e-Governance solution so developed and implemented in the colleges through out the country and linked to National Knowledge Network (NKN) then the possibili- ties are endless. e-College<em> Suite Managing educational institutions has become a tedious and complex task. It requires careful planning, sys- tematic approach and accurate con- trol of administrative processes to attract the best students, produce best results and project the best image. The institutions are increas- ingly seeking the help of information technology to improvise their facili- ties and maintain a competitive edge to their educational Activities NIC's e-Campus</em>Suite is a suite of application that provides Manage- ment, faculties, staff, students with immediate access to real-time infor- mation and connects that informa- tion to specific action. It is an adapt- able solution serving all sizes and types of institutions including com- munity colleges, research institutions, and large, public, multi-campus. Kottakkal Ayurveda College, one of the oldest Ayurveda Colleges in Kerala, initiated the idea of introduc- ing good governance for improving the service through ICT in one of the gov- erning body chaired by the Health Education secretary, Government of Kerala. Chief Executive officer of col- lege held Series of discussion with NIC and finally decided to go for devel- oping a college suite meeting all their requirements. 40 numbers of computer and other accessories were purchased and installed in Administrative office, col- lege office and in the departments. These computers were connected in LAN by establishing a campus area network (CAN) which is also connect- ed to powerful Servers installed for running college Suite. This network also provides the Internet to all units in the campus. Training room with 10 seat capacity was constructed to impart continuous training to the staff of all categories in the college. e-College<em>suite is now functional in the campus from 01/06/2009 and all modules are getting implemented with active support of the staff. Continuous review of the software is taking place at every stage of imple- mentation and making it more and more user friendly. e-College</em>Suite is developed in OpenSource technology by using LAMP under direct supervision of National Informatics Centre adhering all GOI and State IT guidelines. Key -Features Single point access of all campus related information from anywhere in the campus Integration of ID cards &amp; bar coding technology Better informed decision making for management. Total Cost-Control (income and expenditure ) All departments are linked through the central database Inter-departmental paper based transactions become a thing of the past. Integrated to college dynamic col lege website. Parents have access to all academic information about their wards through the internet. SH2 encrypted data for higher level of data security. Key Benefits to Students Students get a new platform not only to gain but also to express the knowl- edge base inside them. The simplified and effective way to of joint efforts of learning will give them a great ground to run in up to the limits of their will power. Publish articles to share experience, knowledge and views. Manage school online news maga- zine. Participate in forums for career and other important issues. Get connected with alumni to gain from their vast and varied experi- ences. Use and contribute to the digital library. Access library transaction. Through e-Granthalaya Access to fees/Certificates/ Attendance /Syllabus information Fees payment through ATM/Bank Online Benefits for Teachers Realizing that a student teacher rela- tionship is the most important rela- tionship in education, e-college Suite tries to give them a new media of interaction. This new media leaves behind the limitation of time manage- ment and set curriculums. Irrespective of the course curriculum teachers have e-college*Suite to share the best with their students using articles etc. Complete attendance automation. Complete marks / grade manage- ment system. Interact with parents efficiently and effectively. Manage Assignment. Manage class information and ana- lytical reports. E-mail &amp; Internal messaging sys- tem. Lessen Planner/time table Benefits for Parents In today's busy scene where often both the parents are either working or living far away from the institution, personal visits to the institution is really not an easy task. The reporting system in e- college Suite enables them to have a closer look to their performance and will provide a fact based approach to their son/daughter life- and all this from their home or offices. Besides this e-news, polling and forums brings them closer to the institution. Know latest about your ward in terms of academics, attendance, fees Get connected to the school effec- tively and easily. Get updated with latest in school with the help of E-news, Image Gallery, newsletters Benefits for Administration School management has a systematic and easy approach towards maintain- ing and updating the different aspects of the website. All the management aspects of the institution like the admission process, message broadcast- ing, notice boards, e-Mazines publish- ing are taken into account which not only saves resources but also provides efficiency in working. Single Point College Management Software. Good financial controls. Zero redundancy in managing the entire institutions records. Achieve global outlook and expo- sure for the institute and its con- stituents. Save man hrs and money in lots of communication aspects. Get connected to parents and alum- ni in an effective manner. Single software handing everything saves a lots of investment in differ- ent software Less Paper office Management Other Benefits Manual effort is reduced and speedy and accurate reports are generated. Data security is maintained on a departmental level. High degree of transparency of the institution through the Web. Better co-ordination between departments. Student conveniences extended beyond the classroom. Overall reduction of operating costs; and savings on time and efforts. Highly streamlined and effective workflow of administration and academia. Workload on entire staff, adminis- tration, clerical and teaching is heavily reduced. Over time a knowledge base will be built-up. Does a total re-engineering of the administrative mechanism. Integration of administrative func- tions. User level access rights are imple- mented so that users without suffi- cient rights will not be able to access the system, thereby increasing the security. Customisable MIS reports and report generation tool. Financial Information are SH2 encrypted. For further information Basheer Ahmed P.K Technical Director National Informatics Centre, Collectorate,Malappuram, kermlp@nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="introduction-of-collabcad-in-cbse-curriculum-october-2010.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Introduction of CollabCAD in CBSE Curriculum</span></a><a class="article-nav-link next" href="pregnancy-child-tracking-and-health-services-management-system-october-2010.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Pregnancy, Child Tracking and Health Services Management System</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

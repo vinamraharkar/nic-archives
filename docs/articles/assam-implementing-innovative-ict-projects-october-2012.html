@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-14.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2012/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -887,126 +956,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <p>VARIOUS REPORTS GENERATED BY THE SYSTEM ARE i) Analysis of Total Priority Sector, Advances under Agriculture, Industry, Services and Crop Loan. ii) Advances to Sensitive Sector, Other Sensitive Sector, Minorities Community. iii) Recovery position under Swarna Jayanti Gram Swarojgar Yojana (SGSY), Prime Minister Employment Generation Program (PMEGP), KVIC Margin Money Scheme, Swarna Jayanti Sahari Rojgar Yojana (SJSRY), Transport Operator Scheme, BAKIJAI Cases, iv) Financial position under Tea Sector and Rural Housing Scheme. v) Financing under Self Help Group (SHG) and Housing Scheme. vi) Finance disbursal under Micro, Small and Medium Enterprises(MSMEs) vii) Progress under Financial Inclusion – Issue of General purpose Credit Card (GCC), Opening of No Frills Accounts, Coverage of Un banked Villages. viii) Performance under PMEGP, SJSRY, SGSY, Transport Operator, Annual Credit Plan. ix) Target and Achievement of Annual Credit Plan (ACP). ELECTORAL ROLL MANAGEMENT SYSTEM (ERMS) The Electoral Roll Management System (ERMS) enables the State Chief Electoral Office to maintain ‘Electoral Roll’ of the state in a standardized and uniform database as specified by the Election Commission of India .The ERMS developed by NIC, Assam in ASP.Net 3.5 and SQL Server 2005 comprises of the following modules:- l Porting of data –The module facilitates porting of existing data from Access database to the corresponding tables of Assembly Constituency. l Conversion of font to Unicode and Transliteration to English - To comply with the instructions of the Commission to have a bi-lingual database in all states the module facilitates conversion to Unicode compliant font using the encoding class of asp.net 3.5 and transliteration of Unicode data to English l Summary Revision and Continuous Updation of Electoral Rolls – this module allows addition of new names to the Electoral Rolls (Form-6), deletion of existing names (Form-7), modification of existing names (Form- 8) and Transposition of names within the same constituency (Form-8a) where an existing name in a polling station gets deleted and is added to a new polling station. l Integration of Supplementary data with Mother Roll – this module integrates the supplementary data of summary revision and continuous updation with the existing Electoral Roll for publishing of final Electoral Roll. The Chief Electoral Office has started the process of Photo merging for electoral rolls. The Kamrup (metropolitan) district was first short listed for the launch as the pilot project which was later rolled out throughout the State. The Photo Merging module developed in Asp Net 3.5 and Sql Server 2005 consists of : l Electoral Details Form – Forms having individual electoral data (except D-voters) were generated and distributed by the Booth Level Officers (BLOs) for collection of electors photographs. l Photo upload – After collection of electoral details form the photographs are merged with the existing electoral roll database. Photographs are captured from the form using a web cam and the software resizes the captured photograph as per the ECI specification. The photographs are uploaded in binary format with size not more than 20KB l Report for verification of uploaded photos. l Weekly report for monitoring progress of photo merging constituency wise. l Printing of Electoral Rolls with photographs. MIS FOR PPP PROJECTS Public Private Partnerships (PPP) is about bringing together social priorities and the managerial skills of the private sector, relieving the government from the burden of large capital expenditure and the risk of cost overruns to the private sector. Instead of transferring public assets to the private sector, as in case of privatisation, the government and business work together to provide services under PPP mode. Broadly PPP refers to an agreement between government and the private sector for providing public services and /or infrastructure facilities. A web-based software (http://misassamppp.gov.in) was developed for the Public-Private Partnership (PPP) Cell under the Planning &amp; Development Department, Government of Assam. SALIENT FEATURES The application was developed on open sourced platform of PHP/MySQL using Code Igniter a PHP standard MVC framework which provides multiple features. l The application maintains a directory of all the stake holders and agencies involved in the all the PPP projects. l It enables various stake holders of the projects to upload the progress data online thus replacing the tedious and time consuming manual process. l All the stake holders can view each other’s project information without any hassle. l The public interface of the application enables citizen to have an update on the details and progress of any project thereby bringing in complete transparency. l The software serves as a monitoring as well as reporting tool for the P&amp;D Department. l The system enables various users to submit their feedback. Various participating government departments and private organizations have been imparted necessary training for using the application. Presently the application is available in the public domain and is fully operational. CALL ANALYSIS AND TRACKING SYSTEM Tracking and analysis of Mobile Phone calls of suspects plays an important role in investigation of crime and thus identifying the suspects/criminals. In order to track and contain them, the police department needs to analyze Call Detail Report (CDR) of the suspects received in varied formats from the mobile service providers. Thus availability of relevant and timely information attains utmost importance in investigation. To meet the requirement of the police department a computerized system - Call Analysis and Tracking System (CATS) has been developed by NIC, State Centre for analysis, tracking and timely retrieval of information based on CDR. The primary objective of the system is to help the Assam Police to track and monitor the usages of mobile phone by any criminal based on the Call Detail Report (CDR) received from the mobile service providers. The CATS uses Open Source Stack i.e. PHP technology with MySQL as RDBMS and Apache as Application Server hence providing portability. CATs is a comprehensive and flexible phone call tracking system. It provides an integrated solution for mobile phone call analysis and tracking with: l Conversion of Subscriber, Tower and CDR data from the excel format to CSV format for facilitating imports and export of data in a common format. l Creation of Unified data directory with the details received from all the service providers in varied formats. l XML based information exchange for interoperability with Google Maps. The system is user friendly and can be operated with basic knowledge of computer. Call tracking facilitate: l Which number was called. l The Tower location of a caller. l Time distribution of incoming/outgoing/SMS calls MAIN FEATURES l Creation of unified Mobile Subscriber’s directory with the details received from all the service providers. l Creation of unified mobile Tower’s directory of the service providers with the details received from all the service providers. l Importing CDRs of varied formats received from the service providers to a Common CDR format. l Maintenance of suspected mobile phone numbers and IMEI (International Mobile Equipment Identity) numbers for further mapping during analysis. l Tracking of relative position of the mobile users with the help of tower location mapping using Google map. l Generation of dynamic reports based on time and date criterion. l Graphical report on Call Frequencies. l Other statistical reports. l Comparison of any given suspect’s CDR with another CDR. l CDR archiving for future uses. BENEFITS l Respond and take immediate corrective action by tracking and analyzing the suspect’s mobile call in real time. l Monitor the movement of the suspects by mapping the tower location. l Make assessment on the movement of the suspects by analyzing the CDR with date and time. l Instant identification of possible contacts of the suspect with the other potential suspects either on the basis of the Mobile Number or the IMEI number. At present there are approximately 256 lakhs subscribers and 41 thousands tower locations records available in the CATs database and utilized for CDR analysis and tracking. Presently, on an average 15 CDRs are analysed per day through the system in two different offices in Assam. FOR FURTHER INFORMATION Deepak Goswami Sr. TD &amp; State Informatics Officer NIC, Assam State Centre PO Assam Sachivalaya, Guwahati 781006 Email: sio-asm@nic.in Phone: 0361-2260254</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="collaboration-and-messaging-service-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">COLLABORATION AND MESSAGING SERVICE</span></a><a class="article-nav-link next" href="punjab-establishing-transparent-and-accountable-governance-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">PUNJAB - ESTABLISHING TRANSPARENT AND ACCOUNTABLE GOVERNANCE</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

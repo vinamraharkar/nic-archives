@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-18.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-19.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-20.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-21.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Chandigarh, symbolic of planning urbanism, was commissioned by Pt. Jawahar Lal Nehru, the country's first Prime Minister, who rather prophetically proclaimed that Chandigarh would be &quot;unfettered by the traditions of the past, a symbol of the nation's faith in the future&quot; and was developed by famed French architect Le Corbusier. It is a futuristic city with an irresistible mix of dynamism and elegance, which never fails to delight. NIC Chandigarh UT Unit was setup in 1990 in the office of Deputy Commissioner and currently has its offices at 3 locations. In last 21 years it has contributed significantly in various ICT related activities. NIC has been instrumental is successfully running various e-Governance projects, Chandigarh SWAN was commissioned 2 years ago and departments have been able to reap the benefits of connectivity by way of using centralized applications and information interchange, Network Data Centre is being looked after by NIC which is manned 24*7 and has provided 99.9% uptime, e-mail, internet and VC services have been extended practically to each and every individual which are being made full use of by them. Well understanding the importance of technology, need of the hour and the expectations of the users, efforts have been made to keep pace with the technological advancements and deliver standardized products. Chandigarh Portal: The portal http://chandigarh.gov.in is a testament of Administration's focus on transparency &amp; proactive approach towards taking it to the comforts of the homes of the citizens so as to reduce their legwork. The portal harnesses content from across the various departments of Chandigarh Administration. Although, the primary driver for the development of this solution was the need to have a single point of access for information of Chandigarh Administration, this portal has now become its face. GePNIC: eProcurement solution, https://etenders.chd.nic.in/, was successfully deployed for all departments of Chandigarh Administration wef April 2010 for Tenders above 10 lakhs. It has been widely acclaimed and is now implemented for tenders of all values. Efficient use of technology has been showcased in this application to ensure safety and security. Non-discrimination among bidders, access of tender documents by any bidder &amp; bid submission from their place of convenience are the factors for keen acceptance of the solution. It has also promoted open competition. NIC Chennai is rendering much needed support for its successful implementation. In the current financial year more than 4100 tenders amounting to over 1000 crores have been processed. NETWORK SUPPORT National Knowledge Network (NKN) Hub: NIC Chandigarh has provided connectivity under NKN Project to IIT Roop Nagar, IMTECH Chandigarh, Panjab University Chandigarh, NDRI Karnal, CDAC Mohali. PGIMER Chandigarh, PEC University of Technology Chandigarh, Government Medical College &amp; Hospital Sector 32, NIT Jalandhar, CSIO Chandigarh, NITTRE Chandigarh, CCET Chandigarh, IISER Mohali, NIPER Mohali, NABI Mohali, PAU Ludhiana, Dental College &amp; SGTB Hospital &amp; College Amritsar, DWRI Karnal and many other institutes in the region are in pipeline. Regional Network Centre: In 2003, Leased Line network was commissioned connecting all NIC offices (Punjab, Haryana &amp; Chandigarh) in Chandigarh, Punjab and Haryana High Court, Haryana Assembly, etc. Subsequently it has been extended to Himachal Pradesh, Jammu, Mumbai, all districts of Punjab and Haryana, Punjab Raj Bhawan and SPIC Centre. In addition to it, MLLN connectivity to different central government offices - Passport Office, Census, NCRB, Department of Post, DGFT, Environment and Forest, UID, ROC, CGHS etc is also through. The backbone bandwidth for NICNET/Internet access from this centre to New Delhi has been significantly strengthened with 2.5 Gbps link from Railtel and 1 Gbps standby link from PGCIL. Chandigarh SWAN: NIC was assigned the task of setting up Chandigarh State Wide Area Network (SWAN), a project funded by Department of Information Technology (Option II). All the major buildings and eSampark/ eJanSampark/ GramSampark Centres are now connected. There are 7 PoPs namely UT Secretariat-SHQ, Municipal Corporation, Deputy Commissioner Office, Sub Divisional Magistrate(South), Sub Divisional Magistrate(East), Government Medical College and Hospital Sector 32, Government Multi-Specialty Hospital Sector 16 &amp; Registration &amp; Licensing Authority identified under SWAN which are connected to the Network Data Centre and are fully operational. Chandigarh Administration has extended SWAN to many departments from State Hqrs and POPs. Manpower for maintenance and support services under the project has been deployed on all the PoPs and State Headquarters site. NIC is providing 24x7x365 services to all PoPs and SWAN sites. It has facilitated the implementation of eGovernance projects as the reach has been widened. It has become equally easy to disseminate information across various offices and has resulted in adoption of standardized approach by all departments. State Data Centre (SDC) Chandigarh Administration decided to use the existing NIC Chandigarh Network &amp; Data Centre (NDC), established in 2004, as State Data Centre. The same site is being used as State Headquarter site under SWAN and NKN Project, thus all the major buildings are connected to the NDC through high speed channels to provide efficient services. The applications are hosted on varied platform having different backend databases to give multiple hosting environments. The NDC is equipped with state of art infrastructure to facilitate e-Governance initiatives of Chandigarh Administration as well as to cater to diverse computing and networking requirements of the government. A state of art high capacity (10 TB) storage area network (SAN) is also set up in NDC to provide consolidated storage infrastructure for Intranet Applications, Citizens Services, eGovernance applications, Databases, E-mail and other internet services. The NDC is operational on 24x7x365 basis and also remains manned by technical persons to respond to any kind of requirement. All the major buildings, Citizen centric centres (viz. eSampark, Jan Sampark and eGram Sampark) are most of the departments/offices across the city access the applications through the portal http://admser.chd.nic.in.in. User accounts of employees are maintained in common database where it is authenticated and access provided as per assigned roles. The access is also limited to valid domains. On successful login, the selected application is made available to the user. Some of the applications are – - Common applications: General Financial Accounting System, Meeting Manager, Court Cases Monitoring System, File Monitoring System, Visitor's Information System, Government Tenders and quotations - Department specific: Public Relations, General Financial Accounting System, Integrated Scheme &amp; Budget monitoring, Project Monitoring System, Grievances Monitoring System, NIC UT Portal, Passport/Public Window File Updation. eSampark, eJan Sampark and Gram Sampark The much acclaimed and successful eSampark project of Chandigarh Administration was launched in September 2004, as a &quot;Multi Service Single Window convenience&quot;, to bring various services under one window. Starting with 11 services from 3 centres it has emerged as a key revenue mop-up agent now. A footfall of over 2 lakh transactions is being recorded per month and it has accounted for revenue collection of over 800 crore in 2010-11. At present, 23 G2C and 5 B2C services are being provided at 11 eSampark centers spread all over the city. Replicating the success in UT villages, as many as 13 Gram Sampark centers have already been established. All eSampark services were being provided at Gram Sampark centers free of cost to the villagers. Residents have the convenience to submit RTI applications and grievances at these centres and also seek appointments for Government Medical College and Hospital and Government Multi Specialty Hospital. Smart Card based Public Distribution System (SCbPDS) In 2008-09 budget, Finance Minister Sh. P. Chidambram announced Chandigarh as one of the pilots to implement SCbPDS to bring more transparency in the distribution of ration and to streamline procedures related to PDS to ensure reach of benefits to the intended group of citizens. An approval of Rs. 6 Crores was granted by the Govt. of India. The project was rolled out in June 2010 and it takes care of all the ensuing processes right from allocation to the disbursement of commodities at FPS. A KMS enabled Smart Ration Card with the beneficiary and a PoS Terminal integrated with weigh bridge and connected to central server through GPRS and with the FPS owner's Smart Card at the FPS makes the transaction happen and biometrics authentication ensures that the commodity is delivered to the intended beneficiary. At present data digitization has been completed, biometrics capturing is nearing completion and commodities are being issued through this solution at 13 FPS and the remaining shall soon be covered. Some of the benefits accrued are Improvised service delivery, Transparency and effectiveness in PDS, Proper allocation and distribution monitoring, Plug leakages in PDS, Remove bogus/multiple ration card and Convenience &amp; consumer contentment. Government Financial Accounting System (GFAS): GFAS, implemented on 1st April 2011, has resulted in integrating the Budget and the Treasury operations, which till now were running in silos. Hosted on central server in NIC NDC and accessible through Intranet portal, it is used by all offices/Boards and Corporations. Allocation of budget by Finance department, preparation of bill by DDO, presentation of bill to treasury, approval/rejection based on funds available etc are some of the activities carried out using this system. It facilitates making available the latest figures at any given time. Online availability of data helps in knowing about the available funds, expenditure status and the receipts. It also makes account, cheque and vouchers reconciliation very easy. A robust MIS supports variety of reports catering to day to day requirements of various offices. As a next step forward, facility of e-Payment has been initiated for crediting salary of employees and shall subsequently cover all kind of transactions. SARATHI and VAHAN (Transport Department): Smart card based Key Management System (KMS) enabled Driving Licences and Registration Certificates (both Transport and Non Transport) are being provided to the residents of Chandigarh. The test for Learner's Licence is also computer aided. Data consolidation to form State register and National register has also been accomplished. High Security Registration Plate module has also been integrated in VAHAN to record the details. The application is now running from 4 locations (RLA office, SDM(S), SDM(E) and STA) over Chandigarh SWAN thus bringing in lot of convenience to public and the staff. National Permits for goods vehicles are being generated through the Permits portal. Industrial Tribunal &amp; Labour Court: A centralised solution developed for the court to manage and keep track of the cases has become an integral part of their day to day working. All reports are generated through the system and queries regarding case status, case history, decided/disposed cases etc are easily responded. Manual intervention has been totally eliminated and access to information and retrieval is very fast. Prevention of Food Adulteration (Food Licencing): The Food Safety Act includes rules and regulations for the registration and licensing of premises used or proposed to be used for the purposes of a food business. The application has been developed and implemented to streamline the food licensing process of the Administration. Workflow based application covers the complete process of food licensing which starts from accepting the license application with fee including penalty and late fee, giving receipt to the applicant and ends at the delivery of the license to the applicant. An effective monitoring and reporting mechanism assists the enforcement staff. There are many other projects running successfully in various departments for the last many years for which technical support is being provided as and when required eg. Chandigarh Transport Undertaking, Excise and Taxation, Property Registration, Education etc. Services are rendered to various National Level Projects viz: Common Integrated Police Application (CIPA), Counseling for admissions to engineering colleges, Immigration, Visa and Foreigner Registration Tracking, Online Scholarship Management System, Election MIS, Socio Economic Caste Census, Mother and Child Tracking System, eGranthalaya, CONFONET, AISES Video Conferencing: A fully fledged VC studio is established and regular VC sessions are conducted for the benefit of various departments of Chandigarh Administration. Websites: More than 40 websites of various departments of Chandigarh Administration have been developed, hosted and are being maintained. User departments are provided adequate training on the maintenance of the sites and also explained the importance of a well maintained site. Internet &amp; Email - it's the basic service that is being availed by all departments/offices who have been encouraged to put it to maximum use. More and more offices are being provided official email accounts, thus facilitating faster and reliable communication amongst each other. Internet services are efficiently monitored on 24x7x365 basis to ensure uninterrupted services. Over last 5 years 99.9% uptime has been ensured. Recognition - - National Golden Icon Award for e-Sampark. - National Silver Icon Award for Best Government Website - CSI-Nihilent Best e-Governed State/UT Award. - Continuously Ranked as a LEADER in &quot;India: e-Readiness Assessment Report&quot;</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="electronic-payment-system-in-haryana-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Electronic Payment System in Haryana</span></a><a class="article-nav-link next" href="odisha-establishing-greater-transparency-and-accountability-in-delivery-of-public-services-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

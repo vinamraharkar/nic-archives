@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-31.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-32.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-33.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2020/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Ministry of Food Processing Industries (www.mofpi.nic.in) was set up in 1988, to develop a strong food processing sector in India, enabling our farmers to get a better return on their produce, helping the rural economy grow faster and increase export of processed food products. Mission of Ministry of Food Processing Industries (MOFPI) • Mission of MOFPI is to develop the food processing sector in such a way that will help reduce wastage and decay of agricultural and other farm produce, adding value to farmers’ produce, thus helping people engaged in the agricultural and other farm sector earn more from their farm produce • Provide financial and technical help for setting up food processing industries and associated infrastructures and provide seamless backward and forward linkages with farmland and markets for the farm produce • Provide research and development support to the agricultural sector and create facilities for food testing laboratories • Increase export of processed food items in international markets The Sampada suite The government of India (GOI) has approved a new Central Sector Scheme– Pradhan Mantri Kisan SAMPADA Yojana with an allocation of ₹ 6,000 Crore for the period 2016-20. The scheme is to be implemented by the Ministry. NIC has developed a web-based application suite named “Sampada Portal” (https://sampada-mofpi.gov.in) for various schemes under which the Ministry provides grants to the promoters to set up Food Processing Facilities. The different modules of the suite, based on different schemes of the Ministry provide an online system for submitting an application, evaluation of the same by the Ministry and its authorized Project Management Agencies, approval/ rejection of applications, monitoring of grant release instalments, and final closure of a project. The detailed workflow of the Ministry for these activities has been automated in the Sampada suite. It has helped the Ministry to simplify the process of grant allocation and manage the schemes more efficiently helping timely completion of projects. The Modules Nine different modules have been developed so far in the suite. APC: Agro Processing Cluster In this scheme, Food Processing Units are set up using a cluster approach, where at least 5 units are set up with a minimum investment of ₹ 25/- crore on a land area of at least 10 acres for a group of promoters. Basic facilities, warehouses, packaging, etc. are provided as common facilities. CBFL: Creation of Backward Forward Linkage Under the scheme, financial assistance is provided for setting up primary processing/ collection centers at the farm gate and modern retail outlets at the front end along with connectivity through refrigerated transport with an aim to creating a seamless backward and forward integration of the processed food industry in terms of availability of raw material and linkages with the market with a special thrust on the preservation of perishable items. CEFPPC: Creation/ Expansion of Food Preservation/ Processing Capacity In this Scheme creation of processing and preservation capacities, modernization/ expansion and value addition of existing processing units and reduction of wastage are ensured. Cold Chain Facility It is the creation of infrastructure (multi-temperature multi-product storage units, mobile storage units, CA storage, blast freezing, packing and distribution, etc.) for the preservation of farm produce/ dairy products/ meat/ fish items, etc. from the farm gate till its delivery to consumers. Mega Food Park It is a large-scale Food Processing facility established at an industrial plot in an agriculture/ horticulture zone as part of a cluster with a steady supply of raw materials. It typically consists of supply chain infrastructure (collection centres, primary processing centres, central processing units, cold chain and about 25-30 fully developed plots) for entrepreneurs to set up food processing units. Food Safety &amp; Quality Assurance Infrastructure (FTL) : Food Testing Laboratory Financial assistance under this scheme is granted for setting up Food Testing Laboratory (FTL) to ensure the quality of processed food products sold in the market meet the stringent parameters prescribed by the food safety regulator in compliance with the various aspects of Total Quality Management (TQM). Operations Greens In 2018-19, a new Scheme “Operation Greens” was announced on the line of “Operation Flood”, with an outlay of ₹ 500 Crore for professional management of agri-logistics, processing facilities and to promote Farmer Producers Organizations (FPOs). Accordingly, the Ministry has formulated a scheme for integrated development of the Tomato, Onion and Potato (TOP) value chain. Objectives of the scheme • Enhancing value realisation of TOP farmers by targeted interventions to strengthen TOP production • Price stabilization for producers and consumers by proper production planning • Reduction in post-harvest losses by creation of farm gate infrastructure, and creation of appropriate storage capacity • Setting up a market intelligence network to collect and collate real-time data on demand and supply and price of TOP crops. Skill The scheme aims to provide a sector-specific skilled workforce from floor level workers, operators, packaging and assembly line workers to quality control supervisor, etc. in various segments of food processing industries to meet the requirement of 17.8 million trained manpower in the food processing sector by 2022 as envisaged by National Skill Development Corporation (NSDC). HACCP: Hazard analysis and critical control points It is a preventive approach to food safety from biological, chemical, physical and radiological hazards in production processes that can make the finished product unsafe for human consumption and design measures to reduce these risks by complying with HACCP, ISO Standards (ISO 9000, ISO 22000, HACCP, GMP, GHP, etc.) for improving the overall quality of food safety &amp; hygiene and also to increase India’s share in global food trade. The SAMPADA Portal and the Dashboard, developed by the NIC team in the Ministry, has proved to be a transformational tool in the ways of working within the Ministry and its interface with entrepreneurs seeking financial assistance under its flagship scheme, Pradhan Mantri Kisan Sampada Yojana (PMKSY). It has directly enhanced transparency, accountability, efficiency, and responsiveness amongst all stakeholders, particularly of the officials in the Ministry. I congratulate each member of the NIC team and the team leaders for their sustained efforts in developing the portal in close coordination with the various divisions in the Ministry. I look forward to their continued support in upgrading the IT infrastructure and IT solutions for a more transparent and accountable government. – PUSHPA SUBRAHMANYAM, IAS, Secretary, MOFPI Salient Features • Facility for an auto-generated email to the applicant’s (promoter) registered email-id regarding system-generated user-id and password for accessing the EOI module. • One portal multiple schemes • Single login for all the schemes • Feedback submission facility regarding experience in using the software • Three types of users- i) Promoter ii) PMA (project management agency), iii) Ministry • For each user type, there are different modules ― • Promoter: i) EOI (Expression of Interest) and ii) Project • Ministry: i) EOI, ii) Project, iii) Report, and iv) Dashboard • PMA: i) EOI ii) Project, iii) My applications, iv) Report and v) Movement (movement of Promoter’s application/ data) • Online release of grants • Graphical representation of important statistics • Audit trail of sensitive fields (password change, financial information, etc.) • Integration of Operation Greens Dashboard with DARPAN portal of Niti Aayog Technical Specifications • Front End : ASP.NET and C# with framework 4.0. • Backend : MS-SQL server 2014. • Web Server : IIS. Benefits The obvious benefits of the suite are: • Automation of workflow • Less paperwork • Greater transparency and higher efficiency concerning approval of projects and grants • Ease of applying for a grant and setting up food processing units • Release of a grant through the portal • Easy tracking of the status of a grant application and project completion Beneficiary Beneficiaries of the schemes are citizens of India in general and in particular the promoters of Food Processing Units, the farmers, the poultry owners, the dairy owners, etc. who are immensely benefitted due to creation facilities like food preservation, food quality testing, packaging, processing, etc. leading to minimal wastage and a higher price for the produce. Way Forward In future, with the growing number of users, it may be necessary to add more webservers behind a load balancer to make the deployment more robust and scalable. The release of the grants depends on the status of work completed. At present, the inspectors need to travel to each project site to check the physical progress of work, and based on their reports grants are released. To remove the mandatory human interventions in this process, the project owners may be asked to send geo-tagged photographs of each project site. The photographs may be further analyzed using machine learning tools for their genuineness if needed.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="e-labharthi-october-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-Labharthi</span></a><a class="article-nav-link next" href="ojas-online-job-application-system-october-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">OJAS (Online Job Application System)</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

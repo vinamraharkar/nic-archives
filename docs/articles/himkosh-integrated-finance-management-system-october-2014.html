@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-13.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-14.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2014/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Financial System of a country is the nerve centre of its economy, wherefrom growth is channelized in each part of the economy. With ever increasing transactions arising out of G2G, G2C, G2B and G2E services, suitable management of the financial systems has assumed paramount importance. HimKosh is an Integrated Financial Management System (IFMS) that provides seamless interface with internal as well as external stakeholders of the Finance Department, Himachal Pradesh. Finance Department, Government of Himachal Pradesh (GoHP) has spearheaded several ICT-based initiatives to facilitate its day to day operations. However, these systems have been developed in different operating environments and platforms, resulting in several pockets of information within the state, leading to non-availability of a real time state-wide (enterprise) view system. To enable consistency between various systems, GoHP has developed the “HimKosh - an Integrated Financial Management System (IFMS)” (https://himkosh.hp.nic.in) ensuring a “Single source of truth”, for providing seamless interface with internal stakeholders and an efficient mechanism of electronic information sharing with external stakeholders of the Finance Department. The project has been sanctioned under Mission Mode Project (Treasuries), National e-Governance Plan (NeGP) of Government of India. Financial management in the state over last twenty years has been facilitated significantly by various I.T. initiatives developed and implemented by NIC. To ensure effective and efficient financial management, IFMS is being implemented in the state. Besides, creating electronic database, it ensures seamless interface with internal and with external stakeholders. HimKosh solution has been developed by NIC Himachal Pradesh and consists of several sub-systems that plan, process, and report on various public financial resources. The basic sub-systems include Accounting, Budgeting, Cash Management, Debt Management and related Core Treasury Systems, but the Government has also chosen to enhance IFMS with non-core sub-systems like eSalary, ePension, eVitran and National Pension Scheme (NPS) for 100% coverage of the following: 1.98 Lakh employees, 1.12 Lakh pensioners, 4600 DDOs, 86 HODs, 0.50 Lakh NPS employees and 102 Treasuries (16 Treasuries+85 Sub-Treasuries+1 Cyber Treasury+52 Integrated Pay &amp; Accounts Offices). IFMS integrates the whole system using a common database (or several interconnected databases) and all financial data among sub-system flows through common database. This single-database integration has improved the system by: avoiding redundant data storage; keeping the data up-to-date; recording data only once, thereby reducing data entry errors; reducing the number of system interfaces to minimum. For standardization and acceptance of the IFMS across the state, standard online applications have been developed for various functions and implemented to achieve the online financial reporting and exchange of data, which has immensely benefitted the stakeholders. BUDGET PREPARATION (eBUDGET) eBudget is being used to electronically prepare HP State Budget. It ensures role based workflow with locking of demand, once the entry is checked &amp; verified. The software is integrated with Treasury System for better control of expenditures. Preparation of supplementary budget, re-appropriation and revised estimates have been automated which has enabled the preparation of 2014-15 budget in a very short time of just 15 days! Shortcomings of several applications developed under different platforms have been addressed in IFMS. With painstaking efforts by NIC Himachal Pradesh, IFMS has proved to be a catalyst in efficient financial management in the state. It provides single point source of financial information to wide range of stakeholders and enables them to function more efficiently and effectively for optimal utilization of resources. ONLINE BUDGET DISTRIBUTION (eVITRAN) eVitran is used by HoDs for distribution of sanctioned budget to their respective DDOs. The same is checked online by Treasuries on real-time basis. Sanction Letters for DDOs are generated through the s/w, and are available to DDOs at their locations only after which payment of bills from the Treasuries is allowed. ON-LINE TREASURY INFORMATION SYSTEM (OLTIS) This software is the core of all finance related applications because it is utilized to check and book receipts &amp; payments in 100 Treasuries/Sub-treasuries in the state. Some salient features of OLTIS are: 100% payments through ECS to employees, contractors Work-flow based Bill Processing System Online submission of bills related to salary, medical and travelling allowance Bill passing only subject to availability of budget through eVitran Bill passing in order of receipt INTEGRATED PAY &amp; ACCOUNT OFFICES (eSALARY) IPAO System centralizes the job of payroll processing at designated 52 IPAO offices located at Treasuries and covers 100% employees. All salary related monthly changes are updated by respective DDOs and are submitted to the IPAO offices for verification. After verification, IPAO Treasuries generates ECS (Electronic Clearing Services) file for banks for crediting the salary directly in employee’s account. Electronically processing of bills has reduced 50% of workload in Treasuries with no need per paper/messenger movement. PENSION PROCESSING &amp; DISBURSEMENT (ePENSION) ePension is used in 12 District Treasuries for calculation, modification, revision, processing &amp; disbursement of pension to 1,10,042 pensioners including political pensioners on monthly basis. The payment is made electronically through bank branches/accounts specified by the pensioners. Pensioners can view their pension details online and generate annual statement for income tax purposes. NATIONAL PENSION SCHEME (eNPS) The computerized NPS application has been developed for monitoring the employees’ contribution, preparation &amp; compilation of employees’ contribution file as per format given by NSDL. A total of 53,000 employees of the state government have been covered under this scheme. The application is integrated with eSalary which is further used by the department for centralized fund transfer to banks through RTGS. Subsequently, subscriber details are electronically transferred to the NSDL. GOVERNMENT RECEIPT ACCOUNTING SYSTEM (eCHALLAN) Any person wishing to deposit Government money can use the eChallan facility by logging on to the system and making online payment through their bank accounts. The facility is available on 24x7 basis. The application has been integrated with other departmental applications like Vahan, Sarthi and State Excise Department. The system also provides facility for generating challan for manual payment through DD/cash and cheques. DOUBLE LOCK COMPUTERIZATION (e-STAMP) e-Stamp is used for indenting, maintenance and transfer of stocks, with an aim to maintain transparency in stock entry and issuance of stamps in Treasuries. eSALARY MOBILE APP In addition to the web based access to eSalary and GPF/CPF information, a mobile application has been developed which fetches the salary and GPF/CPF data of every employee. The employees have to install and set up their accounts once in the application and the data keeps updating automatically. KEY DELIVERABLES OF IFMS Online budget estimation, preparation, automatic generation of Supplementary Budget Online budget distribution to field functionaries Budget control on expenditure Online tracking of budget allotment, payments and expenses for DDOs Online tax and non-tax payment facility and bank payment option for citizens Online availability of annual salary, GPF and pension statements Standardization of DDO codes, designation codes, forms Centralized solution for salary, pension, eChallan Online LPC issuance and verification Uniform codes for allowances and deductions assigned at central level All payments through ECS/NEFT into beneficiary bank account Historical data for data analysis and MIS decision making Treasuries and Sub-treasuries doing all their core functions on IFMS connected through HimSwan and broadband Online compilation of accounts and reconciliation Eliminating redundancy in data entry Reduction in use of papers and postal expenditure No dependence on field staff for supplying financial information Online VLC data transfer to HP Accountant General Office Standardization and Business Process Re-engineering for various functions of the Finance Department Transparency in financial position of the department MIS/DSS Reports available for use of all Administrative Departments, HODs, Budget Control Officers, DTA, DDOs and Treasuries.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="online-filing-of-entrepreneurs-memorandum-ofem-in-manipur-october-2014.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Online Filing of Entrepreneurs Memorandum (OFEM) in Manipur</span></a><a class="article-nav-link next" href="implementation-of-cctns-project-in-tamil-nadu-october-2014.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Implementation of CCTNS Project in Tamil Nadu</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

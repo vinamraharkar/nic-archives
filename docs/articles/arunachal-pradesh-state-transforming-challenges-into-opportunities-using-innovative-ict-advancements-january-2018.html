@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-9.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-10.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-11.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2018/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Over the years, various ICT-based initiatives have been taken up by the Government of Arunachal Pradesh to foster innovation and improvement in the delivery of services to citizens, thereby making life simpler and easier. In the State, NIC does not leave any opportunities for innovations in order to deliver best ICT-based solutions to the Government. Arunachal Pradesh is a beautiful state located in the north-eastern region of India. It borders the states of Assam and Nagaland to the South, shares international borders with Bhutan in the west, Myanmar in the east and China in the north. The NIC State Centre is located in the Civil Secretariat at Itanagar which is the capital of the State. The State consists of 21 districts, mostly situated in the challenging terrains of the Himalayan range. NIC has setup its centres in 16 districts. Tawang is one of the districts which consists of continuous chains of hills and mountains, the altitude varies from 3,500Ft to 22,500FT while Dibang Valley is another district which remains cut-off from rest of the State for a long duration in the rainy season. Information and Communication Technology (ICT) is one of the key drivers of faster and inclusive growth in the Country, and contributes immensely for the development of our economy. Its potential to transform the lives of the citizens is immense. In the ICT front, NIC has so far been able to connect 07 (seven) districts with (DAMA) VSATs, 06 (six) districts with 2Mbps Leased Lines (LL) - combination of Optical Fiber Cable (OFC), Microwave &amp; Copper and 02 (two) districts with 34 Mbps LL. But even now 06 (six) districts are completely unconnected. However, NIC is in the process of upgrading these connections with high-speed equipment in all districts including the unconnected ones. Further, the process for establishment of NIC in new districts has been initiated. ICT INITIATIVES Over the years, various initiatives have been taken up by the Government to foster innovation, improve delivery of e-Services and bring about change in the way business is conducted and the way the Government of Arunachal works. National Informatics Centre (NIC) continues to play a key role in the delivery of citizen centric services in all these initiatives. ACHIEVEMENTS The NIC district centres are providing e-Government support to the District administration despite several challenges of infrastructure, electricity and manpower front. The NIC West Kameng District Centre has been rendering praiseworthy services for which the Government presented a Silver Medal to the DIO on the occasion of 68th Republic Day. Some of the applications which are running in the District are: Jan Suvidha Identity Cards issued: 2,172 ILP (Permanent) issued: 21,722 ILP (Temporary) issued: 2,965 PRC issued: 3,329 ST Certificates issued: 4,658 TRC-A (Govt.) issued: 107 TRC-B (Business) issued: 34 TRC (Other) issued: 23 Sarathi/ Vahan Project Sarathi: 17,929 records Vahan: 3,762 records Tizarath Project Licenses issued: 101 e-Swasthaya Project Registered Patients: 1,30,575 Marriage Registration Certificates issued: 718 NIC NETWORK &amp; OTHER SERVICES NICNET: In the State Capital there are around 2,526 government users covering different departments of the Government of Arunachal. At the district level, there are around 1,090 government users of NICNET. Wi-Max/ LL connectivity has been provided to the Governor Secretariat, Chief Minister’s residential office, Guwahati High Court Permanent Bench, CEO, Food Corporation of India, Food and Civil Supplies Department besides many others. Services running on the net include: Video Conference Services Web and Cloud Services Data Centre Services Training and Capacity Building in ICT Consultancy Services Email Services: More than 2,000 email accounts have been created for government officers and employees so far. The Quick-SMS service integrated with the NIC eMail is being used by many departments for official purpose. National Knowledge Network (NKN) having Giga-range bandwidth has been providing value-added services to several premier educational institutions located in the capital city of the State. NIC SOFTWARE SERVICES IMPLEMENTED/ BEING IMPLEMENTED (Abbreviation: G-Government, C- Citizens, E- Employees, B- Business, I- Institutes) Grievances &amp; Redressal- CPGRAMS (G2C) Payroll System (G2G) GPF Accounting System (G2G) Online GPF (G2E) NPS Accounting System (G2G) DBT State Portal (G2C) Commercial Tax- ArunTax (G2B) Performance Appraisal- SPARROW (G2E) Sarathi/ Vahan (G2C) Treasury Management System (G2C) Paperless Office- e-Office (G2G) Arms License Information System ALIS (G2C) e-Procurement System (G2B) e-District Services through Serviceplus Framework (G2C) Mid-Day Meal (MDM) Monitoring system (G2C) Jan Suvidha (G2C) Jeevan Pramaan (G2C) National Scholarships Project (G2C2I) Standardized District Portal Platform Project (G2C) Mother &amp; Child Tracking Project (G2C) Civil Secretariat WLAN (G2E2C) INITIATED DM Dashboard (G2C) Departmental Portal (G2C) Land Records (G2C) Human Resource Management System e-HRMS (G2G) e-Hospital (G2C) Dynamic website of Disaster Management Department (G2C) BOTTLENECKS AND CHALLENGES Various stakeholders including NIC have been working for enhancement in ICT based e-Governance services at various levels, but following are some of challenges to be addressed. Non-availability of reliable power supply across the State Lack of vendor participation Acute shortage of office manpower Unreliable Internet and mobile connectivity in some of the district headquarters and various remote areas Poor road communication Communication gap among departments Various departments/ organizations are currently not at the complementing levels of e-preparedness Non-existence of SWAN and State Data Centre SUGGESTIONS AND WAY FORWARD Inclusiveness would have to be one of the critical elements in the overall strategy of all Government programmes. e-accessibility and e-competencies using ICT would be vital for improving efficiency of services for better health, education, livelihood and other essential services. Notwithstanding the difficult terrain, the use of ICT is slowly becoming a universal and intrinsic part of people’s behaviour, social networks, business practices, government activities and service delivery in the State. The State Government is taking a big leap to leverage ICT to achieve ‘Simple, Moral, Accountable, Responsive and Transparent’ (SMART) governance. Following are the points of action: Create a robust IT policy for the State Ensure adequate and sustained budgetary support for e-Governance projects/ initiatives Establish a high-speed communication network with multiple redundancy options, connecting all district headquarters, sub-division offices and beyond Ensure stable and reliable power supply. Multiple power supply options (solar/ genset/ hydropower) shall help in better and uninterrupted delivery of e-Services Incubate and nurture ICT skillsets of citizens for readiness to reap benefit from e-Governance services Replicate successful e-Government initiatives of other parts of the Country Ensure mass acceptance of delivery of Government services using ICT instead of delivering services manually</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="e-labour-portal-cm-dashboard-ngdrs-launched-in-punjab-january-2018.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-Labour Portal, CM Dashboard &amp; NGDRS Launched in Punjab</span></a><a class="article-nav-link next" href="tamil-nadu-state-pursuing-excellence-in-e-governance-through-open-source-technology-for-ict-solutions-january-2018.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">TAMIL NADU State: Pursuing Excellence in e-Governance through Open Source Technology for ICT Solutions</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

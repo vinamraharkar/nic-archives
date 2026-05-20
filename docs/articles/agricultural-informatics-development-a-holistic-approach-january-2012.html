@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-4.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-5.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-6.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-7.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-8.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2012/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Rural India, where more than 70% of the Indian population lives in, is in dire need of knowledge intensive techniques for sustainability of its shareholders, and farm and non-farm linkages through grassroots level information access (contents) and grassroots level access to information (networking). Availability of this will be the measure to achieve sustainable and more than that inclusive growth, during the twelfth plan period. With the Panchayat Raj institutions in operation and the agriculture as the subject brought under the list of Panchayat Raj Institutions, through the Constitutional Amendments, it is essential to build database on agriculture and allied sectors, at village level, farm level and farming household level granularities. The 120 million farm households of India, out of which 80 per cent are poor and marginal farmers, are the target beneficiaries of &quot;ICT led agricultural development initiatives&quot;. An ICT-triggered rural knowledge revolution can help to break the barriers that stand between &quot;localized rural economies&quot; and the 'globalized market'. Both the National Informatics Centre (NIC) and the Ministry of Agriculture (MOA) have been working together in establishing agricultural informatics for sustainable development, since 1995. The journey started with the National Conference on Informatics for Sustainable Agricultural Development (ISDA-95), which gave the informatics blueprint for e-governance in the agricultural sector, and also recommended for allocation of 3-6% of the Agricultural budget outlay for ICT as follows: - AGRISNET – an Infrastructure network up to block level agricultural offices facilitating agricultural extension services and agribusiness activities to usher in rural prosperity; - AGMARKNET – with a road map to network 7000 Agricultural produce wholesale markets and 32000 rural markets; - ARISNET – Agricultural Research Information System Network; - SEEDNET – Seed Informatics Network; - CoopNet – to network 1,40000 Agricultural Primary Credit Societies (PACS) and Agricultural Cooperative Marketing Societies to usher in ICT enabled services and rural transformation; - HORTNET – Horticultural Informatics Network; - PPIN – Plant Protection Informatics Network - FERTNET – Fertilizers (Chemical, Bio and Organic Manure) Informatics Network facilitating &quot;Integrating Nutrient Management&quot; at farm level; - VISTARNET – Agricultural Extension Information System Network - PPIN – Plant Protection Informatics Network; - APHNET – Animal production and Health Informatics Network networking about 42000 Animal Primary Health Centre; - FISHNET – Fisheries Informatics Network - LISNET – Land Information System Network linking all institutions involved in land and water management for agricultural productivity and production systems, which has now evolved as &quot;Agricultural Resources Information System&quot; during the Tenth Plan is being implemented through NIC; - AFPINET – Agricultural &amp; Food Processing Industries Informatics Network; - ARINET – Agricultural and Rural Industries Information System Network to strengthen Small &amp; Micro Enterprises (SMEs); - NDMNET – Natural Disaster Management Knowledge Network in India; - Weather NET – Weather Resource System of India; During the 9th and 10th Five Year Plan periods, the Central Sector Scheme “Strengthening and promoting agriculture informatics systems” gained importance, and flagship programmes viz., INTRADAC, DACNET (http://dacnet.nic.in), Agricultural Marketing Information System Network (AGMARKNET), Agricultural Resource Information System - AgRIS (http://agris.nic.in) and AGRISNET etc., were launched. The DACNET project was viewed as the “model framework for e-Governance” in the Government. The projects such as DACNET (http://dacnet.nic.in), SEEDNET (http://seednet.gov.in), PPIN (http://cibrc.nic.in, http://ppqs.gov.in, http://plantquarantineindia.nic.in), AGMARKNET (http://www.agmarknet.nic.in), AGRISNET etc., are operational in the country and these G2B, G2G, G2F projects are benefiting the agricultural stakeholders such as farmers, traders, scientists, administrators etc., in a potential manner. The AGMARKNET project has, now emerged, as an important national portal, with local language interfaces, containing databases comprising daily market information, in terms of commodity arrivals; minimum, maximum and modal prices for about 300 commodities and 2000 varieties. The project has strengthened decision making at various levels and paved the way for globalization of Indian agriculture. Apart from domestic access, there has been a tremendous global access of this portal. Agricultural Informatics Division was instrumental in establishing ARISNET (Agricultural Research Information System Network) for the Department of Agricultural Research &amp; Education, to promote agricultural research informatics in the Indian National Agricultural Research System. ARISNET was initially developed as a close user group on NICNET by networking of ICAR Institutes, Central Agricultural University and State Agricultural Universities through high speed Ku band FTDMA VSATS (85). During 2003-04, the ARISNET backbone has been changed to ERNET from NICNET. NIC has been continuing to associate ICAR Institutions in strengthening the agricultural informatics development programs. Since 1995, the Indian Agricultural Sector has been witnessing “Informatization” progressively, through the efforts of NIC. I was instrumental, as a Project Director in conceiving the “AGRIS” (Agriculture Information System) and MISAH (MIS for Animal Husbandry Sector) projects, under the DISNIC Programme during 1987 and promoted in about 520+ districts in the country, along with the expansion of NICNET, in about 520+ districts, in the country. This approach was further strengthened through the National Conference on “Informatics for Sustainable Agricultural Development (ISDA-95)” in May 1995, organised by NIC, in collaboration with the Ministry of Agriculture, Ministry of Rural Development and Ministry of Fertilizers. The conference, which was well attended by a large number of practitioners, academicians and policy makers, produced informatics blueprint for Informatization of the agriculture sector. Rural India requires “Digital Network for Farmers (DNF)” viz., AGMARKNET, SeedNet, HORTNET, AGRISNET, FISHNET, NADRS, ReALCRAFT, APHNET, AgRIS, DISNIC-PLAN etc, for moving towards faster and more sustainable and inclusive growth. The ICT triggered rural knowledge revolution is helping to break the barriers that stand between “Localized Rural Economies” and “Globalized Market”, through contents and networks. Breaking the language barriers is like providing an essential infrastructure for Good Governance, peace and prosperity at the grass root level. Digital Network for Farmers (DNF) is a strength, wealth and prosperity for about 125 million farming households in India. To facilitate this, India requires a “National Rural Informatics Policy”, which is the need of the hour and further, a step towards achieving “Rural India to Smile, Shine and Roar.” The definition of “Rural” is as adopted by FAO of UN. Informalization of various subsectors, such as: horticulture, plant protection, animal health, fertilizers have taken the progressive steps to mainstream ICT in the desirable manner. The AGRISNET project is facilitating building of information systems, through bottom-up process, in the States of Gujarat, Uttar Pradesh, Odisha, West Bengal, Maharashtra, Tamil Nadu Andhra Pradesh, Himachal Pradesh, Uttarakhand, Assam Karnataka, Kerala, Puducherry, Madhya Pradesh, Chhattisgarh, Meghalaya, Mizoram, Nagaland, Sikkim, Punjab and Rajasthan. The pilot project of AgRIS (http://agris.nic.in) is likely to emerge as farmer's centric &quot;resource information system&quot; to facilitate productivity increase in the sector. In view of its importance in the Indian economy, agricultural sector has been incorporated as a mission mode project under e-governance under which the following 12 services will be provided to the agricultural stakeholders, through multiple delivery channels such as mobile phones, IVRS, touch screen kiosks, common service centres, etc. Below are the 12 services: - Information on Pesticides, Fertilizers and Seeds - Providing information on soil health - Information on crops, farm machinery, training and Good Agricultural Practices (GAPs) - Information on forecasted weather and agro-met advisory - Information on prices, arrivals, procurement points, and providing interaction platform - Electronic certification for exports &amp; imports - Information on marketing infrastructure - Monitoring implementation /Evaluation of schemes &amp; programs - Information on fisheries - Information on irrigation infrastructure - Drought Relief and Management - Livestock Management This Agricultural mission mode project (NeGP-A) promotes integrated service delivery through local languages, and involves database applications, workflow applications, content management system, decision support system, GIS applications, advisory system, and grievances management and redressal system. These systems are to be integrated with the national, state and district delivery gateways. The other flagship programmes of the Agricultural sector, such as National Food Security Mission (http://nfsm.gov.in), Rashtriya Krishi Vikas Yojana (http://rkvy.nic.in), National Horticulture Mission (http://nhm.nic.in), Technology Mission on Horticulture in North Eastern and Himalayan states (http://tmnehs.gov.in), and National Bamboo Mission (http://nbm.nic.in) have been enhanced through mainstreaming of ICT to benefit the farming community and other stakeholders. The databases on agriculture statistics such as land use (http://lus.dacnet.in), area and production (http://apy.dacnet.nic.in), agriculture census and input survey (http://agcensus.nic.in), Minor irrigation Census (http://mowr.gov.in), 18th Livestock census (http://dadf.gov.in) are being effectively utilized by researchers, economists and policy makers. The e-Governance project - G2B Component: &quot;Computerized Registration of Pesticides&quot; (CROP) project, under the PPIN programme, is facilitating online application filing for Pesticides Registration and processing while Plant Quarantine Information System (PQIS) under PPIN has brought more efficiency and effectiveness in the functioning of Plant Quarantine Stations by use of Information Technology Tools. It facilitates online submission of application for Import permit, Import Release Order and Phyto-Sanitary Certificate (PSC) by traders and processing of these applications online at Plant Quarantine Stations and Phyto-Sanitary Issuing Authorities. The AGMARKNET initiative, launched in the year 2000, is the first e-governance project, which has spread to about 3200 agricultural produce wholesale markets, to strengthen agricultural marketing system in the country. Now the country is witnessing implementation of National Animal Disease Reporting System (NADRS) to monitor 143 animal diseases through 7000 locations at sub-district level in the country, including remote areas such as Andaman Islands, Car Nicobar Islands, Lakshadweep Islands, and Minicoy Islands. The ReALCRAFT (http://fishcraft.nic.in) project, under the fisheries informatics programme, is strengthening the coastal security and being utilized by security agencies such as Navy, Coast Guard, Marine Police, etc. Initiatives of NIC in the agriculture sector, with the help of Ministry of Agriculture and state Agricultural Departments, has laid a strong foundation in the country, for ushering in digital inclusion and sustainable development of farming sector in an effective manner. It has been envisaged to provide information delivery in 22 constitutionally recognized Indian languages. The Agricultural Informatics Division has, in its blueprint, to develop ICT enabled supply-chains for 300 commodities, pertaining to agricultural, livestock and fisheries sectors through &quot;Access Layer&quot;, &quot;Distribution Layer&quot; and &quot;Network Layer&quot; and also focusing on establishment of database on agro-climatic regional planning (ACRP) and strengthening of &quot;Digital Network of Farmers (DNF)&quot; to &quot;reach the unreached&quot; and to &quot;serve the un-served&quot;. The next steps in the pipeline are mobile based applications for automating agricultural inflow system, in order to e-bridge the farmers and other stake holders and also to promote ICT under small area farm business, implementation of Agriculture Resource Information System (AgRIS) and DIS-NIC-Plan Programme (http://disnic.gov.in) to establish grassroots level informatics of sustainable agriculture development through information modelling, is the need of the hour. The Agricultural Informatics Division, during the 12th Five Year plan, will strive to achieve design and development of Spatial Decision Support System (DSS) on Agricultural Production which requires information on the following:- - Information on physical feature to determine the land's capability for agricultural development - Maps depicting differences in physical land characteristics etc. - Areas of immediate growth potential - Areas of future growth potential - Areas of low growth potential To achieve this, it is required to have the following maps in 1:4000 / 12000 scale, with their interpretations, in GIS format:- - Base map showing boundary, subwatersheds, villages, roads, etc. - Topographic map showing contours, elevations, land forms, streams, etc. - Soil map showing soil types and boundaries, depths and soil limiting properties Climatic map showing mainly rainfall, but statistics may include temperature, evapo-transpiration, etc. - Geology map showing rock types, structures, displacement, morphology, etc. - Slope map showing different slope classes or exposures/aspects - Present land use map showing major land uses and cover types - Land capability or land suitability map showing different land capability classes; or land suitability classes - Land-use adjustment map showing land being over-used or under-used and adjustment needs - Erosion or sediment source maps showing sites of various types of erosion and sediment potential areas - Hydro-meteorological network map showing the location of climatic and stream gauging stations - Water resource map showing surface and underground sources The National Spatial Data Interchange (NSDI) is expected to facilitate generating Agricultural Sector Spatial Data Infrastructure (ASSDI) in 1:4000/12000 scales. Will it happen? Databases and informatics on Farm Health Management, Soil Health Management, Plant Health Management, Livestock Health Management, Fisheries Health Management and Water Quality Management, are of paramount importance to enhance and sustain agricultural productivity in India. This is also the top priority of Agricultural Informatics Division. The Approach paper for 12th Five Year Plan (2012-17), which seeks to reach growth rate to 9% up from 8.2% estimated in the 11th Plan, desires to &quot;stimulate for widespread development of ICT in the country to achieve inclusive growth&quot;. The Agriculture Informatics Division, involved in design and development of various e-governance programmes to strengthen &quot;Good Governance&quot;, is gearing up its initiatives to undertake the needed widespread development of ICT in the Agricultural sector in the country. It expects a decent measure of organisational promotional aspect in this regard. India is among the fastest growing economies in the world. The power of a billion plus people, all connected via the Internet, will definitely redefine the system of e-Governance. The factors that may drive growth include &quot;National e-Governance Program (NeGP)&quot; and &quot;Internet on mobile&quot;. Mobile phones are the success story of bridging the rural digital-divide, bringing tangible economic benefits and acting as agents of social mobilization through improved communication. The Agricultural Informatics Division, through its involvement in implementation of NeGP-A Mission Mode Project, envisages promoting &quot;M-Government Services&quot; as follows: - Agricultural news (e.g. new cultivation products, machinery) - Agricultural policy (e.g. laws and regulations) - Funding opportunities (e.g. for purchasing equipment) - Weather forecasts - Alerts (e.g. disease outbreak, extreme weather conditions) - Market forecasts (e.g. product prices, supply and demand) - Expert consulting (e.g. regarding cultivation techniques, marketing of products, new production standards) - Notifications (e.g. for deadlines, renewal of certificates, submission of documents, new cultivation products or techniques, verification of important dates, farmer union issues, events) - Petitions (e.g. license renewal) - Tele-diagnosis (e.g. plant and animal diseases) - Calculations (e.g. for subsidy or indemnification) - Financial transactions (e.g. loan payments) - Employment market (e.g. job offer and demand in particular area) - Search engine (e.g. for databases, locating agencies in the surrounding area) - Messages to public agencies (e.g. agricultural accident reports, incidents, queries, complaints, comments, interventions, opinion stating). Intra and Inter State Government Agricultural Developmental Schemes and their guidelines for implementation and monitoring - Input dealers (seed, fertilizers, pesticides, etc) - National Agricultural Research System (NARS) - IACR &amp; SAU - Research &amp; Extension Services - WTO Regulations of agricultural commodities. - Agricultural Crop Insurance information - Public Grievances Redressal - File / Applications Tracking; - Continuous and Integrated Agricultural Drought Monitoring - Government Initiatives (development schemes, etc) Technical papers have been published and also presented in both national and international conferences on the achievements of these ICT initiatives in the Agricultural Sector. The Agricultural Informatics Division have received Manthan Award, PCQuest Award, CSI Award, SKOCH Editor's Choice, Stockholm Finalist, Microsoft Award - Project of National importance, eWorld Forum 2011, eIndia 2011 and DAR&amp;PG's Innovation in Administration.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="as-we-step-into-2012-i-wish-you-your-family-a-very-happy-prosperous-new-year-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">AS WE STEP INTO 2012, I WISH YOU &amp; YOUR FAMILY A VERY HAPPY &amp; PROSPEROUS NEW YEAR!</span></a><a class="article-nav-link next" href="nic-s-co-operative-core-banking-solution-nic-ccbs-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">NIC's Co-operative Core Banking Solution (NIC - CCBS)</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

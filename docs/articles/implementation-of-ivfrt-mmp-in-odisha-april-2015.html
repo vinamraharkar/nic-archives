@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-24.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-25.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-26.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2015/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">This is an exclusive interview with Shri Lalit Das, IPS &amp; Special Secretary, Home Department, Govt. of Odisha on various paradigms along with challenges faced during implementation of Immigration Visa and Foreigner’s Registration (IVFRT) Mission Mode Project in Odisha. NIC: Sir, IVFRT Project is a Mission Mode Project, what is the State Government’s initiative/outlook about the project? Spl. Secy: We perceive this project as a much needed and awaited one. The use of ICT is inevitable in many functionaries of the State Administration. Home Department being the nodal one, has to oversee law and order, police administration including security matters. It is imperative that this project is implemented across the state of Odisha. NIC: Can you please elaborate the importance of the project to the State Administration and its functionaries? Spl. Secy: As you are aware that large number of foreigners visits the state as tourists, students, scholars etc. and as per the Rule 1992 of the Registration of Foreigners Act 1939, registration of foreigners arriving for various purposes is mandatory along with their tracking and ensuring their identity. This is done at various missions, ICPs and FROs (Foreigners Registration Offices) using document scanners &amp; biometrics, updation of foreigner’s details at entry and exit points. Sharing of such information with FROs and FRROs is extremely useful over the legacy manual system and helps in tackling security issues along with providing seamless and hassle free services to our foreign guests. NIC: Who are the major stakeholders of the project in Odisha? Spl. Secy: The project was initiated under National e-Governance Plan (NeGP) with technical assistance from National Informatics Centre, Ministry of Home Affairs, Govt. of India and BoI (Bureau of Immigration) as the key stakeholders. Other project functionaries are the immigration check points and State SP Offices which act as FROs. At present we have one immigration check point operating at Paradip and we hope few more to be operational soon after the International Airport becomes functional. State Home Department closely monitors the project along with State Intelligence Department and all SPs/FROs have been instructed to complete the project on priority basis. NIC: Having recognised as an important project, what steps the Govt. of Odisha is aiming at for its implementation along with possible action plans? Spl. Secy: The project was initiated in Odisha in the year 2013 with Bhubaneswar FRO chosen as the pilot. Being the capital city - Bhubaneswar receives nearly 2000 cases and a well equipped office with necessary ICT infrastructure with net facility was ideal to select it on priority for launching the project. After running the project for a couple of months, it was planned to replicate it across the state with suitable capacity building at SP offices. Measures like hand holding, district level trainings, workshops, awareness raising among hoteliers and institutes etc. were taken up simultaneously. NIC: How the project is beneficial to the State Govt. and in particular to the Police Administration? Spl. Secy: I would say immensely, as you are aware foreigner’s data captured during visa issuance at the mission is seamless and shared across the FROs in districts which in turn is updated as the foreigners move across the country. The data further gets shared online with hoteliers/institutes. They see it as a very convenient way of registration and intimation to FROs which is mandatory for them. The web enabled application with DSC/VPN based security is available 24*7 to users. Online Form-C module keeps track of registered foreigners while students details are recorded in the Form-S module. C-FRO module while providing services to foreigners also keep track of Pakistani nationals besides performing risk assessment which is impressive. Apart from these, it maintains a vigil eye on illegal immigrants and is a source of information for faster security arrangements in terms of key information accessibility. NIC: You are involved in this project since its inception, what initial challenges were faced and what are the future plans? Spl. Secy: We have been targeting to accomplish the implementation of this project across the state at all 33 FROs by June 2015 in accordance to date set by MHA, Govt. of India. Currently, we have completed the district level training and workshops at more than 20 locations and all these locations are operational. The internal stakeholders like Home Department, State Intelligence, Immigration, SP Offices are working with absolute co-ordination although there are certain issues like frequent transfer of officials dealing with the technicality of IVFRT system and certainly we have to fight with issues like low count of computer literacy among police staffs. The state level workshop conducted last year at Bhubaneshwar was extremely beneficial and its importance has percolated to the lowest levels. With accelerated speed, we are now focusing on issues like issuance of VPN token to authorised officers, infrastructure, connectivity at far off locations, training &amp; support etc. NIC: How do you plan for the sustainability of the project along with upcoming projects like National Database for Arms License(NDAL) and Immigration System at International Airport? Spl. Secy: State NIC has taken many proactive steps in implementation of the project and I find a perfect balance in the process, technology and programme implementation plan that are required for the implementation and sustainability of the project. We are also aiming for early implementation of the NDAL (National Database on Arms License) whose target date has been set as Oct. 2015. The issuance of Unique Identification Number (UIN) would be substantially helpful in curbing illegal arms sale. State level workshop has already been conducted. We are also installing all H/W, S/W and other infrastructure requirements at the Biju Patnaik Airport - already declared as an international airport. With plethora of projects in pipeline along with excellent co-ordination among teams, we are sure that the project will be running smoothly in the state of Odisha. NIC: How do you attribute to the State Government and NIC team working for the project? Yourself being an engineer and a tech savvy bureaucrat in Higher State Administration, what are your observations on this project and message to the team? Spl. Secy: As I have already said that the scale of this project is enormous, starting from districts to the national level it goes to the Indian Mission abroad. I congratulate NIC for implementing this project in a professional way. The team work has been excellent with equal support at the state level, which is essential for the implementation of this project. There is an increasing trend for maximum use of ICT at FRO/SP offices under the project. I sincerely thank Principal Secretary to Govt. Home Department for providing all support as and when required along with DG Police, IG Intelligence, Director Intelligence, Director Airport and SPs at various districts. I also sincerely thank Shri S.K Panda, SIO NIC, Shri Dilip Jena, TD NIC for their essential support for success of the project. Smt. Sasmeeta Sabat, IVFRT State Co-ordinator incessantly with various departments along with Shri Avinash Mishra for all out success of the project. I express my thanks to Dr. Shefali Das, DDG, NIC New Delhi for assurance in extending all support to the state of Odisha during our meeting at the National Conference and my heartfelt gratitude to Dr. B.N Shetty with whom we have inaugurated the Puri FRO and who is one of the founder of this Mission Mode Project. I also extend my gratitude to Dr. R.K Mishra for his exceptional support and my best wishes to all team members and stake holders working at various levels for the success of the project.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="use-of-hybrid-survey-methodology-and-bhu-sarvekshan-software-for-resurvey-in-bihar-april-2015.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar</span></a><a class="article-nav-link next" href="challenges-in-it-services-procurement-in-government-april-2015.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Challenges in IT Services Procurement in Government</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

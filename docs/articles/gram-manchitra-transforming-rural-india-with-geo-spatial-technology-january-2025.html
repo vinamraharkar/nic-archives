@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-28.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-29.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-30.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2025/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">The Gram Manchitra application has been envisioned and developed as a powerful visualization tool to foster self-sustainable villages. To support this vision, a range of planning tools has been created, enabling the preparation of Gram Panchayat Development Plans (GPDPs) that incorporate block and district-level statistical information. In recent years, NIC has introduced a comprehensive multi-layer planning framework called Bharatmaps. This framework includes administrative boundaries down to the Gram Panchayat and village levels, base infrastructure layers mapped at 1:10,000 scale, and a repository of 3.5 million assets across critical sectors such as education, healthcare, public distribution, banking, and postal services. The Gram Manchitra application, a web-based GIS platform, is built on this robust foundation. It is seamlessly integrated with the Ministry’s flagship eGramSwaraj scheme, offering spatial planning and analytical tools tailored to the needs of Gram Panchayat functionaries. The Survey of India has played a pivotal role in supplying abadi (inhabited) area data under the SVAMITVA Scheme during the project’s initial stages. This data requires meticulous curation and preparation to ensure it is analysis-ready, forming a crucial input for the Gram Manchitra platform’s tools and capabilities. Vision The integration of digital technology with community participation and local governance structures offers a transformative approach to improving the quality of life in villages. By leveraging data-driven tools and GIS-based platforms like Gram Manchitra, Gram Panchayats can make informed decisions, enhance transparency, and foster self-sufficiency, laying the foundation for sustainable development. This approach combines cutting-edge technology with the collective wisdom of local communities, enabling effective resource planning, monitoring, and execution of development initiatives. To achieve meaningful and long-lasting results, it is essential to customize these solutions to address the unique needs, priorities, and capacities of each village, ensuring their relevance and successful adoption. Objectives The Gram Manchitra application (https://grammanchitra.gov.in/) has been designed with specific objectives to empower rural governance and enhance the quality of life in villages: • Promoting Structured Planning: By utilizing geo-spatial technology, the application encourages resource-efficient and structured planning for rural development. • Supporting GPDPs: Gram Manchitra plays a pivotal role in the preparation and implementation of GPDPs, enabling data-driven decisions for project planning and resource allocation. • Enhancing Transparency and Accountability: Integration with tools like mActionSoft ensures that developmental works are traceable and geo-tagged, fostering transparency and accountability at all stages. • Leveraging SVAMITVA Scheme: High-resolution maps at a 1:500 scale, generated under the SVAMITVA Scheme, provide detailed data for land and property management, as well as solar energy potential assessments. • Facilitating Sustainable Development Goals (SDGs): The application embeds SDGs into local development plans, ensuring balanced and inclusive growth at the village level. • Empowering Data-Driven Decision-Making: Comprehensive tools and features empower Gram Panchayats to visualize, analyze, and implement development initiatives effectively. • Fostering Inclusive Growth: By providing a decision-support system tailored to the unique needs of each village, Gram Manchitra ensures that no community is left behind in the development process. Key Features The Gram Manchitra application is equipped with a wide array of features that aim to revolutionize rural planning and development. These advanced functionalities empower Gram Panchayats to make data-driven decisions for better governance and resource utilization: • Visualization Platform: Offers an intuitive, user-friendly interface to view and analyze developmental plans and resources. • Advanced Spatial Analysis Tools: Includes tools such as Solar Tool, Street Light Analysis, and Proximity Tool, which assist in identifying optimal locations for infrastructure and amenities. • Geo-Tagging Integration: Through mActionSoft, developmental works are geo-tagged with GPS coordinates and photographs, ensuring transparency and real-time monitoring. • Comprehensive Gram Panchayat Profiles: Provides detailed demographic, economic, and resource information for each Gram Panchayat. • DIGIPIN Integration: Simplifies address identification in rural areas, providing precise location-based details, especially useful for areas lacking formal address systems. • Natural Layers Integration: Incorporates critical data on natural resources such as rivers, dams, wildlife sanctuaries, and coastal zones to support environmentally sustainable planning. • Reports and Metadata: Generates sector-specific reports (e.g., health, education, public distribution systems) and ensures transparency with detailed metadata for all spatial layers. • Resource Envelope: Displays fund allocations for various schemes, aiding financial planning and management. Integrations and Collaborations Gram Manchitra operates as a core part of a broader ecosystem, integrating seamlessly with flagship schemes and applications to enhance its functionality and usability. Key integrations include: • eGramSwaraj: Linked with eGramSwaraj, Gram Manchitra allows users to plan, execute, and monitor developmental works aligned with the GPDP framework. This integration ensures efficient planning, budgeting, and resource allocation. • mActionSoft: Enables geo-tagging of assets at all stages of development (before, during, and after completion), enhancing transparency and real-time monitoring. • SVAMITVA Scheme: Data from the SVAMITVA Scheme is used in applications like the PM Surya Ghar Portal, which assesses the solar potential of rooftops. This integration promotes renewable energy adoption and supports sustainable development initiatives. • BharatNet Project: The BharatNet Project, which connects Gram Panchayats with high-speed broadband, enhances the usability of Gram Manchitra by ensuring reliable access to digital tools and geospatial resources, thereby strengthening digital governance at the grassroots level. • AuditOnline: Integrated with AuditOnline, Gram Manchitra supports transparency by facilitating the online auditing of Panchayat accounts. This ensures accountability and good governance by providing detailed, verifiable records of financial transactions. Through these integrations, Gram Manchitra becomes a comprehensive platform that not only supports planning and monitoring but also promotes transparency, accountability, and the adoption of sustainable practices in rural governance. Tools and Functionalities The Gram Manchitra application offers a comprehensive suite of tools to address various aspects of rural planning and development. These tools empower Gram Panchayats with data-driven insights to make informed decisions. Key features include: Spatial Tools • Connectivity Analysis: Evaluates vehicle navigation feasibility based on road types, aiding the efficient transport of essential goods. • Solar Tool: Assesses the potential for solarization of houses and public buildings, promoting renewable energy adoption. • Street Light Analysis: Estimates the number of street light poles required based on illumination levels and type of lighting, ensuring proper coverage. • Weather Tool: Provides real-time data on temperature, rainfall, humidity, cloud cover, and wind speed to aid in planning daily activities. • Proximity and Buffer Tools: Identifies nearby assets and facilities, such as schools, hospitals, police stations, and public distribution centers, which is especially useful for disaster management and emergency planning. • Natural Layers Integration: Incorporates data on rivers, dams, wildlife sanctuaries, and coastal zones, supporting environmentally sustainable development. Advanced Functionalities • Query Builder: Enables users to retrieve specific information from the map by building customized queries for targeted analysis. • Resource Envelope: Displays fund allocations for various government schemes, facilitating financial planning and efficient resource utilization. • Reports: Generates detailed summaries of assets, public services, and infrastructure. • Metadata Module: Offers descriptions and details about various spatial layers for informed decision-making. Applications in Rural Governance The Gram Manchitra application has revolutionized rural governance by enabling Gram Panchayats to: • Plan Infrastructure Development: Tools such as the Road Construction Tool and Street Light Analysis help identify and address infrastructure gaps. • Monitor and Evaluate Projects: Geo-tagged assets and photographs provide real-time updates on developmental works, ensuring accountability and transparency. • Disaster Management: Proximity tools enable faster responses during emergencies by identifying nearby assets, critical facilities, and evacuation routes. • Natural Resource Management: Spatial data layers for rivers, reservoirs, dams, and wildlife sanctuaries ensure that development plans are environmentally sustainable and do not harm natural resources. Impact The Gram Manchitra application, along with its integrated platforms like eGramSwaraj, has achieved remarkable adoption and success across all states and union territories in India. As of FY 2024-25, the following key milestones highlight its impact: • Preparation of Development Plans: 2.44 lakh Gram Panchayats have successfully prepared and uploaded their GPDPs, ensuring data-driven, participatory local planning. • Financial Transparency and Accountability: 2.06 lakh Panchayats have completed online transactions for the 15th Finance Commission grants, enhancing transparency and efficiency in fund utilization. • Widespread Participation in Local Governance: 2.32 lakh Gram Panchayats have conducted Gram Sabha meetings, fostering inclusive and participatory governance at the grassroots level. Challenges Despite the transformative impact of Gram Manchitra, several challenges hinder its full potential. Addressing these issues is critical for maximizing its effectiveness: • Lack of Digital Literacy: Many Gram Panchayat functionaries and stakeholders are not well-versed in using digital tools, limiting the adoption and utility of the application. • Inadequate Infrastructure: Insufficient internet connectivity in remote areas, coupled with limited access to digital devices, hampers the seamless use of Gram Manchitra. • Data Accuracy and Updates: Geo-spatial data requires regular updates and validation to maintain its relevance. Errors or outdated information can lead to inefficiencies in planning and decision-making. • Resistance to Change: Traditional governance practices often resist the adoption of modern, technology-driven solutions, slowing the integration of digital tools like Gram Manchitra. • Limited Community Participation: While the application encourages participatory governance, active engagement from local communities remains inconsistent. • Technical Challenges: Complex functionalities, such as Query Builder and Proximity Tools, may pose difficulties for users unfamiliar with advanced GIS platforms. Way Forward To fully realize the transformative potential of Gram Manchitra, a comprehensive approach addressing existing challenges is essential. Capacity building is crucial, with regular training programs to enhance the digital literacy of Gram Panchayat functionaries. Simplified user guides, video tutorials, and real-time assistance within the application can make its advanced functionalities more accessible. Infrastructure development must be prioritized by accelerating the rollout of BharatNet to ensure reliable internet connectivity in remote areas, coupled with the provision of necessary hardware and technical support to enable seamless usage. Encouraging community participation is equally important. Awareness campaigns and active involvement in Gram Sabha meetings can help integrate local needs into planning processes, fostering ownership and accountability among villagers. Improving data accuracy is another vital step. Mechanisms for regular updates and validation of geo-spatial data, along with automated processes to minimize errors, will ensure the platform remains a reliable resource for decision-making.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="ente-bhoomi-integrated-land-information-management-system-of-kerala-january-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Ente Bhoomi Integrated Land Information Management System of Kerala</span></a><a class="article-nav-link next" href="human-centered-ai-design-a-synergy-of-design-thinking-and-data-science-january-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Human-Centered AI Design A Synergy of Design Thinking and Data Science</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

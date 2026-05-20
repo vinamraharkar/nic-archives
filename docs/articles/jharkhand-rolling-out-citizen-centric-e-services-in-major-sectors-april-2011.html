@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-18.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2011/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Renewing its effort towards utilizing ICT for the benefit of citizens, the government of Jharkhand had earned admiration from all sections of the society, for its determination to bring efficiency, transparency &amp; accountability in day to day governance. The launch of various e-services in association with NIC and at the same time utilizing the expertise of NICSI to strengthen ICT infrastructure in various departments has hastened the launch of these services without cost overrun and adhering to timelines in overall project execution. WITH the implementation of State Wide Area Network (JharNet) by the state government, the last mile connectivity was achieved which created a seamless backbone up to the block level from the state capital, facilitating video conferencing, IP telephony and Data center based services. NIC Jharkhand is instrumental in enhancing various ICT initiatives of the state government, which has created a solid foundation for e-governance in the state having more than one forth of tribal population. NIC has augmented the efforts in providing e-services and has emerged as a major IT solution provider to the state government. Services like e -Nagrik Seva, provides certificates (caste, residential, income etc) at the door step to the people even in remote and rural areas, e-Procurement has reduced the government procurement time with transparency and convenience to the bidders, e-Registration / e-Return and e-Payment has come as a surprise to the business community apart from increasing government revenue manifolds. NIC Jharkhand Data Centre NIC established a state of art &quot;Data &amp; Network Centre &quot;(iNOC) with terabyte of storage space and high speed communication link. Storage Area Network (SAN) is a network of storage devices like hard disks, backup tapes and other devices. It uses fiber channel for faster and reliable data storage / retrieval. Automatic tape backup system with tape library adds to the security/reliability of data storage. The infrastructure provides - Hosting facility under Linux and Windows platform Apache / Tomcat webserver IIS with .Net Support Oracle 10g and MySQL database support Zope / Plone content management Data Storage &amp; Hosting Services - Website of all districts of the state e-Nagrik Seva Software Court Case Monitoring system BPL data for the state Centralised Information system for Transport Department Public Grievance &amp; Redressal System Electoral Information System Intrajhr portal for NIC Jharkhand e-Procurement: Online Tender System e-Procurement system of NIC was first started in PMGSY scheme under Jharkhand State Rural Road Development Agency(JSRRDA). Emboldened by its success the system was extended to nine major state government departments but at present it covers all of them. The system brings better accountability, increased authenticity, confidentiality and enhanced availability during the procurement activities. GePNIC can easily be adopted for all kinds of procurement namely works, goods &amp; services in the government offices. It has following modules and features To bring transparency, efficiency, reduce tender cycle time and provide equal opportunity in the procurement process, the Jharkhand government took a landmark decision by launching the Government e-Procurement System of NIC (GePNIC) - http://jharkhandtenders.gov.in on 17th Dec' 2010 at Ranchi. Speaking on the occasion the Chief Minister, Sh. Arjun Munda said in front of the distinguished gathering that his government is committed towards complete transparency in the bidding process and all the departments of the government will join the online system by the end of this financial year. The system is highly secure with following features: SSL authentication Role based Access Adheres to ADB, World bank CVC guidelines &amp; Tender Transparency Act Secured Encryption Technology Secured Bid submission using DSC / e-Token Security Compliance as per IT Act 2000 Security Audited by three Certified Auditors The system has proven advantageous to bidders evident with less paper work, hassle free operation and data updated in real time. Bids can be submitted from anywhere anytime and downloading of tender documents is easy. Bid documents are digitally signed and encrypted. The system facilitates finalizing tenders at much lower cost with reduced tender cycle time and has reduced vigilance cases. e-Nagrik Sewa : Online Issue of Certificates The first e-Nagrik Sewa Kendra was inaugurated at the block HQ in the Dhanbad district. NIC developed a web based solution for providing G2C services from the Kendra or through Citizen Service Centres (CSC's) which has been opened throughout the state. The web interface (http://www.jhr.nic.in/csc) presents a Citizen and a Government interface. The e-Nagrik Sewa, facilitates submission of application forms by the citizens for issue of certificates like Caste, Birth, Death, Residential and Income. The citizen interface provides for the submission, tracking and monitoring of applications along with the facility to download forms and guidelines issued by the government from time to time. The Government interface provides for updating the status of the applications submitted and generates the Certificates using the utility link. Earlier a citizen has to repeatedly travel down to the concerned government offices to apply for the certificate. After the application is submitted he had to repeatedly visit the office not only to comply with requisite documents but to also know the status of his application without knowing actually when the certificate will be finally delivered. Objective A citizen should be able to apply for a certificate (Birth, Death, caste, Income, Residential etc) at a nearby kiosk / Pragya Kendra through appropriate information with helps and downloads existing on the web based application. Track the status of his application based on the acknowledgement number, received at the time of the application. Comply for any wanting documents as displayed on his status screen. Can post his grievance on the subject to the respective Deputy Commissioner. Should get the certificate through the Kiosk management at his door step. Government or any other authority should be able to verify the authenticity of the certificate on the web. System should provide the facility of working in the regional language (Hindi) Systems Approach A web based application on .Net framework with SQLServer database was developed and hosted at the NIC Jharkhand data centre. Application level security measures e.g. secured authentication and authorization procedures, Checking of SQL &amp; URL injections, salted Hash at the client and server ends, Checking of XSS, CSRF etc along with proper validations are incorporated. Optimized Hybrid approach (Computerization with critical gap filling by manual processes, wherever existing) to speed up and optimize the service delivery in the current scenario. Dynamic Certificate templates to meet the varying requirements of different districts. Document uploading facility with the application. Queue discipline - To encourage the First Come First Serve approach Regional language interface - Application uses UNICODE technology for facilitating data maintenance in Hindi. Web photography of the applicant (caste certificate) at the kiosk to avoid possibility of manipulation. Citizen Centric: The web based system provides the interactive mechanism for service delivery. Citizen, kiosk operator, Office-in-charge and operators all can communicate online with the central data server, fetch and update the information maintaining consistency by the system. System can be accessed at any internet point. However the application can be submitted at a nearby kiosk only. Applicant can view the status of his application viz. received, under process, Certificate ready or delivered. There is no need to travel from a remote place all along to the concerned office at the district or circle headquarter. Process Flow : Under PPP model a private party was entrusted with establishing &quot;Pragya Kendras&quot;- panchayat level kiosks at all the panchayats, approx 4600. The process flow of the system is as follows: A citizen can visit nearby kiosk. The kiosk operator downloads the applications and informs him know about the required enclosures. The basic data is entered at the kiosk and an acknowledgement number and the money receipt, if any, is generated and handed over to the applicant. The application is forwarded to the concerned office. The Office-in-charge updates the status of the application as &quot;Received&quot;. The process starts with verifications etc. If any shortcomings are observed, it is also updated on the web site. If everything is verified and processed, the operator enters the remaining data and verifies for finalization at the in-charge level. The in-charge then verifies and generates the certificates. The status is accordingly updated. The citizen checks his status at a kiosk or from any internet point. He can know if any document is wanting or any discrepancy to be complied. If the certificate is ready, he visits the Kiosk for delivery. Benefits: Though, a nominal amount is charged by the kiosk management the application saves much more on time and cost than that would have occurred due to repeated travelling &amp; harassments. Moreover not only the application can be applied nearer home but the certificate is also delivered through kiosk. He can also know the status, shortcomings etc. very easily. Applicant photograph is also taken (for caste certificate) at the kiosk, which eliminates any possible manipulation. Up to end of last month more than six lakhs certificates had been issued whereby caste, residential and income comprises around 95 percent. e-Services - Commercial Tax Department A major e-Governance initiative in the state was taken with the computerization of commercial tax processes. On one hand the software has improved tax compliance, reduced tax evasion while on the other has brought many new commercial establishments into the tax net. The software has increased the revenue collection several folds and has also enforced compliance of tax rules &amp; regulations. The software designed and developed by NIC in Open source J2EE environment and Oracle 10g database using modular approach, meets the requirements of commercial tax department pertaining to VAT, is functional in all 28 Circles of the state. e Registration : Online Registration of Dealers Dealers register themselves on the website and create their profile giving details along with valid email id and mobile phone no. Their mobile phone no. is validated through a secret code. After successful registration they fill the online application form JVAT-101. Further scrutiny and verification is done by the concerned circle and the TIN no. is allotted. e-Return : Online Return Filing by Dealers Dealers file their returns online after obtaining their password from the concerned circle office. After the first logon they are forced to change the initial password. Then onwards, the returns can be filed online. Government of Jharkhand has made arrangement with the CSCs (Pragya Kendras ) too, for facilitating of the e-Return filing for the dealers. e-Payment : Online Payment by Dealers The e-Payment facilitates transfer of monthly tax amount due, directly from the Account of the Dealer or Dealer Authorized Account to the Government account. This is a simple and transparent facility which ensures online transactions on safe and secure mode. For availing the facility of e-Payment, Internet Banking Account is mandatory for all the TIN Registered dealers. The Registered TIN dealers or other dealers can visit to the website of the Department jharkhandcomtax.nic.in or jharkhand.gov.in for e-payment. After successful transaction the dealer gets e-receipt from the SBI site. Government of Jharkhand has nominated one of its treasuries at Ranchi as the &quot;Cyber Treasury&quot; to maintain all the cyber transactions. The VAT application provides the interface for posting the bank transactions to the Cyber Treasury account. Arrangements are being made for e-payment through other banks also. For further information SHAHID AHMAD State Informatics Officer, NIC, Jharkhand State Centre 2nd Floor, Engineers Hostel No. 2, Dhurwa, Ranchi-834004 Ph: 0651-2400746 sio-jhr@nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="hp-legislative-assembly-embracing-information-technology-in-her-strides-april-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">HP Legislative Assembly: Embracing Information Technology in Her Strides</span></a><a class="article-nav-link next" href="goa-making-a-difference-through-e-governance-april-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Goa: Making a Difference through e-Governance</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

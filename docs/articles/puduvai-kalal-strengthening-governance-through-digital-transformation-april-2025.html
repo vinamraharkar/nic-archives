@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-32.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-33.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-34.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2025/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">The department is committed to upholding a fair and transparent excise system, fostering accountability, integrity, and public trust. By monitoring and regulating excise activities, it works to prevent illicit trade practices, protect consumers, and safeguard public health and safety. A key function of the department is the licensing and supervision of establishments involved in the production and distribution of alcoholic beverages, ensuring adherence to prescribed guidelines and standards. This regulation promotes responsible consumption and helps mitigate the negative impact of alcohol on society. NIC Puducherry has played a pivotal role in transforming State Excise E-Services, enhancing efficiency, security, and accessibility for stakeholders in the excise sector. Through technological expertise, infrastructure support, security measures, and capacity-building initiatives, NIC Puducherry has enabled the department to implement efficient, secure, and user-friendly e-services. By leveraging NIC Puducherry’s support, the State Excise Department can better serve stakeholders and foster a digital ecosystem that promotes transparency, convenience, and regulatory compliance. Process The State Excise Department operates through a structured system that manages various aspects of excise regulation and administration. It ensures compliance, revenue collection, and transparency in the sale and distribution of goods and services. Arrack, Toddy, and Auctioning The State Excise E-Services include a robust online platform for conducting Arrack and Toddy shop auctions. This feature ensures transparency and fairness, providing equal opportunities to all interested bidders. The digital platform simplifies the bidding process, enhances efficiency, and reduces administrative overhead. Online Services Offered • Bidders’ registration • Single and multiple registration options • Solvency and EMD details captured and adjusted dynamically during auctioning • Dynamic extension of bidding time • Minimum incremental bid amount can be defined • Department can define shops listed for auction and their active duration License Registrations The e-services platform offers an online license registration system, allowing individuals and businesses to apply for and obtain excise licenses conveniently. This streamlined process eliminates manual paperwork and reduces processing time. Applicants can submit documents and track the status of their applications through the online portal. Online Services Offered • License registration for distilleries, FL2 tourism, and microbreweries • Registration of new brands and labels • Online payment through e-GRAS • Real-time status tracking • Department workflow approvals • EODB compliance • MIS reports Permit Approval System The State Excise E-Services incorporate a digital permit approval system for issuing various permits, including export, import, transport, and local permits. This system eliminates paperwork, speeds up approvals, and provides real-time status updates. It ensures compliance with excise regulations and smooth business operations. Online Services Offered • Apply for various permits online (Import/Export/Transport/Local/Arrack) • E-payment of excise duty • Renewal of licenses, labels, and brands • Workflow-based approvals • Issuance of IMFL and Arrack permits &amp; licenses • Issuance of hologram permits The State Excise Department of Puducherry is a key government agency responsible for regulating excise activities within the Union Territory. With revenue generation as its primary objective, the department plays a crucial role in excise duty collection and permit issuance. It ensures the implementation and enforcement of excise laws, maintaining compliance with relevant regulations and policies. • Special Excise Duty Collection (SED) • Daily sale and purchase data capturing • Digitally signed permits with DSC token • QR code-based permit genuineness verification • SMS/email notifications • Arrack kits collection • Analytical reports • Dashboard for monitoring Supply Chain Management System The e-services platform includes a comprehensive supply chain management system, allowing businesses to manage ENA permits, registers, and inventory, track the movement of goods, and maintain accurate stock records. This system enables efficient tracking and tracing from the distillery to the retail vend while mitigating illicit activities. Online Services Offered • End-to-end computerization (From distilleries to retail vend) • Application for ENA and special spirit permits • Workflow-based approvals • Issuance of ENA/Special Spirit Permits and NOC • Register details capturing (ENA arrival, blending, hologram, and bottling registers) • Production and stock updates • QR code scanning (cases and bottles) • QR code-based track &amp; trace facility • Dashboard and MIS reports Mobile App Services To enhance accessibility and convenience, the State Excise E-Services provide mobile app support, allowing users to access system functionalities on their smartphones. The app includes features such as QR code scanning, permit verification, stock details, and MRP viewing, enabling users to perform essential tasks on the go. Online Services Offered • Login facility for dealers and department officials • Facility to verify the MRP of a brand • Permit genuineness verification • Stock updates and viewing details • QR code scanning for cases and bottles • QR code-based track &amp; trace Innovative Methods Used • Online Application Process: A user-friendly interface simplifies applications for licenses, permits, and approvals, eliminating physical visits • Real-Time Status Tracking: Users can track applications, receive updates, and ensure a smooth process • Online Payment Facilities: Secure cashless transactions via e-GRAS, net banking, credit/debit cards, and mobile wallets • Enhanced Security with DSC Tokens: Digital signatures verify identity, prevent unauthorized use, and ensure document integrity • Genuine Permit Verification: QR codes enable instant verification of permits, reducing counterfeit risks • Two-Factor Authentication: SANDES OTP service enhances security using mobile-based authentication Impact • Improved Convenience: Users can access excise services online, eliminating physical visits • Increased Efficiency &amp; Transparency: Automation reduces paperwork, errors, and delays • Transparent Online Bidding: Digital auctions ensure fair, real-time bidding and reduce legal issues • Better Compliance &amp; Monitoring: Enables tracking and regulation of alcohol purchase and distribution • Faster Permit Processing: Reduced turnaround time accelerates business operations • Enhanced Revenue Collection: Streamlined processes improve tax monitoring and collection • Same-Day Payment Processing: e-GRAS ensures instant revenue credit, unlike manual payments. • Adaptation to Crisis Situations: Special Excise Duty Online Collection ensured continuity during COVID-19. Technology Used The State Excise E-Services project is a digital initiative designed to streamline and enhance excise-related services using modern technology Key Technologies • Java, Struts 2, PostgreSQL, Apache Tomcat, Nginx for secure, scalable, and efficient operations • Modern web technologies to facilitate seamless transactions, compliance management, and real-time data access • Advanced security measures, including Content Security Policy (CSP), HTTPS enforcement, and session management, ensuring data protection and system integrity By leveraging cutting-edge technology, Puducherry State Excise E-Services ensures greater transparency, efficiency, and convenience for stakeholders. Conclusion The implementation of State Excise E-Services has transformed service delivery, making it more efficient, transparent, and accessible. Through online platforms for auctioning, permit approvals, license registration, renewals, and supply chain management, the department has streamlined processes and improved regulatory compliance. The adoption of technology has not only benefited stakeholders but has also contributed to higher revenue generation for the government of Pondicherry.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="vp-tax-management-system-strengthening-grassroots-governance-through-technology-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">VP TAX Management System: Strengthening Grassroots Governance Through Technology</span></a><a class="article-nav-link next" href="ai-based-face-search-transforming-archives-with-facial-search-intelligence-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">AI-Based Face Search: Transforming Archives with Facial Search Intelligence</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

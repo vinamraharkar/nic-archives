@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-27.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-28.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-29.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2009/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">In the world of distributed computing, corporate applications are hosted in data centers located in multiple locations and are accessed by many users from various locations. To provide secure access to such network resources, technocrats have designed Secure Socket Layer Virtual Private Network (SSL VPN), a remote access technology to connect private networks over Internet - with strong encryption features, multiple authentication and connectivity options for mass deployments. A virtual private network (VPN) has been traditionally used to connect branch offices to the corporate office over Internet as an alternative to expensive WAN connections. Now it is also being used by individual users to access sensitive data, to increase mobility and online transactions. VPN creates a virtual “tunnel” connecting two endpoints by encrypting end to end communication and protecting the data from unauthorized access or interception. There are many VPN technologies such as IPSec, PPTP, L2TP and MPLS which are deployed to meet this requirement. IPSec and L2TP VPN are used for connecting Remote/ branch offices to corporate network over Internet and provide consistent network access similar to LAN. Telecommuters and mobile users, who require seamless access to corporate network for regular work, usually use IPSec VPN or Client based SSL VPN. Clientless SSL VPN connection is provided to business partners, suppliers, public dealing executives, who require partial access to internal applications involving financial transactions, customer details etc from multiple locations such as reservation counters, KIOSKS, Cyber Café, Public Utility centres. IP Security (IPSec) VPN is very popular VPN technology which is being used for both Site to Site and Remote Access. IPSec VPN can encrypt any IP traffic including Video with multiple encryption algorithms and authentication options. Though IPSec VPN is an accepted industry standard for remote access, there are some interoperability issues which make it difficult for mass deployment. IPSec VPN binds the user to a particular machine/laptop where the VPN client S/W is installed. Secondly VPN clients of one vendor usually conflicts with other vendors. Also VPN clients behind Proxy servers face difficulty in establishing IPSec VPN connection as some Proxy Servers do not support IPSec or block the ports required for IPSec communication. Secure Socket Layer (SSL) VPN is an emerging VPN technology which allows users to connect to the enterprise network from anywhere anytime over Internet using any standard web browser. It supports access to all applications like Http, HTTPS, FTP, SSH, RDP over secure SSL tunnel. SSL VPN does not require any client software to be installed thus allowing VPN connection even from less trusted network as Cyber café and KIOSKS. This article intends to give general overview of SSL VPN Technology, architecture, functions and features. SSL protocol SSL protocol was designed by Netscape Corporation to protect only traffic generated by Web browser. This protocol aims to encrypt entire communication between client's browser and Web server. SSL VPN uses this concept to create a secure tunnel using SSL protocol between the client and SSL Server and then relays the web traffic to the actual servers. SSL functions in between the Application Layer and Transport layer using TCP port 443. SSL receives data from application layer, authenticate, signs and encrypts before sending to the transport layer. Any SSL session has two main phases. — SSL Session Negotiation: It starts when the SSL client initiates a https connection to the SSL server. The SSL Server responds by presenting its SSL certificate issued by a trusted Certificate Authority. The User accepts the Certificate and presents its own Digital certificate if demanded by the server. Then the server and client exchange their security parameters (Cipher suite) to negotiate on a master key. This master key is used to generate session keys which are used for data encryption. SSL supports multiple encryption algorithms and are deployed as per the organizations' security policies. It uses asymmetric cryptographic algorithms to secure the exchange of the session keys. — SSL connection: Once the negotiation phase is completed, the session key generated from the master key is used to encrypt, Hash the data and transport the data. It uses symmetric cryptography for data encryption / decryption. Periodically the session keys are exchanged between the client and server using the pre negotiated master key. The security parameters negotiated in a SSL session and are effective until the session is terminated. Whereas for any new connection, new session key is used for data encryption between the client and server. SSL VPN Architecture Components of SSL VPN include SSL VPN Server / Gateway, VPN users, AAA servers and Network resources as application servers. SSLVPN Server / Gateway SSL VPN servers are usually hardware appliances like Firewall which have a Public Interface and multiple private interfaces. The SSL VPN client connects to the SSL VPN server's public interface using https protocol through any standard Web Browser such as Internet Explorer, Mozilla FireFox etc that supports SSL Version 3 and above. All internal application servers are connected to the private interfaces of the SSL appliance. Primarily there are two ways in which SSL VPN can be designed: — Web VPN ( Clientless SSL) : In this type of SSL VPN , users connect to SSLVPN server and after the SSL session is established, the server redirects the connection to a Web Portal which has multiple links to other internal Web Servers, FTP server, Terminal servers etc. All user requests are received by this portal and relayed to the respective internal servers and vice versa. A single SSL connection is established between client and SSL Server and connection to application is established between the SSL VPN Server and corresponding application server. However it doesn't support all applications which require client side scripting. — Client based SSL: It allows users to connect non Web applications like Remote Desktop , Outlook Express, SSH Client, Database Server etc. After the SSL VPN connection is established, SSL client agent is automatically loaded and activated as plug-ins into the user's machine. The SSL client is assigned a Virtual IP address from the SSL VPN Server. SSL Client agent uses proprietary mechanism to encapsulate all non Web traffic of the client and transports through the SSL tunnel. Though some functionalities of IPSEC VPN are fulfilled in Client based SSL VPN, still it cannot support some VoIP/ Video Conferencing applications. Additional features of SSL VPN — Authentication of SSL Client: In general SSL connection does not require client authentication. However for implementing SSL VPN, authentication is essential to identify the users and enforcing group policies. SSL VPN supports flexible client authentication methods such as X.509 digital certificates, smart cards, username and password and two-factor authentication (e-Tokens). SSL VPN also supports authentication from external servers such as RADIUS, Active Directory, and Lightweight Directory Access Protocol (LDAP). This is required to integrate with existing authentication databases for centralized management, accounting and billing. — Application Translation: The latest version of SSL VPN also performs as application translation which can convert information of non Web-enabled applications. This allows users to use a Web browser to access applications that do not have their own Web interfaces or require client software. For example, SSL Web VPN can be configured to upload files from FTP Servers without using FTP or SSH client at user end. The SSL VPN server translates this application into Web-based format and relays to the user. — Network Access: Apart from tunneling Web applications, SSL VPN can also encapsulate all TCP/IP traffic and transport through the SSL Tunnel including the routing information. In full tunneling mode, it can transport all TCP/IP traffic generated from applications like Outlook Express, terminal services, file sharing in the client system to corporate network through the SSL tunnel. In Split tunneling mode, only traffic for internal applications are routed through the SSL tunnel and other Internet traffic is routed through normal network connection. To support this feature the remote client agent (SSL Client) is activated as plug-in in the client machine from the VPN server. — Access Control: SSL VPN can control the access of remote users in granular level such as per-user, per-group and per-network through group polices. Group policies can be configured to allow users of certain group to access more resources, if they are coming from specific network i.e. branch offices and during office hour. However, the same user group is limited to few resources if they are not coming from specific network. — Endpoint security controls: SSL VPN can validate the integrity of remote client by checking weather it has up-to-date patches and antivirus software, before permitting access to the client. As mentioned SSL VPN is an emerging technology and vendors are regularly upgrading the features of their products. However the selection of VPN technologies depends on the user's requirement. Even though many functionalities of IPSec VPN are incorporated in Client based SSL VPN, it is not a substitute of IPSec. SSL VPN is a useful technology for mass deployment for semi trained users as customers, suppliers, temporary work force from un-trusted network.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="e-procurement-bridging-digital-divide-an-exclusive-interview-with-sh-pradipta-kumar-mohapatra-ias-it-secretary-govt-of-orissa-on-successful-completion-of-one-year-of-implementation-of-nic-gep-in-orissa-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-Procurement: Bridging Digital Divide An Exclusive Interview with Sh. Pradipta Kumar Mohapatra, IAS, IT Secretary, Govt. of Orissa on successful completion of one year of Implementation of NIC-GeP in Orissa</span></a><a class="article-nav-link next" href="hands-free-computing-by-integrating-speech-recognisation-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Hands Free Computing by Integrating Speech Recognisation</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

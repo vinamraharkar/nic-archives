@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-30.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-31.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">We must always meet customer’s requirement. Be it any role in the software industry - developer, tester, security auditor or manager, our job is to support the business so that it wins in the marketplace. Now, there is tough competition among the business players in every field to woo the customers. So, they demand product innovation and delivery at a rapid pace. Three or four product releases in a year is no longer a norm, business demands the release every week or every month with new features or to support the customer requirements. These paradigm shifts happening in the industry gave birth to technologies like Agile Software Development practices, DevOps, DevSecOp etc. Enterprises across the world are demanding software release at high speed to meet business requirements. when software is developed at such speed, security should not be left behind which can only happen if security is built in to SDLC. Such requirements gave birth to technologies like Agile development, DevOps and DevSecOps.In this paper we describe the DevOps technology that enables Development team and Operation team to collaborate with each other on day to day basis such that operational issues and customer problems reduce to a larger extent. We also explain DevSecOp technology that allows security to be built in to the application through automation, cultural shift, application security programs etc. In the end we describe what technologies and tools NIC is providing to the developers to implement DevSecOp across organisation. Why DevOps? If Development and Operation work in silos, then when a developer writes code, builds it, tests it and deploys it into the operation, it normally fails. Whatever the failure may be- deployment failure, operation failure or crashes, the customer faces the problem in running the business. Normally, in such cases, the blame game begins, people from development say that there are operational issues and people from operations blame it on development issues and a lot of time is lost in the process. This usually happens because development and operation are not in sync with the software stack, tools and versions. Moreover, as discussed earlier, it is today’s requirement to push the code to deployment/operation at a rapid pace, certain deployment each day. DevOps was created to address all these issues. DevOps best practices can be narrowed down to three basic principles called the three ways : First way The first principle says we need to accelerate the work from development to operation, and then to the customer. This can be achieved by limiting work in progress and through automation. Second way The second way enables constant flow of feedback from operation to development. This can be achieved through continuous integration, build and deployment process working together with a fast, automated suite of tests. Third way The third way is about creating a culture of continual experimentation and learning. While DevOps culture brought a lot of innovation to the software development process, security was either not considered or not able to keep pace with the rate at which software was being built and released. DevSecOp is an attempt to inject security into the DevOps process and make sure that software delivery rate is not disturbed due to this injection. DevSecOp is short for Development, Security and Operation. This technology dictates that security is not the job of one group, rather everyone including development, security, operation quality is responsible for security. If any issue comes in production, all the teams should work together to resolve the issue therefore all the teams should learn security. Security should not be an afterthought, rather it should be built into the application. Security should be discussed and practiced during all the phases of Software Development life cycle during requirement analysis, architecture, design, development, testing and in operation. Hence, to deliver software at high speed and make it secure as well, security needs to be built into the application development workflow and process. The earlier we introduce security into SDLC, the sooner we will be able to identify and fix vulnerabilities in the software, rather than waiting till the end for security assessment reports or run time issues in the operation. Organizations can introduce security into existing continuous integration and continuous delivery (CI/CD) pipelines. Just like after a build failure, software is not eligible for deployments in the production, a policy may be defined by the organization, if a security issue is caught in the CI/CD pipeline, the application should not reach production until the vulnerabilities are taken care of. To implement DevSecOp, organizations need to integrate application security tools into CI/CD pipeline. Some of the tools are: • Static Application Security Testing (SAST) • Software Composition Analysis (SCA) • Dynamic Application Security Testing (DAST) SAST SAST tools scan the source code of the application and identify security vulnerabilities that may be exploited by the hacker while in production. These tools pinpoint the code location where security issues exist. This tool is used by the developer while the developer is writing the application and so the advantage of this tool is that the developer may fix all the security issues reported by the tool during the development phase of SDLC. SCA SCA tools scan the source code and binaries to identify vulnerabilities in open source libraries included in the application. These tools not only uncover the security issues but also highlights the licensing risks due to open source software components. DAST DAST is an automated black box testing technology that attacks our web applications/ APIs just like hackers would do. DAST tools do not require access to source code to perform the scan on web applications/APIs. Since these tools attack the application in real time just like a hacker and provide proof for each of the reported issues, it has a low number of false positives. With traditional software development strategies, it is not possible to deliver secure software at high velocity. DevSecOps is the philosophy of incorporating security practices within the DevOps using automation and security tools, and thus enabling secure software delivery through the seamless and transparent integration of security into the CI/CD pipeline. RATNABOLI GHORAI DINDA Dy. Director General, NIC DevSecOp In NIC, the Application Security Group is providing the following tools to developers to enforce security in the CI/CD pipeline through automation: HCL Appscan Source for Development This tool provides a plugin to integrate in Developer IDE like Eclipse, Microsoft Visual Studio etc. This allows developers to scan the code, find vulnerabilities and fix it during the development phase of SDLC. This tool also provides recommendations for the issues reported by it. HCL Appscan Enterprise This tool is a black box security testing tool that identifies the security threats by attacking the running web applications/APIs/ web services just like hackers. It does not require source code of the application and can scan the applications developed in any language. It also provides proof of the reported issues of what parameter tampering/ manipulations/fuzzing were done and its effect on the target application. Conclusion If we utilize these tools regularly as a part of our design and development work, we will be able to eradicate security issues early in the SDLC. Moreover, the developers acquire a lot of security knowledge in the process and will apply these learnings in the other projects they work up on. All these things will certainly make a cultural shift in the organization and will ultimately make the software much more secure, robust and resilient. For further information, please contact: Anil Kumar Jha Sr. Technical Director Application Security Audits &amp; Assessment Division National Informatics Centre, A-Block, CGO Complex Lodhi Road, New Delhi - 110003 Email: aniljha@nic.in, Phone: 011-24305140</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="endpoint-the-start-point-of-cyber-security-enhancing-cyber-security-through-advanced-endpoint-security-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Endpoint: The Start Point of Cyber Security: Enhancing Cyber Security through advanced Endpoint Security</span></a><a class="article-nav-link next" href="preventing-cyber-crisis-must-haves-for-all-organizations-to-secure-against-cyber-crisis-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Preventing Cyber Crisis: ‘Must haves’ for all organizations to secure against cyber crisis</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

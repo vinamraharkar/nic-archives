@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-25.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-26.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-27.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-28.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-29.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2013/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">INTRODUCTION The state is divided into 27 administrative districts with its major cities, evenly spread between Northern and Southern extremes, well connected with Rail. Predominantly an abode of tribal population the State is perhaps the only among its contemporary states to boast of small and large scale industries including Steel Plant, Universities, Medical and engineering colleges, NIT, IIM, Airport, Doordarshan, AIR, and FM stations, Parks, and wild life sanctuaries. With its State Wide Area Network (CG-SWAN) in place, State Data Centre (SDC) in offing and much talked about CHOICE project it has given clear signal that it is not lagging behind in the field of IT either. Supported by relentless quality services of National Informatics Centre, Chhattisgarh has already been in quite a few accolades and is already recognized as one of the best IT implementing states of India. Details of IT infrastructure and some of the projects implemented are listed here. NETWORK OPERATION CENTRE (NOC) NIC commissioned ‘Network Operation Centre’ (NOC) which also serves as the Digital Gateway for Chhattisgarh. Total number of nodes connected with NOC stands at about 10000. NATIONAL KNOWLEDGE NETWORK (NKN) A very high speed (Multi-Gigabit) network has been setup in 14 institutes, universities, IIM &amp; NIT of the state. Chhattisgarh State Wide Area network (CG SWAN) and State data Centre (SDC) are also connected over NKN. Based on this high speed network State of the art Virtual Classroom has been established in NIT Raipur. LAN SETUP AT NEW MANTRALAYA State of the art fibre backbone, redundant, structured LAN with more than 5000 nodes has been setup in four campuses of new Mantralya Building at New Raipur. VIDEO CONFERENCE SETUP (VC) Video conferencing facilities are available at NIC Sate Centre (2 nos.), Chief Secretary Office, Chief Minister Residence, State Information Commission, and all 16 NIC district centres. All are IP based and equipped with Quality of Services (QoS) to ensure maximum quality during VC meeting. MCU is installed at State Centre for conducting a multipoint VC session at any time. WEB SERVICES State Centre provides web services such as Domain Name Registration and Web Hosting. At present about 100 websites are hosted on NICHQ and more than 300 web based MIS are hosted on State centre. e-MAIL MESSAGING NICNET based Mail messaging services have been extended to approximate 2754 users of various Central/State government departments and Educational Institutes spread up to block level. GRAMSURAJ Every year Gramsuraj is organized and details are collected directly from villagers of each village in the state. A unique code is given to each application and preprinted receipt is given to each applicant during Gram Suraj Abhiyan. Applicants can see the status of their complaints at any time on the portal at http://cg.nic.in/gramsuraj or through SMS/e-mail. Registered letters are forwarded online to district, department or officer for necessary action. NAGAR SURAJ It is the urban variant of Gram Suraj Abhiyan. Nagar Suraj Abhiyan 2012 was organized during 19th to 26 Nov'2012 to collect problems/demands of urban people of Chhattisgarh State in 168 Urban Local Bodies and more than 3000 wards. On-line registration facility is also provided to the citizen. Citizens can trace their application on the portal http://cg.nic.in/nagarsuraj. JANDARSHAN In Jandarshan program on every Thursday Honourable CM meets the public and personally receives their grievances. The whole process of jandarshan is computerized for effective monitoring and redressal of these grievances. Collector Jandarshan program is also organized in the districts from time to time for public. Applicants can see the status of their applications on the website http://cg.nic.in/jandarshan using the Token number issued at the time of online registering. e-KOSH :TREASURY COMPUTERISATION The product is to provide solutions for effective Fiscal Management, Budgetary Control on Expenditure, Receipts, Accounting, online tax payment etc. e-Payment system is being facilitated to ensure that payments are credited to the beneficiary’s bank account directly from treasury in respect of salaries, sales tax refunds etc. e-Kosh is a hybrid system that has two components e-Kosh (Core) offline and e-Kosh online (online portal) with all types of synchronization between these two. While e-Kosh (Core) takes care of process automation at treasuries, e-Kosh online provides online information on expenditure, receipts, budget availability etc. Contributions of employees recruited on or after 1.11.2004, who are covered under the New Pension Scheme (Contributory Pension Scheme), are accounted through the salary system compiled by treasuries using e-Kosh software and consolidated at Directorate. The combined account is transmitted to NSDL on monthly basis. The web enabled software e-Challan facilitates government tax payers to pay the taxes online. PENSION MANAGEMENT SYSTEM Online pension management system automates the pension processes and various related transactions at divisional joint director offices. The broad objectives are to track monthly pension payments, evaluate government requirements on pension liabilities from time to time and redressing the grievances of pensioners. E-PAYROLL The online payroll software is implemented in the state to facilitate DDOs to generate salary bills, personal claims, arrear bills for each state government employee. The eKosh Project has received Oracle e-Governance Excellence Award in 2006. LAND RECORDS COMPUTERISATION PROJECT (BHUIYAN &amp; BHU-NAKSHA) The Chhattisgarh Land Records Computerisation project named ‘BHUIYAN’ has been under implementation accross all the Tehsils of the State for the past ten years. The public has a facility to view the land details on WEB (http://cg.nic.in/cglrc). An open source based comprehensive tool BHU-NAKSHA to store and secure the digitized parcel maps and to edit them to reflect actual changes arising out of mutations caters to all basic necessities of Patwari with regard to parcel map management. BHU-NAKSHA has been integrated with existing BHUIYAN database. TRANSPORT PROJECT (VAHAN &amp; SARATHI) The vehicle registrationa project VAHAN and the driver's licence project SARATHI have been successfully implemented in all Transport offices of the state. While VAHAN provides all the facilities related to Registration Certificate (RC) transactions, SARATHI facilitates Learning and Driving Licence (DL) related transactions. Both the applications have been customized to print SMARD CARD based RCs and DLs. The registration and Licence data regularly get transmitted to State and National Registers. Customisation of VAHAN application has also been done for successful implementation of Online Dealer Point Registration System (DPRS) in Chhattisgarh. e-RETRUN OF COMMTAX DEPARTMENT Implemented since July 2010, 56000 registered dealers of commercial Tax Department in the state have filled quarter/annual returns online. This system has eased the burden of dealers and helped the commercial tax department in monitoring revenue besides identifying the defaulter dealers. The system facilitates the dealers to file their quarterly returns online. e-Return is available at http://cg.nic.in/AnnualReturn for the public. e-REGISTRATION OF COMMERCIAL TAX DEPARTMENT Any dealer who wishes to apply for registration under VAT and CST or VAT only or CST only shall have to submit application online and obtain a temporary TIN No. with validity for 15 days within which dealer shall appear before registering authority for a personal hearing and to get Temporary Tin converted into Permanent TIN. This service is covered under the Right to Service Act which mandates approval/rejection of registration application within 15 days. The fear that the Software auto approves the pending applications on the expiry of 15 days creats a pressure on registering authority to dispose off the application within stipulated time. e-Registration can be accessed at http://cg.nic.in/eServices. ONLINE INVENTORY SYSTEM FOR CHHATTISGARH STATE BEVERAGE CORPORATION With an annual turnover of Rs 600 crore the Chhattisgarh State Beverage Corp. has two godowns at Raipur and Bilaspur catering to contractors from all over the state. Online inventory System helps maintain the inventory at both godowns as well as accounts of corporation. It keeps distillers with first hand information of balance stock at 2 godowns of their products so that they can apply for fresh Purchase Order. This software also has an online liquor purchase facility for contractors by using payment gateway of Punjab National Bank. The URL to access the software is http://cg.nic.in/csbc. COMPUTERIZED FOOD GRAIN SUPPLY CHAIN MANAGEMENT n Awards Received n National eGovernace Award 2008 (Bronze) n eIndia 2008 Award (Best Project in eAgriculture Track) n eIndia 2008 Award (Best ICT enabled department) n Manthan South Asia Award 2008 n CSI-Nihilent Award 2008- Best eGoverned Department n National eGovernance Award 2009 (Gold) n Over All Best IT implementation of the year 2012 n Prime Minister Award for excellence in Public Administration - 2008 n sKoch Digital Inclusion award 2012 n CSI-Nihillent Award 2012 Chhattisgarh has been operating computerized food grain supply chain starting with paddy procurement from farmers, its storage, milling and distribution of rice and other commodities to 3.4 million ration card holders through 10,800 Fair Price Shops. As a part of this project, 1800 Paddy procurement centres, 60 storage centres, all district offices concerned, 120 Civil Supplies Corporation distribution centres and 35 FCI rice receiving centres have been computerized covering six different organizations involved in food grain management. Purchase and issue at paddy procurement centres including generation of cheques has been computerized. Miller’s registration, Agreement with millers and generation of Delivery Orders etc. are computerized. 3.4 Million Ration card holders database has been prepared. Calculation of monthly allotment to FPS has been automated. Call centre with a toll free number 1800-233-3663 is operational from 8:00 AM to 10:00 PM. Citizen interface web site is hosted to increase the citizen participation in controlling diversion of PDS commodities. COREPDS Chhattisgarh has successfully launched FPS automation under the name COREPDS which expands as Centralised Online Real-time Electronic PDS. COREPDS has introduced mechanical authentication of beneficiary at the time of service delivery to check proxy issues and empowering beneficiary with the right to chose FPS by offering portability of FPS, to improve service delivery. In COREPDS, FPS’ are equipped with a POS device with GPRS connectivity. Each BPL beneficiary is provided with a Smart Ration Card (SRC). APL beneficiaries have been registered with their mobile numbers. PDS commodities are delivered to BPL beneficiary with Smart Card authentication and to APL beneficiary with OTP (One Time Pin) authentication. They can now go to any FPS to claim their entitlements. Portability introduced fear of losing customer in FPSs and competition among FPSs, giving a reason to improve service delivery, in terms of not only quality and quantity of commodities but in the behaviour and treatment with the beneficiaries at FPS. MAHATMA GANDHI NATIONAL RURAL EMPLOYMENT GUARANTEE ACT (http://nrega.nic.in) The MGNREGA is being implemented in all 27 districts of the state through the web enabled software NREGAsoft. The electronic fund management system (e -FMS) and e- Muster roll are being implemented in pilot in district Dhamtari.MGNREGA Call centres have been established at various locations in the state (http://cg.nic.in/epanchayat/nregacall). e-WORKS: WORKS &amp; ACCOUNTING SYSTEM OF RURAL ENGINEERING SERVICE (RES) (http://www.cg.nic.in/resworks) RES is responsible for carrying out various kinds of works in rural areas under various schemes, entrusted to it by the Panchayats. Web enabled software captures the entire process flow of the department and has the feature of online cheque printing to the contractors or agencies. e-PANCHAYAT – http://cgpanchayat.gov.in Under e-Panchayat project the modules PRIAsoft, Planplus, Local Government Directory, Actionsoft and Area profiler of the Panchayat Enterprise Suite [PES] have been implemented in the state. The state was awarded the second prize in the national e Panchayat awards for the implementation of e Panchayat during the FY 2011-12, by the Ministry of Panchayati Raj. ELECTORAL ROLL MANAGEMENT SYSTEM (ERMS) http://ceochhattisgarh.nic.in The software captures entire process flow of the assembly and parliament elections conducted in the state. Digital Signatures are being used for authentication in the software. The software used extensively during the Assembly elections 2008 and Parliament elections 2009 is now being rolled out in all the states by Election Commission of India. e-ROJGAR: ONLINE EMPLOYMENT SERVICE It is a web based application that takes care of all common activities carried out at employment exchanges to maintain uniformity of the procedures. e-Rojgar was made online in oct-2010 for the job seekers. The related websites are http://cg.nic.in/cgemployment and http://cg.nic.in/exchange VIDHAN SABHA COMPUTERISATION A web based MIS application catering to the question/Answer monitoring needs of the State Assembly. On one hand it takes care of activities related to the initiation of a question by MLAs till its finalization and sending it to the HODs at Vidhan Sabha side and on the other takes care of the activities starting from receiving the question by HODs/Secretary till sending the reply to Vidhan Sabha at Mantralaya side. It is hosted at http://cg.nic.in/cgvidhanqams OSMS (MINORITY WELFARE SCHOLARSHIP SYSTEM-) It is a web based application to automate the procedure for the merit-cum-means based scholarships (financial assistance) provided to the poor and meritorious students belonging to minority communities. Implemented in Chattisgarh State for the students belonging to minority communities and in the 105 educational institutions providing the courses covered under merit-cum-means scholarship. Its URL is http://momascholarship.gov.in. AGRIMIS Web based solution for monitoring the activities of agriculture department that includes fertilizer &amp; bio-fertilizer distribution, seed distribution, loan distribution, fertilizer testing and rainfall monitoring. http://cg.nic.in/agrimis AGRICULTURE SUBSIDY An online application that automates the subsidy distribution operation under various schemes of Agriculture department. http://cg.nic.in/agrisubsidy e-MAHTARI Mother &amp; Child Tracking System:- An online application through which the details of health services provided to a women during pregnancy, delivery details, services given post delivery, registration of child is done. http://cg.nic.in/healthmctscg RSBY ONLINE Web service has been used to receive real time data from insurance company and generate analytical reports to monitor the work flow to speedup the claim settlement process for BPL beneficieries of free treatment under Rashtriya Swasthya Beema Yojna. http://cg.nic.in/healthrsby STATE HUMAN RIGHT COMMISSION (SHRC) Web based office automation software for SHRC covers the complaint registration, case proceeding, disposal, re-open, complaint category administration, and reminder &amp; notice generation. It also generates various reports for SHRC and National Human Rights Commission. http://cg.nic.in/cghrc</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="prime-minister-s-media-corner-official-media-resources-from-pm-s-office-anytime-anywhere-january-2013.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Prime Minister’s Media Corner: Official media resources from PM’s Office anytime anywhere!</span></a><a class="article-nav-link next" href="kerala-e-services-for-god-s-own-country-january-2013.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Kerala - e-Services for “God’s own Country”</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-4.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-5.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-6.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2004/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">India-the World’s largest Democracy went to polls for the 14th LokSabha and 4 State Legislative Assembly Elections of Andhra Pradesh, Karnataka, Orissa &amp; Sikkim during the months of March, April and May 2004. The election process was held in four phases. It was a massive exercise carried out by the Election Commission of India (ECI). The scale of operations could be gauged from the facts that there were 67 crore electors, almost 7 lakh polling stations and over 40 lakh officials who were supported by civilian police and security forces. While it goes to the credit of the ECI that such a big task has been accomplished smoothly by fair conduct of these polls, this big scale of operations could not be carried without support of Information and Communication Technologies (ICT). NIC with its centres in all state and district headquarters provided the requisite ICT support at all levels. The NIC role during the General Elections 2004 for the 14th Lok Sabha and four State Assemblies Elections was formalized in February 2004, when the ECI approached NIC for country wide ICT support during the Elections and a working agreement was reached between NIC and ECI to work closely during the election period and the non-election period in the following specific areas: ™ ISP Services (Internet access through dial-up connectivity) ™ Data verification and cross-verification ™ Hosting of websites of State Chief Electoral Officers (CEO) on NIC web servers ™ Compilation of Email addresses of Returning Officers (RO)/ District Election Officers (DEO) ™ Video Conferencing (VC) facilities of NIC All NIC State and District Centres provided valuable support as per the agreement in totality throughout the country. The NIC Hqrs provided access to ECI for cross verification of result data. The trust imposed by ECI on the authenticity and reliability of NIC’s data is evident from the fact that ECI website provided a prominent link to NIC’s election results website http://elections.nic.in. After the elections, the Election Commission has also invited NIC to chalk out further plans for enlarging the scope of association between NIC and ECI. The services provided by NIC offices across the country can be classified as: ™ ISP Services: The ROs used the RAS connectivity through the NIC districts centres as local ISP service to access the ECI web server and update the GENESYS data online from the counting centres. The Internet services on LAN were used as back up. ™ Data verification and cross-verification: During counting of votes, NIC created an access-controlled site specifically for ECI. This site contained the list of declared results and the details of winners, losers and the vote details. This site was used by ECI to verify the results of EC with NIC data. ™ Hosting of State CEOs’ websites on NIC web servers: The Election Commission desired that all State Election Department websites be hosted on NIC’s secure web servers. Accordingly, most of the websites of CEOs were hosted on NIC servers and some of these were developed by NIC State Centres. The strength of NIC is visible in the URLs of 25 CEO websites (http://www.eci.gov.in/links/Links_fs.htm). The electoral rolls and scanned affidavits of all contesting candidates were hosted on these websites. ™ Video Conferencing: Videoconferencing Division provided support to Central Production Centre (CPC), Doordarshan during Elections. Under this programme the field officers of Doordarshan from selected districts were able to share and transfer the Video footage of elections to CPC, New Delhi over videoconferencing. The VC facilities were also used for training of DIOs and election officials on the use of GENESYS software and for monitoring of the election process by some CEOs. ™ Application Software: Most of the NIC State Centres have developed standard software to cater to the pre-poll, poll day and post poll activities. These software are implemented at the RO level to meet administration needs related to polling parties formation, deployment, tagging, voter turn out, compilation of results etc. The use of EVMs has necessitated that result processing be done on computers at majority of the counting halls and NIC software were used to generate mandatory ECI reports. ™ NIC-Doordarshan (DD) Project: On the counting days, parliamentary and assembly election results were transmitted to NIC web servers through NIC District Centres keeping DD ahead of other news channels in live coverage. ™ Miscellaneous: Establishment of Help Lines on telephone/ Ekiosks, Email-Internet access to ROs/Election Observers, providing computer hardware, attending meetings with CEO officials at ECI, New Delhi etc. Kerala-Trend 2004 The Kerala State Election department had set up a computer network with the software ‘TREND 2004’ developed by NIC, Kerala State Unit, to declare and disseminate the results of the election from 20 Lok Sabha constituencies covering 140 counting centres. The votes were counted assembly constituency wise. Each counting center was connected through a special telephone line to the control centre set up at the office of CEO to declare the result. On completion of counting of all polling booths within one assembly segment, the updated results appeared on computer screen at the collectorate and media centres at all district headquarters. Shri PJ Thomas CEO, Shri KM Abraham MGP Secretary, Shri VS Raghunathan SIO at the Election review meeting Maharashtra-Appreciated NIC Maharashtra State Centre has played a key role in the Parliamentary Elections 2004 in Maharashtra. Maharashtra has 48 parliamentary constituencies and all 35 NIC District Centres and State Centre were involved in the successful election data transmission to ECI and NIC web servers. On the counting day, a control room was set up at NIC State Centre to coordinate result data transmission from districts. There was interaction with Doordarshan Mumbai and DD news video clippings were transmitted using NIC’s VC studios via NICNET. The DD Clipping of NIC State Centre Election activities on 13th May was shown on local DD-Sahyandri Marathi channel. The CEO Maharashtra office was provided technical help for GENESYS software implementation for which two Video Conferencing sessions were held with Mrs. Rama Nagpal, Sr. TD NIC Hqrs and all DIOs. Additionally, following software were developed and implemented uniformly by NIC district centres: ™ Formation of Polling Parties using randomization technique ™ Generation of Polling station wise Poll statistics ™ Election counting process Orissa- Election Management NIC Orissa State Unit had taken up the Election Management during the simultaneous Election of Lok Sabha and State Legislative Assembly. During this period, the Election Team had taken up the following responsibilities: ™ Development and implementation of a centralised Election Management software across 30 districts for formation of polling parties, TA/DA calculation, booth allocation using randomization, report generation. ™ Hosting and maintenance of CEO, Orissa website on NIC Server. ™ Scanning of affidavits, sending relevant data of nomination and affidavits to CEO, generating voter turnout reports and sending to ECI ™ Implementation of GENESYS software for transmission of results data ™ Development of an intranet software for capturing the data for Assembly Constituencies and displaying the result. Himachal Pradesh-Electoral Rolls The staff at NIC Mandi busy with the processing of the results data Himachal Pradesh was the second State after NCT of Delhi to host the electoral rolls on the Internet at http://himachal.nic.in/ electorshp. The Himachal rolls are in Hindi and can be searched by name of elector without knowing Hindi keyboard layout. An innovative search feature was designed by NIC Himachal Pradesh State Centre that made the Electoral Rolls popular among Himachal electors. The rolls proved very useful to the general public for the 2003 Assembly elections and 2004 Lok Sabha elections. Just imagine people searching their names, polling station code and address and elector serial number from the website and going to cast their votes without requiring any searching at the polling booths since all details are known to the elector beforehand. Similarly, persons whose names did not figure in the rolls could get their names added in the rolls before the elections so that there were no surprise omissions on the polling day. During elections, the NIC District Centres provided support in preparation of polling parties and their deployment as per ECI guidelines, implementation of GENESYS software at counting centres, processing of final result sheets in Form 20 and data transmission for the NIC-DD project. Goa-Election Information System NIC Goa was involved in the Election process right from the beginning. The special highlight was the Election Information System software, which consisted of three modules for posting of staff, voter turnout and counting of votes. The software was implemented in all the eleven taluka offices of both the districts, the offices of ROs, Observers and CEO by installing computers. The counting centres, CEO and ROs were connected through the GoaNET so that the election progress could be monitored online. Community Information Centres (CICs) in the 8 Northeast States During the Elections 2004, the CICs at block level were used extensively to support all aspects of election activity. Some of these are: ™ All the 487 CICs disseminated results information to general public and media through result websites created specifically for this purpose. ™ Since counting centres were set up at non-district headquarters, CIC network infrastructure and manpower was used to transfer counting data to ROs in Assam. ™ In Nagaland, CICs were used to access electoral rolls information by general public after declaration of elections. Commissioner, Nagaland had appreciated the network services of NIC at CIC level in the State for timely transmission of Election News. ™ The CICs at Serchhip, Mamit, Lawngtlai, Kolasib and Champhat in Mizoram were used by respective Deputy Commissioners for data management and transmission of results to ECI using GENESYS software. ™ CIC operators in the state of Tripura have been engaged in collecting Election Counting Results from the Counting Centres for the NIC-DD Election Project as well as for the Election Commission of India through the State Government machinery. ™ In Manipur, CIC operators of Kangpokpi, Tamenglong and Jiribam, provided support to the local administration in the conduct of elections. ™ In Meghalaya, many people visited the CICs, especially in the West Kahsi Hills and Garo Hills, to check their names in the electoral rolls and elections results. Highlights of NIC’s special efforts in some States/ UTs Arunachal Pradesh: NIC was actively involved in the poll process right from the start and provided support to the Administration in preparation of electoral rolls using TERM software Assam: Apart from providing the routine support in pre-poll and post-poll activities, a highly successful network-based system was developed to capture counting data at polling station level by using the services of a number of non-RO (Returning Officer) districts and CICs. The network was partly modem-based and partly VSAT-based. The data capturing and compilation system worked efficiently. The ROs appreciated NIC and CIC efforts in holding free and fair elections in the State. Bihar: The Election Confidential-ELECON software developed and implemented by NIC Bihar has been in use during the elections since 1991 and gone through a number of metamorphoses, incorporating the latest guidelines of the ECI from time to time. It has been designed as a software tool, takes less time to implement and takes care of almost all election related activities at various stages. The software was implemented for all 40 parliamentary constituencies in the Lok Sabha 2004 poll in addition to the other mandatory support by NIC. Chandigarh: Software was developed to monitor the special revision of summary nature of electoral roll, campaigns for Election Photo Identity Cards and training of polling staff on the use of EVMs. The website of the CEO was developed and scanned affidavits of contesting candidates, electoral rolls uploaded on this website. In addition, polling parties formation, two-hourly report on voter turnout, compilation of results, Email support and data transmission were also carried out. Chandigarh being an urban constituency, compilation of elections results was done centrally after getting data from counting centres through the online system and disseminated to the CEO/ ROs /Observers on the WAN. Gujarat: The NIC Gujarat supported the election authorities at the district level during the conduct of elections by using ICT tools for speed, accuracy and transparency. For years now, NIC Gujarat is part of the election process right from the election notification stage till the results are declared. The Election 2004 was no exception and it can be rightly summed that there is no activity at the RO level at the district where ICT tools are not used with the active involvement of NIC District Centres. Haryana: The Windows based Election Duty Assignment software was developed by Haryana State Centre and implemented in all districts to take care of the pre-poll election process activities like Polling Parties formation and their assignment to booths randomly. HELP LINE was established through Information Kiosks at the Districts and on telephone for the general public to disseminate electoral rolls information. Two training courses were organised for the nodal officers of Election department and DIOs of NIC for carrying out election related activities in an coordinated and efficient manner. The NIC Officers at State Unit and Districts worked for more than one month without taking any leave even on Saturday/Sunday to complete this process. Jharkhand: The CEO website was hosted on NIC web servers and kept updated and Electoral Rolls (4GB) for the state were uploaded on NIC web servers. The polling and patrolling teams were formed and deployed using randomization guidelines of ECI, including tagging of Armed forces and vehicles at many places. During counting of votes, team formation and compilation of results was done though software developed by the State Centre. Madhya Pradesh: The NIC State Centre developed a web-based software for real time compilation and dissemination of results for all the parliamentary constituencies in the state. Each of the counting centers at the district head quarters was connected through a dedicated telephone line to the NIC district center. DIOs provided their services in compiling and transmitting the assembly segment wise data corresponding to each parliamentary constituency falling in the district. Pondicherry: The software for polling personnel allotment was developed and implemented using random number generation technique at two stages. Care was taken to post female polling officers wherever sizeable number of female electors was present. The de-codification of polling stations was done prior to the actual polling day so as to maintain secrecy regarding deployment of polling parties. Telephone based Help Lines were established for electoral rolls inquiry. Information was captured on polling day every two hours and disseminated to media on polling trends and on counting day, computerized compilation of results was done. Uttaranchal: The CEO used the NIC Video Conferencing facilities innovatively for monitoring the whole electioneering process. On the polling day, CEO interacted with the DEOs/ROs and media to get first hand information about the polling. The Doordarshan news teams used the VC facilities to upload video clippings to Newsrooms. Some reporters of TV channels reported their stories directly from remote locations over the NIC VC for live coverage to their satellite camera teams stationed at important districts. Uttar Pradesh: All sixty-one District Centres of NIC UP were involved in the election exercise of computerizing polling person deployment, vehicle movement (route chart), counting personnel deployment and tabulation-compilation of results. The DD news clippings were uploaded using VC. Besides, hosting of the CEO website, the maiden district website of District Election Officer, Ghaziabad was also hosted at http://gzbelection.up.nic.in West Bengal: The ROs of 42 parliamentary constituencies used the standard application software developed by NIC for the deployment of polling personnel to the polling booths by adopting randomization technique, exporting and importing 50% polling personnel to other districts in the presence of ECI appointed Observers. The NIC District Centre were also entrusted with the responsibility of data management and onward transmission to ECI and NIC web servers. Arunachal Pradesh: NIC was actively involved in the poll process right from the start and provided support to the Administration in preparation of electoral rolls using TERM software, preparation of Elector’s Photo Identity Cards (EPIC) using PICTools software, printing of electoral rolls and EPICs, polling party formation, deployment, duty cards, issuance of appointment letters, Email and Internet connectivity to ROs/ counting halls and transmission of results data.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="quotable-quote-july-2004.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Quotable Quote</span></a><a class="article-nav-link next" href="tikamgarh-ict-in-the-interiors-july-2004.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Tikamgarh : ICT in the Interiors</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

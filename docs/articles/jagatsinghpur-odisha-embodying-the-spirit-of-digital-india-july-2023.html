@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-20.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-21.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">NIC Jagatsinghpur was established in 1996 and has since been recognized as an essential component of the District Administration, playing a crucial role in driving ICT and e-Governance initiatives within the district. The Centre serves as a central hub for comprehensive IT solutions, consultation, and implementation of various e-governance projects and applications. The Centre actively supports and executes several significant e-governance initiatives, some of which include: ICT Initiatives in the District Jagatsinghpur District Website http://jagatsinghpur.nic.in The dynamic bilingual district website has been designed, developed in the S3WaaS framework and acts as an authoritative source of government information. eOffice https://jagatsinghpur.eofficeodi.nic.in/ Jagatsinghpur is one of the first districts in Odisha to successfully implement the e-office system, starting from the office of the Collector and extending it to the Gram Panchayat (GP) level. This initiative aimed to replace the traditional paper file system with an electronic workflow. As of now, the system has been rolled out to all municipalities, 23 district level offices, 8 Tehsils, 8 Block offices, 5 Sub-registrar offices, 8 CDPO offices, Block education offices, 76 Revenue Inspector (RI) offices, and 198 GP offices. With over 1600 active users, e-office has facilitated the creation of 60,350 e-files, with a remarkable movement of 763,269 e-files to date. It has proven to be instrumental, especially during the COVID-19 pandemic, in enabling officials to seamlessly work from home during lockdown. The unwavering dedication of NIC Jagatsinghpur has resulted in significant improvements in the accessibility of digital government services, playing a pivotal role in the overall development of the district. The organization has implemented various eGovernance initiatives, provided technical support, and administered government services, all of which have been of immense value to the citizens. Jyoti Prakash Behera Scientist-C &amp; DIO jyoti.prakash@nic.in Mukesh Kumar Mandal Scientific/Technical Assistant-A mukesh.mandal89@nic.in General Elections &amp; PRI Elections Since 1999, the District Centre has been providing an all-comprehensive ICT solution towards management of the election process. The main activities include IT enabled randomization of polling personnel, formation of polling parties, generation of appointment orders, prepare TA/ DA acquittance, EVM management through EMS portal, nomination process, voter turnout data processing, counting day data management and result transmission through SUVIDHA portal. LRMS Land Records Management System (LRMS) ensures the maintenance of up-to-date Records of Rights (RoRs) by facilitating transaction-based interactions with the e-Registration application. It empowers Mutation Officers (Tahasildar/Addl. Tahasildar) to initiate mutation cases instantly. To enhance security, the application incorporates Digital Signature Certificate and biometric authentication. Additionally, NIC’s in-house tool, BHUNAKSHA, integrated with the LRMS application, allowing users to correct cadastral maps online. DAMPS Disaster Assistance Monitoring &amp; Payment System (DAMPS) enables government departments to collect data on disaster affected casualties / injured / missing persons from various resources and visualise them at each revenue level for compilation and disbursement of financial assistance to affected persons subsequently. e-District e-District facilitates issuance of various certificates such as caste certificates, income certificates, legal heir certificates among others. It has a purely web-based workflow where footfall of citizens is not required at government offices. iRAD iRAD (Integrated Road Accident Database) was implemented on the 10th February 2022 at Jagatsinghpur. It helps to capture road accident data from police, RTO, highway authorities, and health departments. By analysing this data, iRAD helps authorities to understand root causes and allows them to make better policies for road safety. e-Abkari e-Abkari is a workflow based application developed for the Excise department. It includes issuance of permits and licences for liquor retail shops, distilleries, breweries and bottling plants. IVFRT This project has its importance in National Security Level &amp; it is one mission mode project under the National e-Governance Plan (NeGP). Its various modules such as c-fro, c-form and s-form are already operational. District Intelligence Bureau from SP Office is the implementing agency for the project. Harischandra Sahayata Yojana This is a G2G online service where the assistance money will be directly transferred to the concerned Sarpanch/Mayor after online verification done by respective Block Development Officer. This scheme aims to provide financial assistance to the poor and destitute for conducting the last rites of their family members and cremation of unclaimed dead bodies. An interactive dashboard facilitates the District Collector for monitoring the entire process. NIC Jagatsinghpur, is an indispensable part of the District Administration, driving ICT and e-Governance initiatives. The centre serves as a central hub for comprehensive IT solutions and the implementation of various e-governance projects. Some notable initiatives include implementation of e-office up to grass root level, ICT support during Election, LRMS for land records, DAMPS for disaster assistance, iRAD for road accident data analysis, and e-Abkari for the Excise department, updation of dynamic district website. NIC Jagatsinghpur also provides crucial services like NICNET connectivity, video conferencing, disaster management support, training programs, recruitment assistance, and IT advisory. Their commitment to efficient governance and technical expertise is truly commendable. PARUL PATAWARI, IAS Collector &amp; District Magistrate Other Major Initiatives NIC Jagatsinghpur provides vital ICT support to the district administration, enabling efficient governance and service delivery. Here are some of the key services and activities offered: • NICNET : A high-speed 100 Mbps leased line network connects the District Administration, Sub-collector’s Office, and Superintendent Police’s Office. This ensures seamless connectivity and supports various sections within the Collectorate. • NIC VC services : The district boasts an extensive video conferencing network, facilitating communication with national-level entities such as the PMO, Cabinet Secretary, ECI, and State Headquarters. Outdoor video conferencing facilities are also available. • Disaster Management : During natural disasters, the District Centre provides round-the-clock ICT support to the District Administration. This includes development of WEBGIS, daily situation reporting, and MIS support for damage assessment and the District Disaster Management Plan. • Training &amp; Capacity Building Programme : As a master trainer (technical), the District Centre conducts training sessions and hands-on workshops for various stakeholders involved in implementing ICT projects and e-governance applications. Capacity building programs are offered post-implementation as well. • Recruitment : The NIC Centre assists the District Administration in managing applicant databases, generating admit cards, preparing merit lists, and conducting computer skill tests during recruitment processes. • Seminars and Awareness Programs : Computer awareness programs are organised to enhance IT literacy among district-level officials and staff. The NIC Centre also participates in seminars and delivers talks on digital literacy, cyber fraud, and data optimization techniques. • IT Advisor : The NIC District Centre serves as an IT advisor to the district administration, providing support in system study, gap analysis, hardware and software requirements, and application functionality testing for various projects. Currently, the NIC Centre is in the final stages of designing a content management-based official website for Jagatsinghpur Municipality. The application, which can be replicated with minor customization, is scheduled to launch within a couple of weeks. Way Forward NIC Jagatsinghpur is performing a pivotal role in the digital journey of the district to achieve the visionary mission “5T” of Hon’ble Chief Minister of Odisha through Teamwork with application of Technology within stipulated Time, adhering to the principles of Transparency and Transformational eGovernance under the guidance of NIC Odisha State Centre. Contact for more details District Informatics Officer NIC Jagatsinghpur District Centre 02, NIC, Ground Floor, Collectorate Building Jagatsinghpur, Odisha - 754103 Email: orijag@nic.in, Phone: 06724-220035</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="dhubri-assam-making-citizens-believe-in-impact-of-e-governance-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Dhubri, Assam: Making Citizens believe in impact of e-Governance</span></a><a class="article-nav-link next" href="west-champaran-bihar-where-tradition-and-innovation-unite-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Champaran, Bihar: Where Tradition and Innovation Unite</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

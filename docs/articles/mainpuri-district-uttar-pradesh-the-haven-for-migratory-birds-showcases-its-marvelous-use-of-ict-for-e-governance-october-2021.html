@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/october-2021/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Since its inception in 1989, National Informatics Centre (NIC), Mainpuri has played a pivotal role in implementation of various ICT Projects in the district. NIC is playing key role in extending technical expertise to District Administration in ICT initiatives and implementation of various G2C, G2G and G2E projects. Dr. Neeta Verma, Director General NIC awarded NIC, District Centre Mainpuri with certificate of commendation for the development of cross platform mobile app “m-Nirikshan” under the National level challenge- District Governance through Mobile Challenge (DGMC). Mainpuri district is one among the 75 districts Uttar Pradesh state. The district is famous for its more than a dozen wetlands and bird sanctuary having biggest population of Sarus cranes in India. Mainpuri’s Sarus circuit tourism is a major attraction for eco-tourists. In the District, there is Saman Bird Sanctuary (designated as a protected Ramsar site) which is a place of stay of the world-famous Siberian Crane which comes here in its migration cycle and stays here for 3-4 months during November to February. Mainpuri is also well known for its TARKASHI handicrafts. NIC, Mainpuri has played a pivotal role in implementation of various government schemes and channelizing the power of e-Governance to the masses. NIC, Mainpuri is providing ICT support and services to various departments of District Administration. NIC helps the District Administration through a mobile app “m-Nirikshan” to improve the quality in existing public grievance redressal system. I sincerely appreciate the efforts put in by the NIC District Unit in promoting Sarus Circuit Tourism of District Mainpuri. The District Administration also appreciates NIC for providing round the clock ICT support during Covid-19 Pandemic period. MAHENDRA BAHADUR SINGH, IAS Collector &amp; District Magistrate District Mainpuri ICT Initiatives in the District “m-Nirikshan” Mobile App “m-Nirikshan” mobile app aims to improve quality in public grievance redressal system by expediting complaint transfer and real time GPS based grievance redressal. The Mobile App was designed and developed by NIC Mainpuri (U.P) under District Governance Mobile Challenge (DGMC). Using this “m-Nirikshan” mobile app, the district and tehsil administration can monitor the field visit of the lekhpal/ field officers so that transparency can be bring out among citizens and district administration. R.H. Khan Dy. Director General &amp; SIO rh.khan@nic.in Mayank Lal Sharma Scientist ‘C’ &amp; DIO mayank.sharma@nic.in Advantages of “m-Nirikshan” App • Field employees will get enough time to resolve the complaint. • They will be able to ensure his presence with photographs, which will prevent the repetition of false complaints. • Now redressal of any complaint will be possible through the app only when the concerned employee will go to the site and upload the disposal report along with his location and photographs. • In this way quality disposal of complaints will be ensured which will further improve the existing Public Grievance Redressal System of state. Sarus Circuit Tourism, District Mainpuri To promote District Mainpuri’s Sarus Tourism, NIC Mainpuri designed and developed a responsive website http://sarustourism.in/, along with done commendable job in publishing Sarus Circuit wetlands’ locations on Google Map. The website is also listed under important websites column on UP Tourism web portal. Other Key Initiatives in the District NIC Mainpuri has been successfully carrying out all the major mission mode projects (MMPs) of national and state level, which include e-District, Land Records Computerization-UPBHULEKH, Integrated Road Accident Database, Jansunwai Portal, CM Help Line 1076, Anti Bhu Mafia Portal, Rahat Portal, e-Pass application during Covid-19 lockdown, e-Lottery for liquor shops, e-Public Distribution System, PRoperty Evaluation &amp; Registration Application, Social Welfare Schemes, U.P. Rani Laxmi Bai Mahila Evam Bal Samman Kosh, Arms Licensing Computerization System, Dashboard for Analytical Review of Projects Across Nation (DARPAN), Inter-operable Criminal Justice System (ICJS), e-Prosecution, training and support in implementation of various government schemes like UP Farmer Loan Waiver Scheme, various applications on Board of Revenue Portal like revenue court computerization system (RCMS), General Elections related Applications &amp; Mobile Apps etc. Mainpuri is also the first district in Uttar Pradesh, to migrate its district website (https://mainpuri.nic.in/) on Secure, Scalable &amp; Sugamya Website as a Service (S3WaaS) platform. Conducted VC sessions on regular basis and various VVIP’s live webcast arrangements at various locations in the District. During COVID-19 lockdown period, to minimize the physical interaction among the officers, conducted VC sessions using NIC Vidyo Desktop VC solution. Necessary IT support is being provided to the District Administration in recruitment process of various posts under different departments. Computer awareness cum capacity building training programs are also undertaken regularly to facilitate effective implementation of e-Governance projects / applications. Events Launch Event of “m-Nirikshan” mobile app “m-Nirikshan” mobile app is launched by Shri Mahendra Bahadur Singh, IAS, District Magistrate, Mainpuri on 4th March 2021. Accolades • Dr. Neeta Verma, Director General NIC awarded District Mainpuri with certificate of commendation for development of cross platform mobile application “m-Nirikshan” under DGMC on date 28th May 2021. • Hon’ble Minister of UP, Shri Girish Yadav present award to DIO, NIC Mainpuri for the outstanding works &amp; contributions in UP Farmers Loan Waiver Scheme implementation in District Mainpuri. • Shri Pramod Kumar Upadhyay, IAS, Former District Magistrate present award of appreciation in form of Demi Official letter to DIO, NIC Mainpuri for the outstanding and extended IT support in Lok Sabha General Election 2019. Way Forward In order to realize the dream of ‘Digital India’, NIC Mainpuri is committed to provide efficient and total ICT support to the District Administration and field level offices of the State and Central Governments in the District. The dedication and zeal towards achieving excellence in the area of ICT has made NIC Mainpuri a household name in the district. For further information, please contact: DISTRICT INFORMATICS OFFICER NIC - Mainpuri District Centre Collectorate Campus, Mainpuri Uttar Pradesh - 205001 Email: upmai@nic.in, Phone: 05672-234183</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="faridkot-district-punjab-transforming-the-rural-district-into-advance-digital-one-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Faridkot District, Punjab: Transforming the Rural District into Advance Digital One</span></a><a class="article-nav-link next" href="modsecurity-open-source-web-application-firewall-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">ModSecurity: Open Source Web Application Firewall</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

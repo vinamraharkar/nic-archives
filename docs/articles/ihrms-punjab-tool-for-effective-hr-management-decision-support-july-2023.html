@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-28.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-29.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">iHRMS Punjab is a unified human resource management (HRM) platform for all government entities in Punjab, including State Government Departments, PSUs, Boards, Corporations, Universities, and Medical Colleges. Designed and developed by NIC Punjab State Centre, the platform streamlines the HRM processes from employee entry to exit, promoting standardization and efficiency. It has become an enabler of Government to Enterprise (G2E) governance having standardized process flow for each stakeholder be State Government, Administrative Secretaries, Department Heads, Office Heads, DDOs for defined set of activities in role-based workflows manner, both in the front-end and back-end. Over the course of six years, Punjab has witnessed a complete transformation in HRM, transitioning from limited to comprehensive and up-to-date online employee information. This data pool supports various G2E applications and has enticed organizations to replace outdated HRM systems with iHRMS, which caters to diverse human resource (HR) needs and promotes data aggregation across government. iHRMS Punjab is a unified HRM platform that encompasses all government entities in Punjab. It simplifies and standardizes HR processes from employee onboarding to offboarding, ensuring efficiency. With role-based workflows, it enables stakeholders to carry out tasks seamlessly. Over six years, Punjab has undergone a significant HRM transformation by adopting iHRMS. This platform provides comprehensive and real-time employee information, supporting various G2E applications. Its success has encouraged organizations to replace outdated HRM systems with iHRMS, which caters to diverse HR needs and promotes data aggregation across the government. The implementation has revolutionized HR practices in Punjab, promoting transparency and streamlining operations. Vivek Verma Dy. Director General &amp; SIO sio-punjab@nic.in Mukesh Kumar Ralli Sr. Technical Director ralli.mukesh@nic.in Devi Singh Thakur Sr. Technical Director devi.singh@nic.in Features iHRMS Punjab incorporates several innovative features that have revolutionized the HRM process. Some of the key features are: • Unified Platform: iHRMS Punjab serves as a single platform for all government entities in Punjab, consolidating HRM processes and promoting standardized operations. • Comprehensive Financial Details: In addition to the service book, iHRMS Punjab includes financial details such as Payroll, GPF, and GIS, providing a holistic view of employee records. • Real-time Service Book Updates: iHRMS Punjab enables automated real-time updates in service books, ensuring accurate and up-to-date employee records. • Unified Employee ID: A single employee ID is used across various applications, allowing for easy access to up-to-date employee records. • Role-based Workflows: iHRMS Punjab implements role-based workflows, streamlining activities and ensuring efficient governance processes. • Versatility for Different Entities: iHRMS serves as a single application for different entities, including departments, boards, corporations, PSUs, universities, and medical colleges, ensuring consistency and efficiency. • Migration and Integrates with Existing Systems: Many departments, such as PUDA and PSPTL, are transitioning from their existing HR systems to iHRMS. The system also integrates with other applications for data sharing and user authentication. • Integration with Other Applications: iHRMS Punjab seamlessly integrates with other applications, promoting data sharing and user authentication. • Data Aggregation: iHRMS Punjab facilitates data aggregation across government entities, allowing for comprehensive analysis and decision-making. • Social Media Presence: iHRMS Punjab leverages social media platforms like YouTube and Face-book to provide instructional videos, updates, and engage with government officials, fostering a collaborative and user-friendly approach. These features enable uniform implementation, standardization, customization, and user management. These features are tightly coupled with financial services. They enforce government rules, and support activities like loan recovery. iHRMS also offers two-factor authorization, system and SMS-based alerts, status reports, graphical dashboards, analytics reports, and open API services for data access and integration and eSign integration. Further it adds transparency in the personnel and financial management and makes available projections of financial liabilities and manpower requirements to the government. Technologies Used Latest Technology Stack along with Microsoft .Net and SQL Server with MVC framework is used for the development of the portal with local level interface. Front-end technologies such as HTML, CSS, JavaScript, jQuery bootstrap are also part of the technology stack being used. Impact • Cost Efficiency: iHRMS reduces the need for manual work, resulting in significant cost savings for the government. • Fraud Prevention and Data Integrity: iHRMS helps prevent fraudulent activities and ensures data integrity, particularly in areas like GPF and leave management. • Streamlined Operations: iHRMS streamlines workflow by providing a role-based and workflow-driven approach, improving efficiency and standardization. I am delighted to introduce iHRMS Punjab portal, an exclusive platform designed to revolutionize HR management across all government entities. With its comprehensive features and user-friendly interface, iHRMS Punjab enables effective and efficient handling of human resources, ensuring standardized processes and optimal productivity. This state-of-the-art portal serves as the foundation for numerous government business applications, providing a unified and streamlined approach to HR management. We are experiencing the power of iHRMS Punjab and unlocking a new era of excellence in HR management. Sending my heartfelt best wishes to NIC Punjab! Vijay Kumar Janjua, IAS Chief Secretary, Punjab • Data-driven Decision Making and Support: iHRMS provides accurate and up-to-date employee data, enabling data-driven decision making and supporting activities such as loan recovery and district administration for elections. • Reduction in Paper Usage enabled by online transfer of papers thus resulting into carbon credit for the state. These features collectively enhance efficiency, reduce costs, improve data accuracy, and empower decision makers in the government entities using iHRMS. Way Forward In the next phase, the objective is to achieve an automated integration between iHRMS and the IFMS of the state government, leading to streamlined processes and improved operational efficiency. Furthermore, there are plans to develop and implement additional modules, including an Automated &amp; Intelligent Transfer module based on department transfer policies, tours and employee grievances. Emphasis will also be placed on creating a robust and dynamic Dashboard that offers a comprehensive overview of the system’s functionalities and data. The iHRMS application, which is built upon the Civil Service Rules of the Punjab Government, incorporates business rules directly into its software database. This approach enables easy replication with minimal customization for other states, minimizing the need for extensive modifications and simplifying the implementation process. Contact for more details Rohit Jaitely Sr. Technical Director NIC iHRMS Punjab Sector 33, Chandigarh - 160033 Email: r.jaitely@nic.in, Phone: 9417803238</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="gpcb-vlts-hazardous-waste-real-time-vehicle-location-tracking-system-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System</span></a><a class="article-nav-link next" href="sugamyaweb-enabling-accessible-web-experience-of-the-indian-governments-websites-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">SugamyaWeb: Enabling accessible web experience of the Indian Governments websites</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

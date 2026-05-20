@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-26.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-27.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2012/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">INTRODUCTION The Government of India has launched the National e-Governance Plan (NeGP) with the intent to support the growth of e-governance within the country. While the e-Governance initiatives are being taken by various sectors, the same information from an individual is asked for repeatedly in different formats, at different locations, for different purposes, by different applications, running in silos. As a result, seamless sharing of data &amp; services among the applications remains a major issue. Standards are sine qua non for interoperability across the e-Governance applications for seamless sharing of data and service. Hence, Department of Electronics and Information Technology (DeitY) has set up an Institutional Mechanism for evolving/adopting standards for e-Governance applications. The mechanism involves collaborative efforts of stakeholders like DeitY, NIC (eGov Standards Division and OTC 1), Standardization Testing and Quality Certification (STQC), other Government departments, Academia, Technology Experts, Domain Experts, Industry, BIS, NGOs etc. The drafts prepared by the Expert Committees undergo Closed Group Review and Public review, and finally the recommendations are put up to the Apex body for approval and notification. APPROACH ADOPTED The e-Governance Standards have been divided into categories like -- Policy/ Frameworks, Standards, Guidelines/ Best Practices. Various Expert Committees have been setup in priority areas, like Metadata and Data Standards (MDDS), Biometrics, Localisation, Security, Mobile Governance, Interoperability Framework for e-Governance in India (IFEG), Digital signature, etc. to formulate standards. The Interoperability Framework for e-Governance (IFEG), impresses upon three dimensions of interoperability, viz, Organisational interoperability, Semantic interoperability and Technical interoperability. Organizational Interoperability focuses on Process-re-engineering including Government-Orders, Process Changes, and Organizational Structures. Semantic interoperability (SI) requires that precise meaning of exchanged information is understood across e-Governance applications running in silos within or across a domain / sector. For this purpose, a mechanism needs to be in place for formulation of domain specific metadata and data standards for systematic development of interoperable e-Governance applications. Technical interoperability (TI) refers to the technical specifications, needed for interoperability among applications for data exchange, storage and archival, and protocols for networking and security. For standardisation of technical specifications Open standards have been adopted and a Policy on Open Standards has been formulated in November 2011 to facilitate cost-effective e-Governance solutions and avoid vendor lock-in. ROLE OF NIC NIC, an important stakeholder in the standard formulation activity, has setup an e-Governance Standards Division, which primarily steers, coordinates and manages the standardization activities along with OTC (NIC) and monitors the progress of Expert Committees and other bodies for review of draft standards. MILESTONES ACHIEVED IN STANDARDS FORMULATION The notified standards - policies, frameworks, institutional mechanisms, standards, and guidelines/ best practices, are published on the e-Gov standards portal http://egovstandards.gov.in, developed and maintained by e-Gov standards Division. POLICY/ FRAMEWORK (i) Policy on Open Standards The Policy provides (a) a framework for the selection of Standards to facilitate interoperability between various e-Governance systems (b) flexibility to select different hardware and software for implementing cost-effective e-Governance solutions and (c) Technology choice, and avoids vendor lock-in. (ii) Quality Assurance Framework This document outlines a standardized Quality Assurance Framework (QAF) for e-Governance implementation. The QAF should be read with the Conformity Assessment Requirement (CARE) document and the User Satisfaction document. The purpose of CARE is to enforce implementation of standards and best practices in e-Governance solutions throughout the project lifecycle. All three documents together constitute the Complete QAF. (iii) Framework for Mobile Governance The Mobile Governance Framework aims to utilize the massive reach of mobile phones and harness the potential of mobile applications to enable easy and round-the-clock access to public services, especially in the rural areas. INSTITUTIONAL MECHANISMS (i) Institutional Mechanism for Standards Formulation This document describes basic rules, principles and procedures to be followed for formulation of e- Governance Standards. (ii) Institutional Mechanism for Formulation of Domain Specific MDDS This document will help different domains expert committees in the formulation of their domain specific Metadata and Data standards (MDDS) to enable semantic interoperability among ICT applications within and across the domains STANDARDS (i) Technology Standards for IFEG in India About 47 Technology Standards have been identified in the Interoperability Areas prioritised by DeitY, on the basis of interoperability requirements in e-Governance systems. Further, in each of the Interoperability Areas, technical Standards have been identified, on the basis of the 'Policy on Open Standards', their maturity and industry preparedness for their adoption. Metadata and Data Standards: Demographic (Person Identification and Land Region codification) This document identifies and standardizes Generic data elements common across all domain applications, Generic data elements for Person Identification and Generic data elements for Land Region Codification Biometric Standards for: a) Face Image- b) Finger print Image and Minutia c) Iris Image Standard These standards specify image data specifications, acquisition, storage and transmission formats, to allow the application developer maximum flexibility in usage of algorithms and devices from different vendors and to address interoperability requirements. (iv) Font Standard for Indian Languages This standard provides a single International Standard to comply with UNICODE data storage. This ensures data portability across various applications and platforms. (v) Character Encoding Standard Document for Indian Languages The main purpose of the standards is to provide, a single International Standard to comply with UNICODE data storage. This ensures data portability across various applications and platforms. GUIDELINES/ BEST PRACTICES Guidelines for Information Security a. Information Security Assessment Framework b. Guidelines in 8 different areas of Information Security Guidelines for Indian Government websites Guidelines for Usage of Digital Signatures in e-Governance Interoperability Guidelines for Digital Signature Certificate issued under Information Technology Act STANDARDS FORMULATION IN THE PIPELINE l Device Driver Policy for procurement of hardware in e-Governance applications l Interoperability Framework for E-Governance (IFEG) in India l Standards Release and Change Management l Digital Preservation standards, policy and guidelines l eForms l Keyboard Layout Standard l Mobile standards WAY FORWARD The standards formulation in a country like India with so many diversities is a challenge. While standards are being formulated, based on the experience attained over the years, implementing and enforcing them in a federated setup like India, is the more challenging. It is therefore imperative to have a robust mechanism for enforcement of these standards in place. This will facilitate the e-Governance systems to interoperate to provide citizen centric e-services and make the dream of single window solution a reality. FOR MORE DETAILS CONTACT: Dr. Meenakshi Mahajan Technical Director, meenakshi.mahajan@nic.in eGov Standards Division National Informatics Centre, New Delhi- 110003 Phone: 011- 24305807 1 Open Technology Centre (OTC), at Chennai, a project of DeitY, implemented by NIC, is another stakeholder in standards formulation activity. OTC acts as a nodal agency for Open Technology aiming to increase the adoption of Open in e-Governance applications managed by NIC/NeGP (http://portal.otc.nic.in/).</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="file-management-system-towards-a-more-transparent-government-july-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">File Management System Towards a more transparent government</span></a><a class="article-nav-link next" href="poverty-leads-to-illiteracy-literacy-removes-poverty-july-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">“Poverty leads to illiteracy-Literacy removes poverty”</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

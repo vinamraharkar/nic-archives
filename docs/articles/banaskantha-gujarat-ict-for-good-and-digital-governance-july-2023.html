@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/july-2023/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">NIC Banaskantha came into existence in late 80’s and since then, it has been instrumental in fostering an ICT culture throughout the district. The District Centre has been pioneering in the design, development and implementation of various eGovernance Projects. It has developed a mobile app named My Ration under the District Governance through Mobile Challenge, which was adopted by the Department of Food, Civil Supplies &amp; Consumer Affairs for a state-wide roll out. ICT Initiatives in the District Banaskantha District Website (https://banaskantha.nic.in/) Banaskantha District launched a new website using the Secure, Scalable &amp; Sugamya Website as a Service (S3WaaS) Framework, becoming the second in Gujarat to adopt this platform. It serves as an authoritative source of information on the district and offers content in both Gujarati and English. RC Module NIC Banaskantha played a vital role in creating and maintaining the Ration Card (RC) Module for the PDS project in Gujarat. The module is now used by all districts in the state for tasks like issuing new RCs, updating membership, and conducting transactions. Over 1.36 crore barcoded RCs have been issued through this module, benefiting 6.09 crore individuals. The Centre also designed and developed services for targeted initiatives such as the ‘Kerosene Free State’ campaign, NFSA survey, and gas stamping. The RC data is shared with the Gujarat CM Dashboard for better policy making by the state government. Citizens can access their RC copies through DigiLocker, UMANG, and PM-JAY platforms. Citizens can also apply for RCs online through the Digital Gujarat portal. NIC Banaskantha District Centre has been instrumental in developing and implementing successful ICT projects in Banaskantha. Its contributions in e-Governance projects, technical support, and government service delivery have greatly benefited the citizens. These efforts have improved transparency, efficiency, accessibility, and fostered overall growth and development in the district. Nand Kishor Tak Scientist-C &amp; DIO nk.tak@nic.in Shiwanshu Scientific Officer/Engineer-SB &amp; DIA shiwanshu.ram@nic.in GAH App NIC Banaskantha developed the Gujarat Animal Husbandry (GAH) Application to safeguard and monitor pet animals’ health. It gathers crucial information on vaccinations and treatment camps for the Gujarat Directorate of Animal Husbandry, and supports state authorities by generating necessary reports. Initiatives During COVID-19 • Developed an online portal for issuance of e-pass for essential services, with a total of 2,466 e-passes issued • Developed a portal for remdesivir distribution in hospitals for its efficient management. It also displayed availability of vacant beds in different hospitals • Set up a district command and control room for monitoring COVID-19 suspects and patients along with technical support was given to various COVID-19 portals and apps • Developed and designed an application for Mukhyamantri Garib Kalyan Package in order to collect data of poor families. It had provision for direct funds transfer to bank accounts using PFMS, benefitting 65,08,969 citizens in the state Mobile Apps Following are the mobile apps designed and developed by NIC Banaskantha: My Ration Designed for the FCS Department, My Ration provides RC information and entitlements with a single tap. Users can access details such as member information, address, card type, attached FPS detail, bill receipts, available stock on FPS, and vigilance committee details. iOjN Gujarat This app facilitates the monitoring of development projects by GAD (Planning) through geo-tagged photographs. Its primary purpose is to create a database of geo-tagged images for ongoing work/projects. Other Major Initiatives PM Kisan Sanman Nidhi For the successful implementation of the PM KISAN project in the district, NIC Banaskantha had trained 2200+ users to facilitate data entry in a smooth way. Due to this, Banaskantha became the first district in Gujarat to complete the target within a given timeline. As of 23 Feb. 2019, the beneficiary count was 2,81,693. iRAD Launched by the Hon’ble Chief Minister of Gujarat on 1st May, 2022, iRAD aimed to establish a structured framework for road accident data collection across the State. It generates various reports by analyzing the data in order to make better and safer roads. The District Centre has conducted over 80 hands-on training to all the stakeholder departments including Police, RTO and R&amp;B department. Accolades • Certificate of Appreciation from Director General, NIC for My Ration mobile app • Letter of appreciation from District Collector for work done during COVID-19 pandemic • Letter of appreciation from District Collector for work done in General and Assembly Election - 2019 and 2022 • Letter of Appreciation from Gujarat Water Supply &amp; Sewerage Board, for successful VC interaction of Hon’ble Chief Minister of Gujarat with 5 villages of Banaskantha during the inauguration of the Dantiwada Regional Water Supply Project NIC District Centre is providing continuous support in implementation of various IT related projects in Banaskantha District. I am hopeful that NIC will continue to spread IT awareness to actively support the eGovernance initiatives of the District Administration. I want to thank NIC Banaskantha for their support and cooperation in implementing various eGovernance initiatives in the district. I believe that NIC will keep up this good work and continue to provide us with technical expertise, innovative ideas and action plan for successful implementation of ICT for the benefit of citizens. Varun Kumar Baranwal, IAS Collector &amp; District Magistrate District Banaskantha Digital Gujarat &amp; Seva Setu NIC Banaskantha has implemented the Digital Gujarat portal, a common platform where citizens can apply for various services online, across multiple Jan Seva Kendra, Tahsil offices, and Gram Panchayats in the district. In order to promote the use of Digital Gujarat portal, the District Administration has launched Seva Setu campaigns, where citizens can avail the services for free. The applications received were processed by authorities on the same day. The District Centre has also implemented several State and Central Government projects to boost eGovernance in the District, namely iRCMS, PDS, CM Dashboard, Vahan, Sarathi, eCourts, ePrison, IVFRT, NDAL &amp; ALIS, PM Gatishakti, RFMS, iiLMS, City Survey Information System, Track the Missing Child, Kisan Credit Card, e-Dhara, GP Office and PG Portal. NIC, Banaskantha has played an important role in COVID-19 pandemic situation as well as in election, video conferencing, providing support for the management and monitoring of e-Governance projects. NIC Banaskantha actively supported and participated in the programs and functions organized in the Banaskantha district. I have taken special note of the good work done by NIC, Banaskantha. I foresee that NIC, Banaskantha will work with the same zeal and enthusiasm and serve with the same spirit and energy. Anand Patel, IAS Collector &amp; District Magistrate Banaskantha Technical and Network Services • Provides 24 x 7 ICT and network support to the District Administration and other offices. It also provides NKN connectivity to educational institutions • Provides extensive technical support during Parliamentary &amp; Legislative Assembly Elections and manages ENCORE, ETPBS (Electronically Transmitted Postal Ballot System), Suvidha portals of ECI and LAN infrastructure of counting centers Important Events Organised • Provided VC services and IT setup for Hon’ble Prime Minister Visit at Deodar and Danta Tehsil during December 2022 • Provided technical support during visit of Hon’ble Chief Minister and other important dignitaries in district • Provided technical support during district events including Ambaji Mela, Krushi Mahotsav, Garib Kalyan Mela, DRDA events, Seva Setu, Gujarat Khel Mahakumbh, Pragati Setu, Bus Port Inauguration, Ambaji 51 Shaktipeeth Mahotsav, e-Lokarpan and Yoga Day • Conducted training workshops for newly launched applications to the concerned officials Way Forward NIC Banaskantha is deeply committed to the transforming dream of Digital India and fostering a culture of e-Governance in the district. With a strong determination, NIC Banaskantha actively provides full-fledged ICT support to the District Administration. Its unwavering dedication is aimed at leveraging technology and digital solutions to enhance governance, streamline processes, and improve service delivery. Contact for more details District Informatics Officer NIC Banaskantha District Centre 2nd floor, Jilla Seva Sadan, Joravar Palace Palanpur, Banaskantha Gujarat-385001 Email: dio-bkt@nic.in, Phone: 02742-252314</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="puducherry-ut-french-riviera-of-the-east-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Puducherry UT: French Riviera of the East</span></a><a class="article-nav-link next" href="dhubri-assam-making-citizens-believe-in-impact-of-e-governance-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Dhubri, Assam: Making Citizens believe in impact of e-Governance</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

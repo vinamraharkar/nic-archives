@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-14.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-15.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-16.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-17.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-18.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-19.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-20.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-21.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2003/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -890,126 +959,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <p>TRAMS (TRAinees Management System for ITI) Gujarat is a highly industrialised State and it has requirement of hundreds of trained skilled workers. For meeting these requirements, Government of Gujarat is running more than 200 Industrial Training Institutes, which offer more than 100 courses (known as trades) related to Civil, Mechanical, Electrical, Chemical, Electronics and IT. TRAMS is a comprehensive system covering Admission, Attendance, Internal and Final exams. These activities are from admission of the trainees to mark sheet / certificate printing. Module-I i.e. Admission has already been implemented in June 2002. Module-II i.e. Attendance was implemented in October 2002. Module-III i.e. Internal and Final Examination is near completion. CM Online – An innovative application of NIC for Public Grievance Redressal Gujarat Government has commissioned “Chief Minister’s Call Center” or “CM Online” (“Tele Fariad”) for addressing public grievances through Gujarat State Wide Area Network (GSWAN). People can register their grievances by dialing 1505 (at a local call charge) from any where in the district and the same reaches CM’s office immediately. Complaint deposited in original voice format is compressed and forwarded to the designated mailboxes at CM’s office, Gandhinagar. Voice messages are transcripted by the operators on a web based application developed by NIC and forwarded to related departmental head and others for necessary action under intimation to CM’s office. Major Network Projects Setting up of an elaborate network brings about a seamless transition between the various computing devices currently in use in the public domain or those, which may be put to use in future. To ensure the proliferation of IT, the State Government has decided to create an “Information Corridor” with the support of NIC State Centre. The core of this corridor would be connecting the State capital right up to Taluka headquarters by first connecting the capital to the district headquarters. On peripheries of this “Information corridor” would be supporting databases of various Government departments as well as computerised public counters, kiosks/information centers that will help providing electronic interface for the citizens with the Government. The entire project of creating “Information Corridor” has been divided in three parts. • Connecting all Government Departments at capital city Gandhinagar through Fiber backbone for Voice, Video and Data communication. • Connecting all district offices through 2 MBPS lines to Gandhinagar at Sachivalaya, and all Taluka to Districts through 64KBPS links (Which is referred as GSWAN). • LAN facility to be provided at District Panchayat and Collectorates in all 25 districts. NIC/NICSI has undertaken the task to design, install and integrate Networks at the following locations : • Sachivalaya Data LAN – 2200 node network connecting various departments and directorate located at New Sachivalaya and Old Sachivalaya complexes. Network is in operation since May 2001. Various useful Intranet applications are being run by NIC on the secretariat LAN. • District LAN - 50-node network at each District Collectorates and District Panchayat office. These LAN are integrated with GSWAN. • Gujarat High Court Network- 700-node network where Fiber backbone is used to connect all blocks of High Court. Jail Information System This system is successfully tested and implemented in the Jails (Central, District and Sub Jail) of Gujarat and every jail has a set up of computer system with web camera and multimedia. Besides maintaining important information about the prison inmates, this system has the facility of multilingual support with GIST SDK , photo feature with web camera and the provision to merge data of different jails to the IG (Prisons) Office. Geo-Mine Minerals play vital role in the development of any country, as they are the backbone of the industry. The statistical data pertaining to area of mining, production and dispatch details, royalty, payment etc. form important information in determining the growth of the mining industry. GEO-MINE software has been developed by NIC to handle the mineral statistics right at the district level and compiled at the head office to support decision making. NIC at High Court of Gujarat NIC is lending its services to the High Court of Gujarat since 1993. With active help and constant support from the High Court of Gujarat, public centric applications like availability of case status at the query counter and on the internet, advocate wise cause list, simple copy of the order/judgment instantly, certified copies of the judgment / orders etc. are operational. A Database of around 5. 5 lakh court cases has been developed.The cause list and Case status has been made available on Internet at www.gujarathighcourt.nic.in and the judgements of the High Court are also expected to be put up on the net soon. Besides, NIC has also developed the District Court Information System (DCIS) which is running at 17 district courts, metropolitan court and city civil court wherein a whole range of services have been computerised. Girnar Mountain Climb up-down Competition Akhil Gujarat Girnar Arohan Avrohan Competition is held by the Junagadh District Administration every year. Recording of arrival and departure time of more than 1000 participants and preparation of the result immediately was made easy by using NIC developed software. Computer installed on road at the starting point of the competition was an attraction for the public. Collector Smt. Sunaina Tomar, IAS, with NIC Officers at Girnar Competition venue at Junagadh Model District Gujarat Government made a program to make Vadodara a model district in every aspect of governance by introducing citizen charter in all departments. The goals set were quality, transparency and timeliness. An information gallery is set up to implement the Citizen’s Charter in its true spirit. NIC has developed the software for various socio-economic applications in the district which can be replicated for all the 25 districts in the State. “It is a unique project where all the aspects of E-governance have been addressed. E-governance is not only using Information Technology but a change process where I. T. becomes a means to the overall objective of transparent, cost effective, efficient and qualitatively superior administration”, Shri. Anil Mukim, I.A.S, Addl. Pri. Secretary to Chief Minister Besides the above, various important Central Government projects such as computerisation of Customs and Central Excise at Ahmedabad,Vadodara, Rajkot and Surat, Regional Passport Office at Ahmedabad, Director General of Foreign Trade (DGFT), Registrar of Companies (ROC) and Postal Life Insurance (PLI) have been undertaken by NIC Gujarat State Unit. Websites Developed Important websites for various State Government entities have been developed and/or hosted. The prominent ones include Gujarat Vidhan Sabha (http://www.gujaratassembly.gov.in), Gujarat Sales Tax (http://www.gujaratsalestax.gov.in), Water Resources Development Corporation (http://www.gwrdc.nic.in), Customs Gujarat (http://customsgujarat.nic.in), High Court of Gujarat (http://gujarathighcourt.nic.in) and Gujarat State Highway Project – (http://gshp.gujarat.gov.in). Hon’ble Governor of Gujarat Sh S.S Bhandari inaugurating the Vidhan Sabha website. Also seen in the picture are Hon’ble Chief Minister Sh Narendra Modi NIC Infrastructure in the State State Centre at Sachivalaya Complex, Gandhinagar, 25 District Informatic Offices NIC High Court Cell, NIC Sales Tax Unit and NIC Cell at Chief Secretary’s Office • Email Server, Web Server and Database Server at State Centre • Video Conferencing (room based) at State Centre • SCPC &amp; IPA VSAT at State Centre • IPA VSAT with DPC at NIC District Centres with dialup facility for internet and email • Database Server at each NIC District Centre For further information, please contact State Informatics Officer, NIC, Gujarat State Unit , Block – 13, II Floor, New Sachivalaya, Gandhinagar – 382 010 Tel – (079) 3223035, 3223890 Email : sio@guj.nic.in</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="e-governance-awards-for-websites-papers-january-2003.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">E-Governance Awards for Websites/Papers</span></a><a class="article-nav-link next" href="chhattisgarh-the-rice-bowl-of-india-january-2003.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Chhattisgarh – The Rice Bowl of India</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

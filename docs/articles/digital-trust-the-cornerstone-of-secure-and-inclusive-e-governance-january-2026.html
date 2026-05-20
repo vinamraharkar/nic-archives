@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-34.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-35.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2026/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">In a country as vast and diverse as India, trust has always been the invisible bridge between people and institutions. In the digital age, that bridge has a new name—digital trust. It is no longer a by-product of efficient governance; it is the foundation on which all digital interactions stand. Without trust, even the most advanced platforms struggle to connect with citizens. With it, a simple click becomes an act of confidence—a silent vote in favour of governance that listens, protects, and delivers. Digital trust is the foundation of India’s e-Governance revolution. It ensures that every digital interaction—whether in healthcare, finance, or land management—is secure, transparent, and ethical. By integrating strong cybersecurity, privacy protection, and accountability frameworks, the government builds confidence among citizens and institutions alike. As emerging technologies like AI and blockchain reshape governance, trust will remain the true measure of progress. A future-ready digital India will not be defined by the speed of its systems, but by the faith its citizens place in them—the quiet assurance that technology serves with integrity. Digital trust is what allows a villager in Bundelkhand to open a DigiLocker account without fear, a student in Kashmir to apply for scholarships online, and a patient in Pune to share medical records securely with a doctor miles away. It is the quiet assurance that technology will act not merely as a tool, but as a guardian of one’s rights. e-Governance: The Journey from Access to Assurance e-Governance in India began with a promise— to make governance efficient, accountable, and accessible. Over the past decade, that promise has evolved into a practice through the Digital India initiative, launched in 2015. Platforms such as Aadhaar, UMANG, DigiLocker, e-Courts, and MyGov have redefined public service delivery. The e-Kranti mission, with its mobile-first and cloud-first approach, has brought government services to the citizen’s fingertips. Initiatives like BHIM and UPI have made digital payments a part of daily life, empowering millions and advancing financial inclusion. India today ranks among the world’s top nations in the UN e-Government Development Index—proof that digital governance has moved beyond convenience to become a catalyst for social equity. Yet challenges remain: cyber threats, limited digital literacy, and connectivity gaps in remote regions. The solution to these challenges does not lie in technology alone—it lies in trust. Trust that systems are secure, data is respected, and every citizen is seen. Defining Digital Trust The World Economic Forum defines digital trust as the expectation that digital technologies and service providers will act responsibly, protect stakeholders’ interests, and uphold societal values. In simpler words, it is the belief that the digital world will not betray its users. Standards such as ISO/IEC 38505 advocate for ethical and accountable data management, while frameworks like India’s Digital Personal Data Protection Act (DPDP), 2023, strengthen the governance of personal information. For institutions, digital trust means more than compliance—it means character. For citizens, it means assurance that their identity, information, and dignity are protected. Pillars of Digital Trust Security The foundation of trust begins with protection. Strong encryption, secure storage, and multi-factor authentication ensure that citizen data remains untouchable. Continuous monitoring and real-time threat response form the government’s digital shield against breaches. Data Protection Citizens must have confidence that their data is handled with care and consent. Responsible data retention and transparent policies prevent misuse, turning privacy from a privilege into a right. Reliability A citizen’s trust grows when services do not fail. Reliable systems—those that do not crash under load, that deliver certificates, payments, and reports on time—build belief in governance itself. Fair User Interaction Digital services must be fair, unbiased, and inclusive. As artificial intelligence takes greater roles in decision-making, the algorithms that serve governance must remain accountable to human ethics. Transparency When citizens understand how their data is used, mistrust fades. Open dashboards, transparent policies, and clear communication transform skepticism into confidence. Accountability A trusted digital government owns its errors as much as its successes. Defined accountability, honest reporting, and ethical remediation fortify the credibility of institutions. Technology Emerging technologies—blockchain, zero-trust security, AI-driven threat detection, and decentralized identity—are shaping the future of governance. Tomorrow’s citizens will not just use digital systems; they will trust them because those systems are verifiable, explainable, and secure by design. Policy &amp; Institutional Enablers India’s policy landscape is steadily aligning with the ethics of digital trust. The DPDP Act (2023) gives citizens control over personal data. The National Informatics Centre (NIC), through its secure data centres and cloud services, upholds the integrity of millions of digital transactions each day. What is needed now is a Digital Trust Charter— an institutional commitment across ministries to ensure that every government service, from healthcare to education, is built on principles of privacy, transparency, and inclusivity. This charter would signal not just technological progress, but moral maturity in governance. Trust in Action: Use Cases Healthcare: Where Data Meets Dignity In healthcare, digital trust is not just about security—it is about dignity. Encrypted health records, blockchain-based e-consent systems, and zero-trust architectures ensure that every patient’s information remains confidential, traceable, and tamper-proof. Integrated platforms like DigiLocker and the Ayushman Bharat Digital Mission give citizens control over their medical data—allowing them to decide what to share, when to share, and with whom. When a patient uploads a report or retrieves an e-prescription, it is more than a digital act— it is a gesture of faith in the system. Ethical AI diagnostics and secure telemedicine networks extend care to remote corners of the country while upholding privacy and consent. Together, these systems create a patient-centric ecosystem where technology safeguards both health and humanity, proving that trust can heal as powerfully as medicine itself. Land Records Management: Trust Rooted in Transparency For millions of Indians, land ownership has long carried both pride and peril. Blockchain registries and tamper-proof digital ledgers are now rewriting this story—bringing transparency, permanence, and fairness to property records. Linked with GIS mapping, AI-based verification, and secure cloud storage, these systems prevent fraud, reduce disputes, and restore confidence in land governance. Today, a farmer in Bihar or a buyer in Bengaluru can verify ownership with a single click—free from middlemen, opacity, and manipulation. Each verified record becomes a promise kept. By anchoring every transaction in verifiable truth, digital trust is turning land administration into a transparent, accessible, and corruption-free system—a foundation where citizens no longer just own land, but believe in the integrity of ownership itself. Way Forward The next decade of e-Governance will not be defined by how fast services are delivered, but by how deeply they are trusted. Speed is technical. Trust is human. A trusted digital government will deliver faster, more personalized services while respecting privacy and ethics. It will transform governance from a system of control to a culture of confidence. As custodians of this transformation, we— technologists, policymakers, and citizens—must remember: digital trust is not built once; it is built every day. Each secure login, each transparent process, each honest response—these are the small acts that will define India’s digital democracy. And when trust becomes the default setting of governance, technology will not merely serve people—it will belong to them.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="gov-in-secure-intranet-an-ai-powered-secure-digital-platform-for-government-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gov.in Secure Intranet: An AI-Powered Secure Digital Platform for Government</span></a><a class="article-nav-link next" href="dyslexia-friendly-ui-ux-design-standards-and-engineering-guidance-for-inclusive-digital-governance-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Dyslexia‑Friendly UI/UX: Design Standards and Engineering Guidance for Inclusive Digital Governance</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

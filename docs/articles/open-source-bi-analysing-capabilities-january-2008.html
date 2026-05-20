@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-35.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;36</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-36.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-36.jpg" alt="Page 36" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/january-2008/page-36.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -882,126 +951,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
           <p class="first-para">Open Source Business Intelligence Tools or OS BI tools are a type of application software designed to help the business intelligence (BI) business processes. Basically they are those tools that aid in the analysis, and presentation of data that are applied to keep the management informed about the state of their business. There are a lot many open source tools available in almost all the areas of IT for the developers to use and refine. Although the open-source idea has come to the attention of many organizations, it hasn't come up as a strategic topic in the BI area. The technology gap between commercially available BI platforms and the equivalent open-source offerings are too broad for most companies to try open-source solutions for significant and critical deployments. As a result, OS BI has a low transformational effect, very low adoption rates and a long road to maturity. There are not many- branded OS BI tools available for the users to examine, use, refine and reuse. In the recent years OS BI has certainly created tremendous opportunities, as well as challenges for both traditional vendors and enterprises. The emergence of OSBI tools has put lot of pressure on the proprietary tool vendors. The branded RDBMS tools are strengthening their products by adding BI components in it. This has resulted in forcing the commercial vendors to think of new ideas and incorporate more features to make the BI tool truly a technology independent system for the end user and also to enrich the decision making power. OS BI Constraints While building a BI system one has a lot of options to choose from among a number of commercial tools. Based on the actual requirement and affordability in terms of cost there are plenty of options available for the user to select. The enterprise can perfectly and easily fit the tool into their BI model. Whereas in the case of open source there are not much options available for the user. In the BI space, to date, there isn't an open source BI analogue to Apache (or Tomcat, or JBoss), OpenOffice, Python, or other prominent open source software projects. What's more, BI vendors say there's been little demand for versions of their software designed to run on Linux or other open source operating systems. Challenges One of the major areas where the traditional BI as well as the RDBMS vendors concentrates nowadays is on the data quality which is a challenge for most organisations. Poor data quality has a negative effect on the efficiency of the organization and can jeopardize the often-large investments in data warehousing. Another area where the proprietary tools compete with each other is in the ETL process. It is a fact that nearly 60- 70% of the efforts go in to the ETL process in the warehouse development. How far the open source tools can compete with the proprietary tools in this area is a big question mark. OS-BI vs Proprietary BI Tools One of the biggest problems with proprietary solutions is that all the costs are born upfront by the customer before there is any reward. This is one of the key reasons for the growth and popularity of the open source movement. While open source is evangelized on many fronts, including security, flexibility, and competitive advantage, organizations adopt open source primarily because of the price/performance ratio. With OS BI, organizations can adjust spending as they go, depending on the perceived returns. Almost all of the investment is spent configuring or customizing the solution to meet the organization's needs, not on a generic system that needs to be customized just to work. Evaluating Open Source BI Solutions Despite all its advantages, open source is not risk-free. The major hurdles are skill set, support, product maturity, security integration, data source adapters, administrative capabilities, metadata management and the glut of products to choose from. The nature and extent of the cost can vary widely when evaluating open source and proprietary software. The Ventana Research, a leading Performance Management research and advisory services firm, has suggested that cost of open source BI project should involve ¡ Transition costs if the organization decides to switch technologies ¡ Maintenance, support and consulting costs from vendor(s) supporting the Open Source BI project ¡ Costs for license management related to Open Source (such as indemnification) ¡ Costs to build required functionality not found in the Open Source BI software ¡ Costs to train developers, administrators and users on the new software. And it recommends applying a structured approach that assures equivalent comparisons between alternative approaches to deploying BI (whether Open Source or commercial). Adoption of Open Source BI as a standard The Ventana Research (April 2006) on Open Source BI has clearly mentioned that despite widespread visibility and adoption of open source BI, Open Source BI has a long way to go before being an enterprise standard and is still in an early phase. Based on a Open source BI survey the Ventana Research Group found out that as more open source BI deployments are completed, top-down plans for adoption will increase, moving Open Source BI closer to being a standard, commonly used BI technology. Familiar Open Source BI Tools ? Pentaho BI - The Pentaho BI Platform provides the architecture and infrastructure required to build solutions to business intelligence (BI) problems. The platform includes an embedded workflow engine and can be easily integrated into business processes. The framework provides core services including authentication, logging, auditing, workflow, web services, and rules engines. The platform also includes a solution engine that integrates reporting, analysis, dashboards and data mining components to form a sophisticated and complete BI platform. ? JasperSoft BI -JasperSoft's JasperServer and JasperAnalysis products, and in future JasperETL as well, run on a shared BI platform. This platform provides a common framework to allow reporting, analysis and data integration to be easily integrated and managed by small, medium, and large organizations. There are a number of other BI-OS players, like Bee, BIRT/Actuate, BIZGRES, etc, who are into ETL, reporting, warehouse administration, etc. But as an end- to-end BI tool no branded tool is available, except to some extent Pentaho and Jaspersoft. What do BI Specialists say? According to market watcher Gartner, open-source business intelligence is starting to catch on. In a recent survey on the worldwide market for BI tools, Gartner issued this mildly worded shot-across-the-bow: “The last couple of years have shown the first signs that open source software is creeping into the BI tools market. The focus here is not on traditional BI tools deployed on open source operating environments, but instead truly open source BI software. Vendors such as Pentaho, JasperSoft, and Actuate clearly display the first signs of a potential market niche. However, we believe that the impact of open source BI tools will be very limited over the next five years.” Conclusion Business Intelligence has been a &quot;high investment/high return&quot; solution for a long time now. However, the way it was evaluated, sold, and implemented proprietary BI are out of the reach of most organizations. With open source BI, organizations also have the flexibility to iterate and evolve. As far as the technical support, skill set support and maturity level of open source BI is concerned it would take at least another three-five years. Further, as the selection of the right BI tool itself a major factor in the success of BI implementation, so far the users are left with very limited options in the open source arena. The biggest challenge for the OS-BI is that how they will face the least cost BI tools of the major BI players which are slowly entering into the market and are sure to capture a majority of the market.</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="claims-bringing-transparency-in-public-service-january-2008.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">CLAIMS–Bringing Transparency in Public Service</span></a><a class="article-nav-link next" href="bus-trams-coaches-tubes-all-go-mobile-in-london-january-2008.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Bus,Trams, Coaches,Tubes…. All go Mobile in London</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>

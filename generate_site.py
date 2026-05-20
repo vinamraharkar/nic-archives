@@ -83,15 +83,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -434,6 +495,34 @@ body {
 }
 
 /* ── Page thumbnail strip (issue TOC page) ── */
+.page-strip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.page-strip-label {
+    font-size: 0.8rem;
+    color: #8a7355;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    background: #7a1f1f;
+    color: #f7f0d8;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 150ms;
+}
+.btn-download:hover { background: #5c1717; color: #f7f0d8; }
 .page-strip {
     display: flex;
     gap: 0.75rem;
@@ -447,7 +536,7 @@ body {
 .page-strip::-webkit-scrollbar { height: 4px; }
 .page-strip::-webkit-scrollbar-track { background: #f7f0d8; }
 .page-strip::-webkit-scrollbar-thumb { background: #b8892a; border-radius: 2px; }
-.page-thumb { flex: 0 0 auto; text-decoration: none; cursor: pointer; }
+.page-thumb { flex: 0 0 auto; background: none; border: none; padding: 0; cursor: pointer; }
 .page-thumb img {
     width: 140px;
     height: 197px;
@@ -469,6 +558,74 @@ body {
     font-style: italic;
     font-family: 'Crimson Text', Georgia, serif;
 }
+
+/* ── Page viewer lightbox ── */
+.page-viewer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.page-viewer-overlay.open { display: flex; }
+.page-viewer-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100vh;
+    padding: 1rem;
+}
+.page-viewer-img {
+    max-height: calc(100vh - 110px);
+    max-width: calc(100vw - 120px);
+    object-fit: contain;
+    border: 2px solid #c9a96e;
+    background: #fff;
+}
+.page-viewer-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 0.75rem;
+}
+.page-viewer-btn {
+    background: #7a1f1f;
+    color: #f7f0d8;
+    border: none;
+    border-radius: 3px;
+    padding: 0.4rem 1rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 150ms;
+    line-height: 1;
+}
+.page-viewer-btn:hover { background: #5c1717; }
+.page-viewer-btn:disabled { background: #555; cursor: default; }
+.page-viewer-counter {
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    min-width: 80px;
+    text-align: center;
+}
+.page-viewer-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: #f7f0d8;
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.2rem 0.5rem;
+    opacity: 0.75;
+    transition: opacity 150ms;
+}
+.page-viewer-close:hover { opacity: 1; }
 
 /* ── Issue TOC page wrapper ── */
 .issue-toc-page {
@@ -794,6 +951,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 """
 
@@ -1045,9 +1204,60 @@ def _base_html(title: str, body: str, depth: int = 0) -> str:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="{root_path}index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="{root_path}index.html" aria-label="Search">{_SEARCH_ICON}</a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive\u2026"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search">{_SEARCH_ICON}</button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 {body}
+<script>
+(function() {{
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '{root_path}';
+  var R2 = '{R2_PAGES_URL}';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) {{ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }}
+  function _rel(u) {{ return ROOT + u.replace(/^\//, ''); }}
+  function _slug(d) {{ return d.toLowerCase().replace(/ /g, '-'); }}
+  document.addEventListener('click', function(e) {{
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  }});
+  document.addEventListener('keydown', function(e) {{
+    if (e.key === 'Escape') drop.style.display = 'none';
+  }});
+  window.navSearch = async function() {{
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching\u2026</div>';
+    try {{
+      var resp = await fetch(WORKER + '/search', {{
+        method: 'POST', headers: {{'Content-Type': 'application/json'}},
+        body: JSON.stringify({{query: q, limit: 8}})
+      }});
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) {{ drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }}
+      drop.innerHTML = items.slice(0, 8).map(function(r) {{
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display=\'none\'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '\u2026</div>' +
+          '</div></a>';
+      }}).join('');
+    }} catch(err) {{
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }}
+  }};
+}})();
+</script>
 </body>
 </html>"""
 
@@ -1260,15 +1470,36 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
     strip_html = ''
     if page_images:
         thumbs = []
-        for n in page_images:
+        for idx, n in enumerate(page_images):
             img_rel = f'{R2_PAGES_URL}/pages/{slug}/page-{n}.jpg'
             thumbs.append(
-                f'<a class="page-thumb" href="{img_rel}" target="_blank" title="Open page {n}">'
+                f'<button class="page-thumb" data-idx="{idx}" data-src="{img_rel}" '
+                f'title="View page {n}" aria-label="View page {n}">'
                 f'<img src="{img_rel}" alt="Page {n}" loading="lazy">'
                 f'<div class="page-thumb-label">p.&thinsp;{n}</div>'
-                f'</a>'
+                f'</button>'
             )
-        strip_html = f'<div class="page-strip">{"".join(thumbs)}</div>'
+        pdf_url = f'{R2_PAGES_URL}/pdfs/{slug}.pdf'
+        total = len(page_images)
+        strip_html = (
+            f'<div class="page-strip-header">'
+            f'<span class="page-strip-label">{total} page{"s" if total != 1 else ""} — click to view</span>'
+            f'<a class="btn-download" href="{pdf_url}" download>'
+            f'&#8595; Download PDF</a>'
+            f'</div>'
+            f'<div class="page-strip" id="page-strip">{"".join(thumbs)}</div>'
+            f'<div class="page-viewer-overlay" id="page-viewer" role="dialog" aria-modal="true" aria-label="Page viewer">'
+            f'<button class="page-viewer-close" id="viewer-close" aria-label="Close">&times;</button>'
+            f'<div class="page-viewer-inner">'
+            f'<img class="page-viewer-img" id="viewer-img" src="" alt="Page">'
+            f'<div class="page-viewer-controls">'
+            f'<button class="page-viewer-btn" id="viewer-prev" aria-label="Previous page">&#8592;</button>'
+            f'<span class="page-viewer-counter" id="viewer-counter"></span>'
+            f'<button class="page-viewer-btn" id="viewer-next" aria-label="Next page">&#8594;</button>'
+            f'</div>'
+            f'</div>'
+            f'</div>'
+        )
 
     items = []
     for idx, (meta, filename) in enumerate(articles, start=1):
@@ -1313,9 +1544,54 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
     {strip_html}
     <p class="section-rule">Table of Contents</p>
     <ul class="toc toc-grid">{items_html}</ul>
-    <p class="section-rule">Search the Archive</p>
-    {_search_widget_html(depth=1)}
-  </main>"""
+  </main>
+
+  <script>
+  (function() {{
+    var thumbs = Array.from(document.querySelectorAll('#page-strip .page-thumb'));
+    if (!thumbs.length) return;
+    var overlay = document.getElementById('page-viewer');
+    var img     = document.getElementById('viewer-img');
+    var counter = document.getElementById('viewer-counter');
+    var btnPrev = document.getElementById('viewer-prev');
+    var btnNext = document.getElementById('viewer-next');
+    var current = 0;
+
+    function open(idx) {{
+      current = idx;
+      img.src = thumbs[idx].dataset.src;
+      counter.textContent = (idx + 1) + ' / ' + thumbs.length;
+      btnPrev.disabled = idx === 0;
+      btnNext.disabled = idx === thumbs.length - 1;
+      overlay.classList.add('open');
+      overlay.focus();
+    }}
+
+    function close() {{
+      overlay.classList.remove('open');
+      img.src = '';
+    }}
+
+    thumbs.forEach(function(btn) {{
+      btn.addEventListener('click', function() {{ open(+btn.dataset.idx); }});
+    }});
+
+    document.getElementById('viewer-close').addEventListener('click', close);
+    btnPrev.addEventListener('click', function() {{ if (current > 0) open(current - 1); }});
+    btnNext.addEventListener('click', function() {{ if (current < thumbs.length - 1) open(current + 1); }});
+
+    overlay.addEventListener('click', function(e) {{
+      if (e.target === overlay) close();
+    }});
+
+    document.addEventListener('keydown', function(e) {{
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape')      close();
+      if (e.key === 'ArrowLeft'  && current > 0)               open(current - 1);
+      if (e.key === 'ArrowRight' && current < thumbs.length-1) open(current + 1);
+    }});
+  }})();
+  </script>"""
 
     return _base_html(f'Informatics — {issue_date}', body, depth=1)
 
@@ -1591,8 +1867,6 @@ def render_article_page(meta: dict, html_body: str, filename: str,
           {html_body}
         </div>
         {article_nav}
-        <p class="section-rule">Search the Archive</p>
-        {_search_widget_html(depth=1)}
       </div>
     </div>
   </div>"""

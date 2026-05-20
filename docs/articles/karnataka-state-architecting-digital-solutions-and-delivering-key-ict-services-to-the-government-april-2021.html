@@ -46,15 +46,76 @@ body {
     white-space: nowrap;
 }
 .navbar-brand:hover { color: #f7f0d8; }
-.navbar-search-link {
-    color: #b8892a;
+/* ── Navbar inline search ── */
+.navbar-search {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    padding: 0.25rem;
-    transition: color 150ms;
+    flex: 1;
+    max-width: 420px;
+    margin-left: 1.5rem;
 }
-.navbar-search-link:hover { color: #f7f0d8; }
+.nav-search-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 0.65rem;
+    background: rgba(247,240,216,0.08);
+    border: 1px solid rgba(184,137,42,0.5);
+    border-right: none;
+    color: #f7f0d8;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    outline: none;
+    border-radius: 2px 0 0 2px;
+    min-width: 0;
+}
+.nav-search-input::placeholder { color: rgba(247,240,216,0.38); }
+.nav-search-input:focus { border-color: #b8892a; background: rgba(247,240,216,0.14); }
+.nav-search-btn {
+    height: 30px;
+    padding: 0 0.55rem;
+    background: #b8892a;
+    border: 1px solid #b8892a;
+    color: #1a0f07;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 0 2px 2px 0;
+    transition: background 150ms;
+    flex-shrink: 0;
+}
+.nav-search-btn:hover { background: #d4a030; border-color: #d4a030; }
+/* navbar search dropdown */
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 48px;
+    left: 0;
+    right: 0;
+    background: #1e1408;
+    border-bottom: 2px solid #b8892a;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 99;
+    padding: 0.25rem 2rem 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.nav-drop-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(184,137,42,0.2);
+    text-decoration: none;
+    color: #f7f0d8;
+    transition: background 150ms;
+    border-radius: 2px;
+}
+.nav-drop-card:hover { background: rgba(184,137,42,0.1); }
+.nav-drop-thumb { width: 38px; height: 52px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(184,137,42,0.3); }
+.nav-drop-body { flex: 1; min-width: 0; }
+.nav-drop-title { font-family: 'Crimson Text', Georgia, serif; font-size: 0.95rem; font-weight: 600; color: #f7f0d8; line-height: 1.3; }
+.nav-drop-meta { font-size: 0.7rem; color: #b8892a; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.15rem 0 0.2rem; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-snippet { font-size: 0.8rem; color: rgba(247,240,216,0.6); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-family: 'Crimson Text', Georgia, serif; }
+.nav-drop-status { color: rgba(247,240,216,0.55); font-size: 0.85rem; font-style: italic; padding: 0.6rem 0; font-family: 'Crimson Text', Georgia, serif; }
 
 /* ── Newspaper nameplate masthead ── */
 .nameplate {
@@ -853,6 +914,8 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .article-nav { flex-direction: column; }
     .article-nav-link, .article-nav-link.next { text-align: left; margin-left: 0; max-width: 100%; }
     .navbar { padding: 0 1rem; }
+    .navbar-search { max-width: none; margin-left: 0.75rem; }
+    .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
 }
 </style>
 </head>
@@ -860,8 +923,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <a class="skip-link" href="#main-content">Skip to content</a>
 <nav class="navbar">
   <a class="navbar-brand" href="../index.html">Informatics Archive</a>
-  <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
+  <div class="navbar-search">
+    <input type="text" id="nav-search-input" class="nav-search-input"
+           placeholder="Search the archive…"
+           onkeydown="if(event.key==='Enter')navSearch()">
+    <button class="nav-search-btn" onclick="navSearch()" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
 </nav>
+<div id="nav-dropdown" class="nav-dropdown" role="region" aria-live="polite"></div>
 
   <div class="article-container" id="main-content">
     <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-7.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-8.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-9.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-10.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-11.jpg" target="_blank" title="Open full resolution"><img src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/april-2021/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
@@ -886,126 +955,53 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
 <p>ICT Initiatives in the State Centre of Excellence in Blockchain Technology A state-of-the-art laboratory has been established to facilitate the Government Departments to perform PoCs, test the applications and move on to production. The centre has explored some blockchain platforms and has established blockchain networks using Hyperledger Fabric and Hyperledger Sawtooth. Blockchain network with nodes in different data centres of NIC has been established to provide a platform for NIC to develop and deploy blockchain enabled applications. Centre is developing and deploying the applications such as Certificate Chain, Drug Logistics, Remote Voting, etc. Certificate Chain The marks-sheet of SSLC and PUC students of Karnataka have been stored in Blockchain. The KSEEB portal provides facilities for the process of verification. The same system can be implemented for any university marks-sheet. This provides a tamper proof secure system and enables electronic verification by other accepting agencies such as Scholarship, Professional College admission system systems. Marks-sheet of students who passed the examinations in the academic year 2019-20 is stored in the blockchain. Drug Logistics Chain - Aushada The main objective of Aushada software is to automate the supply chain management of drugs procured from Karnataka State Medical Supplies Corporation Limited and supplied free of cost to the patients across Karnataka. At critical stages in the workflow, the data is stored in Blockchain. This includes the POs, the batch ID details, quantity, expiry details, inward and outward details at warehouse and hospitals. The quality test report received from test labs would be updated in blockchain This will facilitate easy recall of non standard drugs. The patient will be able to check the expiry, quality, manufacture details etc. from the blockchain. For the year 2019-2020 about 800 drug details along with Purchase Orders and the movement details of these from supplier to 26 District Drug Warehouses and 2,783 Health institutions all across Karnataka State is stored in the blockchain. GST e-Invoice GST e-invoice system, the game changer in the GST system, was launched on 1st October, 2020 on PAN-India basis, for the businesses who have an aggregate turnover of more than Rs. 500 Crores in the financial year. ‘e-invoicing’ essentially involves reporting details of specified GST documents to a Government-notified portal and obtaining a Invoice Reference Number (IRN). GST e-invoice System is a path-breaking initiative that is going to revolutionize the way businesses interact with each other. It also helps the recipient to get an Input Tax Credit for the purchases. From day one, this system is running smoothly and in the first two months of introduction itself, more than 1,089 Lakh e-invoices are generated on the NIC portal by 33,000 tax payers. GST Prime NIC-GST Analytics System GST Prime system is an analytical system from NIC for the GST officers in the country. It pulls the data from the GST Common Portal, E-Way Bill system and other external systems and analyses the data and provides the information to the officers for further action. This system has helped the GST departments in improving tax compliance and collection and fraud detections. GST Prime has been implemented in the states of Karnataka, Chhattisgarh, Jharkhand, Himachal Pradesh, Maharashtra, Chandigarh, West Bengal, Kerala and Haryana. And the implementation is under progress in the states of Assam, Delhi, Bihar and Madhya Pradesh. DBT Direct Benefit Transfer Government of Karnataka provides benefits citizens through several schemes and programmes of Govt. of India &amp; Govt. of Karnataka - Subsidies to farmers, scholarships to students, social security pensions, and micro-credit to poor women etc to name a few. The new initiative is to provide a common platform for all Government departments to integrate their beneficiary management system with DBT platform. This will enable them to do Direct Benefit Transfer to the beneficiary’s bank account through the Aadhaar Enabled Payment System. The DBT platform provides services to the various departments to perform validation of Aadhar number with UIDAI, check for availability of Bank Accounts seeded with Aadhar and through NPCI service and resolve issues with respect to payment. For payment, DBT is integrated with Khajane-II and the State Bank of India. 89 Schemes from 14 departments are on-boarded on the DBT platform. A total amount of Rs 10,160 Cr. has been transferred to 3.65 Cr. Beneficiaries through the DBT portal till date. About Rs. 684 Cr. have been paid to 24.9 lakh beneficiaries under various Covid-19 relief schemes. Panchatantra Panchatantra is a comprehensive system for automation of activities of all the 6009 Gram Panchayats of Karnataka. Double entry accounting system the core of the project, helps Panchayats to capture all the financial transactions like receipts, payments, demands, etc. and thereby allowing Panchayats to generate various financial statements like Income &amp; Expenditure statements, Balance Sheets, etc It also has citizen interface for online services of the gram panchayats. Operational in all the Gram Panchayat since 2015-16 this system is benefiting over 400 Lakh of rural population and 6009 GPs in improving in their delivery of services and tax collection. Worksoft The Rural Development and Panchayat Raj department executes multiple development works under various schemes to improve the basic infrastructure in the rural areas. In this process, they get multiple development works executed in the rural area so that the basic infrastructure is built for rural people. The comprehensive Worksoft system facilitates the RDPR department in following the procedure laid down for execution of works and effective monitoring of implementation of the same under different schemes. FRUITS Farmer Registration &amp; Unified Beneficiary Information System FRUITS is an e-Governance application for managing farmers database and benefits provided to farmers/ institutions/ producing organisations, covering the schemes executed by Department of Agriculture and allied departments. All these departments deal with farmers when it comes to providing benefits from the government in the form of subsidy/ financial assistance. A well organised and scrutinised farmer database will avoid farmers from running from pillar to post for availing benefits and submission of same set of documents repeatedly. For departments, it helps in bringing transparency in selection of beneficiaries, avoiding chances of same beneficiary(ies) availing multiple benefits. Farmers can request online for registration, modification of existing details etc. Electronic integration has been achieved with Aadhaar, BHOOMI (land Records System), Nada-Kacheri (Revenue departments certificates issue system), PDS and EPIC system. The system also facilitates updation of details of benefits passed on to farmers by stakeholder departments based on registration ID. Applications of stakeholder departments interact and exchange data using Web API. 6 Departments with 27 schemes are on-boarded with FRUITS (http://www.fruits.karnataka.gov.in). Payments to beneficiaries are being done using the DBT platform. An amount of Rs. 570 Crores has been disbursed to about 1 Crore beneficiaries till date under different schemes. FAPS Farmer Agriculture Produce Support System FAPS application is a total work flow based system wherein farmer can register, provide produce to the procurement agencies and receive the payment for their produce directly to his bank account. The registration of farmers is done through the FRUITS system, which will validate his details along with land records and agricultural produces. With the introduction of the above system, the registrations of farmers and procurement of produce is done with ease and the payment to the farmers is made within 15 days of the procurement, which otherwise used to take 3 to 4 months. This has benefitted a substantial number of farmers. During the last financial year, more than ten commodities were covered under MSP operations by six departments/agencies and more than 5.80 lakh farmers are benefitted from this system. Samrakshane https://www.samrakshane.karnataka.gov.in Samrakshane (meaning protection) is an end to end, state-of-the-art e-Governance solution and farmer-friendly system for crop insurance enrolment, registering claims, compensation calculation and payment of compensation to farmers under the Crop Insurance Schemes, Pradhan Mantri Fasal Bima Yojana (PMFBY) and Modified Weather Based Crop Insurance Scheme (MWBCIS). It has been operationalised in 2016 and successfully completed 14 seasons since inception. It has resulted in increase in Non-loanee farmer enrolments and reduction in Process cycle time for compensation payment by almost 10 months. The payments are made through SBI payment gateway. Seva Sindhu http://sevasindu.karnataka.gov.in Seva Sindhu is a Service Plus based platform to deliver government services at the doorsteps of citizens. Seva Sindhu is integrated with various service delivery channels of the Government of Karnataka namely citizen service centres (Bangalore One, GramaOne, JanaSevaka, Karnataka One) , Atalji Jana Snehi Kendra and Bapuji Kendras. It aims to bring all departmental services under one platform. It is a step towards providing accessible, cost-effective, accountable and transparent government services to citizens. As of now, Seva Sindhu provides 760 online services of 64 departments. EASE Electronic Answer Script Evaluation System EASE is a system to carry out the computerized evaluation of the theory examination, conducted by the various universities, agencies. The system enables onscreen evaluation of theory examinations and is being used by Education Department for entrance tests conducted for recruitment of teachers and lecturers. It is hosted in cloud environment with distributed scanning stations and onscreen evaluation centres, accessed through internet/ intranet. It is generic system and supports academic related activities covering parallel evaluations of the same answer scripts by different evaluators using secured encryption of data. It is being implemented for KPSC (Karnataka Public Service Commission), Govt. of Karnataka, for their regular recruitment purposes. e-Gazette system http://erajyapatra.karnataka.gov.in The e-Gazette is web application with built in workflow for all the stake holders starting from submitter, uploader, approver and nodal officer. At each stage, the document is digitally signed and finally the Gazette is published on the portal. With launch of e-Gazette, the physical publication of Gazettes has been discontinued and very minimum copies of e-Gazettes are printed and kept for record purpose. Government printing press used to print an average of 39 crore pages of weekly gazette and 1.2 crore pages of extra ordinary gazettes each year. With e-Gazette, the number of pages per year is reduced to 10,000 pages. Since it is a web application, all the Gazettes notified by government is available to general public. Also, unlike the weekly publication of the gazette in the printed version, the e-Gazette has the option to publish the gazette as and when required by the department, it is pertinent to mention here that, the e-Gazette has been very well received by all the Departments, and Government has made it mandatory for all the departments to publish the gazettes only on e-Gazette portal. RTI online Portal Right to information Online Portal is the digital enablement for the citizen to file online RTI application to get required information. It is a workflow based web portal which has the facility for a citizen to file an RTI application under the relevant sections of the RTI Act and also enables for filing the appeal against the Public Information officer. As on now, 9 departments with about 600 Public Authorities, 8600 Public Information officers and 8600 First Appellate Authorities are on boarded on the portal. About 4500 RTI request and about 900 First appeals have been filed online. The process of onboarding the remaining departments are on. The Right to information portal is also integrated with online payment gateway. It has alert systems built in to message the PIO about the pending applications in the login and RTI applicant about the current stage of his/ her application. The application has been well received by the public and the other stake holders. EMS - Election Management System Election Management System (EMS) is comprehensive system for State Election Commission (SEC), comprising of all the activities related with Election. The notification of the election by SEC, notification by the District administration, Appointment of Returning officers, Capturing Candidate profile, constituency mapping with reservation, scrutiny of the applications, rejection and withdrawal of candidature, poll day polling percentage and tabulation of results are the modules built-in to the system. With the help of this software, SEC is able to monitor the election process more effectively at the micro level. During the current election, about 5730 Gram panchayats have been notified for election, 3 lakh plus candidates are in the fray and election are being held in 44,730 polling stations. Online University Affiliation System The system facilitates colleges to file online applications after availing user credentials from the respective universities, enables formation of local inspection committees, with provision to accept the inspection details vis-a-vis data entered by colleges. The system facilitates auto generation of marks for various parameters as designed by the Government and generation of reports to be sent to the syndicate for approval and enables various MIS reports. The University affiliation system portal has been implemented for Department of Higher education, Govt of Karnataka covering 14 conventional universities in the State and 5000 affiliated colleges. Accolades • Nada Kacheri (e-KSHANA-Instant service delivery system, Revenue Department): Jury Award of Excellence in providing Citizen Centric Delivery, at the 23rd National Conference on e-Governance, held in Mumbai • FRUITS: Third place in Data Quality Challenge 2018 • Samrakshane: National e-Governance award 2018, SKOCH Order of Merit 2017, Gems of Digital India Award 2018 • e-AASTHI: SKOCH Order of Merit 2017 • e-SWATHU: SKOCH Order of Merit 2017 and CSI-Nihilent Award 2014-2015 Way Forward • The Centre of Excellence in Blockchain Technology is in the process of designing more applications of relevance to the citizens such as Certificate (Caste, Income, Birth, Death etc.) repository, Property details, Licenses etc. in near future • Integrating the ongoing applications with IoT • Enhancing the scope of Tax payers, eligible for eInvoice • Rollout of GST Prime in remaining states • Incorporating AI Tools to enrich the ongoing applications</p>
         </div>
         <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="nic-celebrates-ai-day-2021-april-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">NIC celebrates AI Day, 2021</span></a><a class="article-nav-link next" href="akola-district-pioneer-with-excellence-in-digital-governance-at-the-cotton-city-of-india-april-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Akola District Pioneer with excellence in digital governance at the Cotton City of India</span></a></nav>
-        <p class="section-rule">Search the Archive</p>
-        <div class="search-wrap">
-      <div class="sem-tabs" role="tablist">
-        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
-        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
-      </div>
-      <div class="sem-form">
-        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
-               placeholder="Search 30 years of NIC Informatics…"
-               onkeydown="if(event.key==='Enter')semSubmit()">
-        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
-      </div>
-      <div class="sem-status" id="sem-status"></div>
-      <div class="sem-results" id="sem-results"></div>
-    </div>
-
-  <script>
-    const WORKER = document.querySelector('meta[name="worker-url"]').content;
-    const _ROOT = '../';
-    let _mode = 'search';
-
-    function semSwitchTab(mode) {
-      _mode = mode;
-      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
-      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
-      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
-      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
-      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
-      document.getElementById('sem-input').placeholder = mode === 'ask'
-        ? 'Ask anything about NIC’s history…'
-        : 'Search 30 years of NIC Informatics…';
-      document.getElementById('sem-results').innerHTML = '';
-      document.getElementById('sem-status').textContent = '';
-    }
-
-    async function semSubmit() {
-      const q = document.getElementById('sem-input').value.trim();
-      if (!q) return;
-      const btn = document.getElementById('sem-btn');
-      const status = document.getElementById('sem-status');
-      const results = document.getElementById('sem-results');
-      btn.disabled = true;
-      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
-      results.innerHTML = '';
-      try {
-        const resp = await fetch(WORKER + '/' + _mode, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: q, limit: 24 })
-        });
-        if (!resp.ok) throw new Error('Worker error ' + resp.status);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        status.textContent = '';
-        if (_mode === 'search') renderSearch(data);
-        else renderAsk(data);
-      } catch(e) {
-        status.textContent = '';
-        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
-
-    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
-
-    function thumbImg(d) {
-      const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="https://pub-aeebc89b75274bada82104943378de01.r2.dev/pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
-    }
-
-    let _allResults = [];
-    const _PAGE = 8;
-
-    function renderSearch(items) {
-      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
-      _allResults = items;
-      _renderVisible(_PAGE);
-    }
-
-    function _renderVisible(upTo) {
-      const visible = _allResults.slice(0, upTo);
-      const hasMore = upTo < _allResults.length;
-      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
-      const cards = visible.map(r => `
-        <div class="sem-card">
-          ${thumbImg(r.issue_date)}
-          <div class="sem-card-body">
-            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
-            <div class="sem-card-meta">${esc(r.issue_date)}</div>
-            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
-          </div>
-        </div>`).join('');
-      const btn = hasMore
-        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
-        : '';
-      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
-    }
-
-    function renderAsk(data) {
-      const cites = (data.citations || []).map((c, i) =>
-        `<div class="sem-card">
-           ${thumbImg(c.issue_date)}
-           <div class="sem-card-body">
-             <div class="sem-card-num">${i+1}.</div>
-             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
-             <div class="sem-card-meta">${esc(c.issue_date)}</div>
-           </div>
-         </div>`).join('');
-      document.getElementById('sem-results').innerHTML =
-        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
-        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
-    }
-  </script>
       </div>
     </div>
   </div>
+<script>
+(function() {
+  var WORKER = document.querySelector('meta[name="worker-url"]').content;
+  var ROOT = '../';
+  var R2 = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev';
+  var inp = document.getElementById('nav-search-input');
+  var drop = document.getElementById('nav-dropdown');
+  function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function _rel(u) { return ROOT + u.replace(/^\//, ''); }
+  function _slug(d) { return d.toLowerCase().replace(/ /g, '-'); }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.navbar-search') && !e.target.closest('#nav-dropdown'))
+      drop.style.display = 'none';
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') drop.style.display = 'none';
+  });
+  window.navSearch = async function() {
+    var q = inp.value.trim();
+    if (!q) return;
+    drop.style.display = 'block';
+    drop.innerHTML = '<div class="nav-drop-status">Searching…</div>';
+    try {
+      var resp = await fetch(WORKER + '/search', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query: q, limit: 8})
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      var items = await resp.json();
+      if (!items || !items.length) { drop.innerHTML = '<div class="nav-drop-status">No results found.</div>'; return; }
+      drop.innerHTML = items.slice(0, 8).map(function(r) {
+        return '<a class="nav-drop-card" href="' + _rel(_esc(r.url)) + '">' +
+          '<img class="nav-drop-thumb" src="' + R2 + '/pages/' + _slug(r.issue_date) + '/page-1.jpg" loading="lazy" alt="" onerror="this.style.display='none'">' +
+          '<div class="nav-drop-body">' +
+          '<div class="nav-drop-title">' + _esc(r.title) + '</div>' +
+          '<div class="nav-drop-meta">' + _esc(r.issue_date) + '</div>' +
+          '<div class="nav-drop-snippet">' + _esc((r.body_snippet||'').slice(0,130)) + '…</div>' +
+          '</div></a>';
+      }).join('');
+    } catch(err) {
+      drop.innerHTML = '<div class="nav-drop-status">Search unavailable: ' + err.message + '</div>';
+    }
+  };
+})();
+</script>
 </body>
 </html>
