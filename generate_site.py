@@ -225,13 +225,16 @@ body {
 /* ── Archive blurb (plain text, no bordered box) ── */
 .archive-blurb {
     max-width: 700px;
-    margin: 1.5rem auto;
-    font-size: 0.95rem;
+    margin: 1rem auto 0;
+    font-size: 0.92rem;
     font-style: italic;
     color: #4a3820;
     line-height: 1.65;
     font-family: 'Crimson Text', Georgia, serif;
     text-align: center;
+    border-top: 1px solid #c9a96e;
+    border-bottom: 1px solid #c9a96e;
+    padding: 0.85rem 0.5rem 0.75rem;
 }
 .archive-blurb strong { color: #7a1f1f; font-style: normal; }
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
@@ -627,6 +630,9 @@ body {
 }
 .page-viewer-close:hover { opacity: 1; }
 
+/* ── Issue card info top accent ── */
+.issue-card-info { border-top: 2px solid #c9a96e; }
+
 /* ── Issue TOC page wrapper ── */
 .issue-toc-page {
     max-width: 1400px;
@@ -953,7 +959,119 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
     .navbar-search { max-width: none; margin-left: 0.75rem; }
     .nav-dropdown { padding: 0.25rem 1rem 0.75rem; }
+    .nameplate-govt-band { display: none; }
+    .search-frame { padding: 1rem 1rem 0.75rem; }
+    .section-rule-bar { flex-wrap: wrap; gap: 0.5rem; }
 }
+
+/* ── Nameplate government band ── */
+.nameplate-govt-band {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.4rem 0 0.65rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8a7355;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.nameplate-govt-band::before,
+.nameplate-govt-band::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid #c9a96e;
+}
+
+/* ── NIC emblem ring in nameplate center ── */
+.nameplate-emblem-ring {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #b8892a;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #b8892a;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+}
+
+/* ── Search frame (homepage) ── */
+.search-frame {
+    border: 1px solid #c9a96e;
+    border-top: 3px solid #1a0f07;
+    padding: 1.25rem 2rem 1rem;
+    margin: 2rem 0 0.5rem;
+    background: #ede6c0;
+}
+.search-frame .search-wrap { margin: 0; max-width: none; }
+.search-frame-head {
+    text-align: center;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7a1f1f;
+    margin-bottom: 0.9rem;
+}
+.search-frame-head span { color: #b8892a; margin: 0 0.6em; }
+
+/* ── Decade divider in issue grid ── */
+.decade-divider {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.5rem 0 0.15rem;
+    margin-top: 0.25rem;
+}
+.decade-divider-rule { flex: 1; border-top: 1px solid #c9a96e; }
+.decade-divider-text {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #8a7355;
+    white-space: nowrap;
+}
+
+/* ── Section rule bar with inline action ── */
+.section-rule-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid #b8892a;
+    padding-bottom: 0.35rem;
+    margin: 2rem 0 1rem;
+    gap: 1rem;
+}
+.section-rule-bar .section-rule {
+    border-bottom: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Site footer ── */
+.site-footer {
+    background: #1a0f07;
+    border-top: 2px solid #b8892a;
+    color: rgba(184,137,42,0.65);
+    text-align: center;
+    padding: 1.25rem 2rem 1.5rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    line-height: 2;
+}
+.site-footer a { color: #b8892a; text-decoration: none; }
+.site-footer a:hover { color: #f7f0d8; }
+.site-footer-ornament { color: rgba(184,137,42,0.5); letter-spacing: 0.5em; font-size: 0.75rem; margin-bottom: 0.3rem; }
 """
 
 
@@ -1258,6 +1376,11 @@ def _base_html(title: str, body: str, depth: int = 0) -> str:
   }};
 }})();
 </script>
+<footer class="site-footer">
+  <div class="site-footer-ornament">&#9670; &bull; &#9670;</div>
+  <em>Informatics</em> &mdash; National Informatics Centre, Government of India<br>
+  <a href="https://www.nic.in/" target="_blank" rel="noopener">www.nic.in</a>
+</footer>
 </body>
 </html>"""
 
@@ -1396,10 +1519,23 @@ def render_index(issues_data: list) -> str:
         filter_pills += f'<button class="filter-pill" data-year="{y}" onclick="filterYear(this,\'{y}\')">{y}</button>'
 
     cards = []
+    prev_decade = None
     for issue in issues_data:
         slug = make_issue_slug(issue['date'])
         year = issue_sort_key(issue['date'])[0]
+        decade = (year // 10) * 10
         count = issue['count']
+
+        if decade != prev_decade:
+            cards.append(
+                f'<div class="decade-divider" data-decade="{decade}">'
+                f'<div class="decade-divider-rule"></div>'
+                f'<span class="decade-divider-text">{decade}s</span>'
+                f'<div class="decade-divider-rule"></div>'
+                f'</div>'
+            )
+            prev_decade = decade
+
         cover_path = DOCS_PAGES_DIR / slug / 'page-1.jpg'
         cover_html = (
             f'<div class="issue-card-cover">'
@@ -1420,11 +1556,13 @@ def render_index(issues_data: list) -> str:
 
     body = f"""
   <header class="nameplate">
+    <div class="nameplate-govt-band">Government of India &middot; National Informatics Centre &middot; New Delhi</div>
     <hr class="nameplate-rule-heavy">
     <hr class="nameplate-rule-thin">
     <div class="nameplate-grid">
-      <div class="nameplate-side">Est.&nbsp;1989<br>Quarterly Newsletter<br>New&nbsp;Delhi,&nbsp;India</div>
+      <div class="nameplate-side">Est.&nbsp;1989<br>Quarterly&nbsp;Newsletter<br>New&nbsp;Delhi,&nbsp;India</div>
       <div class="nameplate-center">
+        <div class="nameplate-emblem-ring">NIC</div>
         <div class="nameplate-title">Informatics</div>
         <div class="nameplate-subtitle">National Informatics Centre &bull; Government of India</div>
       </div>
@@ -1434,7 +1572,10 @@ def render_index(issues_data: list) -> str:
   </header>
 
   <main id="main-content" class="home-content">
-    {_search_widget_html(depth=0)}
+    <div class="search-frame">
+      <div class="search-frame-head"><span>&#9670;</span> Search the Archive <span>&#9670;</span></div>
+      {_search_widget_html(depth=0)}
+    </div>
 
     <p class="archive-blurb">
       <strong>NIC Informatics</strong> is the quarterly newsletter of India's
@@ -1457,6 +1598,9 @@ def render_index(issues_data: list) -> str:
       document.querySelectorAll('.issue-card').forEach(card => {{
         card.style.display = (year === 'all' || card.dataset.year === year) ? '' : 'none';
       }});
+      document.querySelectorAll('.decade-divider').forEach(d => {{
+        d.style.display = year === 'all' ? '' : 'none';
+      }});
     }}
   </script>"""
 
@@ -1466,6 +1610,11 @@ def render_index(issues_data: list) -> str:
 def render_issue_page(issue_date: str, articles: list, page_images: list = None) -> str:
     """Per-issue TOC page: smaller nameplate + thumbnail strip + two-column TOC."""
     slug = make_issue_slug(issue_date)
+    pdf_url = f'{R2_PAGES_URL}/pdfs/{slug}.pdf'
+    download_btn = (
+        f'<a class="btn-download" href="{pdf_url}" download>'
+        f'&#8595;&nbsp;Download PDF</a>'
+    )
 
     strip_html = ''
     if page_images:
@@ -1479,13 +1628,10 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
                 f'<div class="page-thumb-label">p.&thinsp;{n}</div>'
                 f'</button>'
             )
-        pdf_url = f'{R2_PAGES_URL}/pdfs/{slug}.pdf'
         total = len(page_images)
         strip_html = (
             f'<div class="page-strip-header">'
             f'<span class="page-strip-label">{total} page{"s" if total != 1 else ""} — click to view</span>'
-            f'<a class="btn-download" href="{pdf_url}" download>'
-            f'&#8595; Download PDF</a>'
             f'</div>'
             f'<div class="page-strip" id="page-strip">{"".join(thumbs)}</div>'
             f'<div class="page-viewer-overlay" id="page-viewer" role="dialog" aria-modal="true" aria-label="Page viewer">'
@@ -1542,7 +1688,10 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
 
   <main id="main-content" class="issue-toc-page">
     {strip_html}
-    <p class="section-rule">Table of Contents</p>
+    <div class="section-rule-bar">
+      <p class="section-rule">Table of Contents</p>
+      {download_btn}
+    </div>
     <ul class="toc toc-grid">{items_html}</ul>
   </main>
 
