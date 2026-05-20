@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>PUNJAB : Making its Mark — Informatics October 2005</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2005"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2005/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2005/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2005/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2005/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2005/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2005/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2005/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2005/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2005/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2005/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2005/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2005/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2005.html">October 2005</a><span class="breadcrumb-sep">&rsaquo;</span><span>PUNJAB : Making its Mark</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2005.html">October 2005</a><span class="breadcrumb-sep">&rsaquo;</span><span>PUNJAB : Making its Mark</span></nav>
         <div class="article-header">
           <div class="article-section-badge">State in Focus</div>
-          <h1 class="article-title" data-pagefind-meta="title">PUNJAB : Making its Mark</h1>
+          <h1 class="article-title">PUNJAB : Making its Mark</h1>
           <hr class="title-rule">
           <p class="article-byline">By M Manivannan, Sunil Kumar, A Venkatesan &bull; pp. 5–6</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Punjab is a prominent state in the northwestern India. The State shares its borders with Pakistan on the west, the Indian states of Jammu and Kashmir on the north, Himachal Pradesh on its northeast and Haryana and Rajasthan to its south. It has 17 districts and covers an area of 50,362 square kilometres, which is 1.54 % of India’s total geographical area. NIC Punjab State Centre came into existence in 1988 when IT was still in its nascent stage. NIC Punjab played crucial role in promotion of ICT in the government departments and has State Centres in Punjab Civil Secretariat and Punjab Mini Secretariat. Apart from having NIC District Centres in all the 17 Districts, it has presence in Regional Passport Centre at Chandigarh and Jalandhar, Central Excise and Customs department at Chandigarh and Ludhiana and at the Registrar of Companies office in Jalandhar. ž| Infrastructure NIC Punjab State Centre and District Units are equipped with modern Servers and Client machines as well as peripherals with latest configurations. NIC Punjab is connected to Network Control Centre at Chandigarh through 2 mbps leased line as well as RF connectivity. The Network Control Centre is further connected with NIC headquarters through 8 mbps leased line. All Districts have been provided with SCPC DAMA VSATs for Video Conferencing whereas DirecWay/ FTDMA has been provided for Data Communication. NIC Punjab State Center has installed high-end servers as part of augmentation of Network and Data Centre. ž| The Path Travelled NIC Punjab has travelled a long way in e-Governance activities. It has implemented varied applications starting from Office Automation Suite to SUWIDHA, which is an important project in delivering services to the citizens. On the services side, two Secretariats of Punjab have been connected through RF as well as leased line. Internet/ E-mail Services are being provided over the LAN of Punjab Government, which comprises 800 nodes. NIC Punjab State Centre and District Centres have been providing training to Punjab Government Officials on Applications as well as general basics. All the 17 Districts of Punjab have their official websites hosted on NIC Web Server. NIC Punjab has to its credit the design and development of more than 40 websites that are hosted on NIC Web Server. The official email Server of Punjab http://punjabmail.gov.in is also on NIC email Server and operates more than 1000 accounts. NIC Punjab State Centre has developed and implemented a number of national and state level projects for providing better citizen services and to promote e-governance in the government departments. Major projects include: ž| SUWIDHA (Single User Window Disposal Help line for Applicants) – It is a single window service to deliver District Administration services to the citizens. It ensures timely delivery without any need to interact with the concerned branch. SUWIDHA is running successfully in 17 Districts and recently, it has been implemented at the Sub-Divisional level also. SUWIDHA provides convenient services to the citizens as input is collected at a single point, defining a specified delivery date depending upon the type of service and accepting cash at the counter itself. Based on the successful pilot implementation of the SUWIDHA at SDM office, Mohali, Government of Punjab has decided to implement it in all 72 SDM offices of the state. Citizens have been further facilitated by launch of the http://suwidha.nic.in website, where they can check the status of their applications. SUWIDHA, which scored 8.9 out of 10 has been ranked 1st in the Skoch e-Governance Report Card 2005. The report says, “Punjab’s SUWIDHA was the only rural facing citizen’s service delivery project that covers every district of the state, making it topmost state in this area nationally”. ž| SUBS (SUWIDHA Back-end Services) – Front-end is strengthened if back-end applications are implemented. With this objective, 9 Applications integrated with SUWIDHA front-end services have been implemented in all the 17 districts. The Applications includes Affidavit Information System (AIS), Arms License Issuance System, Countersigning of Documents, Certificate Issuance System etc. ž| iTISP (Integrated Treasuries Information System) – It is an online system developed for automation of district treasuries in Punjab. iTISP includes verification of messenger and DDO by photograph and signature, online checks, computerized cheque printing, linkage with budget, AG accounts, data security etc. Payments, receipts, pension, LOC, and Stamp Modules are also included. iTISP has been implemented at 18 District Treasuries and 48 Sub-Treasuries. ž | PRISM (Property Registration Information System Module) – It is developed for automation of all major activities of Sub-Registrar office and covers deeds of Sale, Mortgage, Will, Adoption, Exchange, Pattanama/Lease, Tatima, Cancellation of SPA/GPA/Will etc. PRISM has been implemented in almost all the Tehsils (Sub-Registrar Office) of Punjab. Major features of the module include capturing, storage, printing of photographs on stamp paper, valuation of property, on-the-spot registration, single window service etc. It has been implemented at 101 Tehsils/Sub-tehsils. Now the scope of the project has been further enhanced to included Workflow, Scanning of Deed and Deed Writing Module. Enhanced project has been implemented at Sangrur that has scored 7.4 out of 10 in the Skoch’s e-Governance Report and ranked 9th. PRISM Version 4.0 is ISO Certified by STQC. ž | SSIS (Social Security Information System) – It has been developed for Department of Social Security and Women and Child Development for the maintenance of beneficiaries of all social security schemes of the state with automation of monthly disbursement scrolls. The project has been implemented in all the 17 Districts of Punjab. ž | OAS (Office Automation Suite) – With the aim to automate the basic functions of the Punjab Government Offices, four applications have been developed and implemented in 15 different offices at State level and 17 districts of Punjab. It includes: • DDMS - (Diary and Dispatch Monitoring System) – To support any office to capture the data as well as workflow of the movement of mail received. It is Integrated, Customised, Bilingual and supported by useful monitoring Reports. • RMS - (Reference Monitoring System) – To manage and monitor different types of references and complaints received and forwarded to other departments/officers. It facilitates automatic reminder generation, customised installation, acknowledgement generation and graphical reports. • MMS- (Meeting Monitoring System) - To facilitate an office in organizing meetings. Provision for recording post-meeting details like actions to be taken, minutes of the meeting etc. • CCMS - (Court Cases Monitoring System) - To build central database and monitor court cases of an office pending in various courts. History of case is recorded. Follow-up action based on next date of hearing is prepared. ž | BPIS – (Budget Preparation and Information System) – The system prepares all documents related to Punjab Government Budget and helps in decision making. Published on Web every year. ž | AGMARKNET – It is helping the farmers in getting latest rates in Mandis of Punjab. AGMARKNET has been implemented in all the 145 Mandis. About 300 officials of Punjab Mandi Board have been trained under this project. ž | DACNET – Technical Support in terms of implementation of Application software at Regional Pesticide Testing Laboratory (RPTL), Chandigarh Regional Plant Quarantine Station (RPQS), Amritsar and Central Integrated Pest Management Centre (CIPMC), Jalandhar is being extended. ž | SARATHI – It is a workflow-based computerization of Driving License implemented in 4 Districts of Punjab. ž | VAHAN – It is also a workflow based Computerization of Registration of Vehicle implemented in 3 Districts of Punjab. In Skoch’s e-Governance Report 2005, Transport Projects (SARATHI &amp; VAHAN) at Ropar scored 8.1 out of 10 and ranked 5th. ž | Products Promotion For promoting its products, NIC Punjab participated in Banglore IT.Com, India International Trade Fair (IITF) 2004, ELITEX 2005 where SUWIDHA, PRISM and other products were showcased. The citizens were made aware how IT is helping to make their lives easy. ž | Publishing of RTI Information – Government of Punjab has decided to publish information of all departments, boards and corporations under the Section 4 (1) (b) of RTI Act on the website http://rti.gov.in. Publishing of information is in progress.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="right-to-information-setting-an-example-step-towards-transparent-governance-october-2005.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">RIGHT TO INFORMATION : Setting an Example Step towards Transparent Governance</span></a><a class="article-nav-link next" href="message-from-secretary-it-department-of-information-technology-govt-of-punjab-october-2005.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Message from Secretary, IT, Department of Information Technology, Govt. of Punjab</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="right-to-information-setting-an-example-step-towards-transparent-governance-october-2005.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">RIGHT TO INFORMATION : Setting an Example Step towards Transparent Governance</span></a><a class="article-nav-link next" href="message-from-secretary-it-department-of-information-technology-govt-of-punjab-october-2005.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Message from Secretary, IT, Department of Information Technology, Govt. of Punjab</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Gurugram, Haryana: Raising the Benchmark of District Informatics — Informatics January 2017</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2017"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2017/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/january-2017/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2017/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2017/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/january-2017/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2017/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2017/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2017/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2017.html">January 2017</a><span class="breadcrumb-sep">&rsaquo;</span><span>Gurugram, Haryana: Raising the Benchmark of District Informatics</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2017.html">January 2017</a><span class="breadcrumb-sep">&rsaquo;</span><span>Gurugram, Haryana: Raising the Benchmark of District Informatics</span></nav>
         <div class="article-header">
           <div class="article-section-badge">District Informatics</div>
-          <h1 class="article-title" data-pagefind-meta="title">Gurugram, Haryana: Raising the Benchmark of District Informatics</h1>
+          <h1 class="article-title">Gurugram, Haryana: Raising the Benchmark of District Informatics</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by VIVEK VERMA, ANJALI DHINGRA, VIBHU KAPUR &bull; pp. 18–20</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Several ICT based activities have taken place in Gurugram for better eGovernance. The District has pioneered many innovative initiatives such as GIS interventions, usage of Unmanned Aerial Vehicle (UAV) for Land Records Management, Urban Planning etc. which have raised the benchmark for District Informatics beyond the conventional implementations of e-Governance applications. In the past few years, District Gurugram (earlier known as Gurgaon) has witnessed many ICT initiatives that have raised the benchmark for District Informatics. Over 40 e-Governance initiatives are operational in the district under the Digital India Programme, various Central &amp; State Mission Mode Projects (MMPs) and District level initiatives as a part of District Informatics, Sectoral Development Informatics and Panchayat Informatics. However, District Gurugram presents some unique scenarios, opportunities and challenges that make it necessary for the District administration to harness the power of ICT and adopt unique digital interventions, thus making IT an important tool of aid in administration. Some of these include: • GIS Interventions and usage of UAV for Land Record Management, Urban Planning etc. • Development of four villages adopted by the Hon’ble President of India under Smart Model Village initiative. • Inauguration of Haryana Swarn Jayanti Utsav by the Hon’ble Prime Minister. • Development of Babupur Gram Panchayat as one of the Model e-Panchayats in the Country. GIS INTERVENTIONS FOR LAND RECORDS MANAGEMENT Every inch of land in Gurugram is worth a fortune and combined with the large number of land transactions, (approx. 400-500 per day), outdated records and maps pose a huge challenge in the management of Land Records on a real-time basis. As a result, there were a large number of litigations around the ownership of land. To address the issues, the following exercise was undertaken by the District Administration in collaboration with NIC Gurugram: • As a first step, the textual data related to land records from Year 2000 onwards Record of Rights (RoRs) were 100% updated using NIC’s Haryana Land Records Information System (HALRIS) in a new IT Jamabandi Lab established for the purpose and linked to Haryana Registration Information System (HARIS) (Property Registration) to capture mutations of land at source. Manual ROR data between Year 1957 and 2000 is being scanned, digitized and is kept in annotated format to facilitate decision making. Globally benchmarked cities have used mapping as an effective tool to address governance and development issues. District Administration &amp; NIC, Gurugram have tried to develop GIS protocols for not only addressing governance issues, but also for reducing information asymmetry. This approach has given tremendous dividends in Land Records Management. I should place on record that NIC Gurugram has been central to the conceptualization and implementation of the project. — T.L. SATYAPRAKASH, IAS Deputy Commissioner, Gurugram • A GIS Framework was created in collaboration with all concerned stakeholders viz. District Revenue Office, NIC Gurugram, Haryana Space Application Centre (HARSAC) and Science &amp; Technology Park, Pune for producing accurate and updated geo-referenced revenue maps at Land Parcel Level in conjunction with up-to-date RoR as a major step towards Conclusive Titling. A new GIS Lab has been established for the purpose. Tertiary ground control points were re-established through G-Triangulation survey to create a high precision mechanism along with State’s network of primary &amp; secondary GCPs for demarcating parcel level boundaries using GIS and UAV technologies (5 cm precision). • A PoC successfully validating above GIS framework was conducted for village Hassanpur in Tehsil Manesar, District Gurugram. Using the above GIS Framework, the difference between the RoR and actual area of Tehsil Manesar, was considerably minimized from 7.39 % to 0.01%, thereby lending a very high credibility to the framework as a major tool for conclusive titling. • The above GIS Framework along with UAV derived imageries is also being used for various other thematic applications including power grid, crop survey, household indexing and gradient analysis for flood etc. SMART MODEL VILLAGE INITIATIVE BY RASHTRAPATI BHAVAN On 2nd July, 2016, the Hon’ble President of India adopted four villages of District Gurugram viz. Alipur, Dhaula, Harchandpur and Tajnagar, for the Smart Model Village Initiative by Rashtrapati Bhawan via video conference. The Hon’ble President’s interaction with villagers in remote sites was organized and coordinated by teams of NIC Delhi, NIC-HRSC and NIC Gurugram. Since then, these villages have been completely enabled with Wi-Fi. CSCs have also been established and VLEs have been trained on G2C, B2C services, digital payments etc. INAUGURATION OF HARYANA SWARN JAYANTI UTSAV Hon’ble Prime Minister of India, Shri Narendra Modi inaugurated Haryana Swarn Jayanti Utsav at Gurugram on 1st November, 2016. The event was attended by Hon’ble Chief Minister of Haryana, Chief Secretary, Administrative Secretaries, Elected Representatives and thousands of people at Tau Devi Lal Stadium, Gurugram. NIC Gurugram extended dedicated support in establishing IT control rooms for Hon’ble Prime Minister. A media lounge was set-up with massive ICT infrastructure including 100 MBPS connectivity through BSNL for the event. e-Secretariats were also established for the district administration and organizers at the venue during the preparations for the event. DDG &amp; SIO, NIC Haryana, presented tableaus showcasing e-Governance initiatives to the Hon’ble Prime Minister and other dignitaries. BABUPUR MODEL E-PANCHAYAT Ministry of Panchayati Raj, Government of India, selected Babupur gram panchayat, Gurugram as one of the ten Model Panchayats in the country for development as a Model e-Panchayat. Panchayat Enterprise Suite (PES) applications have been set-up in Babupur by NIC Gurugram. In a first of its kind initiative, geo-coordinates and photographs of panchayat assets have also been uploaded using mAsset App developed by Panchayat Informatics Division, NIC Delhi. As a result, Babupur Gram Panchayat not only has a website of its own, but its Accounts, Assets and Jamabandis are also completely on-line. SUMMARY The district has seen explosive growth in the past years and keeping up with the pace of development is no mean feat. Overcoming the challenges of District Gurugram, the District administration along with NIC Gurugram and other stakeholders has grown beyond conventional implementation of e-Governance applications to experiment successfully with GIS technologies, UAV etc. to address the issues related to land ownership litigations, crop surveys, urban planning, flood management, planning during high profile events etc. In addition, Babupur Gram Panchayat has emerged on the national map as one of the ten model e-Panchayats in the country. Further, working with NIC Gurugram, the District has hosted some high profile events including Smart Model Village initiative by the Hon’ble President of India, Haryana Swarn Jayanti Utsav Inauguration by Hon’ble Prime Minister and many others. DIO/ ADIO Gurugram have been awarded for their dedicated technical support in the Year 2013 and 2014 on the occasion of Independence Day and Republic Day respectively. G-Triangulation Project jointly undertaken by District administration and NIC Gurugram has won the National Award for E-Governance - GOLD for the Year 2016-17 under Category “Innovative Use of GIS Technology in E-Governance”. The award will be presented at the 20th National Conference on e-Governance to be held in Vishakhapatnam on 9-10th January, 2017. The GIS initiative of District Gurugram has the potential to be scaled up to the National Level and may be taken up for replication across the country for better delivery of e-Governance services. For further information, please contact: GHAN SYAM BANSAL DDG &amp; SIO, NIC State Centre New Secretariat Building, Ground Floor Sector 17E, Chandigarh Email: sio-hry@nic.in Phone: 0172-2711642</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="minister-of-state-e-it-visits-nic-head-quarters-january-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Minister of State, E&amp;IT Visits NIC Head Quarters</span></a><a class="article-nav-link next" href="east-godavari-andhra-pradesh-harnessing-ict-successfully-for-e-governance-in-the-district-january-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">East Godavari, Andhra Pradesh: Harnessing ICT Successfully For e-Governance In The District</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="minister-of-state-e-it-visits-nic-head-quarters-january-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Minister of State, E&amp;IT Visits NIC Head Quarters</span></a><a class="article-nav-link next" href="east-godavari-andhra-pradesh-harnessing-ict-successfully-for-e-governance-in-the-district-january-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">East Godavari, Andhra Pradesh: Harnessing ICT Successfully For e-Governance In The District</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

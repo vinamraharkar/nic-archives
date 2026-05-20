@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Chhattisgarh - Cherishing the Challenges — Informatics April 2009</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2009"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2009/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2009/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/april-2009/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/april-2009/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2009/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2009/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/april-2009/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/april-2009/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2009/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2009/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2009.html">April 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Chhattisgarh - Cherishing the Challenges</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2009.html">April 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Chhattisgarh - Cherishing the Challenges</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From The States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Chhattisgarh - Cherishing the Challenges</h1>
+          <h1 class="article-title">Chhattisgarh - Cherishing the Challenges</h1>
           <hr class="title-rule">
           <p class="article-byline">By M.K.Mishra, Y.V.Shreenivas Rao, Anshu Rohatgi &bull; pp. 22–25</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Chhattisgarh, the rice bowl of India, got its name from the thirty six forts that once existed in the region. The state is blessed with wide range of natural resources, dense forests, coal, diamond, bauxite, iron ore, rivers etc. There are many beautiful places of tourist interest, sacred places for pilgrims and historical monuments for archeologists &amp; travelers. The state is now aspiring to be one of the advanced IT states of the country &amp; NIC is leaving no stone unturned to realize this dream. Established in the year 2001, NIC, Chhattisgarh has come a long way in spreading ICT services in the state be it Internet or e-mailing, implementation of National &amp; State IT projects, software development to cater to local administrative needs, training or consultancy. NIC has been involved in every sphere of Information Technology in the state and gradually the results are showcasing the sincerity, dedication and untiring efforts of the entire team of State IT department and NIC, Chhattisgarh. Infrastructure ¡ Network Operation Centre (NOC): The 'Network Operation Centre', which also serves as the Digital Gateway for Chhattisgarh, was setup by NIC to provide 24 x 7 network support to the State Government. The NOC handles more than 2300 nodes spread across the Secretariat, Districts, Post Offices and other Departments connected through RF, VSATs, Leased Lines and other mode of communication. The centre is also equipped with 6 TB Storage Area Network, high-end servers for hosting Internet applications under Unix, Linux or Windows environment. Hardware &amp; software firewalls for secure access and antivirus server to control virus/ malware/ Trojans etc. Quality of Service (QoS) is implemented on network equipments to ensure reliability, availability and minimize data loss in case of emergencies. ¡ Video Conferencing: Video Conferencing facilities are available at NIC Sate Centre, Chief Secretary Office, Chief Minister Residence, State Information Commission, and all 16 NIC district centres. All are IP based equipped with of Quality of Services (QoS) to maintain excellent quality during VC sessions. MCU is installed at State Centre for conducting a multipoint VC at any given point of time. ¡ Public Grievance redressing system through VC: The VC setup in Chhattisgarh is being extensively used for addressing Public Grievances from last 5 years.. It is a novel way of Government-Citizen interaction where the citizens visit the District VC studios to interact with the General Administration Department on daily basis for redressal of their grievances. Many other departments including the CM Secretariat are also adopting the system for handling grievances relating to their office. ¡ Web Services: NIC, Chattisgarh State Centre provides all web services such as Website Design, Development, Domain Name Registration and Web Hosting to the State Government Departments. Currently more than 80 websites of the state are hosted at NIC-Hq Data Centre and more than 100 web based MIS are hosted at the State Data Centre. ¡ Mail Messaging: NICNET based Mail messaging services have been extended to approximate 1100 users of various Central/State government departments and Educational institutes spread up to the block level. National level projects ¡ VAHAN &amp; SARATHI: The vehicle registration automation component (VAHAN) &amp; the driving license issuance process computerisation (SARATHI) have been implemented at Regional Transport Office, Raipur on pilot basis since 2004. The vehicle registration, tax collection, fitness and other software modules implemented by the transport department have put a check on duplicate draft submission, multiple registrations of the same vehicle, pending tax payments etc. The SARATHI application has helped in speeding up the process of issuance of new driving license, renewal of driving licence and issuance of learning license to the applicants. ¡ CIPA: The Common Integrated Police Application (CIPA) project has been implemented in 32 police stations of Raipur and Durg districts of Chhattisgarh on pilot basis. Various state level training programs and District level training for the SP office personnel and police station staff have been conducted from time to time. ¡ IDSP: Chhattisgarh has been one of the front runners in implementing the Integrated Disease Surveillance Project (IDSP) in the state. NIC, Chhattisgarh has extended support in setting up computer centre, VC cum training centers and providing operational manpower in the districts and state surveillance office. Under IDSP data is collected on a weekly basis and updated on the IDSP portal. ¡ High Court &amp; District Court: The Judiciary Computerisation in Chhattisgarh started in the year 2001 with the inauguration of NIC High Court Computer Cell by Hon'ble Chief Justice of Chhattisgarh Sh. W. A. Shishak. The cell is coordinating different IT related activities of district and subordinate courts in the state. Some of the Major achievements include networking of all the sections of HC, preparation of Cause List using LOBIS (List of Business Information System), publication of cause list on Internet and making it available at the counters for the convenience of advocates, litigants and public at large. A copy of the Approved for Reporting (AFRs) judgments are also collected over LAN on server and uploaded on internet. In addition, technical support to High court &amp; District courts is provided in many ways. ¡ AGMARKNET: The first phase of the AGriculture MARKeting NETwork project was initiated in the year 2001 in 3 markets (Mandi/Agriculture Produce Marketing Committee). With the successful rollout of the project gradually all the 73 Mandis were fully computerised with proper infrastructure in place. A highly motivated team of NIC and the Mandi Board is continuously monitoring the progress of the project as a result of which more than 90-94 percent markets are reporting the rates on regular basis. ¡ SEEDNET: Chhattisgarh has taken a lead in the SEEDNET (SEED informatics NETwork) Project of Ministry of Agriculture, Govt. of India. The project was started in Chhattisgarh in the month of July, 2008 for Kharif season. During the Kharif 2008 season, Chhattisgarh was the only state to get all the records entered on to the national portal of SEEDNET. State level projects ¡ National Leprosy Eradication Program (NLEP): NLEP is web based application developed for monitoring of leprosy cases in Chhattisgarh. GIS based reports have been included in application to provide users, administrators &amp; planners a graphical representation of leprosy cases up to the village level. This system provides very useful information to State Government for monitoring of Leprosy in the State. The application is available at http://cg.nic.in/nlep ¡ e-Panchayat: e-Panchayat http://www.cg.nic.in/epanchayat is a major step towards rural e-governance. The primary requirement in a state covered with hills and forest was to setup a communication network within the Panchayati Raj Institutions (PRIs). This was accomplished by installing 162DVB VSATs connecting the Directorate of Panchayat at Raipur with all the 16 Zila (district) Panchayats and 146 block panchayats of the state. This huge network is being utilized for implementing many rural development schemes. Some of the projects implemented over the network are Ruralsoft ,Priasoft ,NREGA ,Planplus and National Panchayat Portal http://www.cg.nic.in/epanchayat ¡ MIS for Public Health Engineering Department (PHED): This MIS developed for PHED facilitates effective planning, monitoring and implementation of various schemes undertaken by the department. The 15 web based MIS applications http://cg.nic.in/phedmis provide a central repository of the data for the department up to the sub division level. The modules developed cover the areas of scheme &amp; program monitoring, PIS, finance and works monitoring, etc. ¡ e-Kosh (Online Treasury Computerisation): e-Kosh is an online solution for effective Fiscal Management, Budgetary Control on Expenditure, Receipts and Accounting. The project is based on the networked treasury concept, where all the 18 district treasuries, 1 city and 45 sub treasuries, 3 divisional joint director offices are connected with the directorate of treasury using VSATs to facilitate access to a common pool of data resources for budget distribution, online bill passing, pension disbursements, receipt consolidation etc. e-Koshonline provides online information to government departments, DDOs, citizens on expenditure, receipts, budget availability etc. in a classified manner. ¡ Pension Management System: Online pension management system has been developed to automate the pension processes at divisional joint director offices. All pension related activities have been computerised. ¡ NPS (CPS) Accounting System: The New Pension Scheme (Contributory Pension Scheme) was initiated to facilitate the state government in implementing the new pension scheme for state government employees recruited on or after 1st November 2004. ¡ e-Karmachari: e-Karamchari is the repository of information of all the state government employees under Permanent/ Temporary/ Contract and Contingent categories. The data includes personnel and important individual service details. ¡ e-Challan: e-Challan is a web based software for online payments to government accounts through the selected bank's payment gateway. The only requirement for payment of any challan is a web enabled bank account to make these transactions. The payment collected by the bank is reconciled with the treasuries everyday. ¡ Computerisation of Food Grain Supply Chain: NIC, Chhattisgarh is the ICT partner to the state's Food &amp; Civil Supplies department in the design, development and implementation of the ambitious project of computerisation of whole food grain supply chain in the state. The project includes complete automation of the food grain supply chain in the state right from procurement from farmers, its storage, milling and distribution to more than 3.7 million ration card holders through fair price shops. More than 1700 locations covering six different organizations involved in food grain management have been computerised and a database of more than 3.7 million ration card holders has been prepared. All processes right from paddy procurement, payment, miller's registration, preparation of delivery orders, calculation of monthly allotment to FPS has been computerised. Call centre &amp; citizen interface websites http://cg.nic.in/khadya have been setup for handling citizen grievances and disseminating information to public with the aim to increase their participation. Implemented in year 2007, the project has resulted in registration of more than 1500 mills, adoption of uniform procedures across the state, ensured 100% lifting of food grains before 6th of every month and brought many laurels for the state government in form of six national and international awards including National eGovernance Award, Manthan Award, eIndia &amp; CSI-Nihilent Award. It was even short listed for Prime Minister Award and World Summit Award. Many innovative concepts such as 'Adopting Motor Cycle Riders for data transmission' &amp; 'Truck Dispatch Information to Citizens through SMS' have been integrated in the system to bring transparency and increase citizen participation. ¡ BHUIYAN: BHUIYAN project mainly envisages computerisation of Land Records maintenance, issuance of Record of Rights (RoRs) to land owners and simple, faster mutation of Land property. It has two modules the textual data module and spatial (MAP) data module. ¡ e-Panjeeyan: e-Panjeeyan is an application to computerize the Property Registration process at Sub Registrar Offices (SRO) of the state. The pilot implementation is operational in three SROs of District Registrar Office, Bilaspur since September 2008. The e-Panjeeyan application has reduced the property registration time to 30-45 minutes and has helped in simplifying the preparation of various reports of administrative importance. It has helped in eradicating fake registrations to a certain extent and the property valuation guidelines are available are available at http://cg.nic.in/panjeeyan for enhancing transparency ¡ File Monitoring System (FMS): FMS http://cg.nic.in/fms is a comprehensive package developed to solve the problem of complex file handling procedure in the office. The software facilitates marking the files received by the department to different sections within the department and tracking the movement and pendency of file at each section. The software is being successfully implemented in many departments of the state Secretariat for the last 5 years. ¡ Digital Signature Certificate Management Information System(DSCMIS): The DCSMIS system http://cg.nic.in/dsc has been developed for online submission of the request for digital signature certificate and tracking of applications received for issuance of Digital Signature Certificate. The applicant can also trace his/her application status on NET. More than 1700 smart cards have been issued to the applicants using this system. Apart from these many other applications such as computerisation of allotment of liquor shops on the basis of draw of lots by Excise Department, Election Support System etc. have been developed and implemented by NIC, Chhattisgarh, in close coordination with the concerned State Government Department. Also to support the NIC network users a help desk has been established at NIC State Centre, Chhattisgarh which is operational on 24 x 7 basis to attend all network related problems. For further details contact: State Informatics Officer National Informatics Officer Chhattisgarh State Centre Ist Floor, Mantralaya, D.K.S.Bhavan, Raipur, Chhattisgarh sio-cg@nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="tamil-nadu-displaying-efficient-administration-through-e-governance-april-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Tamil Nadu- Displaying efficient Administration through e-Governance</span></a><a class="article-nav-link next" href="educating-empowering-masses-through-it-april-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Educating &amp; Empowering Masses through IT</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="tamil-nadu-displaying-efficient-administration-through-e-governance-april-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Tamil Nadu- Displaying efficient Administration through e-Governance</span></a><a class="article-nav-link next" href="educating-empowering-masses-through-it-april-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Educating &amp; Empowering Masses through IT</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

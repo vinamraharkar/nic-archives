@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Jabalpur: Moving Towards Good Governance — Informatics April 2013</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2013"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/april-2013/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2013/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2013/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/april-2013/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2013/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2013/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/april-2013/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2013/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2013/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/april-2013/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2013/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2013/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2013.html">April 2013</a><span class="breadcrumb-sep">&rsaquo;</span><span>Jabalpur: Moving Towards Good Governance</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2013.html">April 2013</a><span class="breadcrumb-sep">&rsaquo;</span><span>Jabalpur: Moving Towards Good Governance</span></nav>
         <div class="article-header">
           <div class="article-section-badge">District Informatics</div>
-          <h1 class="article-title" data-pagefind-meta="title">Jabalpur: Moving Towards Good Governance</h1>
+          <h1 class="article-title">Jabalpur: Moving Towards Good Governance</h1>
           <hr class="title-rule">
           <p class="article-byline">By Anshu Rohatgi, Madhu Mishra, Vibha Kurelay &bull; pp. 33–34</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">National Informatics Centre, Jabalpur has been spearheading in promoting e-Governance culture in the district administration and other offices. NIC is providing multifaceted Information Communication Technology based initiatives for betterment of services delivery to the citizens living in far and remote areas. NIC, Jabalpur has played a significant role in architecting &amp; implementing several e-Governance projects in the district with an aim to leverage IT for transparency &amp; better governance. Several IT applications have been developed and put in active use in the district to improve the functioning of administration and delivery of government services to the citizens. SERVICES INFRASTRUCTURE Since its inception in 1988, the District Centre has been working in areas of application development, implementation, training, consultancy, video conferencing, establishment of network etc which enables the district administration to create responsive, transparent and efficient government. The centre provides state-of-art ICT infrastructure, technical guidance for software and hardware procurement, as well as web designing, development and hosting to support e-Governance services to the citizens. NETWORK &amp; VIDEO CONFERENCING A 180+ node local area network (LAN) has been established in the collectorate connecting all the district officials to Internet. Dial-up e-mail connectivity has been extended to State, Central Government Offices, and important Educational Institutions etc which are outside the collectorate. A portal-based desktop video conferencing has been setup in the district which provides effective interaction between district administration and block administration. In addition to this, leased line connectivity has been extended to Divisional Commissioner Office, District &amp; Session Court, High Court of Madhya Pradesh, Head Post Office, Central Government Health Scheme Dispensary etc for effective implementation of various projects. GULSHAN BAMRA Collector, Jabalpur Information and Communication Technologies (ICT) have revolutionized the government process and transformed relationships with citizen. The potential of ICT also inspires visions of a more open Government with greater public participation. Efforts made by NIC Jabalpur in adopting use of ICT in District Administration, &amp; spreading ICT culture are praiseworthy. I appreciate the officials of NIC, Jabalpur for their sincerity and contribution in making ICT usable for District Administration to move towards Good Governance. PROJECTS Bhu-Abhilekh &amp; Bhu-Naksha: Bhu-Abhilekh is an ISO certified G2C and G2B application developed with an aim to deliver excellent grass-root level governance within the domain of land management. Bhu-Naksha, as the name suggests takes care of the spatial component of Land Records. Bhu-Abhilek &amp; Bhu-Naksha have been integrated and each khasra has been mapped with its Naksha and reports are made available on public portal. In every Tehsil, Computer Centres have been established so that the citizens can directly get the copy of Khasra, without going through mediators. A Data Centre has been also setup in the Collectorate to store the data of all the tehsils. This is very useful for citizens who come for land registration. On an average, over 6400 certified copies of Khasra’s are distributed per month in the district. e-District : It provides 52 services of 26 government departments to the citizens in a time-bound manner. 11 Lok Sewa Kendras have been established in the district from where citizen can apply for the services. e-Court: The e-Court project has been implemented in the district with an aim to enhance judiciary productivity both qualitatively as well as quantitatively and to make the justice delivery system affordable, accessible, transparent and accountable, with a view to reach the door steps up to village level by bringing all judicial services under one roof. Under the project three courts have been included i.e. District &amp; Session Court Jabalpur, Sub Court Patan and Sub Court Sihora. Necessary ICT infrastructures like LAN and Judicial Service Centre have been established. The Case Information System has been implemented which facilitates e-Filing of cases, case registration, daily proceedings, generation of cause list, statistical, query-based reports, etc. OIC’s Appointment System for Court Cases: This application software helps in maintaining proper record of all the pending cases filed against the District Administration. It keeps track of OIC appointment and filing status of returns. The officers can get the status of a case at any moment. Prisoner Management System: The Prisoner Management System in the district jail is implemented with the aim to support the jail administration in monitoring and planning. This system also keeps complete record of prisoner’s family details, health, educational background, biometric features, court case details etc. Marriage Registration &amp; Court Marriage Application (e-MaRCMA): In order to legally approve the marriages and avoid frauds, NIC Jabalpur has implemented ‘Computerized Marriage Registration System’ in 2012. In order to get the registration form the applicants first need to submit their details and affidavits. After submitting the documents, computerized photographs are being taken at the court premises. The cameras are integrated with the application. The system has bought the registration on fast track mode. BPL Ration Card in one-day: NIC, Jabalpur coordinated the development of an application to enable the issue of BPL ration card on the same day. Earlier it used to take more than one month to issue the ration card, as an applicant had to first apply for the BPL number and after getting the BPL Number, the applicant could apply for the ration card. Now with the new system the whole process of issuing Ration Card has been simplified and shortened. Presently this application has been implemented for urban area; soon it will be extended to rural area also. National Animal Diseases Reporting System: The NADRS system has been successfully implemented in the district. Training programs on the system have been conducted for veterinary doctors posted in the district. DISTRICT WEBSITE The district website http://jabalpur.nic.in has collection of important up-to-date information about the district like, statistical profile, Who’s Who, tourism, hospitals, e-Governance initiatives undertaken by the district administration etc. In addition to these, many other applications such as Arms License Monitoring System, Time Limit Monitoring System, Paybill &amp; Accounts Software, Revenue Court Cases Software etc have been developed by NIC, Jabalpur and several new web-based initiatives like- e-Scholarship, e-Khanij, e-Uparjan, Sparsh Abhiyan, Samagra Samajik Surksha Abhiyan and Public Distribution System etc have been implemented after proper training to users. National level projects like Agmarknet, ICDS, Socio Economic Caste Census, e-Procurement are also successfully implemented in the district. AWARDS District Jabalpur has won the 'Award of Appreciation' under district category and 'Award of Sustenance' for 'Samadhan ek Diwas’ in CSI Nihilent e-Governance Award 2011-12. These awards are recognition of seamless efforts of NIC, District Jabalpur in spreading out e-Governance in the district.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="haridwar-demystifying-haridwar-with-use-of-ict-april-2013.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Haridwar: Demystifying Haridwar with use of ICT</span></a><a class="article-nav-link next" href="jhalawar-leading-ict-in-the-land-of-jhala-kings-april-2013.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Jhalawar: Leading ICT in the Land of Jhala Kings</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="haridwar-demystifying-haridwar-with-use-of-ict-april-2013.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Haridwar: Demystifying Haridwar with use of ICT</span></a><a class="article-nav-link next" href="jhalawar-leading-ict-in-the-land-of-jhala-kings-april-2013.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Jhalawar: Leading ICT in the Land of Jhala Kings</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

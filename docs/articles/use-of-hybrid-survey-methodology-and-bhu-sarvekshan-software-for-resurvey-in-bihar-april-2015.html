@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar — Informatics April 2015</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2015"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2015/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2015/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2015/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2015/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2015/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2015/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2015/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2015/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2015.html">April 2015</a><span class="breadcrumb-sep">&rsaquo;</span><span>Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2015.html">April 2015</a><span class="breadcrumb-sep">&rsaquo;</span><span>Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar</span></nav>
         <div class="article-header">
           <div class="article-section-badge">E-Gov Products and Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar</h1>
+          <h1 class="article-title">Use of Hybrid Survey Methodology and Bhu-Sarvekshan Software for Resurvey in Bihar</h1>
           <hr class="title-rule">
           <p class="article-byline">By SANJAY KUMAR, MD. JAWED MANZAR &bull; pp. 21–23</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The Bihar state - spread over approx. 94163 sq. Km area, has an administrative setup comprising of 9 divisions, 38 districts, 101 subdivisions, 534 circles and 45,700 mauza(s) i.e. revenue villages. The very first survey of land i.e. Cadastral Survey (CS) of the state was conducted almost a century ago. These hundred years old records have now become fragile. Their day to day handling is critical in terms of loss of information and destruction of paper based maps. Fragmentation of land parcels and their subsequent maintenance regarding updation of records were not timely accomplished. This has posed a great challenge to the government in implementing development schemes, disposal of litigations and land acquisitions for infrastructure projects. RE-SURVEY &amp; CHALLENGES A re-survey is a re-construction of land boundaries and sub-divisions accomplished by re-running, re-marking the lines represented in the field-note records or on the plot of a previous official survey. PROPOSED SOLUTION Department of Revenue and Land Reforms, Government of Bihar decided to start the re-survey in the state using “Hybrid Survey methodology employing Aerial Photography and Ground Truthing with TS/DGPS” (Total Station/ Differential Global Positioning System) as per the guidelines of National Land Modernization Programme (NLRMP). Hybrid Survey Methodology by aerial photography and ETS (Electronic Total Station) &amp; GPS is suggested for survey/resurvey of plain areas, where good quality Cadastral Maps are available. This technology is also appropriate for hilly areas where terrain corrected aerial photographs can be generated. MITHILESH MISHRA, Director, Land Records &amp; Survey RE-SURVEY ROADMAP For the re-survey work, ‘Bihar Special Survey and Settlement Act, 2011’ and ‘Bihar Special Survey and Settlement Niyamawali, 2012’ were enacted. The act has been designed to emphasize all the stages of Cadastral Survey and settlement operations in the state using hybrid modern methodology to minimize the time span without compromising on quality, transparency and grievance redressal with lesser manpower. The re-survey was launched on 22nd May, 2013 by the then Hon’ble Chief Minister of Bihar. RE-SURVEY EXECUTION Re-Survey process using aerial photography started with selection of appropriate agency having expertise in Hybrid Survey Methodology. The basic components related to Cadastral Resurvey process are Pre-Survey Activities, Survey Activities, Post Survey Activities. Pre-Survey Activities i.e. creation of ground control network has been completed in 34 district of Bihar. Survey activities, aerial photography for 10 districts have been completed. Processing of aerial photographs and generation of ortho rectified images have been completed for 7 districts. Creation of cadastral parcel and field verification are in progress. Cadastral Maps of 2 revenue villages were finally published after completing 100% ground verification. agency created Primary, Secondary, Tertiary and Auxiliary Ground Control Points (GCP) for the purpose. Presently, 39 Primary and 481 Secondary Ground Control Points have been monumented in Bihar. Tertiary and Auxiliary GCPs have been monumented, which were governed by photogrammetric requirements and need based. The plot boundaries were surveyed using the offsets from the details appearing on the ortho-photo, in which case, tertiary control and auxiliary points were not needed. Flying permissions were obtained to fly over a desired area from the competent authorities like DGCA, Ministry of Home Affairs (IB) and Ministry of Defense (Military Survey). The aircraft captures photograph of plots with specially designed camera fitted at the bottom of the fuselage. The aircraft flies on a pre-defined flight path and captures photographs with 60% forward overlap and 30% side overlap. The raw images are stored on an onboard storage device. The camera fitted in the aircraft is GPS enabled and its IMU (Inertial Measurement Unit)/GPS data is captured separately for utilizing at the time of raw data processing. The raw data is further sent for security vetting to the Ministry of Defense. After getting clearance, the raw data passes through different stages of processing like Aerial Triangulation, Digital Terrain Modeling, Ortho-rectification and Mosaicking. Aerial images have to be taken maintaining a Ground Sampling Distance (GSD) of 10 cms. Necessary pre-marking or post marking of GCPs are required for precise geo-referencing of images. It is required that each GCP is clearly identifiable in the aerial image after processing. The generated map is sent to field for its verification through ETS/ DGPS, if required. Sometimes part of image captured through aerial flying is not clearly visible because of heavy cloud, forest, orchard etc. Such uncovered area is surveyed through ETS/DGPS for modification in the map. After modification the digital map, is geo-referenced using established control survey network (Primary, Secondary and Tertiary) around existing Survey of India Permanent Reference Points. The map is indexed and meta data related to it is preserved for future reference. Finally village map is generated in .shp file format (WGS 84 - UTM) along with all the supporting files like (.shx, .dbf, .prj, .xml, .sbn, .sbx). The scale of the map for agricultural land is 1:4000 (this may vary based on the need to match the village boundary of CS/RS maps, i.e. the original map scale of CS/RS required for further consideration), for Abadi land in village area is 1:1000 and for urban area is 1:500 within a permissible error limit. After all needful corrections under ‘Kishtwar’ activity, the map is provided to survey team for further survey work beginning with ‘Khanapuri’ activity. ‘Amin’ of the survey team allocates new plot number to each and every land parcel of the map and verify the land area of land parcels with the actual one on the ground. After needful corrections as recommended by ‘Amins’ the final map is referred by the survey team on the ground for starting the activity - ‘Making of Khatiyan &amp; RoR (Record of Rights) Database’. PROGRESS AND MONITORING Different committees were formed by Department of Revenue and Land Reforms to monitor the massive work of aerial survey for the whole state. The survey work has been carried out by three agencies namely M/s IL &amp; FS Environment, M/s IIC Technologies and M/s GIS Consortium India Pvt. Ltd in Bihar. So far, 1182 maps of Begusarai, 475 of Lakhisarai, 294 of Khagaria, 53 maps of Nalanda and 4 maps of Sheikhpura have been generated through aerial survey. The aerial data of Saharsa, Supaul and Madhepura have been submitted for security vetting, and soon will be available for map generation. The RoR data collection in the survey process has also been started in Nalanda, Saharsa, Begusarai, Khagaria and Lakhisarai. A web based software solution – “Bhu-Sarvekshan” for making of Khatiyan &amp; RoR database in the survey process has been introduced by NIC-Bihar. It has eased the process of record keeping, report generation and the management of activities. The software collects survey data from Prapatra-6(Khesra Panji) - the first official document of survey, which is provided to each and every land holder of the mauza in the format of Prapatra-7 (Khanapuri Parcha) for its verification – generated by the software. The genuine corrections in Prapatra-7(if any) raised by Raiyats are updated through the software which in turn generates Prapatra -12 - the draft publication of Khatiyan. During the process the software assigns unique Khata number to each and every Raiyat for different categories of government plots. The Prapatra-12 is kept in the concerned circle office for public review for specified period. If any discrepancy in data still persists then it is corrected in the database. After a stipulated period, the software generates Praptra-20 which is the final Khatiyan - the net outcome of the survey process. Saidpur mauza of Katrisarai circle of Nalanda district is the first village of which the final Khatiyan and map has been officially published and its RoR data is also available on department’s official website i.e. http://lrc.bih.nic.in.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="goa-excise-management-system-gems-april-2015.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">GOA Excise Management System (GEMS)</span></a><a class="article-nav-link next" href="implementation-of-ivfrt-mmp-in-odisha-april-2015.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Implementation of IVFRT MMP in Odisha</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="goa-excise-management-system-gems-april-2015.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">GOA Excise Management System (GEMS)</span></a><a class="article-nav-link next" href="implementation-of-ivfrt-mmp-in-odisha-april-2015.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Implementation of IVFRT MMP in Odisha</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

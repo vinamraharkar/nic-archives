@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Postal Sector: ICT Initiatives at Forefront — Informatics October 2009</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2009"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2009/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2009/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2009/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2009/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2009/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2009/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2009/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2009/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2009.html">October 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Postal Sector: ICT Initiatives at Forefront</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2009.html">October 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Postal Sector: ICT Initiatives at Forefront</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Lead Story</div>
-          <h1 class="article-title" data-pagefind-meta="title">Postal Sector: ICT Initiatives at Forefront</h1>
+          <h1 class="article-title">Postal Sector: ICT Initiatives at Forefront</h1>
           <hr class="title-rule">
           <p class="article-byline">By Dr. Shefali Dash &bull; pp. 4–7</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The post office in India has evolved over the decades; it has come a long way from physical transmission of human emotions to electronic mails. The long wait for the friendly postman to deliver Money order has taken a new avatar of Instant Money Order. India Post had to redesign its services and introduce various premium services in the wake of Telecommunication revolution. In the midst of this transformation; the post office is still one of the most trusted names across the country with vast potentials largely untapped and unexplored. The Department of Posts has 845 Head Post Offices and 25,320 Departmental Sub Post Offices while the remaining Post Offices are located in rural areas working for few hours. The VIIIth and IXth plans saw computerization of 506 Head Post Offices and 1266 Sub Post Offices. The software package, Meghdoot, developed by Postal Training Centre (PTC), Mysore enabled computerization of most of the operations in the Post Offices. Sanchay Post; another software, computerized the savings bank operations in the Post Offices. Subsequently, E-enabled services such as e-Post (electronic Post), iMO (instant Money Order) and e-bill Post also launched. Software packages have also been developed for computerizing Postal Life Insurance (PLI), Speed Post and other premium services and operations in administrative and account offices. These applications were running from severs hosted at Post Offices or at National Informatics Center, which made monitoring of different applications an enormous task. Further, these computerized post offices were isolated entities with one or two clients connected to dedicated servers of web based services like iMO, ePost, etc. through dial up connections and therefore could not provide full fledged network-driven services to customers. During the Xth Plan, the Department of Posts has computerized all its Head Post Offices and most of the major Sub Post Offices and planned to create a virtual private network linking these offices. An expert committee was set up to deliberate on the issues related to establishment of National Data Centre, which suggested that in view of the intricacies involved in the setting up and maintenance of a data center on a 24X7 basis, the services of National Informatics Center (NIC) may be availed. Initiatives Undertaken by National Informatics Centre Communication Information Systems Division (CISD) of NIC at Department of Posts, Dak Bhawan has been entrusted to provide consultancy and guidance for consolidation of existing IT initiatives to harvest maximum benefits. CISD suggests modalities for implementation of new applications to meet the challenges and competition posed by the private sector. Credit goes to CISD for support during implementation of many IT enabled postal operations like ePost, iMO, etc. National Informatics Centre has been instrumental for establishing necessary postal network and inevitable infrastructure to provide improved e-services. National Data Centre (NDC) and Wide Area Network (WAN) for the DoP For improved ICT infrastructure, NIC planned for a Data Centre at NIC, Delhi, Disaster Recovery Centre (DRC) at NIC, Hyderabad and a WAN to connect 1318 post offices in a Closed User Group (CUG) with 2Mbps lease line circuits. Provision has been made for broadband/ ISDN connections to act as fall back option in case of lease line circuit failure. Schematic diagrams of the NDC and WAN are shown in figures 1 and 2 respectively. Fig.1- DoP National Data Centre Architecture Fig. 2: DoP Network Architecture with 2Mbps leased line and Broadband as backup Innovative Applications of the Department of Post Electronic Mail (ePost): ePost is a printed or even handwritten message of customers, scanned and transmitted as email through internet at http://www.indiapost.nic.in. At the destination offices, these messages are printed, enveloped and delivered through postmen like other letters. ePost centres, equipped with internet connection, computers, printers and other necessary equipments have been set up in the Post Offices, covering all the districts and major towns in the country. However, ePost service can also be availed of from any Post Office. Irrespective of whether a customer is in a metropolis or in a remote village, s/he can send and receive ePost messages. The messages booked at Post Offices which are not the ePost centres, are sent to the nearest ePost centres for scanning and dispatch. Similarly, messages received at ePost centres for areas beyond their delivery jurisdiction are printed and sent to concerned Post Offices for delivery. One can buy prepaid cards from Post offices to send ePost from home also. Instant Money Order (iMO): The iMO service enables instant money transfer between sender and recipient residing in India through the post offices. A customer can send up to Rs. 50,000/- by depositing the cash in any of the iMO centres, collect a 16 digit iMO number and inform this number to the recipient. The recipient can collect the money from any iMO centre by presenting the iMO number and a photo identity proof. In this web based service https://www.indiapostimo.gov.in/rvw, money transaction happens instantly. Project Arrow (Post Offices: A window to the world for Aam Aadmi): Due to the large reach of the post offices, specially in the remote and rural areas, it was felt that the Post offices should be enabled to open new vistas to the common man to connect him to the out side world and be the harbinger of kaleidoscopic changes in the lives of the common man. With this objective, the Project Arrow was launched, initially covering 50 post offices across the country and subsequently extended to 500 post offices. Now, in the third phase of the project, it is being planned to extend to another 5000 post offices. To monitor the activities, performances and the service delivery on a daily basis, a web based system has been developed through which each Arrow post office enters data on the number of mails/ money orders received every day and the number of deliveries performed on the same day. Data from the post offices on their daily transactions are extracted using a Data Extraction Tool (DET) in an automated process. Key Performance Indicators (KPIs) are calculated on the basis of data entered on the website and data extracted using DET. These KPIs are monitored regularly to take proactive decisions to improve the performance of a post office. Postal Life Insurance (PLI): PLI was started in 1884 as a welfare measure for the employees of Posts &amp; Telegraphs Department which subsequently was extended to cover other government employees. On 24th March, 1995, the benefits of Postal Life Insurance were extended to rural populace of the country under the banner of Rural Postal Life Insurance (RPLI). Computerisation of PLI/ RPLI started way back in 1995 using UNIX systems with dumb terminals at the 23 postal circles. Though this system was working fairly well, it was necessary to revamp it to compete with the private insurance players who flooded the customers with varieties of facilities and options. As a result, an upgraded web based system http://indiapostpli.gov.in came into existence. Consumer Price Index (Rural): Department of Posts has been entrusted by Central Statistics Organization (CSO) with the collection of Rural Retail Prices towards formulation of Consumer Price Index (Rural). CSO has selected around 500 commodities for collecting retail prices every month from 1183 villages covering all districts of the country. Each village has been linked to the nearest head / sub post office for data entry. Data is collected by postal field staff and entered through user friendly data entry screens on web enabled application for verification by the Supervisor (post master). This application has been designed with role based access control for operator, supervisor, DoP HQ and CSO. Each role has been assigned with pre defined access and privileges depending on requirements. An exhaustive MIS reporting system has been designed to provide information to various stake holders as per their requirements. NREGA Postal Accounting System: The ICT based Mobile payment system for NREGA workers were undertaken in 25 Branch Post offices in Orissa on a pilot basis. In this, Identity cards as well as e-passbooks in the form of smart cards were issued to the NREGA workers at the time of opening of accounts. These cards were personalized with the photograph of the worker and other account details and have a provision for carrying biometric imprints. The NREGA account holder presents his smart card to the Branch Post Master (BPM) at the time of transaction, which is read through the NFC reader, and after proper verification and authentication, the BPM performs the transaction through the mobile phone. Payment of the desired amount is made after checking the balance amount in the account of worker with the Central Payment Server. Once the transaction is completed, the worker is given a printed slip with details of the transaction done. An offline software interface is also provided to the BPOs where GPRS signal is low. Role based MIS reports can be generated in the system. Many more applications, such as RTI through which RTI application/ appeal addressed to any central government department can be accepted at the post offices which would then be transmitted to the nodal officer of the concerned department, CPACT for Circle level postal Accounting System, Patram for Postal Account Transaction Maintenance, Freighter Mail Movement Tracker, Mail Monitoring system, Postal Account Current System, Web based Pension Management System, etc. have been implemented in the Department of Posts to streamline the work flow and improve the service delivery. These systems have been deployed by the CISD in collaboration with Pers Infotech Division and some of the NIC State Units, namely, Tamilnadu, Karnataka and Gujarat. Future Plans Besides the services which are currently being offered by the Department of Posts, many new proposals are under way to improve the postal services. Some of the proposed major projects are: National Address Database Management System for India Post: The Department of Posts is focusing on creation of a National Address Database Management System for India Post wherein the information related to every delivery point of postal services for both residential as well as commercial/industrial locations in urban and rural areas would be captured along with the maintenance of the standard database. A letter is handled in the Postal system on the basis of address thereon. Unambiguous address is essential for effective and economical mail sorting operations. Adoption of a standard gives it stability, continuity and greater uniformity over the geographical jurisdiction and for long time to come. Further, it improves the quality of mail delivery, enables it to be machine processed and reduces costs. An address has two basic attributes; viz. one that describes the personal identification details; and the other that describes location identification details. The main objective of Postal Geographic Information System is to create/integrate, maintain and disseminate digital spatial database associated with the existing data of DoP. This may be initiated with providing a base map of the order of 1:1000 scales, which may sufficiently provide a view of the catchment area of the Post Offices and further demarcation of &quot;Beat Catchment&quot; with support from DoP. This may be integrated further with addresses, Pin Codes as found suitable within the project. Virtual Post Office: It is proposed to develop a portal for Virtual Post Office to provide postal services to the customers on 24X7 basis. The services to be rendered through the virtual post office are: — Mail services: registration, parcels, insurance, value payable posts, surface air lifting, free posts, and services associated with traditional postal communication. — Financial services: banking, postal life insurance, money order, instant money order, international money transfer, mutual funds, electronic clearance services, and electronic international money order services. — Premium services: speed post, business post, bill mail, electronic intimation of delivery, national bill mail, e-payment, express parcel, media post, greeting post, logistic post, direct post, and retail post. — Philatelic services: information regarding stamps issued by the DoP over the years. Philatelic Deposit Accounts opening online by making payment through the payment gateway set up by DoP. — Customer services: enabling customers to provide feedback, and grievance redressal system for maximum customer satisfaction. Awards and Accolades ICT intervention for improved postal services has brought many awards &amp; recognitions for the Department of Posts. Some of these are: — Skoch Challenger Award for instant Money Order in 2007 — Manthan award for Instant Money Order in 2007 — Oracle e-governance excellence award for Postal Life Insurance Computerisation in 2006 — Microsoft e-Governance Award for instant Money Order in 2006 Microsoft e-Governance Award for iMO</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="we-can-leverage-the-expertise-of-nic-nicsi-in-implementing-turn-key-ict-projects-an-exclusive-interview-with-sh-sailesh-kumar-singh-ias-it-secretary-govt-of-jharkhand-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">“We can leverage the expertise of NIC / NICSI in implementing turn key ICT projects” …… An Exclusive Interview with Sh. Sailesh Kumar Singh, IAS &amp; IT Secretary, Govt of Jharkhand.</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="editorial-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="we-can-leverage-the-expertise-of-nic-nicsi-in-implementing-turn-key-ict-projects-an-exclusive-interview-with-sh-sailesh-kumar-singh-ias-it-secretary-govt-of-jharkhand-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">“We can leverage the expertise of NIC / NICSI in implementing turn key ICT projects” …… An Exclusive Interview with Sh. Sailesh Kumar Singh, IAS &amp; IT Secretary, Govt of Jharkhand.</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

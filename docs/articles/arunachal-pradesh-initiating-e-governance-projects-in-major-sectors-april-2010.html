@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Arunachal Pradesh: Initiating e-Governance Projects in Major Sectors — Informatics April 2010</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2010"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/april-2010/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2010/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2010/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2010/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/april-2010/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2010/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2010/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/april-2010/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2010/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2010/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2010.html">April 2010</a><span class="breadcrumb-sep">&rsaquo;</span><span>Arunachal Pradesh: Initiating e-Governance Projects in Major Sectors</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2010.html">April 2010</a><span class="breadcrumb-sep">&rsaquo;</span><span>Arunachal Pradesh: Initiating e-Governance Projects in Major Sectors</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Arunachal Pradesh: Initiating e-Governance Projects in Major Sectors</h1>
+          <h1 class="article-title">Arunachal Pradesh: Initiating e-Governance Projects in Major Sectors</h1>
           <hr class="title-rule">
           <p class="article-byline">By Y. Junu Singh &bull; pp. 20–23</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Stretching from snow-capped mountains in the north to the plains of the Brahmaputra valley in the south, endowed with vast forest cover, home to large number of fauna and flora, Arunachal Pradesh - the 'Land of Rising Sun' has enough potential to become famous worldwide for eco-tourism. Itanagar the capital city, has many attractions for tourists like the state museum, the polo park, the Buddhist temple etc. The state has 26 major tribes and many sub tribes. The Adis famous for their dance ponung, the Aptanis are settled agriculturists while the Buguns are gentle, hospitable and affectionate tribes to name a few. National Informatics Centre, Arunachal Pradesh State Centre located at Civil Secretariat, Itanagar, started functioning in 1988. NIC is providing various ICT services to the government through its manpower and ICT infrastructure built up in the State. Arunachal became a full-fledged state on 20-Feb-1987. Till 1972, it was known as the NEFA (North-East Frontier Agency). It was given the Union Territory status on 20-Jan-1972, and renamed as Arunachal Pradesh. NIC ICT Infrastructure and Services: State Data Centre: A data centre consisting of Secured network infrastructure and Storage Area Network (SAN) has been setup in the Civil Secretariat by NIC. The capacity of data centre is 3 TB presently. SDC contain several state of the art rack mount servers and SAN solution. The SDC is currently hosting web based applications like PHED MIS, NLCPR MIS, etc. Networking Services: A Secretariat LAN, connecting all the government offices, have been setup in the Secretariat Complex. The internet connectivity to most of these offices is provided through RF connection/ OFC from the existing NICNET infrastructure of NIC. The Secretariat Wireless LAN has been extended to various HODs of different departments. Under this project more than 35 department located outside the Secretariat are connected using wireless/RF LAN. The wireless nodes share the existing 45 MBPS Leased Circuit which is backed up by 2 x 2 MBPS Leased Line. Under Sub-Divisional Network project, 23 sub-divisions of the state are connected through VSATs/nearest CIC. Recently, Wi-Max network has been set-up in 6 districts, in order to deliver e-Governance services to the citizen. Under this project, ten different govt. offices have been connected through this network in each district, to the NICNET. e-mail &amp; Internet Services: NIC provides internet connectivity and e-mail services to government departments. Video Conferencing Service: It is best suited for geographically disadvantaged topography like Arunachal Pradesh. Videoconferencing Studios are setup at State Civil Secretariat Complex, Itanagar and all districts. The VC facility is being used by state Govt. departments and senior officials for official communication and project monitoring. e-Governance services: Jan-Suvidha: Jan-Suvidha (Computerized Facilitation Centre) is established to serve the purpose of the common people, by giving services such as Permanent Resident Certificate, Schedule Tribe Certificate, Temporary Resident Certificate, Inner Line Permit, Income Certificate and many others within one to two days. Jan-Suvidha project is first of its kind in Arunachal Pradesh, where all certificates are Computerized and issued/renewed through a single window. The Centre charges a minimum fee for all the services. The project has been implemented in 7 DC / ADC offices of the state. Treasury Computerisation: Treasury Accounting Software (TAS) has been developed and implemented in Itanagar Treasury and Naharlagun Sub-Treasury since 2002. Now to upgrade and replicate the Treasury project in the remaining treasuries / sub-treasuries, a new web based Treasurynet Project has been taken up based on NIC Maharashtra model using open source technologies. The project is being implemented in phases. Transport Computerisation Project: Under this project all the activities done at District Transport office is being computerized using the VAHAN &amp; SARATHI Software developed by NIC. VAHAN caters to the registration of all types of vehicles. SARATHI application is used for issue of Learner License, Driving License, Conductor License and Driving School License. The VAHAN &amp; SARATHI has been implemented in 9 districts of the state and at 3 districts, it is under implementation. GPF Computerisation Project: Directorate of Accounts &amp; Treasuries (DOAT) maintains the GPF accounts of all Groups A, B &amp; C employees of all departments of Govt. of Arunachal Pradesh. There are about 30,000 GPF accounts maintained by the DOAT. The GPF accounting process is computerised under this project. Annual Statement for GPF subscribers is being issued through this software. Payroll Computerisation Project: A generic payroll system has been developed by NIC to computerise the Payroll system. The same has been implemented in about 60 government offices of the state and districts. Election Support: Arunachal Pradesh has 60 Assembly Constituencies and 2 Parliamentary Constituencies. NIC is providing technical support to the Election department in terms of e-mail, internet and VC service, training to the state govt officials in the operation of EVM machines, timely submission of various data to the ECI as well as the CEO. The services of NIC have become indispensable to the Election department in every Assembly / Parliamentary Election in the state. NIC also provides ICT solutions for the display of election results to the public. For the first time in the country, during the Assembly elections 2009, NIC has successfully demonstrated the remote monitoring of voting process in selected voting centres in Tirap and West Kameng district. Web Based MIS for PHED: Web Based MIS for PHED, Arunachal Pradesh is a first major computerization project of the state, which covers all the major functionalities of the PHE Department. The software has 11 modules. At present, the department of PHED has implemented 4 modules in 2 of its divisions. NLCPR monitoring System: This is a web-based MIS for NLCPR projects for the Department of Planning. It has interface for Ministry of DoNER and the Executing Agencies for submission of data and monitoring the progress (financial and physical) of various projects. The software has been deployed for acceptance testing by Department of Planning. Tele-Education Project: The objective of the project is to provide trained faculty to the students to teach basic science subjects and mathematics for preparation to appear in all India competitive entrance examinations like JEE, PMT, AIEEE, etc. Currently Tele-Education Service is being provided in three districts (One Higher Secondary School each) using NICNET. National Portal: The objective of the National Portal project is to enable a single window access to information and services being provided by the various Indian Government entities. Under is project, at the state level, NIC is providing technical support to the State Nodal Officer in identification and management of the content in the context of Arunachal Pradesh. CIPA Project: Common Integrated Police Application (CIPA) Project aims at automation of all functions carried out at the police stations. The project has been implemented so far in 41 Police Stations in various districts. File Monitoring System: The objective of File Monitoring System is to monitor the office files going out and coming into an office. The project has been implemented in several government offices. e-Procurement: This project is for electronic tendering and procurement of various items under the PMGSY scheme. Training has already been given to the concerned officials of Rural Works Department and prospective bidders. e-Court Project: The process of computerisation of the Itanagar Bench of Guwahati High Court has been taken-up in Arunachal Pradesh. NREGS MIS: Technical support and training on NREGA MIS (online &amp; offline) is provided in collaboration with SIRD to various stake holders in the state of Arunachal Pradesh. There has been progress in implementation of the same in many of the districts. IDSP: Integrated Disease Surveillance Project is a decentralized, State based Surveillance Program in the country. It is intended to detect early warning signals of impending outbreaks and help initiate an effective response in a timely manner. The implementation of IT component of the project is supported by NIC. CONFONET: The objective of the CONFONET Project is to set up ICT infrastructure at Consumer Redressal forums all over India to provide IT solution at each level in order to provide E-Governance, Efficiency, Transparency and Systematizing of working. This project is implemented in the State. Plan Plus: It is a software tool presently used in the Backward Regions Grant Fund (BRGF) scheme implementing district for grass roots level planning. The project is under implementation in the lone BRGF district of the state, Upper Subansiri. Web Services: NIC provides state-of-the-art web hosting services to state government departments at its Integrated Data Centre at NIC HQ. Remote updation facilities are also being provided to the user departments. NIC Arunachal Pradesh is playing an important role in design, development and hosting of website of various departments. The website of 15 districts has been developed and launched. Training: The NIC-Arunachal Pradesh has well equipped Training Centre which facilitates NIC to provide training services for various departments.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="west-bengal-transforming-with-widespread-adoption-of-ict-april-2010.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">West Bengal :Transforming With Widespread Adoption of ICT</span></a><a class="article-nav-link next" href="upcoming-e-governance-conferences-april-2010.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Upcoming e-Governance Conferences</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="west-bengal-transforming-with-widespread-adoption-of-ict-april-2010.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">West Bengal :Transforming With Widespread Adoption of ICT</span></a><a class="article-nav-link next" href="upcoming-e-governance-conferences-april-2010.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Upcoming e-Governance Conferences</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

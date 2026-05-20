@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Rajasthan: A Journey to Excellence in ICT in Government — Informatics July 2011</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:July 2011"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2011/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/july-2011/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/july-2011/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/july-2011/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/july-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/july-2011/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/july-2011/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2011/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2011/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2011.html">July 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Rajasthan: A Journey to Excellence in ICT in Government</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2011.html">July 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Rajasthan: A Journey to Excellence in ICT in Government</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Rajasthan: A Journey to Excellence in ICT in Government</h1>
+          <h1 class="article-title">Rajasthan: A Journey to Excellence in ICT in Government</h1>
           <hr class="title-rule">
           <p class="article-byline">By Indu Gupta &bull; pp. 23–26</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Colorful Rajasthan is a fairy tale of majestic palaces, fortresses, cities, and buzzing bazaars with the confluence of history, chivalry, romance, rugged natural beauty, art, crafts and culture. With the rich historical and cultural background NIC in the state had taken off in 1988 has started showing its true colors. Today with the efforts of team NIC the state of Rajasthan is surging ahead as a leader in e-Governance and ICT developments covering a wide gamut of applications. Inputs from Chandan Sen NIC Rajasthan in close coordination with the state government agencies has undertaken various ICT projects efficiently and effectively. In terms of establishing the ICT Infrastructure, analysis, design, development, consultancy, deployment of ICT solutions, capacity building and innovations in evolving ICT solutions. NIC has lead from the front with its highly dedicated and motivated officials. With a view to provide smooth, transparent and efficient service delivery within government and to citizens various software and infrastructure development efforts have been made. Few major projects of NIC are: Rural Connectivity (GPNIC) for Panchayats: Government of India had conceptualized a pilot programme for connecting rural India with high speed fiber backbone directly to Panchayats. Riding on fibre backbone a service delivery solution, web based GPNIC software has been designed, developed and implemented for few panchayats in Srinagar Block in Ajmer district to facilitate Panchayat office in accessing various online services in simplistic manner. BSNL provided optical fiber based connectivity at ten panchayat offices which was then extended to other government offices, schools with the help of wireless system. The villages for the first time held video-conferencing with the advisor to PM from their own native place. So impressed was the US delegation seeing people use this system that President Barack Obama decided to have a peek into the future of India on 7th Nov 2010. Advisor to PM Sh. Sam Pitroda briefed the President about benefits of the project. INDU GUPTA State Informatics Officer NIC Rajasthan sioraj@nic.in Integrated Financial Management System (IFMS): The Integrated Financial Management System is a web based system for complete government financial accounting. It includes budget planning, estimates preparation, distribution / allocation, fund management, treasury functions etc. It improves government's financial management and expedites operations making it more transparent. The budget was prepared using the IFMS. IFMS consists of Budget Preparation, Budget Distribution, Online Treasuries. IFMS has been initiated with the concept of 'Any-Where-Treasury'. The Project is taken up by Finance Department in Rajasthan with NIC. A robust network has been set up to connect all treasuries, sub treasuries to web based IFMS portal. IFMS aims to take care of majority of the common requirements maintaining uniformity of procedures, adopting the best practices and networking of all the offices i.e. Finance Department, Directorate of Treasuries &amp; Accounts, Pension Department, all treasuries and sub treasuries. It will also address issues related to interoperability between G2G, G2C and G2B. Presently all 39 treasuries and 221 sub treasuries are using this online application with the facility for the banks to upload the daily scroll. OASYS (Online Answering Information System) for Rajasthan Legislative Assembly: Going green with OASYS (Online Answering Information System) was a natural culmination of the long association of NIC with Legislative Assembly and all the departments of Rajasthan Government to facilitate faster &amp; secure communication pertaining to assembly questions. All answers received through the system are also accessible through the web portal of Legislative Assembly immediately after the Question Hour. The detailed replies can instantly be viewed by media or citizen. It is first such application ever deployed by any legislative body in India. This is an eco-friendly solution as it results in savings of more than 10 million paper sheets every year. SUGAM: &quot;SUGAM RPG&quot; the single point public Grievance Redressal portal of Government of Rajasthan is a web based system, currently used in 750 offices is an effective tool for grievance redressal for citizens. SUGAM-Single Window Service Delivery system has a multilevel implementation including all 33 district Collectorates and all the 247 Tehsil offices of Rajasthan. The system facilitates timely delivery of various citizen services such as; Issuance of Bonafide Resident certificate, Caste Certificate etc. About different 40 services are being extended through this system. The system is now being extended to Common Service Centre nodes with a digital signature facility. Pregnancy, Child Tracking &amp; Health Services Management System (PCTS): This web based online system developed by NIC Rajasthan for Medical, Health &amp; Family Welfare department, Govt. of Rajasthan, for improving its services right upto Health Sub centre. The system is extremely useful in ensuring better health for women, minimizing maternal mortality, neo natal mortality and in tracing areas with decreasing sex ratio at birth. It is also useful in monitoring functioning of all health institutions across the state numbering more than 13, 000. Presently it has 23.5 lacs beneficiary records. It is operational from more than 500 locations across the state. Process re-engineering was done at various levels. Repeated efforts required in data compilation at different levels have been eliminated completely. Data transportation sheets have been designed to minimize data capturing efforts. Swasthya Sandesh Sewa has been linked to the PCTS, which is reminder service for the parents for vaccination of their children and also to the Service Providers (ANM). The system also helps in ensuring adequate medicine and vaccine stocks at every health facility. Sarva Shiksha Abhiyan (RAJSSA portal): Rajasthan Council of Elementary Education undertook the project of CTS (Child Tracking Survey) along with NIC Rajasthan in 2010. As a massive exercise, village/habitat level details of each child were surveyed. The data was captured through the ICR technology. A comprehensive online module was developed for the survey monitoring and to collect booth wise summery data. In and out school children counts were published in the public domain within 10 days of completion of the CTS survey. A total of 1210917 children were found as Out of School Children in the state. Rajasthan is now amongst the few states which is providing the village/habitat wise Village Education Register in the public domain. Patient Management for Chief Minister's BPL Jeevan Raksha Kosh Is a web based on-line application, intended to facilitate free medical treatment to poor patients in any Government health facility at state, district or sub district level. The system extends right up to the CHC's and PHC's. The system is developed by NIC, Rajasthan and is part of HEALING which is a comprehensive e-governance tool for the department. The system was launched on 15-09-2009 by Hon'ble Chief Minister Rajasthan and is operational since then. Presently the system is being accessed by more than 550 hospital facilities spread all over the state. Forty lac patient records are available online. Pre Teacher's Entrance Test Counseling: The main objective of this web base application was to minimize the travel burden on counselees and for better transparency in the system. About 1.25 lac candidates had participated in the counseling process to take admissions for about 90000 seats available in 790 colleges every year. One website is the candidate site, to get all required information and fill his/her choices. Other is the intra site, where concerned institutes may see their list of allotted candidates and provide online reporting. Online BPL Census: This is one of the massive database creation exercises where each of the rural household has been surveyed and micro details were captured including attributes about each and every family member. For the first time the OMR/OCR sheets were used in the BPL census survey conducted in 2002. NIC State unit since beginning helped the department in formulating tender documents for the data capturing work. NIC State unit has extended support in validation of the data and necessary application has been built to provide various analytical reports on interim and final data. There has been wide usage of the data by various departments and agencies for upliftment of the poor. The data reflects current BPL position tracked till the village level. Data is used by Rural Development department, Department of Food, Education, Medical and Health, LIC, World Bank, ICICI bank, IL &amp; FS in formulating and monitoring important schemes. Primary Agriculture Cooperative Society (PACS): Extending core banking solution to PACS is an important step as it acts as Mini bank at the village level and delivers various rural citizen centric services like NREGA payment, agriculture loan disbursement etc. Hathoj &amp; Mundia Ramsar PACS in Jhotwara-Jaipur block were selected for pilot implementation of Cooperative Core Banking System (CCBS). Apex bank RSCB has provided necessary infrastructure for this pilot implementation. It is a hosted application at NIC Data Centre and caters to all three levels of Short term cooperative structure. Salient features of CCBS are Core Banking Solution, SOA architecture, multilingual support and requirement based customization at the time of installation. CCBS is developed by NIC HQ team and NIC Rajasthan supported its successful implementation. Recently NABARD team visited these PACS to get a feedback of its replication in other PACS in India. Public Health Engineering Department: An integrated workflow based system is used for planning and monitoring activities and resources including materials, man-power, projects and finance. This is accessed from more than 240 offices of PHED of the state. The system covers 151 Divisions, 43 Circle Offices, 13 Region Offices, 33 Water Quality Labs &amp; the PHED HQ. Data is captured into the system from all divisions, circle offices, region offices and water quality labs etc. Annual funds of around 1000 crore are being managed through this system and works account are generated since 2007. Work Flow based Materials Management System links all the material stores of PHED. Projects and Works Management Systems allows comprehensive monitoring of projects for physical &amp; financial progress. Personnel Information System provides service records online for all the employees. Other modules include Water Quality Monitoring, Audit Para Monitoring, Schemes &amp; Assets Management, Tender Management and Documents Management. As extension of 1st phase, now computerisation is planned right upto the subdivision level. Wider Perspective and new Horizons of erstwhile LRC - Apnakhata: The computerization of land records and Strengthening of Revenue Administration and Updating of Land Records has been merged with the National Programme known as National Land Records Modernization Programme. Its major components are Land Records, Digitization of Khasra Maps, Settlement Survey, Registration &amp; Stamps and Integration of processes. As it has been implemented in the Rajasthan state in a systematized and organized manner, it has proven to be one of the most popular services to citizens. Rajasthan State Pollution Control Board (RSPCB): The project is beneficial to the Government, Central Pollution Control Board, RSPCB itself, Industries and the Indian Community by providing the correct and authentic online Information. The project scope was to develop, deliver, install and implement automated application systems for the various sections in the department to fulfill the need of Reliable, Auto-Responsive, Semi-Decision, Paperless and cost effective computer based transparent system for Information Compilation, Dissemination and Sharing through-out the department and the customers. Rajasthan High Court Computerization: Comprehensive Judicial Software System has been developed which caters to all Judicial activities viz, Case Filing, Paper Filing (Power, Reply etc), Reporting of Lower Court, and FIR details, Classification, Scrutiny, Bail Trapping, Registration, Peshi, Track the Peshi Date of a case, Causelist, track the cause listing details of a case with item no, date and court no., Disposal, Consign to Record Room, Comprehensive MIS Report Generation. District Court Computerization: Laptops and printer have been provided to all the Judicial Officers at various districts. Broadband Connection has been provided to Judicial Officers and e-mail account has also been provided on NIC server. Training has been provided to judicial officers and staff on the computer application and usage. Computerization of Police Department: NIC Rajasthan is playing a key role by extending guidance as members of state level and programme level committees for Crime &amp; Criminal Tracking Network Systems after implementing CIPA at 566 police stations. NIC Rajasthan has developed &amp; successfully implemented a web based Personnel Information System (PIS) for the Police Department. Massive database pertaining to general information, personnel details, educational qualification, nominations details, postings, awards, rewards, punishments, trainings for the officials &amp; officers of the Police Department have been entered in the application. Nearly 65,000 records entered as on date speaks the efforts put in by the NIC &amp; the Police department. Other Projects implemented successfully in the state are: VAHAN &amp; SARTHI Project: Work of Registration of Vehicles and other related works like Issue of Permit, Issuing Fitness certificates, Tax calculation, Challan monitoring etc are to be done on the &quot;VAHAN&quot; software developed by NIC. SARTHI software for issuing Driving Licenses is presently implemented in 7 transport offices of the state. MG-NREGA Implementation: Rajasthan is leading state in MG-NREGA implementation, where all the Job-card holder details along with their photograph are uploaded on central server. The Muster Roll is now issued using NREGA soft only. Similarly the payment is made through Bank/Post office and every such information is available on NREGA soft. Mid Day Meal Monitoring System (MDM): To monitor the Grants, transfer of funds and grains from Govt. of India, Distribution of funds and grains to the Districts, blocks and schools, progress and utilization, a web based application was developed and deployed to get the online status of the monthly progress of the program. There are more than 270 active users. Monthly reporting is from all the Blocks and data entry percent from schools is more than 95%. Monthly entry of records from each school is done at the block level. New Entry module for Cook Cum Helper and AMSS has been implemented in application. More than 95000 cook cum helper master data in different category and cast is available online. AWARDS: Project 'Pay Manager' has received eRajasthan-2009 Public Choice award under G2C Category. Awarded at eINDIA 2010 - &quot;Pregnancy, Child Tracking &amp; Health Services Management System&quot; received the first prize under the e-HEALTH Government Policy Initiative of the Year category. &quot;Mukhya Mantri Jeevan Raksha Kosh&quot; (under Health Insurance Initiative of the Year) and &quot;Water Cess for Rajasthan State Pollution Control Board&quot; (under G2B) were also shortlisted for award at eINDIA 2010. Computer Society of India- Nihilent e-Governance Awards 2008-09 for SUGAM (Jodhpur) under district category. Manthan Award South Asia '2009 for eGram &amp; Appreciation certificate for project &quot;Pregnancy &amp; Child Tracking System.&quot; eRajasthan-2009 AWARD - &quot;eGram&quot; has received eRajasthan-2009 Jury Award under G2C Category. BPL Census- PCQUEST BEST IT Implementation award of the year 2008 by PC-Quest. Apna Khata (Land Revenue Computerization Project)- First runner-up award for excellence in IT Government Sector by Govt of Rajasthan. Finalist for CSI-Nihilent 2010 - PCTS &amp; NIC Pali District. For further information INDU GUPTA State Informatics Officer NIC Rajasthan State Centre 318, N.W. Block, Secretariat Jaipur-302005 Ph: 141-2227992 sioraj@nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="nagaland-towards-digitally-vibrant-and-responsive-governance-july-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Nagaland - Towards Digitally Vibrant and Responsive Governance</span></a><a class="article-nav-link next" href="cuf-n-custom-font-embedding-technique-for-web-july-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Cufón: Custom Font Embedding Technique for Web</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="nagaland-towards-digitally-vibrant-and-responsive-governance-july-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Nagaland - Towards Digitally Vibrant and Responsive Governance</span></a><a class="article-nav-link next" href="cuf-n-custom-font-embedding-technique-for-web-july-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Cufón: Custom Font Embedding Technique for Web</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

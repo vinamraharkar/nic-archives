@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>AADHAAR AUTHENTICATION PLATFORM: Enabling Digital Governance with Citizen’s Identity — Informatics October 2017</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2017"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/october-2017/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/october-2017/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2017/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/october-2017/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/october-2017/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2017/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2017/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2017/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2017.html">October 2017</a><span class="breadcrumb-sep">&rsaquo;</span><span>AADHAAR AUTHENTICATION PLATFORM: Enabling Digital Governance with Citizen’s Identity</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2017.html">October 2017</a><span class="breadcrumb-sep">&rsaquo;</span><span>AADHAAR AUTHENTICATION PLATFORM: Enabling Digital Governance with Citizen’s Identity</span></nav>
         <div class="article-header">
           <div class="article-section-badge">eGov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">AADHAAR AUTHENTICATION PLATFORM: Enabling Digital Governance with Citizen’s Identity</h1>
+          <h1 class="article-title">AADHAAR AUTHENTICATION PLATFORM: Enabling Digital Governance with Citizen’s Identity</h1>
           <hr class="title-rule">
           <p class="article-byline">By Rajiv Rathi, Ajay Sinha &bull; pp. 29–31</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The Authentication Services is integrated with 110 plus applications of States &amp; Central Government Departments and Ministry with the monthly transaction of around 12 Crores in the month of November 2017. Indian Army, Public Distribution System, Digital Locker, CBSE, Jeevan Pramaan, Biometric Attendance System are some of the applications which have used the services for establishing the Digital Identity of Citizens to get the benefits. NIC signed an agreement with UIDAI for Authentication User Agency/ Authentication Service Agency. Further a dedicated, structured platform has been designed and developed for e-Governance projects under Digital India initiative. Initially the authentication service was started for Biometric Attendance System (BAS). A cloud based infrastructure was setup at National Data Centre, Shastri Park, New Delhi with dedicated 34 MBPS secure, redundant connectivity between National Data Centre and UIDAI Data Centre for authentication. NIC has further furnished dedicated secure connectivity between National Data Centre and UIDAI Data Centre. Aadhaar Authentication platform shall mean that the authentication services provided by UIDAI and used by Authentication User Agency where the personal identity information/ data of an Aadhaar- holder (who is a beneficiary, customer, employee or associate of the Authentication User agency) is matched with their personal identity information/ data that is stored in the UIDAI’s Central Identity Data Repository (CIDR). SERVICES AUTHENTICATION USING BIOMETRIC/ DEMOGRAPHIC E-Governance applications can use Aadhaar based Demographic Authentication for matching Aadhaar number and the demographic attributes (Name, Gender, Date of birth, etc.) of a resident. This is called demographic authentication e-Governance Applications can use Architecture of the Aadhaar Authentication Services deployed at NIC Data Centres Aadhaar Authentication flow under various scenarios Biometric Aadhaar Authentication system to authenticate residents using biometric attributes (Fingerprint, Iris). E-Governance applications can use OTP Aadhaar Authentication system to authenticate residents through One-Time-Password (OTP) which is delivered on resident's mobile number and/ or email address registered with UIDAI. E-KYC SERVICE USING BIOMETRIC/ OTP Application can use e-KYC system of UIDAI to fetch demographic information of the residents using biometric/ OTP or both authentication. Ministries/ Departments/ Organisations are the custodian of residents’ data for the services offered by them to the residents. Ministry/ Departments / Organisations who are willing to use AUA platform of NIC for Aadhaar Authentications Services shall act as Sub AUA for their applications. As a signatory to AUA/ ASA agreement, NIC has obligations for all transactions originating from its AUA/ ASA, audit, security, logging etc. UIDAI has made the Authentication services free of charge as on now. It may or may not be chargeable, which depends on the sole discretion of UIDAI. AUA will be solely responsible for the transactions done under AUA/ ASA agreements. Transactions (in Lakhs) Total Auth KYC OTP Month Transactions Jul 2017 1201.90 1121.69 (93.3%) 57.25 (4.8%) 22.95 (1.9%) Aug 2017 1232.09 1167.51(94.8%) 40.71 (3.3%) 23.86 (1.9%) Sep 2017 1255.09 1186.31(94.5%) 23.65 (1.9%) 45.12 (3.6%) Aadhaar Authentication Transaction (in Lakhs) Jul 2017 to Sep 2017 ELIGIBILITY FOR GETTING AUTHENTICATION SERVICES ••Central Government and State Government Ministries/ Departments/ Organisations who are getting IT services from NIC may become Sub AUA. For Aadhaar authentication services, SUB AUA’s application must be hosted in the NIC’s Data Centres ••Under exceptional cases, if the e-Governance applications is hosted outside NICNET and Competent Authority, NIC approves, then the Organisation has to get dedicated leased line installed between NIC and hosted location (Sub AUA) at its own cost subject to the clearance from Network and security Division of NIC (for connectivity and application) ••Commercial/ Profit making Organisations/ PSUs are not eligible for Sub AUA services from NIC ••The Organisations eligible for Sub AUA have to sign MoU with NIC to act as Sub AUA for e-Gov. Applications ••Officer of the rank of Director and above may sign MoU from user organisations ••Pre-Production &amp; Production service request forms are to be filled along with MoU ON-BOARDING PROCESS Sub AUAs are agencies that use Aadhaar authentication to enable its services through an existing AUA. Government Departments/ Ministries seeking to use the Aadhaar Authentication Platform have to provide the mandatory information like application description, details of application server location and its IP. This is required for white listing the system for accessing the Aadhaar Service Platform. Steps for on-boarding: ••Accept the filled Pre-Production form duly filled by the Sub AUA. ••Whitelist the Application Server IP address and allowing access to the Pre-Production server. ••AUA assigns certain project specific unique values (SA &amp; LK) to Sub AUA for incorporating in the xml. ••Provide the Sub AUA the necessary credentials and the URL on which xml is to be posted. ••Sub AUA does the testing on Pre-production environment. ••After successful Authentication of the Application, An MOU is signed between AUA and Sub-AUA users ••Once MoU is signed, the above mentioned steps are repeated for Production Server. On-boarded Applications those using Aadhaar Authentication Services</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="civil-secretariat-goes-wireless-arunachal-pradesh-government-sets-a-new-trend-with-the-implementation-of-wi-fi-at-its-hub-october-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">CIVIL SECRETARIAT GOES WIRELESS: Arunachal Pradesh Government Sets a New Trend with the Implementation of Wi-Fi at its Hub</span></a><a class="article-nav-link next" href="strengthening-management-of-finance-in-meghalaya-adopting-ict-for-improving-efficiency-and-transparency-october-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">STRENGTHENING MANAGEMENT OF FINANCE IN MEGHALAYA- Adopting ICT for Improving Efficiency and Transparency</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="civil-secretariat-goes-wireless-arunachal-pradesh-government-sets-a-new-trend-with-the-implementation-of-wi-fi-at-its-hub-october-2017.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">CIVIL SECRETARIAT GOES WIRELESS: Arunachal Pradesh Government Sets a New Trend with the Implementation of Wi-Fi at its Hub</span></a><a class="article-nav-link next" href="strengthening-management-of-finance-in-meghalaya-adopting-ict-for-improving-efficiency-and-transparency-october-2017.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">STRENGTHENING MANAGEMENT OF FINANCE IN MEGHALAYA- Adopting ICT for Improving Efficiency and Transparency</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

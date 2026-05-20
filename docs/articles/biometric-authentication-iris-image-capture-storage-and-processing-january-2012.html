@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Biometric Authentication: IRIS image Capture, Storage and Processing — Informatics January 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2012/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/january-2012/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/january-2012/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2012/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/january-2012/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/january-2012/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Biometric Authentication: IRIS image Capture, Storage and Processing</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Biometric Authentication: IRIS image Capture, Storage and Processing</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">Biometric Authentication: IRIS image Capture, Storage and Processing</h1>
+          <h1 class="article-title">Biometric Authentication: IRIS image Capture, Storage and Processing</h1>
           <hr class="title-rule">
           <p class="article-byline">pp. 31–33</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">In this era of Information technology, we all have multiple accounts and use multiple passwords on host of computers and Web sites for checking e-Mail, managing bank accounts, online transactions etc. Maintaining and managing access while protecting both the user's identity and the computer's data and systems has become increasingly difficult. Central to all security is the concept of authentication - verifying that the user is who he claims to be. Broadly speaking, in digital world we can authenticate and identify a person in three ways - by something the user knows (such as a password or personal identification number), something the user has (a security token or smart card) or something the user is (a physical characteristic, such as a fingerprint, called a biometric). Password, tokens and smart cards are perhaps the most commonly used techniques today. But all these methods are based on properties that can be forgotten, shared, lost or stolen. Biometric methods of verification, on the other hand, are based on distinctive anatomical and behavioral characteristics or identifiers such as (fingerprints, face, iris, voice palm geometry etc.) that cannot be easily misplaced forged or shared. Even historically, finger prints (thumb impression) were taken on legal documents using the 'ink technique' where black ink was smeared on the thumb and pressed on the paper to authenticate and identify the subject. Biometric authentication has been widely regarded as the most foolproof system. WHAT IS BIOMETRICS? Biometrics is an automated method of identity verification or identification based on the principle of measurable biological characteristics of a person such as a fingerprint, an iris pattern or a voice sample. Biometric characteristics are permanent, unique and not duplicable or transferable. The Biometric characteristics are classified into two major groups - physiological and behavioral. - Physiological Biometric data relates to the physical aspects of a person's body such as fingerprints, iris scan, face scan and also DNA test. - Behavioral Biometric data relates to the behavior of a person such as hand writing matching, voice recognition, signature analysis. ADVANTAGES OF BIOMETRICS: - Biometric identification can provide extremely accurate, secured access to information; fingerprints, retinal and iris scans produce absolutely unique data sets when done properly - Current methods like password verification have many problems (people write them down, they forget them, they make up easy-to-hack passwords) - Automated biometric identification can be done very rapidly and uniformly, with a minimum of training - Your identity can be verified without resort to documents that may be stolen, lost or altered. TYPES OF BIOMETRICS There are number of methods of biometric data gathering and reading worldwide. Some are less invasive, some can be done without the knowledge of the subject, and some are very difficult to fake. However, the selection of technology for proper identification depends upon number of factors like: - Universal: All Persons must possess - Unique: guarantee to identity - Permanent - Inexpensive - Ease of Collection - Analysis - Technology - Legal - Socially accepted - Based on these parameters some of the frequently used biometric technologies are - Face Recognition: Face recognition system uses distinctive facial features, including upper outlines of eye sockets, areas around cheekbones, the sides of the mouth and the location of the nose and eyes. These numerical quantities are then combined in a single code that uniquely identifies each person. - Fingerprint Identification: Fingerprints remain constant throughout life. It has been found that no two fingerprints are alike, not even those of identical twins. Fingerprint identification involves comparing the pattern of ridges and furrows on the fingertips, as well as the minutiae points (ridge characteristics that occur when a ridge splits into two, or ends). - Hand or Palm Geometry: It uses the entire hand as an individual identifier. This method relies on devices that measure the length and angles of individual fingers. - Retina Scan: Retina Scan uses the pattern of the blood vessels at the back of the eye, which is unique and stays the same for a lifetime. However, it requires about 15 seconds of careful concentration to take a good scan. - Signature Dynamics: Signature dynamics is based on individual's signature. The biometric data is easy to gather and is not physically intrusive. Digitized signatures are sometimes used, but usually have insufficient resolution to ensure authentication. - Voice Recognition: Like face recognition, voice biometrics provides a way to authenticate identity without the subject's knowledge. It is to verify the individual speaker against a stored voice pattern, not to understand what is being said. - Iris Scanning: IRIS is the colored ring of tissue that surrounds the pupil of the human eye. The iris scan provides unique biometric data that is very difficult to duplicate as researches have shown that the possibility of having two similar iris patterns is very remote. Iris also remains the same for a lifetime of the person provided there is no physical injury and even the use of glasses or contact lens does not hamper the iris recognition. The technology is not sight dependent and can be used for blind persons also. - Iris scanning is considered to be least intrusive of the eye-related biometrics, no bright light or lasers or contacts are used in order to protect the eyes from any harm or discomfort. The iris scanner mathematically analyses the random pattern visible within an eye from some distance and uses the technique of pattern recognition using computer vision and optics. In addition, iris scan has the potential for higher than average template-matching performance. - IRIS Images: Iris scans create high-resolution images of the irides of the eye; IR illumination is used to reduce specular reflection from the cornea. Both iris images (left and right) are taken into consideration. To maintain the interoperability among the various e-governance applications it is necessary that standardized format is used for storing and transmitting the iris images. IMAGE STORAGE FORMAT OF IRIS - ISO and ANSI have defined several file formats for storing iris images. ISO 19794-6:2005(E) standard is widely accepted by Government of India. - Standard: CBEFF (Common Biometric Exchange Formats Framework) defined in ISO/ IEC 19794-6. The image can be of type PNG or jpeg200. - Standard Biometric Header (SBH) as defined in ISO/ IEC 19794-1 Biometric Data Block (BDB) for rectilinear iris image as defined in ISO/ IEC 19794-6. - Image Data (Compressed/ Uncompressed) IMAGE TYPES - There are two types of iris images – - Rectilinear - No Preprocessing of the image is done; 12-15 K space is required for storage. - Polar - Image is preprocessed before storage and iris portion is converted to polar coordinates, very less space is required (2K). IRIS RECOGNITION It is the biometric identification technique which applies complex mathematical pattern recognition techniques on the video images of the iris of an individual's eyes. The complex random patterns inside the eyes are unique. The core algorithms for iris recognition were developed by Professor John Daugman (University of Cambridge) in 1990. Daugman's algorithms were the basis of all the commercially deployed iris recognition systems till 2008. Later some alternative algorithms were also studied upon and developed. The majority of iris recognition cameras use Near Infra Red (NIR) by emitting 750 nm low power light. Most of the human eyes reveal rich patterns in the Infra Red light but much less in the visible band. Other reason for using this narrow band is that it reduces the effect of ambiance that bright light reflections may produce. But the infra red light is not sensitive to melanin (chromophore) present in the eyes and as result they do not appear in the captured image. So the alternative approach of iris scanning includes the fusion of the two. ADVANTAGES OF IRIS SCAN IDENTIFICATION Iris structure is stable throughout the life after one year of age. It begins to form from the 3rd month of gestation. The structure is complete by eight months. The color and pigmentation completes in first year itself. Some advantages of iris include - - Unique structure consisting of several layers. - Protected (inner part of body). - Taking iris image is easy like taking a photograph from some distance. - Strong Algorithm. - Iris has a very fine texture that remains stable for decades. - In Indian context it is difficult to identify the poor people and people from rural background from fingerprints only because extensive physical labor always affects the quality of finger prints. LIMITATIONS Daughman's algorithm does not describe any tool for adjusting the focus. Some other image grabber software may be used to judge the focus quality by examining the successive images. It becomes more relevant if we do not have very much trained persons for grabbing the iris image. So the quality of the image depends on the instrument and the software. DATABASE An iris recognition database does not consist of actual images captured but the processed iris is stored. It is not possible to compress these iris templates as it may result in improper matching during identification process. Original images can be compressed. JPEG images can be effectively compressed using JPEG2000 compression techniques. COMPRESSION Compression reduces the space requirement for storing the images and bandwidth requirement for transmitting the images. Two commonly used compression techniques are - - Set Partitioning In Hierarchical Tree (SPIHT): It can be used for all bitmap images including png. - Joint Photographic Experts Group (JPEG2000): It is new and more advanced image compression standard. IRIS RECOGNITION Effect on comparison of iris images using SPIHT based compression software were analyzed, it has been observed that possibility of accepting the invalid iris image is very low, even if compression of the image is very high. Iris scan technology can be used for identification and de-duplication in any project that involves identification. Possibility of accepting duplicate iris is lesser than any other biometrics. The fusion of iris and fingerprint scanning or iris scanning with face scan may result in more cost effective techniques. Even in the Unique Identification (UID) project of Government of India Finger scanning &amp; iris technologies have been used in conjunction as unique identifier for each citizen of the country.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="bringing-gis-to-mainstream-it-through-service-oriented-gis-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Bringing GIS to Mainstream IT through Service Oriented GIS</span></a><a class="article-nav-link next" href="purulia-using-ict-for-citizen-centric-services-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Purulia – Using ICT for Citizen Centric Services</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="bringing-gis-to-mainstream-it-through-service-oriented-gis-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Bringing GIS to Mainstream IT through Service Oriented GIS</span></a><a class="article-nav-link next" href="purulia-using-ict-for-citizen-centric-services-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Purulia – Using ICT for Citizen Centric Services</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

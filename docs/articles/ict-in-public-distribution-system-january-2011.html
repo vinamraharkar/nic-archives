@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>ICT in Public Distribution System — Informatics January 2011</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2011"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2011/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2011/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2011/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2011/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/january-2011/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/january-2011/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/january-2011/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/january-2011/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>ICT in Public Distribution System</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>ICT in Public Distribution System</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Lead Story</div>
-          <h1 class="article-title" data-pagefind-meta="title">ICT in Public Distribution System</h1>
+          <h1 class="article-title">ICT in Public Distribution System</h1>
           <hr class="title-rule">
           <p class="article-byline">By Vivek Verma, Dr. Ranjna Nagpal &bull; pp. 4–7</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The primary policy objective of the Department of Food &amp; Public Distribution (DoF&amp;PD) is to ensure food security for the country through timely and efficient procurement and distribution of essential commodities across the country. This involves procurement of various food grains, building up and maintenance of food stocks, their storage, movement and delivery to the distributing agencies and finally distribution to the intended beneficiary. TARGETED Public Distribution System (TPDS) has evolved as a system of management of scarcity and for distribution of food grains at affordable prices. TPDS is an important constituent of the strategy for poverty eradication and is intended to serve as a safety net for the accepted number of BPL families. KEY COMPONENTS OF THE PDS INCLUDE Procurement, Storage and Movement: Food Corporation of India (FCI) moves the commodities and ensures its availability at various FCI godowns and depots for onward distribution within the state. State Government further lifts the stock as per their requirement for further allotment to Fair Price Shop (FPS) and finally for distribution to beneficiaries. Fair Price Shop Operations: Sale of commodities to ration card holders is achieved through government approved fair price shops. Ration Card Issuance and Delivery of Food grains to Beneficiaries: Ration cards are issued by the State Food Department based on the beneficiary identification criteria decided by the government. It is critical, as many of the benefits of the PDS system are lost due to challenges like exclusion errors, duplicate cards etc. which may lead to diversions and leakages. Licensing and Regulation: The objective of licensing process is to issue and renew licenses for FPS, Kerosene oil Depots and Wholesale dealers. And also monitor and regulate the operations of FPS. Grievance Redressal: A well-functioning Grievance Redressal process builds the confidence of the beneficiaries regarding PDS. ICT interventions such as Call centres, online grievance registration, SMS etc can increase transparency in the system and bring in efficiency, effectiveness and accountability. ICT INITIATIVES BY CENTRAL GOVERNMENT DoF&amp;PD has initiated three schemes namely Integrated Information System for food grain Management (IISFM) system for FCI operations, Smart card based delivery of commodities in State of Haryana &amp; Chandigarh UT and the 'Computerization of TPDS Operations' in three districts each of pilot States of Andhra Pradesh, Assam, Chhattisgarh and Delhi. INTEGRATED INFORMATION SYSTEM FOR FOODGRAINS MGMT Food Corporation of India operates through a country-wide network with its corporate office in New Delhi, 5 zonal offices, 23 regional offices, 166 district offices, and nearly 1700 food storage depots. The project which comprises of different sub-modules such as DIISFM (District Information System for Foodgrains Management), IRRS (IISFM Rapid Reporting Services), DCMS (Depot Code Management System) have been deployed suiting the business logics of FCI. Following are the salient features of the work flow application: Basic data collections and Transactions regarding Receipts, Issues &amp; Dispatches of food grains at the depot level. Off-take against allocation of food-grains on different schemes of the Govt. of India. Movement of food grains through rail. Information related to chemical treatment/infestation carried out on the food grains, stored in the depot. Information related to trucks carrying food grains coming in and going out of the depot, gunnies, chemicals etc. SMART CARD BASED PDS (SCBPDS) IN HARYANA AND CHANDIGARH The then Hon'ble Union Finance Minister announced in his budget speech of 2008 about replacement of paper based Ration Cards with SCBPDS in Haryana and Chandigarh. It is targeted to automate certain manual operations happening in PDS through online software application with minimum manual intervention, ready availability of reports and making the distribution process highly transparent. Objectives: Timely and need based allocation of commodities. Induction of transparency and accountability in operations. Reduction of redundant workload. MIS for monitoring and quick decision making. Integrating information relating to operations handled by different agencies. Salient features: Introduction of SCOSTA compliant Smart Cards for all the stakeholders. Web enabled, role and workflow based Application Software on Open Source platform. Distribution of commodities at FPS through PoS terminals using biometric authentication to check genuineness of beneficiary. — Dr. Y K Sharma, Deputy Director General, NIC. Public Distribution System is targeted to feed millions of poor and hungry people. Numerous stake-holders make the system work through a chain of intermediaries, which also results in the need to have a robust monitoring mechanism. With the government's objective to bring in transparency, efficiency, accountability in the whole distribution process, Smart Card based delivery of commodities to beneficiaries was launched in Chandigarh (UT) and Haryana state. Integration of Allocation with the Stock Management System of Food Corporation of India and state agencies shall provide an end-to-end solution for food chain management for PDS. Application Software: After detailed System &amp; Process Study carried out in Haryana and Chandigarh, generic software was developed by Central Team at NIC Headquarter. Implementation is taken care of by the respective state team in consultation with the central team. It can easily be customised for replication in other states. Various modules are - Data Digitization Software Centralized Application Software having six modules; namely Allocation and Distribution, Ration Card Management System, FPS Licensing including renewal, Key Management System (KMS), PoS Operations Management, Smart Ration Cards personalization &amp; Printing Grievances Redressal KMS Infrastructure has been established at FSDs and KMS based Smart Cards for key stakeholders has been finalized and are being printed &amp; personalized. ITC IN PDS IN OTHER STATES Tamil Nadu: A number of web based reporting systems have been implemented for streamlining activities for better management and control, and to introduce more transparency and efficiency. Various modules are - Monthly PDS Allotment Software takes care of monthly PDS Allotments for all FPS, monthly online data entry/updation of card statistics, and offtake and sales particulars. Follow-up Module takes care of back end activities by the depart ment officials like follow-up of the complaints and submission of reply to the complainant by the con cerned office. Reporting System for Enforcement Cell enables online reporting of cases detected, prosecutions made, commodities and vehicles seized. Uttar Pradesh: Covering 1/6th of the country's population, it is perhaps the largest distribution network of its kind strengthen-ing about 73,000 FPS. Digitization of all ration cards and making entire data accessible to public has been done. 21.6 lakhs bogus and ineligible ration cards and 2.6 lakh wrongful cards have been cancelled. SMS alerts are provided to ration card holders on lifting of rations which makes working of the department more accountable and transparent. For the convenience of citizens, there is an option to lodge grievances/suggestions through web-site, which is monitored at all levels. Chhattisgarh: The food grain supply chain from paddy procurement at 1588 procurement centres to delivery of Rice and other PDS commodities to 10500 FPS has been computerised. The three distinct areas are - Paddy Procurement and Milling module handles, through online and offline mode, the process of paddy procurement and milling. At remote areas where connectivity is an issue, innovations in form of motor cycle riders carry data and manage transmission. Unified Ration Card Database and issue of PDS commodities to FPS module manages Ration Cards and distribution of commodities. Ration cards are barcoded to bring in efficiency. For issuance, shopwise allocation and per card allocations are automated. Based on allocation and stock, the actual amount of PDS commodities to be issued to the FPS is calculated and a delivery order issued. A truck challan indicating truck number, driver's name, quantity dispatched etc is also generated. Citizen Participation website, Call centre and Complaint Monitoring System, e-mail and SMS alert are some of the features making the whole system transparent and accountable. Maharashtra: MAHAFOOD is a workflow based application, to provide an effective e-Governance tool for decision making and monitoring the progress of allotment, lifting, offtake and distribution of essential commodities under various schemes with the help of progressive and summarized information. The benefits accrued are optimization of allotment of essential commodities, summarization, consoli-dation of the information and Information sharing. Kerala: Targeted Efficient Transparent Rationing and Allocation Public Distribution System (TETRAPDS), is a comprehensive package for automating the activities of 69 Civil Supplies offices. Details of 70 lakh Ration card holders, in Unicode format, is maintained in the central database which is synchronized with the distributed ration card databases of TSOs/CROs. This consolidation also helps generate MIS reports, share the data with other government departments, national authorities and securely allow citizen access to their respective data. Various agencies would use Ration Card Verification Service to provide citizen centric services like new electricity connection, water connection, building permit, LPG connection, telephone/mobile connection etc. The four main modules of TETRAPDS application are: e-Services for Ration Cards enable citizens to apply on-line or at Citizen Service centre (Akshaya Centres) for various services like new ration card, addition/deletion of members, change of address, renewal of ration etc. Ration Card Management System provides a workflow based solution for all citizen services which include issue of new ration cards, issue of surrender and reduction certificates, addition and deletion of members in the card, splitting of ration cards etc. Allocation covers food grains allocation from the TSOs, Inspection by authorities and Monitoring of Permits and licenses. In addition, online calculation of allotment under different schemes, online generation of Authority for FCI, Authority list for wholesale dealers and generation of proceedings for TSOs are also incorporated in the application. Website provides information about the department, PDS, stock details of dealers and links to the websites of its related offices. It also takes care of Inspection Monitoring, Offtake, Demand Collection and Balance and Allotment of Food grains. Orissa: An initiative has been taken in Paddy Procurement where modules for Miller Registration and Self Disclosure of paddy lifted, rice delivered and gunny bags used has been developed. Paddy is procured through a number of agencies which use an Integrated application for capturing the details of farmer, quantity sold, number of bags, Bank account no, Branch Name, Cheque no and date issued to farmer and SMS is sent to different level of officers. Another module keeps track of the acceptance note of paddy and rice which takes care of the quantity of paddy handed over to miller and quantity of rice delivered to Rice Receiving Centres. Computerization of Delivery verification / Enforcement Certificate and Delivery Certificate facilitates entry of paddy and rice related information by enforcement officer which makes verification by collector and CSO easier. Madhya Pradesh: ePDS Allotments, Lifting &amp; Distribution Monitoring System facilitates Monitoring of the PDS for the State, District and FPS level monthly allotments, lifting and distribution of essential commodities like Wheat, Rice, Sugar, Salt and Kerosene to over 20000 FPS. Allocation process covers district and FPS level allocation by Directorate and district level officials. Cooperative societies lifts the commodities on the basis of allotment and reports online through the system which is monitored by DFSO. The distribution is carried out by FPS and reporting is done by District Central Cooperative Banks. Civil Supplies Movement System module caters to movement of commodities from FCI Base Depot to MPWLC godowns, Issue Centres to FPS movement, Transport Order, Release Order, Delivery Order for receipt and dispatch of Foodgrains. FPS Management and beneficiaries' Management module takes care of FPS and beneficiaries management. Ration card data is being used in the UID enrolment camps where biometrics are captured. The department envisages providing bar-coded Food coupons to each beneficiary according to their entitlement. The food coupons will be electronically read after submission at the FPS by the beneficiary for consumption reporting. — Shri. C. Vishwanath, Joint Secretary (BP, PD &amp; WDRA), Department of Food and Public Distribution. One of the key reforms in Targeted Public Distribution System is with widespread usage of Technology based applications. Rapid and phased roll out of Information Technology in PDS is being given top priority. Use of GPS technology, SMS alerts, CCTV monitoring are some of the other applications used for proper monitoring of PDS. Andhra Pradesh: The Stock &amp; Accounting package takes care of the Procurement, Transportation and Supply of essential commodities to FPS. It covers all activities starting from release of funds by Government, procurement, transportation to stock points, sale to FPS, billing for transportation, recording all vouchers in various accounting books and generating various schedules &amp; reports. It covers all ledgers like Receipts, Payments, Petty cash, Journal etc and adapts corporation approved double-entry accounting system. Various MIS Reports are also generated. Gujarat: A web based solution was implemented in all talukas covering more than 1.2 crore families. The ration card functionalities covered are Issuance, amendments, cancellation, division, change in category, transfer from one FPS to another and printing. However, a new ration card and PDS system is under development which would give bar-coded ration cards to the beneficiaries. Biometrics details along with photograph will also be captured. CONCLUSION: One can thus see that there have been lot of efforts in many states for automating various components of Public Distribution System, there is a need for organising these efforts and drawing a big picture to have effective use of ICT tools. The software modules for different components should be integrated and an end to end solution should be developed to build an efficient PDS. It has also been recommended in the Task Force Report on Computerisation of PDS, 'standards should be developed for processes, data and meta-data and accordingly a single unified solution should be developed that shall be used by all States'. NIC has accordingly been assigned this man-date by DoF&amp;PD, GoI.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="message-from-the-director-general-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message from the Director General</span></a><a class="article-nav-link next" href="xgn-xtended-green-node-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">XGN - Xtended Green Node</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="message-from-the-director-general-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Message from the Director General</span></a><a class="article-nav-link next" href="xgn-xtended-green-node-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">XGN - Xtended Green Node</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

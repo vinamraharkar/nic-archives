@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Leveraging Big Data &amp; AI-ML for Security Analytics: NIC-CERT’s endeavor towards a predictive cyber security approach — Informatics October 2021</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2021"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/october-2021/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/october-2021/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/october-2021/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/october-2021/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/october-2021/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/october-2021/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2021.html">October 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>Leveraging Big Data &amp; AI-ML for Security Analytics: NIC-CERT’s endeavor towards a predictive cyber security approach</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2021.html">October 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>Leveraging Big Data &amp; AI-ML for Security Analytics: NIC-CERT’s endeavor towards a predictive cyber security approach</span></nav>
         <div class="article-header">
           <div class="article-section-badge">In Focus</div>
-          <h1 class="article-title" data-pagefind-meta="title">Leveraging Big Data &amp; AI-ML for Security Analytics: NIC-CERT’s endeavor towards a predictive cyber security approach</h1>
+          <h1 class="article-title">Leveraging Big Data &amp; AI-ML for Security Analytics: NIC-CERT’s endeavor towards a predictive cyber security approach</h1>
           <hr class="title-rule">
           <p class="article-byline">By R.S. Mani, Hari Haran M, Gaurav Kansal &bull; pp. 22–24</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">NIC has been a prominent target for cyber-attacks. The sheer volume of government applications, websites, services and databases, hosted and managed by NIC makes it a very lucrative targets for cyber threat actors including nation state actors. NIC has been adopting a layered defense approach for mitigating these attacks, with state-of-the-art technology. As modern technology evolved with much more enhanced attack detection and mitigation capabilities, the attackers also evolved and they started chaining multiple exploits, leading to a multi-vector and multi-stage attack. In a world with technologies powered by AI-ML, the modern threat and attack landscape have undergone a massive change. To tackle this changing landscape, it is imperative to leverage the very same AI-ML to extract crucial insights and analytics, so as to enhance the overall cyber security posture and be better prepared to detect and respond to attacks, as early as possible. Some of the attacks which involve zero-day vulnerabilities, are even more difficult to detect through conventional security solutions. In order to tackle these changing dynamics in the attacker tactics and techniques, NIC-CERT has embarked on an ambitious initiative for designing and commissioning a robust AI-ML based cyber analytics platform. The platform can be leveraged to spot certain cyber attacks at an early stage and help in improving the security posture of NIC. Security Analytics Platform - Modules Security Analytics Platform The security analytics platform is envisioned to handle data in the scale of petabytes and it should be scalable. In this context, Elastic Search and Hadoop can be used as the backend data lake. The elastic search can facilitate the correlation/ alert rules, dashboards and analytics. Whereas, Hadoop can facilitate the machine learning analysis, through additional tools like python, spark. the primary source of data to be ingested into the platform would be the logs generated by various devices, servers, endpoints, applications, websites and services. The logs may be collected from various sources across the Government ICT Infrastructure connected to NICNET and the logs shall be processed and enriched with additional details (like Geo-location, IP/ Domain Reputation, etc). The processed logs will then be analyzed on the analytics platform using various correlation and security rules. In addition to this, a machine learning model will also process the logs and will try to identify various anomalies and suspicious patterns in the logs. Multiple Machine Learning models may be integrated into the security analytics Platform, each ML Model will have AI-ML Models for Security Analytics the capability to train and learn, where by it attains certain level of maturity over a period of time. Once the ML Model attains the maturity level, it can spot much more advanced and complex attacks, which may not be spotted by the traditional rule based SIEM platforms. AI-ML in Advanced Security Analytics and Threat Detection AI-ML has become the buzzword in recent times. Most of the new technology products claims to leverage AI-ML in one way or the other. Inspite of all the buzz and being touted as the next big thing in the technology evolution, the journey towards achieving successful results through AI-ML is an arduous task; Especially, when it comes to cyber security and threat/ attack detection, it would require billions of data events to train the model appropriately, so that it can achieve a certain degree of accuracy. The classification model under supervised learning can be built around knowledge of known classifier objects such as IP addresses, domain names, network object interactions, and other data points, which are extracted from the logs. This can further be used to build various classification models which can be tested and adopted based on classification accuracies and relevance. Unsupervised learning can be leveraged for better grouping of clusters, where various clustering algorithms need to be used to identify and quantify data relationships from data and meta-data extracted from the logs. Deep Learning neural networks can be used for predicting anomalies in the data set gathered from various log sources. One of the key focus areas of the security analytics platform is to transform the security detection from reactive to proactive i.e., aid in predictive analytics. Features of the Security Analytics Platform Some of the key features of the platform are as follows: • Central Aggregated Log Management Platform • Web and Security Analytics • Visibility on Attacker Activity • Detect/ Predict Anomalies or Attacks at an early stage • Incident Response, Threat Hunting &amp; Threat Intelligence • Facilitate troubleshooting of website/ application issues • Dashboard &amp; Reporting Tactical Insights &amp; Security Posture From an ICT perspective, the logs of a system are literally a piece of recorded history of what happened on the system, when it happened, this information can be further inferenced to identify how the specific event happened and why it happened. Considering an organization like NIC, which hosts thousands of websites, applications and not to mention the lakhs of ICT devices spread across the country, collection and aggregation of logs from these devices in itself poses a huge challenge. But if we overcome the challenge and are able to aggregate the data, then the insights that could be derived from the aggregated logs would be invaluable. Since, its practically not possible for a human to physically check and investigate each log event, this is where automated security analytics and machine learning comes into picture; Together, the ML and Security Analytics can quickly sift through billions of log events and filter out those events which could be of interest from a security perspective and it could further extrapolate the relationship between a particular event and a whole plethora of other related data sets, thereby providing tactical insights essential for strengthening our cyber security posture. The security analytics platform can also provide key web analytics on the site traffic, visitor stats, suspicious hits, etc. The insights generated from one log source can also be correlated with another log source to check for any similarities. For example, an attacker who has attempted to hack into one state government website, was again found to be attempting to hack another central government ministry’s website. This is where the analytics platform, will try to inter-relate both the attacks based on various features and attributes, and further the model would try to learn the techniques adopted by the attacker for launching the attack. The learning would then be ingrained into the model and it could train itself for detecting similar such attacks in the future. Key Benefits of the Security Analytics Platform The security analytics platform is powered by a massive data lake at the backend, which is essentially a repository of log data collected from various sources. The platform can be leveraged to ask various questions by querying the underlying data to get necessary information. In addition to this, the platform can also offer the following key benefits: • Huge cost savings in the range of hundreds of crores, which would have been incurred in a corresponding commercial platform • Security incidents can be identified quickly and action can be taken before any major damage could be done • Round the clock visibility can help in identifying which vulnerabilities/ loop holes, are being exploited, this information can aid developers/ administrators to fix them quickly • Can aid in the troubleshooting of issues in Govt websites/ ICT Infrastructure, the platform can also reduce the time to identify and fix the issue • As logs from multiple NDCs and States are to be ingested into the security analytics platform, the Machine Learning Models, can get exposed to a vast, varied and more unique data events, which can aid in training the models to achieve a much higher level of accuracy • Ministry/ State/ Project specific Dashboard and Reporting view, for up-to-date analytics and security posture status Conclusion Logs form an important part of an ICT system. All supported ICT systems should be configured to generate and store logs. It is advisable to store the logs in a central logging server, which is independent of the log source. The logs should be configured to capture crucial details like timestamp, source, destination, request, port, protocol, username, etc. The most important aspect is the timestamp, it is essential that all ICT systems within NIC are synchronized with the same time stamp from the central NTP server. If time stamps are not synchronized, then the very purpose of logging may be defeated. Once we collect and aggregate logs from multiple sources, then the AI-ML plays a vital role in fetching key insights from the logs. These insights can further contribute to policy making and other decision support systems. Moreover, it enhances the visibility of what is happening around in the ICT infrastructure and when this visibility combined with the insights, it can become a formidable tool to strengthen the overall security posture of NIC and the government at large. For further information, please contact: Hari Haran M Scientist-C National Informatics Centre CGO Complex, Lodhi Road New Delhi - 110 003 Email: hariharan.m@nic.in, Phone: 011-22907465</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="modsecurity-open-source-web-application-firewall-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">ModSecurity: Open Source Web Application Firewall</span></a><a class="article-nav-link next" href="defense-in-depth-through-layered-security-importance-of-layered-security-for-data-defense-and-protection-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Defense in Depth through Layered Security: Importance of Layered Security for Data Defense and Protection</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="modsecurity-open-source-web-application-firewall-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">ModSecurity: Open Source Web Application Firewall</span></a><a class="article-nav-link next" href="defense-in-depth-through-layered-security-importance-of-layered-security-for-data-defense-and-protection-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Defense in Depth through Layered Security: Importance of Layered Security for Data Defense and Protection</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

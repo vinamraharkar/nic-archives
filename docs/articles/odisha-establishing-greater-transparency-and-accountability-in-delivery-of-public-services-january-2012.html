@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services — Informatics January 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/january-2012/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/january-2012/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2012/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/january-2012/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/january-2012/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/january-2012/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2012/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/january-2012/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services</span></nav>
         <div class="article-header">
           <div class="article-section-badge">FROM THE STATES/UTS</div>
-          <h1 class="article-title" data-pagefind-meta="title">Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services</h1>
+          <h1 class="article-title">Odisha - Establishing Greater Transparency and Accountability in Delivery of Public Services</h1>
           <hr class="title-rule">
           <p class="article-byline">By S. K PANDA, A. K HOTA &bull; pp. 22–25</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Odisha aims at establishing robust and futuristic IT Enabled Services in the State to bring about ease &amp; convenience in transactions between Government and Citizens. A number of critical Core ICT Projects have been implemented in the State to establish G2G, G2C &amp; G2B transactions. Some of the Key Projects implemented during 2010 &amp; 2011 are as follows: Web Based Counselling: NIC, Odisha had taken up the responsibility for web based counselling of Odisha Joint Entrance Examination- 2011 (http://ojee.nic.in) and Diploma Entrance Test - 2011 (http://detorissa.nic.in) conducted by the Directorate of Technical Education &amp; Training (DTET), Odisha under Department of Industry. The counselling for Engineering, Lateral Entry, MBA, MCA &amp; Pharmacy Courses of OJEE and Diploma Engineering and Lateral Entry for more than 1 lakh students was conducted successfully. PRERANA- the e-Scholarship System: PRERANA, the portal (http://ori.nic.in/odishapms) for Post-Matric Scholarship Registration Release And Network Automation, is a web based solution to provide online service to the underprivileged ST, SC, OBC / SEBC and Minority students of Odisha, in terms of financial assistance. More than one lakh students have registered within one month of time after inauguration by Shri Naveen Patnaik, Hon'ble Chief Minister of Odisha. The PRERANA is going to facilitate easy access, speedy and timely disbursement of scholarship to the needy students maintaining transparency, accountability and responsibility in implementation &amp; management of the schemes. e-Abhijoga: It is an integrated web based application, which primarily aims at submission of grievances from anywhere and anytime, instant and easy Data transmission between Departments and the subordinate organizations resulting in the speedy redressal of grievances. Centralized Public Grievance Redressal and Monitoring System (CPGRAMS) has been designed and developed with a view to achieve a uniform and systematic approach towards monitoring of procedures by adopting a comprehensive classification and standardization of grievances and redressal actions across the government organizations. So far 11738 grievances have been redressed through the portal since its launch in 2011. Standardisation of District Portal: A standardized district portal- http://ordistricts.nic.in, framework has been put in place, which is based on the content architecture of the National Portal of India (http://india.gov.in) under NeGP. The contents and formats of the portal include; profile, geography, administrative setup, directory, peoples' representatives etc. Citizen Services such as acts &amp; rules, e-forms, policies, enquiries, guidelines to get caste and domicile certificate, registration of documents, ration card, land records, Right to Information etc. are included. The content is contributed to the Portal using a user-friendly web-based Content Management System (CMS). The site has been developed under the environment of LAMP - &quot;Linux, Apache, My SQL and PHP&quot;. Chief Minister Relief Fund online (e-CMRF) is meant to be an e-Governance oriented Web Portal catering to G2G and G2C domain. It is intended for timely, accurate delivery of assistance and to bring transparency &amp; accountability at every level of Management. The whole application is divided into three important modules i.e. Receipts of Fund in the form of donation /budgetary allocation, Remittance of assistance to the family of deceased person of the state, Fund Management etc. Within last 5 months of implementation 1040 applications were processed over the portal &amp; more than 2 Crores have been distributed. The project is being monitored by Hon'ble C.M's Secretariat through General Administration (CMRF) cell. GePNIC: Odisha being the leading state for implementation of NIC's eProcurement solution for the Government (GePNIC) has hosted more than 35000 tenders worth 52000 crores over http://tendersorissa.gov.in. GePNIC has also been successfully implemented in Mahanadi Coalfields Limited, Sambalpur, a navratna PSU under Ministry of Coal. eProcurement team of NIC Odisha is actively involved in the national rollout of GePNIC under MMP. Odisha has been instrumental in rollout at Visakhapatnam Port Trust, Visakhapatnam. Several other Defence Ministry PSUs like Mishra Dhatu Nigam Limited, Hindustan Shipyard Limited &amp; Goa Shipyard Limited are in the pipeline to adopt GePNIC which has received national and international laurels like eIndia 2009 &amp; 2010, Skoch, eWorld, CIL etc. Study of Pre &amp; Post tendering Modules: In order to make GePNIC a complete e-procurement solution it is necessary to develop and integrate pre tendering modules like Indent Generation, Demand Aggregation and post tendering modules like Contractor Registration and Contractor Database, On line Technical Evaluation, Post Contract Works Monitoring &amp; Payment to Contractors. On request from Govt of Odisha &amp; pro-active initiative of NIC, an expert team of engineers has been formed by the Government for domain input to the NIC study team and the study report is going to be submitted latest by March 2012. Registration Authority Office: Registration Authority (RA) Bhubaneswar came into existence as the 2nd RA Office of NIC Certifying Authority after RA Bangalore in Oct 2008. This facility is catering to Digital Signature Certificate (DSC) requirements of Odisha and neighbouring states like Andhra Pradesh, Jharkhand &amp; West Bengal. Central Government departments like CPWD, East Coast Railways, CRPF, Indian Army, Indian Navy etc and central PSUs like MCL, HAL, VPT etc are important users of RA Odisha for their DSC needs. More than 3500 DSCs have been issued from this facility as on November 2011. e-Advertisement: Digital delivery of advertisement to the newspaper agencies (NPAs) to publish in the newspapers and periodicals by Information &amp; Public Relations (I&amp;PR) Department has been implemented. The software facilitates stakeholders to send online request for advertisements. Advertisement wing in I&amp;PR department accepts the requests and processes for the cost estimation. Accordingly release order (RO) is issued to the respective newspaper / periodicals. SMS / e-mail alerts have also been integrated at strategic levels. e-BHABISYANIDHI: e-Bhabisyanidhi, deals with provident fund of more than 2 lakh teachers under all the Aided Educational Institutions of Govt. of Odisha. Subscribers are able to obtain their GPF statement, pension and other retirement related information etc. The grievance interface helps the present and retired employees to interact with the system. Online GPF tracking for BSNL employees under controller of communication accounts, Bhubaneswar disseminate information on GPF status of employees working under Controller of Communication Accounts, Bhubaneswar Mother &amp; Child Tracking System (MCTS) - MCTS, a Mission Mode Project under the NeGP, the name-based pregnant mother and child tracking system, has been implemented in 6688 Sub-Centres in Odisha. Till date 623342 mothers and 411041 children have been Registered in MCTS portal, along with 8286 ANM &amp; 40899 Asha workers. Odisha Health Workforce information System (OHWiS): OHWiS the web-based system monitors and manages the Human Resource of the Department of Health and Family Welfare, Govt. of Odisha. 3100 Doctors profile have been created &amp; managed over the portal. Web-GIS for Odisha State - GIS applications have been successfully developed and implemented at Grass-root level using open source for nine districts of Odisha. Using this application, user can access different GIS data and its information using Browse mode, generate query based maps and reports and prepare thematic maps over net as and when integrated Three-Tier Computerization of Public Health Engineering Organisation: The application portal is operational in the major cities of Odisha viz, Bhubaneswar, Cuttack, Puri, Khurda, Berhampur, Sambalpur and Rourkela covering Four PH circles, Eight PH divisions, 21 PH Subdivisions and 87 PH sections catering to more than 2 lakhs of consumers. Water tariff Billing and Payment application has significantly contributed towards public awareness hence resulting in a major increase in water tariff revenue. A State Complaint Call centre has been made operational for more than Two years with facilities of Lodging complaints by public through a Toll free number and checking the status by Web Portal. Complaints system has received a wide range of good public response and till now thousands of complaints have been redressed through the State Complaint Call Centre. e-Payment system for Jagannath Temple: With the objective of offering devotees the opportunity to serve the LORD by contributing generously towards expenses for the RAJ-BHOGA (KOTHA-BHOGA) offered daily before the LORD in the &quot;Sanctum-Sanctorum&quot; and at the same time creating a permanent and adequate financial base for Shri Jagannath Temple (Puri) the online payment system (http://jagannath.nic.in) through Credit as well as Debit card is in place. Credit Card: The application is integrated with Credit Card Payment Gateway through the Store Front Adapter (SFA) API. Data interchange is done through encrypted Secure Socket Layer (SSL) transmission over HTTPS protocol as POST request. Credit Card transaction is in accordance with Payment Card Industry (PCI) guidelines verified by Master &amp; VISA card. Parameters shared by NIC application with Payment Gateway are as PRN No., Amount, Bhoga Type. Direct Debit: The application is integrated with the payment gateway or net-baking of the participating Banks through URL based POST Request and passing of certain mutually agreed parameters. AGRICULTURE SECTOR FARM MECHANISATION module monitors the targets and achievements of farm implements and machinery distributed to the beneficiaries. BIO-FERTILISER/ORGANIC INPUT MANAGEMENT SYSTEM provides the users of district level and Directorate level as well as the production unit to know the usable status of total consumption and balance of bio fertilizer and organic manure. Fertilizer Registration Certificate system, monitors existing &amp; new license holders and their details regarding profile, sale &amp; storage address, fertilizers details, renew details and payment details etc. Online Fertilizer Management system keeps the record of fertilizer flow from manufacturing company to retailer. The system captures receipt and distribution of fertilizer data for companies, wholesalers and retailers. Subsidy report is generated for manufacturing companies. Other modules developed &amp; implemented in Odisha include Pesticide Licensing System, Commercial Pest Control Licensing System, Farm Pond Registration, Pest monitoring system, Weather information system etc. AUTOMATION OF LOCAL FUND AUDIT (ALFA) Local Fund Audit Organisation is the internal Audit Organisation of Govt. of Odisha functioning under the administrative control of Finance Department. The application has been rolled out to cover the development of intra LFA portal, standardization of audit workflow, monitoring daily diary &amp; tour programmes, preservation of audit report and better access, development of MIS on Institutional Audit, automation of surcharge processing and development of online Intra LFA messaging and communication etc. ONLINE STATE BUDGET The role based e-Budget system has been implemented with mapping of various functionalities. All Administrative Departments of Govt. of Odisha have been enabled to submit their budget proposals, monitor &amp; retrieve desired information etc. through the portal. OTHER MAJOR PROJECTS: Online Rice Mill Registration, Paddy Procurement, Road Movement of CMR, Performance Appraisal Report(PAR) Maintenance &amp; Monitoring System, Property Return Statement of State Govt. Officers, Mid-Day-Meal monitoring system for the WCD Department, Bhulekh- consisting of the (i)Tehsil module for file generation, encryption &amp; transmission, (ii)State portal module for decryption, data updation &amp; status monitoring, and (iii) Web service for providing interface to the online RoR data etc. have been successfully implemented in the state. e-Governance in Panchayati Raj sector bagged &quot;ePanchayat Puraskar-2011&quot; Odisha bagged the &quot;ePanchayat Puraskar-2011&quot; - a national award, instituted by Ministry of Panchayati Raj, Government of India, in order to appreciate the excellent achievement for implementation of Model Accounting system for Panchayats (MAS) and PRIASoft. Sh. S. N. Tripathy, Commissioner-cum-Secretary, Panchayati Raj Department, Govt. of Odisha, received the Trophy &amp; Certificate along with Rs. 50 lakhs cash prize from Sh. Vilasrao Deshmukh, Union Minister Panchayati Raj &amp; Rural Development, in presence of Sh.Mani Shankar Aiyar, former Union Minister Panchayati Raj, and Shri Prafulla Samal, Minister, Panchayati Raj, Odisha. AWARDS &amp; RECOGNITIONS DURING 2010 &amp; 2011 - SUBIDHA - State Urban Local Bodies Integrated data Handling &amp; Access - Nagar Bandhu Samman-2010 by Hon'ble C.M, Odisha GePNIC - e-Procurement system - e-World - 2011 (1st Public Choice award for G2B initiative) Standardisation of District Portal with web CMS - e-World-2011 (2nd Public Choice Award for Best Portal) - SKOCH DIGITAL INCLUSION AWARD 2011 (Certificate of Merit as best hundred projects in India) Online Passport Verification, Missing Persons &amp; Complaint Monitoring System (at Jharsuguda District) - e-World-2011- (1st Public Choice award for Electronic Delivery of Services Initiative) BEDP-DSS (Block Economic Development &amp; Planning Decision Support System) (At Khurda District) - SKOCH DIGITAL INCLUSION AWARD 2011 (Certificate of Merit as best hundred projects in India) e-Abhijoga- Online Grievance Monitoring Redressal system for Chief Minister of Odisha - SKOCH DIGITAL INCLUSION AWARD 2011 (Certificate of Merit as best hundred projects in India)</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="chandigarh-participatory-accessible-and-efficient-governance-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Chandigarh : Participatory, Accessible and Efficient Governance</span></a><a class="article-nav-link next" href="unique-eprocurement-initiative-of-mahanadi-coalfields-limited-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Unique eProcurement initiative of Mahanadi Coalfields Limited</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="chandigarh-participatory-accessible-and-efficient-governance-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Chandigarh : Participatory, Accessible and Efficient Governance</span></a><a class="article-nav-link next" href="unique-eprocurement-initiative-of-mahanadi-coalfields-limited-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Unique eProcurement initiative of Mahanadi Coalfields Limited</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

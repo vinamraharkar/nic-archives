@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>IMMIGRATION, VISA, FOREIGNERS’ REGISTRATION AND TRACKING (IVFRT) – AN MMP — Informatics October 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2012/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2012/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2012/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2012/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/october-2012/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/october-2012/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/october-2012/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/october-2012/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>IMMIGRATION, VISA, FOREIGNERS’ REGISTRATION AND TRACKING (IVFRT) – AN MMP</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>IMMIGRATION, VISA, FOREIGNERS’ REGISTRATION AND TRACKING (IVFRT) – AN MMP</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Lead Story</div>
-          <h1 class="article-title" data-pagefind-meta="title">IMMIGRATION, VISA, FOREIGNERS’ REGISTRATION AND TRACKING (IVFRT) – AN MMP</h1>
+          <h1 class="article-title">IMMIGRATION, VISA, FOREIGNERS’ REGISTRATION AND TRACKING (IVFRT) – AN MMP</h1>
           <hr class="title-rule">
           <p class="article-byline">By DR. B. N. SHETTY, DR. R. K. MISHRA, C. L. SHARMA, N. K. PRASAD &bull; pp. 4–7</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The entire IVFRT system envisages the information capture from Visa applicants’ details till their exit from India and utilizes these sets of information for intelligence decision making at every stage. This system would facilitate information exchange between MHA, MEA and other agencies such as BoI and FRRO / FRO as role based access control. PRELUDE The National E-Governance Plan (NeGP) approved by Government of India (GoI) in 2006 comprises of 27 Mission Mode Projects (MMP) that includes 9 central, 11 state and 7 Integrated MMPs spanning multiple Ministries/ Departments. “Mission Mode” implies that the objectives and the scope of the projects are clearly defined and there are measurable outcomes (service levels) and well defined milestones and time-line for implementation. IVFRT is one of the central MMPs in the NeGP which is conceptualized with an aim to enhance the experience of in-bound and out-bound travelers from and to India by looking into the aspects of Passport, Visa, Immigration, Foreigners’ Registration and Tracking. MMP- IVFRT under NeGP was approved by the Cabinet in May 2010 with a vision ‘to develop a secure and integrated service delivery framework that facilitates legitimate travelers while strengthening security’. PROJECT OBJECTIVES Based on the vision, the MMP- IVFRT’s objectives are based around the core values of security, facilitation and enablement, which includes : Improving efficiency and effectiveness of the I-V-FR&amp;T system to facilitate legitimate travelers and prevent illegal immigration Developing an integrated ICT system across the functions of Immigration, Visa and Foreigners’ Registration and Tracking, as part of a broader emphasis on Immigration Control Developing a secure and integrated information collection and dissemination system for intelligence-driven decision making l Providing data confidentiality and integrity to secure privacy and security of the immigration system OUTREACH OF THE MMP-IVFRT The MMP-IVFRT has widest spread within the country and also abroad. Hence, implementation of the IVFRT at multiple locations in secured way is the most challenging job for NIC as well as other stake holders. The Spread is as follows : l Over 170 Indian Missions abroad l 81 Immigration Check Posts l 12 FRROs under BoI l Central Foreigners’ Bureau (CFB) l Central IVFRT Office, Shastri Park l Disaster Recovery Centre at Bangalore l 716 FROs l 37 Passport Offices l MEA, MOIA, Customs, R&amp;AW, IB Hqrs, &amp; CBI PROPOSED IVFRT SYSTEM AND KEY COMPOMENTS The proposed IVFRT system is envisaged as an asynchronous system with one central system. The system would enable cross flow of requisite data for Unique Case File (UCF) creation and updation including traveler history, biometric and biographic information as well as risk assessment. Additionally, interfaces with external systems such as Airlines, Hotels, Hospitals, and Universities etc. are envisaged. It is proposed that interfaces be built for interfacing with other NeGP initiatives such as passport seva, eMigrate, CCTNS as well as other programs such as UID. The entire IVFRT system envisages the information capture from Visa applicants’ details till their exit from India and utilizes these sets of information for intelligence decision making at every stage. This system would facilitate information exchange between MHA, MEA and other agencies such as BoI and FRRO / FRO as role based access control. The system would facilitate visa information data and its sharing with ICPs (under MHA) to enable viewing traveler’s visa information at ICPs. Similarly, relevant information related to passenger’s tracking and registration data, would be shared with consular officials to enable them to make informed decisions. MODULES OF MMP-IVFRT Unique Case File (UCF) The UCF is a construct that is designed to maintain all information about an individual traveler together. The biometric and biographic information is used to create uniqueness. Susequently all estension pertaining to the person i.e. visa, visa estension, registration and travel history along with special events that may have occurred, such as arrests, deportations, new passport etc. are also updated in the UCF file. The UCF data is linked to main transactional databases. Online C-Visa Applicant fills his/ her visa application online using web based online application submission system on the central system. Similar online facility for VISA is also available at IVAC or at the Consular Office. One can also pre-fix his online appointment for meeting with consular officials and make e-payment where countries have accepted above policy of e-payments. With each subsequent visits the UCF is enriched with latest information like visa details, ICP details, registration details, visa denials, deportation records, arrest records and risk managements. Likewise, for prior reference check countries (PRC), additional checks are done by agencies at Central, State and District level. Based on these report the decision for Visa grant is taken by MHA. Subsequently, based on the Visa grant, visa stickers are personalized and printed with inclusion of personalization features such as MRZ, photo,letter scan image and 2 D barcode. Passport collection status is updated on the online web application status indicator. Immigration Control System Traveler buys a ticket providing the required information; Airlines (and other modes of travel) creates PNR files using all the travelers’ information. 15 minutes after flight departure from foreign airport, Airline sends Flight Manifest Data, APIS and PNR data adhering to UN/EDIFACT standards to central APIS database located at central system. Based on received Flight Manifest Data, the central system transfers all required data pertaining to each of the passengers to respective ICPs. Upon arrival of vessel and disembarkation, passengers fill D/E cards and submit at ICP counters. Each passenger’s passport is scanned on the intelligent document scanner. The system shall be extended for biometric verification at ICPs. Based on the risk assessment each passenger is cleared or processed accordingly. The counter officer stamps the passport and clears the passenger for customs checks. The D/E cards are scanned in the back room for identifying and entering non-system populated fields e.g., port of boarding or change in address in India. The updated UCF for all the passengers travelled through the ICP is maintained at central system. Foreigners’ Registration and Tracking (FRT) Applicants, who are required to register, fill their registration application online using web based online application submission system on the central system. It will be possible for the applicant to modify data or dates only up to 2 working days prior to the appointment. Appointments apply to all nationalities except for nationals of Pakistan as they are required to register within 24 hours of arrival. Additionally, for any arising small number of emergency situations, foreigners can visit the FRRO / FRO even if they don’t have an online appointment. Online system validates the entered details and accepts fees using the defined online payment modes. With respect to fee payments, the application would currently provide a payment gateway where every FRRO / FRO will need to provide the ‘acquiring’ bank details. Alternatively, FRRO / FROs will be able to continue receiving payments as they currently do in addition to online payment facilities if they choose to do so with a plan to divert most of the payment traffic to the online channel. Applicant takes online appointment for meeting registration officials to submit physical copy of the supporting document, provide biometrics and interview for registration. Based on the appointment dates relevant UCF data can be pushed or pulled to the specific FRRO / FRO office. Applicant arrives for interview on specified date. Documents generated during the registration process are also linked to the central record. C Form C Forms are also automated and are uploaded through an online medium by hotels, hospitals, hostels, dharmashalas, and universities to the central system. The relevant FRRO / FRO will have access to this data and will be updated in the UCF for analysis purposes, generating risk assessments, tracking as well as generation of alerts. Other vital Applications Besides all these, other vital modules like online NRI/ PIO Registration System, Indian Citizenship, Overseas Citizenship of India (OCI), Arms license database are being operational. Present Status of IVFRRT l Installation/ upgradation of infrasrtucture at 78 ICPs. l ICS software is functional at all ICPs l Networking of ICPs with CFB. l Installation of PRMs, QDX machines, Web Cameras &amp; CCTV for Immigration requirements. l Centralized APIS implemented at Airports. l Facility made available at important ICPs for access to Passport Visa date. l Online submission of Visa application module implemented at 81 missions abroad. l FRRO Registration module implemented at all 7 FRROs &amp; 3 FROs. l Integration of ICS Software with Visa Module implemented. l Immigration Support Centre &amp; Visa Support Centre become functional. l Central IVFRT office established at Shastri Park. l Online submission of ‘C’ Form module implemented. Finale As per the set milestones of MMP- IVFRT, NIC has successfully achieved the set targets in the stipulated time frame. But, still many more targets are to be achieved and need based features are to be added as per the emerging requirements of stake holders. The areas where replications/ strengthening are to be done are networking of ICPs and Missions, digitization of D/E Cards, installation of at modern ICT equipments at ICPs, implementation of Biometrics, development of SW for intigration with Custom establishment of Disaster Recovery Centre for IVFRT. FOR FURTHER INFORMATION Dr. B.N.Shetty Deputy Director General National Informatics Centre A-Block, CGO Complex, Lodhi Road, New Delhi - 110003. T:+911124362753/24305153 F:+911124392225</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="corrigendum-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Corrigendum</span></a><a class="article-nav-link next" href="audit-status-monitoring-system-v-3-0-a-system-for-facilitating-web-application-security-audit-services-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">AUDIT STATUS MONITORING SYSTEM V 3.0- A SYSTEM FOR FACILITATING WEB APPLICATION SECURITY AUDIT SERVICES</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="corrigendum-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Corrigendum</span></a><a class="article-nav-link next" href="audit-status-monitoring-system-v-3-0-a-system-for-facilitating-web-application-security-audit-services-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">AUDIT STATUS MONITORING SYSTEM V 3.0- A SYSTEM FOR FACILITATING WEB APPLICATION SECURITY AUDIT SERVICES</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

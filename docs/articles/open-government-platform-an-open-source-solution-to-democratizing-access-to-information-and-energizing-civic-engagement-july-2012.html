@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>OPEN GOVERNMENT PLATFORM: An Open Source Solution to Democratizing Access to Information and Energizing Civic Engagement — Informatics July 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:July 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2012/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2012/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2012/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2012/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2012/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2012/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2012/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2012/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2012/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2012/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2012.html">July 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>OPEN GOVERNMENT PLATFORM: An Open Source Solution to Democratizing Access to Information and Energizing Civic Engagement</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2012.html">July 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>OPEN GOVERNMENT PLATFORM: An Open Source Solution to Democratizing Access to Information and Energizing Civic Engagement</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Lead Story</div>
-          <h1 class="article-title" data-pagefind-meta="title">OPEN GOVERNMENT PLATFORM: An Open Source Solution to Democratizing Access to Information and Energizing Civic Engagement</h1>
+          <h1 class="article-title">OPEN GOVERNMENT PLATFORM: An Open Source Solution to Democratizing Access to Information and Energizing Civic Engagement</h1>
           <hr class="title-rule">
           <p class="article-byline">By Neeta Verma, Alka Mishra, D. P. Misra &bull; pp. 4–7</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">If government could release these datasets in open format for people to use &amp; reuse, a whole lot of new innovative apps could be built around these datasets to provide better, customized services to citizens. Online publishing of Government data in open format shall play an important role in enhancing transparency and accountability of the government. It shall enable new forms of citizen engagement &amp; innovation in citizen service delivery. More customized &amp; personalized services could be offered to citizens. When implemented at large scale it shall bring a paradigm shift in development of e-governance applications. At NIC we have recently developed an Open Government Platform (OGPL) to enable government ministries &amp; departments to launch their open data initiative. CONCEPTUAL OVERVIEW OGPL as a product caters to two sets of users - the government and the citizen/civil societies. It facilitates government departments to contribute their datasets, Apps, tools, documents, services etc., which gets validated and published, after passing through a predefined workflow to the citizen interfacing data portal. The single-point citizen interface is designed in such a way that catalogs can be searched with ease and datasets can be accessed/downloaded in various open formats. It also provides a platform for citizens and civil societies to engage with government on various aspects of socio economic development. OGPL also facilitates building of subject specific communities through Citizen engagement modules. Communities shall discuss online the kind of datasets, government should release and also what kind of apps should be developed around these datasets. This shall provide first hand information to government as well as developer communities on public demand and prioritize their schedules accordingly. OGPL COMPONENTS OGPL essentially consists of three major modules l Dataset Management System l Data Portal l Monitoring and Management Dashboard DATASET MANAGEMENT SYSTEM: Dataset Management system or DMS shall be used by all contributing ministries, departments as well as organisations using which, authorized officers of the departments can contribute datasets, documents, services, tools and apps which shall then be processed through a predefined workflow of moderation &amp; approval to ensure that datasets being released in public domain are in compliance with existing acts &amp; policies of the government concerning privacy, security etc. Through DMS each Ministry/Department can contribute their datasets in the form containing a set of Standard Metadata elements. After passing through various stages of moderation and approvals, these datasets gets published on the data portal viz. data.gov.in DR. B. K. GAIROLA Director General, National Informatics Centre In India, National Data Sharing and Accessibility Policy (NDSAP) has been recently notified by the Government. According to this policy, all government departments shall release their datasets in open format for citizens and other stakeholders to freely use &amp; reuse. To make these datasets easily accessible by citizens, policy has also mandated NIC to provide technology solution for establishing an Open Data Portal (http://data.gov.in) for Departments, Subordinate Offices and Organizations. OGPL implementation in India is being executed by NIC, DeitY in close coordination with DST. OGPL is an open source product with generic architecture, which would easily facilitate other organizations and institutions to adopt for their open data initiatives. Communities could also contribute further by developing innovative apps around datasets and also enhancing the product in terms of features &amp; functionalities. The purpose of the platform is to enhance access and use of government data to foster innovation, promote transparency, accountability and public participation. I am sure it shall go a long way in democratizing the government information. Government collects, processes &amp; possess a lot of data through census, surveys, planning, assessment as well as delivery of citizen services. However large quantum of such data generated using public funds by various organizations and institutions in the country remains inaccessible to public at large including civil societies. This data could be of great value for social development &amp; economic growth …. INDO-US COLLABORATION Open Government Platform (OGPL) was developed jointly by India &amp; US government as a result of announcement made by President Obama and Prime Minister Manmohan Singh during the Indo-US Open Government Dialogue in 2010. OGPL leverages on the best practices &amp; features of the India’s “India.gov.in” and the “Data.gov” of United States.National Informatics Centre (NIC) from Government of India and General Services Administration (GSA) of United States executed the development of OGPL. Open Government Platform, developed to promote access to government data and information and energize citizen engagement was launched by Hon’ble Minister of Communications &amp; IT and HRD, Govt. of India during a press conference held on 30th March 2012 in New Delhi in presence of Dr. Sam Pitroda, Advisor to Prime Minister of India. Secretary(DEITY), DG(NIC) &amp; Joint Secretary, MEA also participated in the press conference, Senior officers from US Government &amp; US Embassy were also present along with GSA team in India. CIO, US Government along with Deputy CTO also addressed the event over video conference. DATA PORTAL Data Portal is the citizen facing frontend of the OGPL which shall provide single point access to all the datasets, apps as well as services. Portal has a strong component of search, discovery as well as citizen engagement. The development of the data portal is in compliance with the Guidelines for Indian Government Websites (GIGW). This Citizen interfacing Data Portal would also have a Communities component built into the system. This component facilitates Forums/Discussions around various datasets, apps available on the portal as well as platform to express and discuss the kind of datasets &amp; apps they would like to have. This shall give first hand input to development community for building new components, apps. It shall also give input to departments as what kind of datasets are more useful and accordingly can raise the priority of their release. MONITORING AND MANAGEMENT DASHBOARD: Monitoring and management dashboard of OGPL helps government monitor &amp; manage its Open Data Programme through three dimensions Metrics, analytics &amp; feedback from citizens: l Metrics help understand amount of datasets uploaded, updated by different Departments. Frequency of upload is also available on a single dashboard. l Analytics module gives use perspective in terms of their usage of datasets, Number of downloads, aggregated ratings provided to datasets determine their value and to some extent quality of data released by government. l Feedback from citizens provide government with first hand input from citizens on quality, relevance of datasets, new datasets needed, kind of apps need to be developed etc. OGPL – AN OPEN SOURCE SOLUTION Open Government Platform is completely developed using Open Source Stack. In fact complete management of the collaborative development of OGPL by two teams stationed in two continents of the world was also handled using open source tools.It complies with the best practices of open source development, which helps in leveraging the strengths of future versions of the open source base products used in development of OGPL. OGPL being an open source initiative not only facilitates cost saving in terms of software and licenses but also facilitates community participation in terms of further development of product with additional components and innovative apps around the published datasets. This shall define a paradigm shift in the manner electronic government applications shall be developed in future. The entire source code is made available to public for review, feedback and participation for further development and enhancement. CITIZEN ENGAGEMENT OOGPL has a strong component of Citizen engagement. Citizens can view, download datasets as well express their opinion on the quality of datasets, they can rate the datasets on a scale of 1 to 5. One can embed a dataset in their blog or web site as well as contact the owner of the datasets for any query or clarification. One can also publish or connect the datasets on their social media pages such as facebook, twitter etc. for wider reach. Ratings given by citizen are transparently shared on the portal in terms of number of views, current star rating which help new visitor understand quality of data sets, its popularity. Portal also enables visitors to submit their ideas, feedbacks and as well suggest datasets they would like government to release in open domain. These ideas are further rated by citizens to help government allocate priority in release of data sets. Open government platform can be used in multiple ways. One can directly publish their datasets after one time registration &amp; authentication. Departments could build their subject specific catalogues through a cloud based services of OGPL. One can also ask for independent installation of OGPL with customized look &amp; feel. OGPL can be used by any central or state government department, organisations as well as district and panchayat administrations. It can also be used by private organisations as well as non government organization and civil societies to bring in more transparency in their functioning. OGPL isn't simply about setting up a new web platform, moving to cloud computing or adopting open standards but it's about establishing a platform to enhance transparency, accountability &amp; foster development of Innovative applications to better serve the citizens &amp; other stakeholders. Open government data is gaining a lot of popularity &amp; acceptance with governments across the world. Its led by government themselves, development communities, international organisations. OGPL is a perfect platform for them to launch their open data initiative. FOR MORE DETAILS CONTACT: Ph. +91-11-24305370, 24305395 Visit us at http://ogpl.gov.in Share your thought at www.facebook.com/opengovplatform Email us at nic-ogpl@nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-july-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">EDITORIAL</span></a><a class="article-nav-link next" href="dgca-examination-system-udaan-july-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">DGCA Examination System: UDAAN</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="editorial-july-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">EDITORIAL</span></a><a class="article-nav-link next" href="dgca-examination-system-udaan-july-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">DGCA Examination System: UDAAN</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

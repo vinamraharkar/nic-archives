@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana — Informatics April 2025</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2025"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/april-2025/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/april-2025/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/april-2025/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/april-2025/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</span></nav>
         <div class="article-header">
           <div class="article-section-badge">e-Gov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</h1>
+          <h1 class="article-title">Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by NISSY GEORGE &bull; pp. 28–29</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The National Informatics Centre (NIC), in partnership with the High Court for the State of Telangana, has played a transformative role in modernizing the judicial ecosystem through robust, secure, and user-centric ICT solutions. The collaboration has yielded a wide array of innovative platforms that not only improve access to justice but also streamline court processes, enhance transparency, and promote efficiency across all levels of the judiciary—from the High Court to District and Subordinate Courts. This comprehensive digital framework has been shaped by NIC’s domain expertise in web technologies, cybersecurity, data management, e-governance, and artificial intelligence. By aligning with the judiciary’s evolving needs, NIC has introduced a portfolio of services that address core operational challenges, improve litigant engagement, and promote open justice. Key ICT Initiatives and Digital Solutions Web Portal of the High Court of Telangana https://tshc.gov.in The official website of the High Court of Telangana serves as a digital gateway for advocates, litigants, law students, media, and citizens. The portal offers a user-friendly interface with quick access to: • Profiles of Hon’ble Judges • Cause Lists and Case Status • Notifications, Circulars, and Recruitment Notices • Court Judgments and Orders • e-Filing, e-Payments, and other eServices This dynamic platform promotes judicial transparency and acts as a single source of authentic information. RTI Portal for District and Subordinate Courts https://dcrti.tshc.gov.in To ensure transparency and uphold citizens’ right to information, NIC has developed a dedicated RTI Application Workflow System for District and Subordinate Courts. This solution enables users to: • Register and submit RTI applications/appeals online • Pay RTI fees through integrated payment gateways • Receive real-time updates via SMS notifications • Track the status of applications through a centralized dashboard • Facilitate prompt processing by judicial officers via secure logins The portal ensures compliance with RTI norms while simplifying administrative handling. ePay Application for High Court https://epay.tshc.gov.in Also accessible at: https://pay.ecourts.gov.in/epay NIC has developed a robust and secure ePay platform integrated with the High Court’s e-Filing system. This application facilitates: • Online payment of Court Fees • Scheduled extension for penalties, fines, and other legal payments • Multiple payment options and auto-receipt generation • Real-time status tracking of payment transactions The platform significantly reduces manual interventions, enhancing accuracy and user convenience. Visitor Pass Management System (e-VPass) https://vpass.tshc.gov.in/vpass To strengthen physical security at the High Court premises and streamline visitor entry, NIC has implemented a secure e-Visitor Pass Management System. Key features include: • Online generation of visitor passes for litigants, vendors, officials, and guests • QR and barcode authentication for access control • Daily validity (9:30 AM to 5:00 PM) for each pass • Secure validation at entry points by security staff This digital system minimizes queues, enhances transparency, and supports safe court functioning. NIC, in collaboration with the High Court of Telangana, is driving digital transformation in judiciary through innovative ICT solutions like ePay, AI tools, and online RTI systems. Upcoming initiatives include extending ePay to lower courts, launching an Online Certified Copy system, and introducing an AI-powered legal chatbot. These advancements aim to streamline judicial processes, improve transparency, and enhance service delivery, creating a more accessible and efficient justice ecosystem across the state. AI Services Platform for Judicial Officers https://ai.tshc.gov.in NIC has integrated artificial intelligence into judicial workflows through a dedicated platform that assists judges and officers in various stages of case handling. The platform features: • Shruthi – Converts spoken dictation in court to editable text using speech recognition • Saaransh – Generates concise summaries from lengthy judgments for quick comprehension • Panini – Translates judgments across languages to improve accessibility and inclusivity These tools support faster documentation, multilingual accessibility, and improved legal research. eTHCR – Electronic Telangana High Court Reports https://tshc.gov.in/ehcr A centralized repository of all judgments delivered by the Telangana High Court. The portal supports: • Search by Case Number, Judge Bench, Party Names, Advocate Names • Free-text and legal provision-based search • Historical and real-time access to court rulings DigiTHCR – Digital Reportable Judgments with Translations https://tshc.gov.in/digihcr This initiative ensures legal inclusivity by providing reportable judgments along with Telugu translations. Users can filter results using: • T.H.C.R number, Volume, Case Number, Neutral Citation • Party names, Order Date, or Keyword search Online RTI Portal – High Court of Telangana https://rti.tshc.gov.in, https://rtihome.tshc.gov.in To facilitate transparency at the High Court level, a separate Online RTI portal has been developed. Features include: • Digital submission of RTI applications and appeals • Application fee payable via UPI, net banking, ₹10 or cards • Real-time SMS alerts at each stage of the RTI lifecycle • Full integration with internal workflows for speedy disposal Case Status Information System (CSIS) https://csis.tshc.gov.in Designed to provide up-to-date information on case progress, CSIS supports multiple search criteria including: • Case Number, Filing Number • Advocate Code/Name • Party Names and Bench Details It enhances transparency and helps litigants stay informed without visiting court premises. Way Forward Building on the momentum of digital transformation, the ePay facility is set to be extended to District and Subordinate Courts, significantly enhancing accessibility and simplifying the payment of court fees and penalties at all levels. Complementing this initiative, an Online Certified Copy system will soon be launched—integrating e-Signatures and e-Payment gateways to enable secure, seamless, and paperless access to certified judicial documents. To empower judicial officers with intelligent tools, an AI-powered Legal Chatbot is currently under development. This solution will provide instant references to relevant case laws and precedents, streamlining legal research and supporting faster, more informed decision-making. Other notable advancements include the implementation of a dedicated module for automatic disposal of infructuous matters via NAPIX API, and the expansion of Judicial Web Services to the Digitization Wing and various State Government departments—enabling deeper interoperability and improved public service delivery. Together, these initiatives underscore a strategic vision to modernize judicial operations, elevate institutional efficiency, and deliver a more responsive, technology-enabled justice system.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="matsya-baibhav-a-digital-leap-in-assam-s-fisheries-sector-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</span></a><a class="article-nav-link next" href="vp-tax-management-system-strengthening-grassroots-governance-through-technology-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">VP TAX Management System: Strengthening Grassroots Governance Through Technology</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="matsya-baibhav-a-digital-leap-in-assam-s-fisheries-sector-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</span></a><a class="article-nav-link next" href="vp-tax-management-system-strengthening-grassroots-governance-through-technology-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">VP TAX Management System: Strengthening Grassroots Governance Through Technology</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

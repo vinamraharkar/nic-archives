@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Towards an e-Governance Grid for India (E-GGI)–An Architectural Framework for Citizen Service Delivery — Informatics January 2008</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2008"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/january-2008/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/january-2008/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/january-2008/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/january-2008/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2008/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2008/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2008.html">January 2008</a><span class="breadcrumb-sep">&rsaquo;</span><span>Towards an e-Governance Grid for India (E-GGI)–An Architectural Framework for Citizen Service Delivery</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2008.html">January 2008</a><span class="breadcrumb-sep">&rsaquo;</span><span>Towards an e-Governance Grid for India (E-GGI)–An Architectural Framework for Citizen Service Delivery</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Perspectives</div>
-          <h1 class="article-title" data-pagefind-meta="title">Towards an e-Governance Grid for India (E-GGI)–An Architectural Framework for Citizen Service Delivery</h1>
+          <h1 class="article-title">Towards an e-Governance Grid for India (E-GGI)–An Architectural Framework for Citizen Service Delivery</h1>
           <hr class="title-rule">
           <p class="article-byline">By C. S. R. Prabhu &bull; pp. 39–40</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The National e-Governance Plan (NeGP) proposes citizen service delivery up to the village level through various channels including village kiosks. These services have to be web service oriented (as against the present simply web enabled services) based on the Service Oriented Architecture. Conventional technological approaches such as client server model of architecture or the central server model of architecture will not be able to meet the requirements of NeGP. As such a large number of web services require adequate networking and computing resources which can be supported by the Grid Computing Approach. The latest grid computing standard OGSA (Open Grid Services Architecture) integrates the power of the grid with that of the web services – both stateless and stateful based on SOA. In a “grid” of computer systems, all the Data Centres (SAN) will be connected into a grid where in all the computational resources such as the CPUs, disk storage systems, specialized software systems, etc., will be shared by all the users connecting to the grid and the users are expected to draw adequate computational power from the grid. Leveraging the power of grid computing for e-Governance takes us towards an e-Governance Grid for India (e-GGI). The existing computing networks such as NICNET with all its SAN Data Centres; and other state owned Data Centres and SWANs (State Wide Area Networks) are required to be connected with each other to ultimately form the e-GGI. Once this is achieved, the Web Services Repositories at the District, State and National levels will become operational, thereby delivering citizen services across the country. OGSA (Open Grid Services Architecture) OGSA is the latest standard evolved by Global Grid Forum (GGF) that integrates the conventional grid computing features such as resource allocation and monitoring, mirroring, etc., with Web Services facility. OGSA supports WSRF (Web Services Reference Framework) that provides standard architecture for Stateful Web Services (conven- tionally all Web Services are Stateless). Stateful Web Services will be useful for applications that require reference to data of past transactions and for continuity of processing. Globus Toolkit Globus Toolkit (GT) is an open source, standard middleware software for the grid. Globus Toolkit Versions 1 and 2 did not support Web Services, however the Version 3 and the present Version 4 known as Globus Toolkit 4 or GT4 offers full fledged support for Web Services delivery in Java, C and Python. It provides various modules which are essential for grid computing, such as Grid Resource Allocation and Monitoring (GRAM), Grid File Transfer Protocol (GridFTP), data replication and monitoring (mirroring), Authentication and Authorization (through Public Key Infrastructure or PKI), etc. e-GGI (e-Governance Grid of India) The proposed e-GGI envisages designing and implementing a grid in India for e-governance service delivery across the country. SAN Data Centres have been established in all the 35 States/UTs, through NIC, as a part of NICNET or independently by the State Governments. Similarly, State Wide Area Networks (SWANs) are also set up in various States. However, as of now, the State SAN Data Centres are independently operating without any resource sharing or even without replica/mirroring storage elsewhere (only for Delhi Data Centre, a DRC (Disaster Recovery Centre) is operationalized at Hyderabad). The grid technology implementation, utilizing the middleware (such as Globus Toolkit) software will provide the backup recovery features along with mirroring and replication services (in the remote sites in the grid). Security is also ensured through authentication and authorization for all users trying to access the grid, using the Public Key Infrastructure (PKI). National e-Gov Plan (NeGP) The Govt. of India, Department of Information Technology, has initiated National e-Governance Plan (NeGP) for the execution of e-governance projects in the country, both at Central and State levels. It had identified “Mission Mode” Projects at both the levels as follows: State Level National Level ? Land Records ? Income Tax ? Road Transport ? Company Affairs ? Property Registration ? Passport &amp; Immigration ? Agriculture ? Insurance ? Treasuries ? National Citizen Database ? Municipalities ? Central Excise ? Gram Panchayats ? Pensions ? Commercial Taxes ? Banking ? Police ? Employment ? Exchanges Implementation Strategy and Methodology After the implementation of all application software projects, they are required to be converted to web services based on the SOA so as to have a three tier architectural framework as conceptualised in the diagram below. All the Data Centres (including district level, state level and national level) will have to be integrated with State Wide Area Networks into a grid (broadband) which will provide access to Internet/Intranet right from the village level. National portals and national web services will also be able to provide access to individual village portals. As an example, a pilot attempt is being made in Andhra Pradesh State to integrate diverse web services such as Property Registration (CARD Project) and Land Records (LRMIS Project) with ePanchayat Project. Web Services Repositories Three Levels of e-governance Services can be identified and accordingly 3 level Web Services Repositories can be established: ¡ National level Web Services Repository (NWSR) for National level e-Governance initiatives of NeGP ¡ State level Web Services Repository (SWSR) for the State level e-Governance services, and ¡ District (or Sub district) level Web Services Repository (DWSR) for the district and sub-district (taluka or village) e-Governance Architectural Framework Action Plan The action plan for achieving e-GGI will undertake software development and implementation of web services and information systems (based on SOA) for all the e-governance applications (such as ePanchayat for Village Panchayats, eMunicipality for Municipalities). Further, Web Services will be established at District, State and National level. This plan needs to be implemented in a period of at least five years. After the creation and integration of web services into web services repositories, a workflow interoperability plan can be executed using BPEL (Business Process Execution Language) which can enable process orchestration across diverse web services (based on Service Oriented Architecture).</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="romanian-local-community-goes-e-january-2008.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Romanian local community goes 'e'</span></a><a class="article-nav-link next" href="district-police-website-gopalganj-january-2008.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">District Police Website, Gopalganj</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="romanian-local-community-goes-e-january-2008.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Romanian local community goes 'e'</span></a><a class="article-nav-link next" href="district-police-website-gopalganj-january-2008.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">District Police Website, Gopalganj</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

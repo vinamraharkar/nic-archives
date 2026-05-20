@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Madhya Pradesh: Reaching the un-Reached through ICT — Informatics October 2009</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2009"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/october-2009/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/october-2009/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/october-2009/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/october-2009/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/october-2009/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/october-2009/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/october-2009/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/october-2009/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2009/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2009/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2009.html">October 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Madhya Pradesh: Reaching the un-Reached through ICT</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2009.html">October 2009</a><span class="breadcrumb-sep">&rsaquo;</span><span>Madhya Pradesh: Reaching the un-Reached through ICT</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Madhya Pradesh: Reaching the un-Reached through ICT</h1>
+          <h1 class="article-title">Madhya Pradesh: Reaching the un-Reached through ICT</h1>
           <hr class="title-rule">
           <p class="article-byline">By M. Vinayak Rao, Sanjay Hardikar &bull; pp. 17–20</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Madhya Pradesh, the second largest State of India having 50 districts &amp; 313 Blocks, is home to a rich cultural heritage and has practically everything; innumerable monuments, large plateau, spectacular mountain ranges, meandering rivers and miles and miles of dense forests offering a unique and exciting panorama of wildlife in sylvan surroundings. ICT has a vital &amp; challenging role to play in streamlining the Governance in the State. The State is fast emerging as a major destination for the IT industry with lot of activity on e-Governance in recent years. NIC State Centre, Bhopal was setup in the year 1988, to play a catalytic role in promoting informatics culture and providing ICT services to Government Departments/ Organizations, besides architecting &amp; implementing various e-Governance initiatives with the best possible technology support for achieving targeted goal of delivering efficient citizen services to the common public in the State. To succeed in this endeavor, NIC implemented State-wide network of District Centers and sub-offices. Currently, DICs are operational at 47 Districts, whereas Centres at the remaining Districts are likely to be operational soon. NIC has also created special Centers at various important locations, i.e., State Secretariat (Mantralaya), State Legislative Assembly (Vidhan Sabha), High Court &amp; it's two Benches, Commissioner Land Records, Central Excise &amp; Customs and Passport Office. ICT Infrastructure/Services In order to achieve automation of Government processes &amp; functions, appropriate backbone ICT infrastructure has been established in the State, which includes, Internet Backbone, OFC-based Inter-Building (Secretariat) Connectivity, dedicated Geomatics setup, Internet Data Centre (IDC), Integrated Network Operation Centre (i-NOC), Virtual Class Room (VCR) facility, etc., supported by a team of highly qualified IT professionals. — NICNET/Video Conferencing/ NICeMail - 2 Mbps Leased Line based Network has been established within the State covering 50 NIC District Centres, 16 Circle Offices &amp; 28 District Offices of Forest Department for availing NICNET/Internet &amp; Video Conferencing facility, with 100 Mbps redundant Gateway. The connectivity has also been ex tended to Central/State Election Offices, Passport Office, Census, High Courts &amp; Divisional Commissioners (Jabalpur, Indore &amp; Gwalior), Rajya Shiksha Kendra, Land Records, 69 Post Offices, CAT Indore, National Judicial Academy, etc. Mail messaging services has been extended to approximate 20,000 users of various Government Departments/Organizations and Educational Institutes. — Data Centre &amp; Web Hosting Services - Data Centre with 18TB SAN Storage Capacity &amp; 25 State-of-the-art Servers provide IDC services to many users with 24x7 operation support. The Web Hosting Services covers the maintenance of over 570 websites to facilitate a greater access to all interested netizens for promoting G2G/G2B/G2C/G2E interaction, which includes value addition for Website Design &amp; Development, Hosting, Registration of Domains, Maintenance of State specific contents on NPI, Uploading facility on Tenders INDIA Portal, etc. More than 165 Internet based Results of various Boards &amp; Universities are being disseminated every year. — Gigabit LAN - 3500 Nodes Gigabit OFC Backbone- based (Upgradeable to 10 G) structured &amp; managed LAN has been established at State Secretariat (Mantralaya) to support various upcoming e-Governance Applications, Media Streaming, High Speed Data Transfer, Various Intranet/Internet Applications. ICT Initiatives/e-Governance Projects — Samadhan Online (www.mp.gov.in/ samadhanonline) is aimed at sensitizing the officials at all levels towards resolving the public grievances. It is conducted on First Tuesday of every month with about 20 to 25 applications, selected carefully &amp; confidentially, for review by the Chief Minister in presence of all the concerned including the complainant through Video-conferencing facility. This resulted in increase in disposal of cases as well as improvement in its quality, besides effective implementation of various welfare schemes. — Secretariat (Mantralaya) Computerization (https://vallabh.mp.nic.in) covers Office of Chief Minister, Office of CS, Accounts of GAD, Departmental Monitoring System, File Movement Monitoring System, etc., to facilitate all Departments of the State Government. One of the important section that is related to employees, covers dissemination of Salary Details, Loans, Advances, House Allotment, etc. — Chief Minister Monitoring Programme (CMMP) (www.mp.gov.in/cmims) facilitates comprehensive monitoring for an effective and efficient management of Physical &amp; Financial Targets. Under Performance Management System, the Departments have to specify the Physical &amp; Financial Targets at the beginning of the financial year for each of the Schemes/Works for all the concerned District Offices. The System generates various Statistical/Detailed Reports, Thematic Maps, Graphs and PERT Charts for in-depth Analysis. Budgetary provisions are made for initiating and implementing the schemes and programmes. Outlays in the budget reflect a commitment of the government towards realizing goals in the financial year. — Samadhan Ek Din Me - is keeping the citizen convenience as the prime goal. The State Government has opened SAMADHAN Kendras at District Head Quarters to provide services through single window to the citizens. An IntraNET based application facilitates registration of application, uploading of documents, processing of documents, monitoring of the delivery of documents, etc. to facilitate monitoring and preparation/renewal of various Certificates (like Domicile, Caste, Income etc.) besides several other services. — Education Portal (www.mp.gov.in/ educationportal) for the State has been designed, developed &amp; implemented as a work-flow application with the objective to adopt best-practices, streamline &amp; automate various processes involved in the functioning of the School Education Sector in the State. — e-Scholarship (www.mp.gov.in/escholarship) is an Online workflow based solution for streamlining the Post-Matric scholarship distribution. It involves automation of various processes related to receiving, processing of applications and their sanction/ disbursal. — e-Forest (www.mp.gov.in/ffms) involves design, development &amp; deployment of suite of e-Governance applications (includes Forestry Works, Budget and Financial Management System) for automating various activities/functions being carried out by various wings/units of the Forest Department. — Bhu-Abhilekh (www.landrecords.mp.gov.in), a Land Records Information System (ISO certified “G2G” and “G2C” application) is developed and implemented up to Tehsil level, to deliver excellent grass root governance within the domain of Land Management. Bhu-Abhilekh aims to facilitate delivery of citizen services such as ROR (Khasra) and Khatauni. — GeoAmpere (Geomatics-based Application Model for Planning Distribution of Electricity to Rural Entities) has been developed for Madhya Pradesh Paschim Kshetra Vidyut Vitran Company Limited (MPPKVVCL) Indore, covering 12 Districts of the State. It provides holistic view of entire Power Distribution Network comprising of Sub-stations (132, 33 KV) &amp; Feeders (33/11 KV) and facilitates Geomatics-based decision support, planning &amp; management. — i-GeoApproach (Internet Geomaticsbased Application for Planning Rural Road Connectivity to Habitations (http://gismp.nic.in/GeoApproach) under PMGSY is an enterprise solution (taken on J2EE platform) on SOA architecture. It has been developed for M.P. Rural Raod Development Authority (MPRRDA). Huge efforts are made towards creation of Enterprise Spatial GeoDatabase comprising of entire road network, habiation locations, Railways, major water bodies etc. for entire state. — MIS for Central Bureau of Health Intelligence (CBHI http://cbhi.nic.in/ ) involves collection, compilation, analysis and dissemination of information on broad range of indicators related to health status and health services in the country. The system cover formats related to incidence &amp; prevalence of disease, health risks &amp; performance of health systems and provides ready information on various health indicators, which are of great significance to the planners, policy makers, health administrators, research workers and others engaged in raising the health and socio-economic status of the community. — Projects Monitoring System for Madhya Pradesh Housing Board (HBPMS www.mp.gov.in/hbpms) helps in monitoring various projects of the Board in respect to their progress, broadly on the bench marks of physical activity, cost over run and time over run. It also facilitates information on Board offices, Contractors, Depositors, Financial institutions, details about completed/ongoing projects, etc. — Rate Analysis System (RAS) is bi-lingual Software for generating Schedule of Rates (SOR), which involves very complex calculations and also takes care of location dependent variables like, transportation cost as it varies from one place to another. It also allows revising the SOR, whenever market rates of basic item change. — PARAKH (Basic Services/Amenities Management System www.mp.gov.in/parakh ) a proactive mechanism to capture the information on functioning/ availability of basic services/amenities pertaining to 11 key Departments from all 52,000 villages of the State to monitor and ensure delivery of Basic Services/Amenities to rural areas of the State. The Chief Minister reviews the status with all Collectors/Commissioners through VC every month. — Bank Recovery Incentive Scheme (BRISC) developed for Institution of Finance helps in maintenance, management &amp; monitoring of revenue recoveries against Loans given by Banks under various Incentive Schemes of State Government. — e-ICDP (Integrated Co-operative Development Projects www.mp.gov.in/icdp) Scheme of National Co-operative Development Corporation are being implemented in 17 District by State Offices of Registrar &amp; Co-operative Societies to support financially and physically downtrodden population of the State. — MIS on SC Development (www.mp.gov.in/scdev) empowers the State Government and district Administration to monitor the distribution of Scholarship and Stipend to SC students, as well as protection of Civil Rights cases against SC/ST for quick disposal, besides assisting analysis of data in various ways. — RuralSOFT (www.mp.gov.in/ruralsoft) is a web-enabled monitoring system based on monthly progress reports of various developmental schemes of State Government under Rural Development, such as IAY, MMAY, SGSY, SGRY, MDM, NFFWP, MPREGS, and Watershed Management etc. These progress reports directly reflect the progress of poverty alleviated schemes of Zila Panchayats, besides generating various reports upto District Administration. — RuralWORK (www.mp.gov.in/ruralwork) is a web-enabled monitoring system based on sanctioned infra- structure works under poverty alleviated schemes of Rural Development Department. — Central Projects - NIC Madhya Pradesh is also implementing many Central level projects like, CIPA, Agmarknet, NREGA, e-PRI, PlanPLUS, IDSP, DoP, NKN, etc. Awards/Special Mention The contribution of NIC Madhya Pradesh and State Government in the field of e-Governance has been recognized with prestigious awards for ICT-Services at National &amp; State level. — Inaguration of iGeoApproach under PMGSY by the Hon'ble Chief Minister, Sh. Shivraj Singh Chouhan on 29th August 2009. — Workshop on “Website Quality, Accessibility &amp; Security” jointly organized on 2nd April 2009 by State IT Department &amp; NIC to sensitize the senior officers of State Government. — State Education Portal awarded as the best project under “IT for Masses” category. — GeoAmpere (Geomatics-based Application Model for Planning Distribution of Electricity to Rural Entities) developed for Madhya Pradesh Paschim Kshetra Vidyut Vitaran Company Limited, Indore selected for excellence in e-Governance initiatives. — 'CSI-Nihilent e-Governance Awards' for 2008-09 in “Excellent Project Award under the best E-governed Project” category, Computerization of Madhya Pradesh Mantralaya emerged as the winner. — 'CSI-Nihilent e-Governance Awards' for 2008-09 under the Best E-Governed State Category, Madhya Pradesh was Runners-up. — 'Best e-Governed Districts in Madhya Pradesh' jointly granted to Jabalpur &amp; Sagar districts. — 'Best e-Governance District of the State' for 2008 jointly conferred to Seoni &amp; Mandla districts. — 'Computer Society of India (CSI) Award' for 2007 for G2C &amp; G2G/e-Services to &quot;Child Record Information System&quot; whereas &quot;Samadhan Ek Din Me&quot; &amp; “PARAKH” were Runner-ups.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="upcoming-international-conferences-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Upcoming International Conferences</span></a><a class="article-nav-link next" href="orissa-bringing-transparency-in-governance-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Orissa: Bringing Transparency in Governance</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="upcoming-international-conferences-october-2009.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Upcoming International Conferences</span></a><a class="article-nav-link next" href="orissa-bringing-transparency-in-governance-october-2009.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Orissa: Bringing Transparency in Governance</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

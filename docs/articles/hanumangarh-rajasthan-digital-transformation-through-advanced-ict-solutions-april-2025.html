@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Hanumangarh, Rajasthan: Digital transformation through advanced ICT solutions — Informatics April 2025</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2025"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/april-2025/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2025/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/april-2025/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2025/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Hanumangarh, Rajasthan: Digital transformation through advanced ICT solutions</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Hanumangarh, Rajasthan: Digital transformation through advanced ICT solutions</span></nav>
         <div class="article-header">
           <div class="article-section-badge">District Informatics</div>
-          <h1 class="article-title" data-pagefind-meta="title">Hanumangarh, Rajasthan: Digital transformation through advanced ICT solutions</h1>
+          <h1 class="article-title">Hanumangarh, Rajasthan: Digital transformation through advanced ICT solutions</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by SUSHMA MISHRA &bull; pp. 14–15</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">NIC Hanumangarh plays a pivotal role in leveraging technology to drive digital governance and streamline administrative processes. Aligning with the Government of India’s Digital India vision, NIC has established a robust ICT framework that empowers various departments with innovative, technology-driven solutions. A key focus of NIC Hanumangarh is the implementation of e-Governance initiatives that enhance service delivery and transparency. The district has successfully deployed E-Nahar, an advanced irrigation management system that optimizes water distribution, ensuring efficient resource utilization for the region’s agrarian economy. Similarly, Manas E-Arogya is a comprehensive digital healthcare platform aimed at strengthening medical services and streamlining patient management. NIC has also facilitated web-based grievance redressal systems, e-District services, and digital land record management, enabling seamless interaction between citizens and government agencies. These initiatives not only improve accessibility but also promote paperless governance, reducing bureaucratic delays. Additionally, the District Administration benefits from GIS-based decision support systems, real-time data analytics, and integrated dashboards that provide actionable insights for planning and policy-making. With ongoing advancements in cloud computing, cybersecurity, and digital authentication, NIC Hanumangarh continues to drive technological transformation, making governance more efficient, transparent, and citizen-centric. ICT Initiatives in the District Manas e-Arogya https://hanumangarh.raj.nic.in/drugspledge MANAS e-Arogya is a secure, transparent digital platform for managing drug addiction treatment in psychiatric clinics and rehabilitation centres. It prevents prescription duplication, medicine overdose, and unauthorized use while enabling real-time stock tracking, centralized monitoring, and live photo-based identity verification. Benefiting 18,000+ patients, 43 doctors, and 37 clinics, the platform supports government health and welfare departments with real-time data for better governance. Pledge participation has exceeded 1 lakh individuals. Its key features are: • Role-Based Access Control (RBAC) for secure data management • Automated reports for real-time medicine tracking • Centralized dashboard for seamless monitoring MANAS e-Arogya ensures efficiency, security, and accountability, transforming addiction control in public healthcare. Animal Husbandry Record Management System (AHRMS) https://hanumangarh.org/veterinary AHRMS streamlines animal husbandry governance by digitizing records, ensuring real-time data access, and improving service delivery, especially in remote areas. Successfully operational for eight years, it replaces manual processes with a scalable, reliable digital solution. Its key features are: • 300+ logins across district, block, and institute levels • Automates 17 Monthly Progress Reports (MPRs) • Manages six vaccines, including stock and distribution • Graphical &amp; analytics dashboards for role-based insights AHRMS enhances efficiency, accuracy, and transparency, making it a model for digital governance in the sector. NIC Hanumangarh has been instrumental in driving e-Governance initiatives and fostering a technology-driven administrative ecosystem. The centre facilitates seamless G2C and G2G services, enhancing governance efficiency. The district unit provides essential digital resources, supporting initiatives in e-Governance services, and real-time data analytics for informed decision-making. With a commitment to innovation, NIC Hanumangarh continues to accelerate the district’s digital evolution. Employee Management System (EMS) EMS revolutionized government employee data management for the Vidhan Sabha Election 2023, ensuring efficiency and accuracy. Developed at the district level for the State Election Commission of Rajasthan, it consolidated employee records from Shaladarpan and Pay Manager using a unique Employee ID. Its key achievements are: • Managed 8,44,000+ employee records across districts, ACs, and blocks • Created 29,000+ logins up to the state level • Ensured seamless data integration for election operations EMS set a benchmark in digital governance, optimizing workforce management for large-scale elections. Safer Internet Day 2025 To promote online safety and cyber hygiene, we collaborated with the District Administration and key stakeholders. Initiatives included: • Training workshops for District and Block-level officers • Specialized sessions for Education Department officials • Awareness programs in district offices, schools, and communities • Cyber safety banners displayed in urban areas via Nagar Parishad and Nagarpalika These efforts empower citizens, especially students, to navigate the digital world securely. Other Initiatives in the District Several Mission Mode central and state government projects have been successfully implemented in the Hanumangarh district, enhancing digital governance and service delivery. These include the Digital India Land Records Modernization Program (DILRMP) for digitizing land records, the Integrated Financial Management System (IFMS) for streamlined financial administration, and Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) for direct income support to farmers. In the health sector, the Pregnancy and Child Tracking System (PCTS) ensures maternal and child healthcare monitoring, while the Integrated Road Accident Database (iRAD) strengthens road safety analytics. Transport services have been modernized through eTransport - Vahan and Sarathi, and public safety is reinforced via the Arms License Issuance System. Additionally, the Civil Registration System (Pehchan) supports identity management, Shaladarpan facilitates school administration, and the Public Distribution System (PDS) ensures efficient food grain distribution. Other key initiatives include Sanstha Aadhaar, ePanjiyan, and e-Gram, all contributing to a more efficient, transparent, and citizen-centric governance ecosystem. Events and VVIP Visits The district has successfully provided comprehensive ICT support during VVIP visits, including those of the Hon’ble Prime Minister and other dignitaries. This included: • Secure communication networks for real-time coordination • Live monitoring systems to ensure seamless operations • Technical integration for smooth execution of protocols • ICT-enabled safe houses with enhanced security, connectivity, and information flow These measures ensured a highly secure and well-coordinated environment throughout the visits. Accolades • 2025: Awarded to District Informatics Officer (DIO) by the District Administration for developing the Manas E-Arogya portal • 2020: Awarded to DIO by the District Administration for outstanding ICT initiatives Way Forward The district’s technological infrastructure is poised for significant advancements, with a strategic focus on expanding ICT-driven solutions across key sectors such as healthcare, agriculture, and public administration. These innovations will further streamline service delivery, enhance operational efficiency, and empower stakeholders with data-driven decision-making capabilities. Moving forward, NIC is committed to strengthening real-time monitoring systems, fostering mobile-first solutions, and ensuring seamless digital accessibility to improve citizen engagement and governance effectiveness. The District Informatics Unit plays a vital role in advancing e-Governance and ICT adoption in Hanumangarh. Web portals like E-Nahar, Manas e-Arogya and the Animal Husbandry Record Management System (AHRMS) have set benchmarks, benefiting farmers, healthcare professionals, and citizens. NIC Hanumangarh continues to drive digital transformation with innovative solutions and strategic collaborations. I extend my best wishes to NIC Hanumangarh for its continued success in driving and implementing impactful e-Governance projects across the district.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="durg-chhattisgarh-accelerating-e-governance-with-ict-driven-innovation-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Durg, Chhattisgarh: Accelerating e-Governance with ICT-Driven Innovation</span></a><a class="article-nav-link next" href="paschim-bardhaman-the-industrial-hub-of-west-bengal-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Paschim Bardhaman: The Industrial Hub of West Bengal</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="durg-chhattisgarh-accelerating-e-governance-with-ict-driven-innovation-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Durg, Chhattisgarh: Accelerating e-Governance with ICT-Driven Innovation</span></a><a class="article-nav-link next" href="paschim-bardhaman-the-industrial-hub-of-west-bengal-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Paschim Bardhaman: The Industrial Hub of West Bengal</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

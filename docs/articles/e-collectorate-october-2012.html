@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>E-COLLECTORATE — Informatics October 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/october-2012/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/october-2012/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/october-2012/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/october-2012/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/october-2012/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/october-2012/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>E-COLLECTORATE</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>E-COLLECTORATE</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Guest Column</div>
-          <h1 class="article-title" data-pagefind-meta="title">E-COLLECTORATE</h1>
+          <h1 class="article-title">E-COLLECTORATE</h1>
           <hr class="title-rule">
           <p class="article-byline">By D. V. SWAMY &bull; pp. 22–24</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">e-Collectorate takes care of the scanning of all communications received by the District Collectorate and then through the inbuilt workflow mechanism traverses to various sections till the files are disposed off. Various file creation for particular application / subject and electronic file movement has been taken care of in the software. A common man can easily track/query the progress of his application through SMS / internet / installed kiosks, thus involving less human intervention and faster delivery of service. INTERVIEWED BY Ashok Kumar Hota Technical Director, NIC Odisha Email : ak.hota@nic.in D. V. SWAMY: Certainly! We are adopting such a mechanism of Collectorate Automation and associated services to people of Keonjhar through eCollectorate since April 2012. With the total computerisation of the letter and file monitoring of the Collectorate, people would be able to track the status of a file or an application relating to various issues in the Collectorate from anywhere in the world. Citizen can Access through Internet as well as via SMS. Transparent administration and service delivery etc. are the key features of the project thus providing greater avenues to people, especially those who have mostly been deprived of the benefits of Good Governance, to participate in their own development process. These are encouraging words and please elaborate on the Origin of such an innovative concept of service delivery in a backward district of Odisha. D. V. SWAMY: With the everincreasing service delivery expectations of a Common Citizen and being the epicenter of administration, the District Collectorate is entrusted with the task of handling law and order, revenue collection, taxation, planning project executions, and the handling of natural and man-made emergencies etc in a district. It is like an enterprise dealing with variety of subjects concerned with lakhs of people. The office became increasingly occupied with the general welfare of the people in the district and lakhs of people with diverse issues are interacting with the district administration daily and numerous files of these issues are getting originated on different subjects, which are handled by 200 employees. So we thought of seamless integration of various sections and over it put the s/w applications for various processes and services and thus the evolution of eCollectorate happened suiting the requirement of the district collectorate. What are the processes and associated services that you initially aim to provide to your people through this programme. D. V. SWAMY: First we plan for the automation and integration of Diary receipt and Despatch section. Necessary networking and role assignment also has been taken up for each and every seat of the collectorate campus officers like Deputy Collector, Head Clerk, Senior Clerk and Junior Clerks. The software is well equipped with online processing of files, letters from its point of origin and receipt to the final disposal by the collector through various sections and hierarchy both with top to down and down to top approach. Once file movement automation process has been established, we plan to process the services directly rendered by collectorate like Arms Licenses, Police Verification, status of grievance petitions by a citizen through kiosks etc. There is a whole gamut of applications that can be built on this and may be taken up in future. Integration with future outside applications can also be facilitated by e-collectorate with use of web services concepts. The current aim of this G2G application is for total collectorate workflow automation with inbuilt modules catering to the need of a full fledged eCollectorate. Can you be more specific about the actual functionalities of eCollectorate. D. V. SWAMY: eCollectorate takes care of the scanning of all communications received by the District Collectorate and then through the inbuilt workflow mechanism traverses to various sections till the file is disposed off. Various file creation for particular application / subject and electronic file movement has been taken care of in the software. A common man can easily track/query the progress of his application through SMS / internet / installed kiosks thus involving less human intervention and faster delivery of service. How do you plan to achieve the mammoth task for such a change to happen? D. V. SWAMY: This is certainly a challenge for us keeping in view the function, framework, Technology, Capacity Building and adaptation. To make all these happen Collectorate Keonjhar restructured itself with necessary structural and functional changes. The district administration with suitable selection of ICT (Information and Communication Tools) has initiated the adoption of this unique process flow based software application called eCollectorate. For the change to happen, necessary change management strategies were adopted like phase wise identification of sections and training staffs, sensitization programmes, empowerment with better working environment and infrastructure and scope to handle modern technology to bring out a sense of ownership among the staffs etc. The process that is being followed from centuries has its own inertia towards the change which had to be tackled carefully. Mapping the process flow and switching to a completely automated workflow and doing away with physical papers and files required more concentrated effort of removing the psychological block rather than a technology issue. This was properly managed with participative approach which proved to be a success. Are you sure that the whole arrangement would work for the betterment of the society through this use of ICT for the common citizens while fulfilling your vision. D. V. SWAMY: Certainly, Yes. The product of NIC is one of the well tested &amp; robust applications mapping to most of the essential processes of the Collectorate and converting the output of these processes through desired service delivery model. It is a suite of applications based on an integrated solution architecture covering most of the functional areas and activities of the Collectorate. Being a web enabled solution built on industry standard open source based software technologies and best practices, it envisages covering all areas of work in the collectorate at the first instance and later aimed at extending the service to blocks, tehasils, villages, and panchayats where the actual beneficiaries reside. The front end application has been developed with open source PHP with My SQL database on Redhat Linux. Please tell us about your team and their involvement for success of the project. D. V. SWAMY: I sincerely express my thanks to Shri S.K Panda, State Informatics Officer, Shri A. K Hota, Technical Director &amp; District Co-ordinator and Shri Ajit K Pattanayak, District Informatics Officer who have made a dream into reality. My best wishes to other members involved in the project from NIC Odisha - Shri D Madan Prabhu, Shri Sidhartha Mandal, Shri Ajay Mohapatra along with the NIC Kerala team members Shri Andrews Varghese , Shri Manoj P.A who have spent their valuable time for the project at this part of the country. I also thank Dr. D. Brunda, IAS Probationer, Sri B. Nayak, ADM, all Dy. Collectors and all staff members of our Collectorate for their significant contribution for success of the project. I also thank Jindal Steel and Power limited, member of District eGovernance Society for providing necessary infrastructure for eCollectorate project. INTERVIEWED BY Ashok Kumar Hota Technical Director, NIC Odisha Email : ak.hota@nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="punjab-establishing-transparent-and-accountable-governance-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">PUNJAB - ESTABLISHING TRANSPARENT AND ACCOUNTABLE GOVERNANCE</span></a><a class="article-nav-link next" href="web-pages-with-razor-scripting-new-view-engine-in-asp-net-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">WEB PAGES WITH RAZOR SCRIPTING - NEW VIEW ENGINE IN ASP.NET</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="punjab-establishing-transparent-and-accountable-governance-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">PUNJAB - ESTABLISHING TRANSPARENT AND ACCOUNTABLE GOVERNANCE</span></a><a class="article-nav-link next" href="web-pages-with-razor-scripting-new-view-engine-in-asp-net-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">WEB PAGES WITH RAZOR SCRIPTING - NEW VIEW ENGINE IN ASP.NET</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

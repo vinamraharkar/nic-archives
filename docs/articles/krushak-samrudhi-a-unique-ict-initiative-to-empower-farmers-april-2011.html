@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>“Krushak Samrudhi”- A Unique ICT Initiative to Empower Farmers — Informatics April 2011</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2011"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/april-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/april-2011/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2011/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2011/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/april-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/april-2011/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2011/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2011/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2011.html">April 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>“Krushak Samrudhi”- A Unique ICT Initiative to Empower Farmers</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2011.html">April 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>“Krushak Samrudhi”- A Unique ICT Initiative to Empower Farmers</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Guest Column</div>
-          <h1 class="article-title" data-pagefind-meta="title">“Krushak Samrudhi”- A Unique ICT Initiative to Empower Farmers</h1>
+          <h1 class="article-title">“Krushak Samrudhi”- A Unique ICT Initiative to Empower Farmers</h1>
           <hr class="title-rule">
           <p class="article-byline">By Sh. Ashok K.K. Meena, IAS &bull; pp. 24–25</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Interviewed by: Sh. Ashok Rout, DIO, Sonepur, NIC Orissa Coordinated by: Sh. A. K. Hota, Technical Director &amp; Dist. Coordinator, NIC, Orissa We congratulate you for completing almost two years successful rollout of 'Krushak Samrudhi' for the online monitoring of Paddy Procurement at Sonepur District. Would like to hear more from you on the strategy adopted for the pilot initiative. Thank you. I extend the same to all the team members who have been working day and night for success of the project. This is a project essential to a state like Orissa for various aspects of Socio, Economical and Political point of view. This project was conceived in 2009. The project has direct impact on the livelihood of farmers and primarily deals with streamlining of Paddy Procurement activities and related processes. Food and Civil Supplies department, Govt. of Orissa has been the driving force behind it in Sonepur District. Can you please brief us about the project? Yes, about 85% population of Orissa lives in villages depending on Agriculture. Paddy in Orissa is the major crop and appx. 90% people of Sonepur district are directly / indirectly dependant on the paddy production. Now the major issue here is selling of paddy by farmers to sustain their livelihood throughout the year. And so our objective was to give the farmers their fair share of labour and income. This project aims at bridging the gap between the farmer as a Seller and Govt as a Buyer and overcome the obstacles associated with it in eliminating the middlemen who earn money through manipulated means and exploitation of poor farmers. With top down approach and active support of Hon'ble CM Sh. Naveen Patnaik, Orissa, who inaugurated the Farmer Kiosk on 2nd Feb 2010, thus giving impetus for faster implementation in Sonepur district. Can you please elaborate the Socio - Economic aspects of this project as you have pointed out and what exactly are the benefits to the farmers? See, the major source of income of farmers in this district is from Paddy cultivation both in Kharif and in Ravi seasons. So it is quite natural that they need to sell their paddy they have produced to sustain their livelihood for the entire year. Here comes the problem, where the middlemen exploit the farmer by purchasing their paddy in comparatively lesser price by any means and then reselling them to Govt. in the Minimum Support Price, which in term prevents the genuine farmers to get the financial benefits that our Department is providing them for their socio-economic enhancement. This is highly sensitive considering current issues like Farmer's exploitation, deaths etc. thus causing social unrest and other sort of problems. Our objective was to check such menaces by using Information and Communication tools (ICT) in Agriculture. How have you implemented ICT for Agriculture in Sonepur District? Without introducing ICT, it was not possible to streamline the activities related to Paddy procurement. NIC came up with a package called &quot;Krushak Samrudhi&quot; with the objective to provide equal opportunity to all farmers to sale their surplus paddy in Govt. approved rates, Identification of genuine farmers at the Paddy procurement centres (PPCs), to restrict the middlemen from selling the unlawful paddy, Prevent chaotic rush of farmers and vehicles at the PPCs by maintaining an advance purchase programme register for paddy procurement, to help the district administration for keep track of workload on PPCs based on scheduling schemes and pre appointment to farmers etc. This was accomplished by Providing unique ID &amp; tamper proof Farmer Identity Card to all farmers, capturing fingerprints through biometric devices. It was a mammoth task as the database needed to be ready with details of more than one lakh farmers, their land schedules etc. That seemed to be quite challenging and how could you organize the Capacity Building and the project planning? The major challenges were to make available the requisite infrastructure like computers, internet connectivity, Kiosks etc at various locations; Paddy Procurement centres operated at PACs of Co-Operative Societies, Self Help Groups (SHGs), RMC Yards (Regulated Market Committee), Procurements centres of FCI, NAFED, MARKFED etc. Another challenge was verifying the ROR data of Farmers through village wise camp and also to capture their finger prints through Biometric Scanners, so that during procurement and payment the actual beneficiary would be privileged. Another target was to make aware the farmers about the use of ICT and its benefits. There are 92 PPCs in the district and we have planned online data entry at 63 PPCs through data card /dongles and offline data entry at the locations which have net connectivity problems. This verification, biometric capture process, distribution of FIC was carried out by deploying unemployed youths of the village under the supervision of District Administration &amp; NIC Officials. Will you please elaborate how the process exactly works and how the uses of Biometric devices have helped in this project? After harvesting, the farmers go to the PPCs and they get their queue number (Token) for a particular date to bring the paddy for sale. This token is provided on first cum first serve basis and is based on the handling capacity of the PPCs and as per the procurement limits fixed by the District Administration. Upon arrival on the scheduled date, identity of the farmer is checked based on the FIC card and Biometric authentication. During payment also, the same person is identified through biometric devices and the payment is made to the right person only. Real time data transfer is made from the PPC itself to the server through web application. We have also installed user friendly Kiosks at various locations where a Farmer can see the details like the date on which he is listed, his payment details, surplus paddy based on crop cutting experiment, area of land cultivated etc. What other benefits you have noticed and how this process has been able to address the real life issues, you have specified like elimination of middlemen, exploitation etc.? For this to understand, one needs to look at the processes in the pre-computerized manual system. See, more often, the villagers take hand loans and put some of their belongings like identity cards and other valuable documents like ROR, ration card etc. as mortgage. This is a very common practice prevalent in villages. So during paddy procurement, the poor villagers are exploited by forceful selling of paddy to these middlemen at lower prices or at the paddy procurement units itself because of long waiting time for multiple days in false queue system. Moreover, this leads to pay hefty charges for transportation and many a times farmers are forced to sell the paddy at lower prices right at the PPCs to the middlemen. Apart from this, there used to be lots of duplicate identity cards and are falsely used by middlemen. This exhausts the Government buying limits and the farmers are not able to sale their lot. This queuing system and the card duplicity have been checked by &quot;Krishak Samrudhi&quot; software, usage of Biometric Devices thus extending the fair Government price to the farmers itself. What are the key factors for success of the project and how Farmers have perceived this unique ICT initiation of your department? This project was materialized with better Intra departmental Co-ordinations facilitated by some dedicated people who were committed to give farmers' right to farmers only. I would attribute successful implementation at Sonepur district to all the members who have contributed significantly in this project namely Sh. Gagan Bihari Swain, Collector, Sonepur, Sh. Bhabani Shankar Panda, Ex-Collector, Sonepur, Sh. Amareswar Mishra, Deputy Director Agriculture, Sonepur, Sh. Utkal Ranjan Acharya, Deputy Collector, Sonepur, Sh. Bijay Kumar Ratha, CSO, Sonepur. Also I would like to congratulate Sh. Ashok Rout, District Informatics Officer, NIC, Sonepur, &amp; Sh. Sushant Kumar Bhol, TD as the team under the proactive guidance of Sh. Susanta Kumar Panda, SIO &amp; Sr. Tech. Director, NIC, selflessly toiled day &amp; night and supported the programme to make it successful &amp; sustainable in the short span of time. Their energized work culture motivated the youngsters (computer team) to participate in the project to such an extent that cozy going technocrats forgot their daily grinding to bring laughter &amp; happiness in the poorest of the poor farmer's face. This has definitely started a new revolution and would spread to other districts of Orissa and I am confident that this would substantially help farmers and build their confidence on Govt. We thank you for your valuable time spared for discussing with us &amp; our sincere wish &amp; pray for your visions to come true.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="goa-making-a-difference-through-e-governance-april-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Goa: Making a Difference through e-Governance</span></a><a class="article-nav-link next" href="aspect-oriented-programming-april-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Aspect Oriented Programming</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="goa-making-a-difference-through-e-governance-april-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Goa: Making a Difference through e-Governance</span></a><a class="article-nav-link next" href="aspect-oriented-programming-april-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Aspect Oriented Programming</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

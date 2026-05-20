@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Cryptographic Key Management: Balancing Security and Usability in Key Management — Informatics July 2024</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:July 2024"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;38</div><a href="../pages/july-2024/page-38.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-38.jpg" alt="Page 38" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-38.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/july-2024/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;38</div><a href="../pages/july-2024/page-38.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-38.jpg" alt="Page 38" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-38.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/july-2024/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2024/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2024/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2024.html">July 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Cryptographic Key Management: Balancing Security and Usability in Key Management</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2024.html">July 2024</a><span class="breadcrumb-sep">&rsaquo;</span><span>Cryptographic Key Management: Balancing Security and Usability in Key Management</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">Cryptographic Key Management: Balancing Security and Usability in Key Management</h1>
+          <h1 class="article-title">Cryptographic Key Management: Balancing Security and Usability in Key Management</h1>
           <hr class="title-rule">
           <p class="article-byline">By Manoj P A &bull; pp. 38–39</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Edited by MOHAN DAS VISWAM The management of cryptographic keys is crucial for securing sensitive data and ensuring the integrity and confidentiality of communications in web applications. Cryptographic keys play a vital role in applications for various security functions, like encryption and digital signing. Proper management of these keys is essential to protect against data breaches, unauthorized access, and other cyber threats. This article evaluates three methods for the generation and storage of cryptographic keys: • Generation and Storage of Private Keys within Application Server • Software-Based HSM with a Dedicated Server and Isolated VLAN • Hardware HSM The article explores three cryptographic key management approaches: storing keys in application servers, using Hardware Security Modules (HSMs), and implementing software-based HSMs on dedicated servers and isolated VLANs. It assesses each method’s security, cost-effectiveness, and practicality. While storage in application/database server poses high security risks, hardware HSMs offer top-tier protection at a higher cost. Software-based HSMs strike a balance, providing enhanced security and scalability, making them an appealing option for secure and cost-effective key management. Background Applications typically use both digital signature and encryption for data integrity and confidentiality. Traditionally data hashing was used for securing database records. Since a bad actor can easily tamper the data and replace the hashes, digital signature was introduced to generate and store signature of the data. The digital signature of an official is insisted to sign every critical transaction in the application. However internal processes within application could create large number of records which are practically impossible to sign using personal digital signature solutions. Another use case is the encryption or digital signing of data exchanged with other stakeholder applications through APIs as part of the business process. The scalability problem with client based digital signatures could be resolved by using server based digital signatures for signing and encrypting of records at server side. This approach required generation and storing private keys within application servers or databases. This approach, while straightforward and cost-effective, poses significant security risks and trust issues. The following are some of the risks involved in generating and storing private keys within an application server: • Application servers typically run in the demilitarized zone within the cloud or data centre. It is not advisable store private keys in this zone due to limited isolation policies. • Private keys stored in application servers are vulnerable to various types of cyberattacks such as malware, unauthorized access, and insider threats. • If an attacker gains access to the server, they can potentially compromise the private keys, leading to data breaches and loss of sensitive information. Storing private keys in database is also common practice in private key management. However, this approach comes with several significant risks that could compromise the security of the cryptographic keys and the overall system. • SQL Injection attacks on the database could reveal private keys • Access to private key by the database administrator • A data breach could also expose all the private keys • Database backups that are not properly protected could be used to extract private keys Arun K Varghese Scientist-D arun.kv@nic.in Hardware Security Module (HSM) A Hardware Security Module (HSM) is a dedicated device designed to securely generate, store, and manage cryptographic keys. HSMs offer robust security features, including tamper resistance and strong access control mechanisms. The features and benefits of HSMs are given below: Physical Security • HSMs are housed in secure, tamper-resistant enclosures. • They often include tamper-evident seals and self-destruct mechanisms that activate if unauthorized access is detected. Secure Key Storage • Keys are stored in a protected environment within the HSM and never leave the device in plain text. • Cryptographic operations (e.g., signing, encryption) are performed within the HSM, minimizing the risk of key exposure. Strong Access Controls • HSMs implement multi-factor authentication (MFA) and role-based access controls (RBAC) to restrict access to cryptographic keys. • Integration with identity and access management systems further enhances security. Compliance • HSMs are often certified to meet stringent security standards such as FIPS 140-2/3, ensuring compliance with industry regulations. Software-Based HSM Software-based HSMs, also known as virtual HSMs, emulate the functionality of a hardware HSM within a software environment. A popular software based HSM is SoftHSM which is an implementation of a cryptographic store accessible through a PKCS#11 interface. SoftHSM was developed as a part of the OpenDNSSEC project. SoftHSM could be deployed on dedicated servers hosted in an isolated VLAN to enhance security. The features and benefits of Software-Based HSMs are given below: Enhanced Security Compared to Application Servers • Although not as secure as hardware HSMs, software-based HSMs provide a higher level of security than generating and storing keys within application servers. • They utilize software encryption and access control mechanisms to protect private keys. Cost-Effective • Software-based HSMs are generally more affordable than hardware HSMs, making them accessible for organizations with budget constraints. • They eliminate the need for specialized hardware, reducing capital expenditure. Flexible Deployment • Can be deployed on existing infrastructure, leveraging virtualization and cloud environments. • Can be easily scaled to meet increase in usage requirements. Access Controls • Can be augmented to implement robust access controls, including MFA and RBAC. Conclusion The generation and storage of cryptographic keys within application/database servers poses significant security risks, including exposure to cyberattacks, lack of physical security, and compliance challenges. Hardware HSMs offer the highest level of security, providing robust physical protection, secure key storage, and strong access controls. They are compliant with stringent security standards, making them the preferred choice for organizations handling highly sensitive data. However, they come with higher hardware and licencing costs and deployment complexity. Software-based HSMs offer a balanced approach, providing enhanced security compared to application servers while being more cost-effective than hardware HSMs.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="sanstha-aadhaar-streamlining-institutional-registration-and-monitoring-july-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Sanstha Aadhaar: Streamlining Institutional Registration and Monitoring</span></a><a class="article-nav-link next" href="securing-machine-identities-with-multi-factor-authentication-enhancing-security-and-compliance-in-a-perimeter-less-network-era-july-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Securing Machine Identities with Multi-Factor Authentication: Enhancing Security and Compliance in a Perimeter-less Network Era</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="sanstha-aadhaar-streamlining-institutional-registration-and-monitoring-july-2024.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Sanstha Aadhaar: Streamlining Institutional Registration and Monitoring</span></a><a class="article-nav-link next" href="securing-machine-identities-with-multi-factor-authentication-enhancing-security-and-compliance-in-a-perimeter-less-network-era-july-2024.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Securing Machine Identities with Multi-Factor Authentication: Enhancing Security and Compliance in a Perimeter-less Network Era</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

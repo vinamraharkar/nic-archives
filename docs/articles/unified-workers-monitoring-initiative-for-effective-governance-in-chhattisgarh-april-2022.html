@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh — Informatics April 2022</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2022"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/april-2022/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/april-2022/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/april-2022/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/april-2022/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2022/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2022/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2022.html">April 2022</a><span class="breadcrumb-sep">&rsaquo;</span><span>Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2022.html">April 2022</a><span class="breadcrumb-sep">&rsaquo;</span><span>Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Interview</div>
-          <h1 class="article-title" data-pagefind-meta="title">Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</h1>
+          <h1 class="article-title">Unified Workers Monitoring Initiative for Effective Governance in Chhattisgarh</h1>
           <hr class="title-rule">
           <p class="article-byline">By Satyesh Kr. Sharma &bull; pp. 32–33</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">An exclusive interview with Shri Alex V. Paul Menon, IAS, Labour Commissioner, Chhattisgarh, on receiving National eGovernance Gold Award from DARPG, Govt. of India for Unified Labour Portal (on various paradigms along with challenges faced during implementation of Unified Labour Portal) Sir, Hearty Congratulations. Please throw some light on Government service delivery steps taken during the COVID pandemic by the Labour department. Labour Department, being the nodal authority for welfare of workers, was supported by NIC Chhattisgarh with various online applications for effective management of movement of migrant workers. eShramik Aawa Gaman Application and Call Centre Helpline Module facilitated migrants to travel, finding relief camps and monitor their complaints. The Rojgar Sangi Mobile App, along with Chhattisgarh State Skill Development Authority portal, facilitated skilled job seekers and employers to get registered and be connected based on the skillset mapping. You took over the charge of Labour department after the first wave of the COVID pandemic. After joining the department, what was your initial observations with respect to eGovernance? While the above discussed technology solutions were developed as a part of the response to the COVID-19 pandemic, they also led to increased technology adoption by the department, workers, contractors, and boards alike, many of whom were not active technology users earlier. However, data of different boards (Labour Welfare Board - LWB, Unorganised Workers’ Welfare Board - UoWB, and Building and other Construction Workers Welfare Board - BoCWB) existed in silos. Family was not used as the base for registration of labourers, resulting in data duplication and inflation of database. Then Sir, you thought about Unified workers portal. What is your vision for the initiative? Yes, along with departmental officers, NIC and consultants of PMU, we had a number of brainstorming sessions and formulated the vision statement. The vision statement is – “to design and implement an evidence-based comprehensive and foolproof social security framework for labourers and their families in the state of Chhattisgarh by ensuring suitable policy frameworks, budgetary support and implementation mechanisms that provides ease of doing business to employers as well as ease of working with due compliances to labour legislations.” The vision statement was further supported by eleven mission statements. Great, you have not only thought about eGovernance intervention, but also how it can be sustained through implementation mechanism, policy framework, and budgetary support. Can you please discuss on the mission statements related to ICT intervention? Out of eleven mission statements, four mission statements were directly linked to ICT intervention. First, to create and maintain a credible database of labourers and their families; Second, comprehensive Ease of Doing Business (EoDB) online systems to manage the affairs of the department; Third, conducting a detailed analysis of existing schemes, design new schemes and suitably modify existing schemes based on an evidence-based scheme redesign approach and fourth to create a comprehensive budgetary support system for implementation of the intended social security benefits. Know the Workers. Policy Framework. Capacity Building. Implementation Mechanism. Have budgetary Support. Social Security Schemes. What was your plan for developing a credible database of labourers? We planned to create a unified database that can be seamlessly operated by different boards and moved between them as per the entitlements. First, the registration questionnaire was revised to include questions that would give the department a 360-degree understanding of the labourer’s lives, thus, throwing light on their various vulnerabilities. The questionnaire included critical information fields on education, wage rates, landholding, migration and workplace. Secondly, the registration process was made available both online and offline via NIC-developed mobile application that could be used in areas with no connectivity. Thirdly, the registration format was changed to make family-based. Fourthly, we used the time-tested, Aadhaar-based PDS database (which is also maintained by NIC) to identify unregistered labourers. Finally, we have simplified the data entry process by ensuring that 75% of all questions have dropdown options. What benefits you expected from these initiatives? All of these steps had multiple benefits. We were now collecting more comprehensive information on labourers, which helped us with evidence-based policy design. Secondly, information once provided to the department did not need to be provided again, meaning the department would collect far lesser information from labourers at the time of scheme applications. Thirdly, the reach and availability of the Labour Department portal was greatly expanded via the agnostic mobile application. Next, the new database created by the department automatically prevented duplicate entries. Fifth, the department was able to streamline its efforts to ensure that all unregistered labourers were now registered. By analysing the number of unregistered labourers in each district, we were able to set specific targets and mobilise our district teams to carry out this work. May I request you to throw some light on the special migration module developed. Yes, the questionnaire was created specifically to help register and track the movements of migrant workers into and out of the state. The Labour Department tied up with the Department of Rural Development (Panchayat Sachivs) and the Department of Urban Affairs and Development (Ward Moharrirs) to maintain a live, updatable register of migrant workers. This database was synced to the larger registration database to once again ensure that information that was already with the department was not collected unless necessarily. Through this system, Chhattisgarh will be able to track migration trends, and work with the destination states to ensure that its labourers continue to receive scheme benefits even while migrating. With increase in number of workers your targeted beneficiary will be more and for that you would require more budgetary support. How do you look at that aspect? You may be aware that the main source of budgetary provision comes as cess from establishment and factories. The cess collection from Building and other Construction Workers Welfare Board - BoCWB is around 150 crore now. There is lack of system for calculation or assessment of cess. We are now targeting to increase the cess collection to 450 crore. For this we also need to increase the registration of establishments. There are different registration systems for different kind of establishments and factories under different Acts, Rules and Boards leading to loopholes in the registration system. We are targeting to increase establishment registration under LWB to increase from 6420 to 15,000. What are the steps being taken towards this? We are developing Unified registration and licensing system with support of NIC for all establishments / factories across new labour codes. Integrated systems will avoid data mismatches and reduce harassment and duplication. Unified Annual Returns is being planned to monitor compliance and auto renewals. This will facilitate ease of compliance for establishments and tracking of labour entitlements. Auto renewal of licences would happen on furnishing of annual returns and online payment of licence fee. You were talking about Scheme Redesign based on analytics platform. Would you elaborate on this please? As of now there are 68 schemes under which workers can avail benefits. All these schemes have been made online. However, there are various problems that plagued the system. Firstly, the workers need to be aware about all schemes and benefits available to them. Secondly, a lot of the schemes were designed many years ago – there was no guarantee that the benefits provided under these schemes addressed the current needs and problems of the workers. Thirdly, the application process under the schemes (specifically the documentary requirements) were complicated, and workers often got stuck at this stage. (68 Schemes covered under various Boards) So, to address the above issues, we decided to analyse the data available to us. Based on a five years trend and time series analysis of the beneficiaries and the data, we are now focused on designing four schemes - Death and Disability, Maternity Benefits, Severe Illnesses and Scholarships. Finally, we are also working on moving towards a system of automated entitlement tracking and benefits disbursal. Under this system, the Labour Department will tie up with other state departments to proactively track important life events / triggers such as birth, education, pregnancy, injury and death, and automatically provide benefits to labourers when any such trigger event takes place. That’s a great idea. Under your leadership Labour department of Chhattisgarh has achieved 100% reforms under Ease of Doing Business. Yes, under comprehensive Ease of Doing Business there are 102 reform points. All points have been complied. It covers Single Online Window System, Labour Regulation Enablers, Inspection Reform Enablers, Compliance Inspections under different Acts, Registration and Renewal under different Acts, Licence and Renewal of licences under different Acts, License for contractors, Approval of plan and permissions. You have also done process reengineering for different processes. Reengineering governance processes, under Unified Registrations &amp; Licences for all Acts, Rules and Boards, we have reduced eight existing forms to just one form. Towards developing system for ease of compliance for establishments and tracking of labour entitlements, existing 91 registers have been reduced to two registers only. Centralised online system to track workers health and ensure assistance to the workers is being developed. This will track accidents to ensure receipt of workers entitlements and compensation. Finally, an Online Grievance Redressal system is being developed which would facilitate Choice centres to fill application form on behalf of workers. Labour Inspectors can approve this from their panel. We are grateful to you for sharing your vision with us. Before concluding would you like to share any important point you have in mind. I would like to thank Dr. AK Hota, DDG &amp; SIO, Chhattisgarh, Shri Satyesh Kumar Sharma, TD and HoD, Shri Saurabh Dubey, Scientist-C, Smt. Jyoti Sharma, Scientist-B and their team, Shri SS Painkara, Dy. Labour Commissioner, Labour Department for taking the initiatives ahead. I have a vision to develop Enterprises Architecture (EA) in the Labour Domain. You see, several stakeholders like Health, Education, Urban Development, Tribal development, Industry, ESIC and EPFO need to be integrated to track the establishment registration, entitlement tracking and automated benefit disbursal. Enterprise architecture (EA), so developed, can proactively and holistically lead enterprise responses to disruptive forces by identifying and analysing the execution of change towards desired vision and outcomes. I would like to request NIC to extend support towards this. Chhattisgarh is being among the first few states across the country to adopt such eGovernance application in labour domain is certainly a positive message for the government and citizen. Thanks a lot Sir.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="bagalkote-karnataka-marching-towards-digital-india-with-ict-solutions-april-2022.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Bagalkote, Karnataka Marching towards Digital India with ICT Solutions</span></a><a class="article-nav-link next" href="ivani-ai-enabled-image-video-analytics-by-nic-for-effective-efficient-egovernance-april-2022.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">IVANI AI enabled Image &amp; Video Analytics by NIC for effective &amp; efficient eGovernance</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="bagalkote-karnataka-marching-towards-digital-india-with-ict-solutions-april-2022.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Bagalkote, Karnataka Marching towards Digital India with ICT Solutions</span></a><a class="article-nav-link next" href="ivani-ai-enabled-image-video-analytics-by-nic-for-effective-efficient-egovernance-april-2022.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">IVANI AI enabled Image &amp; Video Analytics by NIC for effective &amp; efficient eGovernance</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Mizoram State: Supporting the government through ICT — Informatics July 2023</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:July 2023"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2023/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2023/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2023/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2023/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/july-2023/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/july-2023/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;4</div><a href="../pages/july-2023/page-4.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-4.jpg" alt="Page 4" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-4.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;5</div><a href="../pages/july-2023/page-5.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-5.jpg" alt="Page 5" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-5.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;6</div><a href="../pages/july-2023/page-6.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-6.jpg" alt="Page 6" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-6.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;7</div><a href="../pages/july-2023/page-7.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-7.jpg" alt="Page 7" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-7.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;8</div><a href="../pages/july-2023/page-8.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-8.jpg" alt="Page 8" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-8.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;9</div><a href="../pages/july-2023/page-9.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-9.jpg" alt="Page 9" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-9.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2023.html">July 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>Mizoram State: Supporting the government through ICT</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2023.html">July 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>Mizoram State: Supporting the government through ICT</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States</div>
-          <h1 class="article-title" data-pagefind-meta="title">Mizoram State: Supporting the government through ICT</h1>
+          <h1 class="article-title">Mizoram State: Supporting the government through ICT</h1>
           <hr class="title-rule">
           <p class="article-byline">By Kavita Barkakoty &bull; pp. 4–9</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Established in 1989, NIC Mizoram State Centre has been a pioneer in ICT activities in the state. Over the years, the State Centre has played a crucial role in the digital transformation of Mizoram. With the presence of eight NIC District Centres, it serves as a catalyst for driving digital initiatives in Mizoram. Currently, housed at the Old Secretariat, Aizawl, it offers a wide range of services. Utilizing its technical expertise and adopting a collaborative approach, it ensures the availability of robust technology infrastructure. In addition, the Centre has been developing and maintaining state-level websites, portals, and applications. These platforms serve as important mediums of interaction between the government and citizens, promoting transparency, efficiency, and accountability. Through these initiatives, the Centre facilitates access to information and online services, enabling better delivery of public services to the people of Mizoram. Established in 1989, NIC Mizoram has played an instrumental role in driving the digital transformation of the state. Through its innovative solutions, it has established a vital channel of communication between the government and citizens, fostering transparency, efficiency, and accountability in governance. By providing easy access to online services, the Centre has empowered the people to actively engage in governance processes and contribute to the development of the state. Lallianmawii Hnamte Sr. Technical Director &amp; SIO lmi@nic.in Lalhmachhuani Scientist-C chhuani@nic.in Lallawmkima Scientist-C l.pachuau@nic.in ICT Initiatives in the State Since 1989, NIC Mizoram has undertaken various ICT Projects for promoting good governance in the state. Some of the major projects are profiled below: eGPF Before the implementation of this project, the General Provident Fund (GPF) for all State Government Employees was maintained manually in the Accounts &amp; Treasuries Department Office. It was extremely time-consuming and interest calculation was not an easy task. Throughout the manual labour, numerous errors and corrections were made. The need for computerization of the system became imperative. To address this issue, an initial version of the software was developed using Visual Basic 6, but it only covered a portion of the system. This version was used for a certain period. In 2013, the software was redesigned and redeveloped using .NET technology, significantly improving its performance. The backend database system was powered by SQL Server, ensuring efficient data management. eGPF (electronic GPF) system has been used to record GPF subscriptions, withdrawals, and recoveries, and to calculate interest and deposit linked insurance, as well as to generate Annual GPF Statements for every GPF subscriber employed by the Government of Mizoram. Currently, there are more than 50,000 subscribers. Since the implementation of the redeveloped software in 2013, some features have been added and others have been modified due to changes in GPF rules in 2015, 2016, 2019, and 2023; the latest iteration, eGPF version 6, has been in operation since April 2023. Treasury Computerisation In collaboration with the user department, the State Centre customized the ‘COMPACT’ software developed by NIC Delhi. The software was implemented in 2012 at the Aizawl South Treasury, which is the largest treasury in the state, on a pilot basis to test the functionality and effectiveness of the software. Subsequently, it was implemented in three other treasuries. By 2016, all the remaining treasuries had been computerised, resulting in a total of 10 treasuries operating the COMPACT system. The system involves entering all government bills into the software, enabling streamlined processes for bill checking, passing, and payments. With this system, payments are efficiently made using cheques that are directly printed from the software. Starting from October 2015, an e-Payment system was introduced in two largest treasuries, namely Aizawl South Treasury and Aizawl North Treasury, with the assistance of a state NIC-developed software called eBillDDO. This software enables Drawing and Disbursing Officers (DDOs) to create bills in a digital format and generate a text file. The generated file is then submitted to the treasuries and seamlessly integrated into the COMPACT system, eliminating the need for manual entry of bill details. In these two treasuries, all salary bills and personal claim bills are paid using the e-Payment system. Subsequently, contingent bills are also processed and paid electronically. e-Lekha e-Lekha is a web-based financial management application that provides the State Finance Department with an electronic payment and accounting information system in order to improve the accounting process’s efficacy and precision. It features a core accounting system with integration of daily, monthly, and annual accounting processes for near real-time value-added reporting and financial monitoring and control, and is built around the State Treasury Offices’ COMPACT application. Mizo e-Lekha has been hosted and operational since June 2017. All treasuries are uploading data to e-Lekha on a daily basis. GST-GRAS NIC Mizoram has implemented the GST-GRAS application developed by NIC Pune in the State. The application is deployed on RHEL Server and technology used are PhP, jQuery Bootstrap and PostgreSQL. The application performs the following tasks: • Download/upload Credit Notification files received from RBI SFTP server • Download/upload Account Statement files received from RBI SFTP server • Download / upload CIN files from GSTN portal • Download / upload CPIN files from GSTN portal • Reconcile files received from RBI and GSTN portal using GST-GRAS • Generate and submit account statement to Accountant General of Mizoram NIC Mizoram has been extending excellent support to the Government of Mizoram in various verticals of e-governance in the State of Mizoram. I appreciate the good work done by NIC Mizoram at State as well as District level. I would like to have NIC’s more proactive participation in development of IT support systems. I look forward for creation of new synergy between NIC and State Government Departments for continued support and effective results. I wish all the best to NIC in its endeavor. Robert Romawia Royte Minister of State Information &amp; Communication Technology Government of Mizoram ILP According to the Constitution of India, Indian citizens have the freedom to live and work in any state. However, entry into certain protected states requires special permissions from the state government. The Inner Line Permit (ILP) is an official travel document issued by the concerned state government to allow Indian citizens to enter these protected areas for a limited period. Mizoram is one such protected state. This application is designed for issuing and collecting revenue for Temporary Inner-Line Permits at Vairengte and Bairabi check gates in Kolasib District, Mizoram. It also maintains a database of this information for future reference. This software was awarded the First Prize in the Team Category for the Chief Minister’s Award for Excellence in Public Administration (2019). NGDRS National Generic Document Registration System (NGDRS) Mizoram is a collaborative effort between NIC Pune, the IGR Department of Mizoram, and NIC Mizoram State Centre. It is a generic application hosted on the NIC Cloud Meghraj. NGDRS Mizoram is an online system that provides document registration services to citizens in compliance with the Registration Act and facilitates revenue collection in accordance with the Stamp Act. This web-based, open-source application follows the “One Country One software” principle and is designed for all States / UTs across the country. It ensures Unicode compliance, offers a complete user interface, enables citizen data entry, calculates stamp duty, captures photos / fingerprints / iris data, and provides role-based authentication and authorization. NGDRS has been implemented in six districts and can be accessed through the portal: https://igrmizoram.nic.in. Mizoram Safety App Launched on December 13, 2019, the Mizoram Safety App is a mobile application developed to enhance safety and security measures for the residents and visitors of Mizoram. It is an initiative by the government of Mizoram in collaboration with the NIC Mizoram to leverage technology for the well-being of its citizens. The app aims to provide a convenient platform for reporting emergencies, accessing emergency services, and promoting community safety. DM Dashboard (DARPAN) Dashboard for Analytical Review of Programmes / Projects Across Nation (DARPAN) helps in transforming complex government data into easy and compelling visuals and aims to provide state and district administration the status of different departmental activities at a glance. It also provides the state and district administration a tool to deliver real-time, dynamic project monitoring systems using APIs / Web services. It enhances analysis through data collection by consolidating multiple data sources into one centralised, easy-to-access platform. DARPAN has been implemented for all districts of Mizoram (except for 3 new districts) and DM Dashboard can be accessed through https://mz.dmdashboard.nic.in. AeBAS Aadhar enabled Biometric Attendance System (AeBAS) is an attendance management system designed for government organisations by Government of India to improve productivity of employees. The system authenticates attendance using Aadhaar Number created by Unique Identification Authority of India (UIDAI). It is a cloud based BAS that monitors attendance of government employees in real-time. The AeBAS device authenticates users by utilising their Aadhaar Number stored in the smart card and fingerprint in less than 1.5 sec. It offers unique advantages in terms of connectivity, technology, usage environment and ease. AeBAS has been implemented across the NIC State and District Units. Other government departments like Archeological Survey of India, Aizawl, Geological Survey of India, Office of the Commissioner, Central Goods and Services Tax, Aizawl have also been successfully onboarded the system. Under the direction of MoRTH, NIC has successfully executed various Transport Projects like VAHAN, SARATHI, e-Challan, iRAD, etc. The successful execution of these projects results in efficiency, transparency, accountability and reliability. I feel that NIC is praiseworthy for the actions taken for the success of their projects and follow up actions to maintain these projects. Er. R. Lalrammawia Director, Transport Department Government of Mizoram CSAS Civil Supplies Accounting System (CSAS) is an accounting software system for Account Branch, Food Civil Supplies and Consumer Affairs, Govt of Mizoram. It has following modules- • Tax and Non-Tax Revenue Management • Monthly Stock Account Management • K-Deposit • Carrying Contractor Bill Management The development of this software commenced on June 27, 2022. As of October 2022, two modules, namely “Tax and Non-Tax Revenue Management” and “Carrying Contractor Bill Management,” have been successfully implemented. These modules have enhanced the efficiency and effectiveness of revenue management and carrying contractor bill processes within department. eRAM eRAM is a web-based land records software developed by NIC Mizoram to ensure easy access of land records data for various stakeholders, including department staff, officers, and citizens. The project was launched in May 2021. The software facilitates the quick delivery of Digitally Signed Records of Right (RoR) to RoR holders and verifies the authenticity of the printed RoRs. Future enhancement: • Integration with Bhunaksha software to display digital maps, enhancing the visualisation of land records • Integration for online land tax payment, streamlining the process of paying land taxes through the software Other Major Initiatives CCTNS Crime and Criminal Tracking Networks and Systems (CCTNS) is a central project which aims to create a comprehensive and integrated system for effective law enforcement across the country. The primary objective of CCTNS is to digitize and connect all the police stations and law enforcement agencies in India, enabling real-time sharing of information and seamless coordination among them. e-Procurement / e-Tender In order to promote transparency, efficiency, and reduce procurement cycles, the Government of Mizoram has mandated the use of the e-Procurement System for all state government departments and agencies. This mandates open tenders with a threshold value of 1 crore and above must be conducted through this system. A dedicated portal (http://mizoramtenders.gov.in) to streamline the entire procurement process for goods, and services has also been developed. e-Court e-Courts was conceived based on the National Policy and Action Plan by the e-Committee of the Supreme Court of India in 2005, with an aim to modernise and transform the Indian Judiciary through the use of ICT. The primary objective of the e-Courts project is to make the justice delivery system more accessible, affordable, and efficient. As the part of this project, the CIS software has been successfully installed and implemented in eight District Courts and the Gauhati High Court Aizawl Bench. IVFRT In order to modernise and upgrade the immigration services, Immigration, Visa and Foreigners Registration &amp; Tracking (IVFRT) has been identified and included as one of the mission mode projects (MMPs) to be undertaken by the Ministry of Home Affairs under the National e-Governance Plan (NeGP). It aims to develop and implement a secure and integrated service delivery framework that facilitates legitimate travellers while strengthening security. It has been implemented in all the District Foreigner’s Registration Office (District FROs). For smooth implementation, online training was recently organised by NIC Mizoram IVFRT Team in collaboration with Foreigner’s Registration Team, Delhi in January, 2023. eTransport Project Vahan &amp; Sarathi: Vahan &amp; Sarathi are software applications integrated into the Parivahan Web Portal. They are responsible for vehicle registration and driving license issuance, respectively. The Ministry of Road Transport and Highways (MoRTH) entrusted the NIC with the development and deployment of these software applications in compliance with the Motor Vehicle Act, 1988, and Motor Vehicle Rules, 1989. The implementation of Vahan and Sarathi began in Aizawl District Transport Office on November 9, 2003, and expanded to all other districts over following years. Mizoram adopted Vahan 4.0 on August 29, 2017, and Sarathi 4.0 was successfully implemented in all districts on November 1, 2019. In the period from 2019 to 2022, various features such as Dealer Point Registration, Online Payment Services, and Faceless application of Learner’s License were introduced. e-Challan: This application was developed for android smartphones to serve as a digital solution for issuing traffic violation challans. Its main purpose is to simplify the process of checking vehicle documents and issuing challans. The app enables compounding of offences and verification of document validity, with all relevant data recorded and stored in the Vahan database. Transactions of fees are restricted until the compounding fees are cleared. e-Challan for the Traffic Police Aizawl unit was launched on December 13, 2019. VLTD: In response to the Nirbhaya case and to enhance the safety of women and prevent crimes, the Government of India mandated the installation of Vehicle Location Tracking Devices (VLTD) in all passenger-carrying vehicles. Vehicles without VLTD and alarm buttons are restricted from registration. An MoU was signed on April 20, 2022, between the Transport Department, Government of Mizoram, NIC, and NICSI to establish a monitoring centre for tracking and monitoring public service vehicles as per the AIS-140 Standard under the Nirbhaya Framework. mParivahan: This app was developed under the guidance of MoRTH and serves as a digital platform for citizens to access various services and information related to their vehicles and driving licenses. The app is designed to provide convenience, efficiency, and transparency in dealing with transport-related matters. iRAD: iRAD (Integrated Road Accident Database) is an application developed for the purpose of collecting, managing, and analyzing data related to road accidents. It aims to create a centralized and comprehensive database of road accident information to facilitate effective accident management, analysis, and policy-making. With iRAD, relevant stakeholders such as police departments, traffic authorities, and health departments can input and access information about road accidents, including details about vehicles involved, casualties, location, date, time, and other relevant data. This data can be used for various purposes, including understanding accident trends, identifying high-risk areas, evaluating the effectiveness of road safety measures, and developing targeted strategies to reduce accidents and improve road safety. Notably, since its initial launch in October 12, 2021, Mizoram is among the first states to implement the iRAD project across all its districts on September 15, 2021. PUC Certificate Testing Centre: Transport Department has outsourced the Pollution Under Control (PUC) Certificate testing centers to private firms. Uploading PUC details to Vahan is necessary to obtain the certificate. NIC plays a crucial role in implementing these testing centers and their integration with the Vahan database. Mizoram integrated PUC with Vahan in 2019, with the first permission to conduct emission tests granted to the New Capital Complex testing site in Khatla on January 10, 2020. Election Project Since early 1990s, NIC Mizoram has played a crucial role in overseeing ICT-related activities for election management in the State Government. Serving as the State Level Agency (SLA) for the Election Department, NIC has been instrumental in providing comprehensive support for all elections, including Parliamentary, Legislative, and more, across all districts and at the state headquarters. The assistance offered by NIC at different stages of the election process has garnered widespread recognition and appreciation. CONFONET Computerization of Consumer Commissions is a nationwide initiative aimed at digitizing the operations of the Commissions in both the State and District Forums. Its website (http://confonet.nic.in) offers citizen an interface for accessing cause lists and judgment copies. On June 20, 2022, the Minister of Food, Civil Supplies, and Consumer Affairs, Shri K. Lalrinliana launched an online portal named e-Daakhil to further bolster the system and receive consumer complaints online. NDAL-ALIS National Database on Arms Licence-Arms Licence Information System (NDAL-ALIS) is an all-comprehensive system developed for issuing arms licenses. It manages the entire process, starting from the application receipt to license approval, and printing. It aims to ensure that applicants go through all the necessary verification processes before being granted a license to carry a weapon within a specific jurisdiction. NDAL-ALIS is a sub-module of the IVFRT project and has been implemented in all 11 districts. ePrison ePrison system (https://eprisons.nic.in) was developed by the Prison Division, NIC-HQ, to computerise and integrate all the activities related to prison and prisoner management. Since September 2018, it has been implemented across all prisons in the state, including the Central Jail, 8 District Jails, and 1 Women Jail. NSP National Scholarship Portal (NSP) is an online portal by the Government of India for applying, processing, verifying and sanctioning Government scholarships to students. It aims to reduce discrepancies and provide a common, effective and transparent way to disburse scholarships to students. It is implemented as an MMP under the National e-Governance Plan in Mizoram and various schemes can be availed by the students. Public Distribution System End-to-end Computerization of TPDS Operations: This scheme aims to digitise various operations related to the Targeted Public Distribution System (TPDS). It was initially implemented during the 12th Five Year Plan (2012-17), but due to delays, it was extended until March 31, 2020. It aimed to digitise ration cards (RCs), depots, and other databases, computerise online allocation and supply chain management, establish transparency portals and grievance redressal mechanisms, and automate fair price shops. Integrated Management - Public Distribution System (IM-PDS): This scheme was started in April 2020 and extended until March 31, 2023, focused on national portability of RCs along with de-duplication of RCs and beneficiaries at the state and national levels. Scheme for Modernization and Reforms through Technology in PDS (SMART-PDS): SMART-PDS scheme, starting from April 2023, aims to prevent food grain leakage, improve distribution chain efficiency, and ensure provision availability for migrants. As of April 2023, approximately 284,034 ration cards and 1,161,804 beneficiaries have been digitised. The distribution of 9,543.364 metric tons of rice is done through digital systems using ePOS devices and digital weighing scales, accounting for 98.61% of the total distribution. NeVA National eVidhan Application (NeVA) facilitates smooth proceedings and efficient legislative business in the House. It enables the Chair of the House to conduct proceedings seamlessly and allows Hon’ble Members to perform their duties effectively. NeVA also enables the House to go paperless by hosting a secure page for each Member to submit questions and notices. The Mizoram NeVA portal can be accessed at https://mizo.neva.gov.in. Infrastructure and Networking Services NICNET / NKN NIC Mizoram is equipped with a 10 Gbps Leased Line connectivity from PGCIL as the primary link, and a 2.5 Gbps connectivity from BSNL as the secondary link. These two core links ensure redundant and reliable network connectivity. Additionally, the NKN link is connected to 7 Educational and Research Institutes, including the State Data Centre of Mizoram State ITC department. NICNET connectivity is provided to 8 districts, and there are over 6000 nodes within government offices that are connected through NICNET / NKN within the state. Video Conferencing Services The State Centre has implemented a comprehensive video conferencing (VC) system, which includes 14 VC studios strategically located in various important locations. These studios have been set up in 8 District Collector Offices, as well as in key government establishments such as Raj Bhavan (Governor’s residence), Chief Secretary Office, Director General of Police (DGP) Office, NIC State Headquarters, State Informatics Office (SIO), and the High Court. By establishing these VC studios, the State Centre aims to enable seamless and effective communication and collaboration among government officials and stakeholders across different locations. Accolades • CSI-Nihilent e-Governance Awards (2010-11) for Vaahan • e-North East Award (2012) for Query and Alert-based SMS Service for Mizoram Transport Department • e-North East Award (2014) for Real Time Courtesy &amp; Information SMS Service on Vehicle Registration Without Using SMS Gateway • Chief Minister’s Award for Excellence in Public Administration (2019) for Introduction of Temporary ILP Software Way Forward With its committed teams at State / District Centres, the NIC Mizoram State Centre is committed to making a positive contribution to digital governance. It is working toward the launch of a number of projects, including eHospital, Online Building Permission System, Xtended Licensing and Laboratory Node, Bhu-Naksha, ICJS, and Service Plus. Contact for more details State Informatics Officer NIC Mizoram State Centre Room No. 315, Old Secretariat Building II Treasury Square, Aizawl, Mizoram - 796001 Email: sio-mizo@nic.in, Phone: 0389-2300247</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="editorial-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="puducherry-ut-french-riviera-of-the-east-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Puducherry UT: French Riviera of the East</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="editorial-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Editorial</span></a><a class="article-nav-link next" href="puducherry-ut-french-riviera-of-the-east-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Puducherry UT: French Riviera of the East</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

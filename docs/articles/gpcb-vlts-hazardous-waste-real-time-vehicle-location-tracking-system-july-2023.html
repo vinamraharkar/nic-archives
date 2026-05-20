@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System — Informatics July 2023</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:July 2023"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/july-2023/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/july-2023/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/july-2023/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/july-2023/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/july-2023/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/july-2023/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2023.html">July 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/july-2023.html">July 2023</a><span class="breadcrumb-sep">&rsaquo;</span><span>GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System</span></nav>
         <div class="article-header">
           <div class="article-section-badge">e-Gov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System</h1>
+          <h1 class="article-title">GPCB-VLTS: Hazardous Waste Real Time Vehicle Location Tracking System</h1>
           <hr class="title-rule">
           <p class="article-byline">By Rajeev Joshi &bull; pp. 26–27</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The Hazardous Waste Management System is an extension of the services of the eXtended Green Node (XGN) – a online consent management portal of the Gujarat Pollution Control Board (GPCB) which is developed by NIC and is operational since 2008 as a technological innovation tools for the prevention and control of environmental pollution. As per the state pollution prevention law and policy, it is mandatory for safe disposal of the industry produced hazardous waste. The industry is sending the hazardous waste either to recyclers or to different industries for safe disposal. The XGN software facilitates the concerned industry for online generation of hazardous waste manifest. It was a big challenge for the GPCB to track the location of those vehicles carrying hazardous waste and also to ensure its safe disposal at the real destination place. To overcome such issues NIC Gujarat along with the close associa- tion of NIC Uttarakhand team, has developed a web based Vehicle Location Tracking System for the GPCB. GPCB-VLTS is a comprehensive web-based application for real-time tracking of the vehicle carrying the hazardous waste from industrial sites to waste management facilities for safe disposal of it. The application is developed by NIC Gujarat in collaboration with NIC Uttarakhand team. It provides a very rich dashboard through which the GPCB Control Unit can track and monitor the vehicle carrying the hazardous waste from source place to destination place on predefined route. Pramod Kumar Singh Dy. Director General &amp; SIO sio-guj@nic.in Pankaj K. Pathak Sr. Technical Director pankaj.pathak@nic.in Anil Kumar Arya Sr. Technical Director ak.arya@nic.in Ramakant Soni Scientist-C ramakant.soni@nic.in The system provides the dashboard for real-time tracking of the vehicles carrying the hazardous waste during the disposal of waste. The system automatically generates various alert messages to all the concerned stakeholder including if the vehicle is diverted from its pre-defined routes. The system also provides the facility to view the trip history. Approximately 20,000+ manifests are generated monthly basis online on the XGN Portal of the GPCB. This XGN-hazardous waste manifest portal is integrated with the GPCB-VLTS system to track vehicles carrying the hazardous waste from source to destination in real-time mode. Environmentally safe disposal of a Hazardous Waste is very important for pollution control as its mismanagement has a direct impact on the quality of the environment. Movement of hazardous waste for its ultimate disposal has already been governed by the online manifest system on XGN of GPCB. By technological intervention, a novel first of its kind in hazardous waste management online system on XGN has been developed namely “Vehicle Location Tracking System (VLTS)” whereby route of hazardous waste carrying vehicle would be monitored to ensure that such truck ply only on the pre-decided route for the disposal/transportation of the hazardous waste only at the destination as decided at the time of generation of the manifest. The system has been developed by NIC, Gujarat with the help of NIC, Uttarakhand. Hon’ble Chief Minister of Gujarat, Shri Bhupendrabhai Patel has launched this system on 5th June, 2022 during the World Environment Day celebration; marking its importance. This e-surveillance will further enhance tracking of hazardous waste movement in a very transparent manner. R. B. BARAD, IAS Chairman, Gujarat Pollution Control Board Features of the Product • Dashboard to monitor the live trips of vehicles carrying the hazardous waste from source industry to destination industry • Integrated with GPCB’s XGN portal through which online Hazardous Waste Manifests can be created by the Sender Industries • Sender Industry can draw the proposed route between source and destination point on the map on which the vehicle will be passing towards the destination. • Once the route is created the trip can be said as started and then it will be available on the VLTS portal for real time tracking • Shows the live status of the ignition and speed of the vehicle on the dashboard • Live tracking is available to the GPCB control room, Sender, Receiver and the concerned GPCB Regional Office • One can re-play the entire trip history of a specific trip or for a chunk of specific period of time of the trip • Alerts on portal as and when the vehicle is diverted from their defined route. Also a SMS will be send to concern Regional Office, Sender and Receiver • Alerts to the concerned stakeholder when the trip is halted for too much time • Allows searching of vehicle on dashboard by vehicle registration number OR by Manifest ID or by Sender or Receiver • Role Based Access Technologies Used • 2 Web Server ( 16 GB 4 core each one) • 1 For socket application • 1 For VLTS web Application • 1 DB Server ( Windows 2022 ) – 12 core, 32 GB • MS SQL Server 2019 Ent • Google Map Service Purchased by GPCB • Daily 600+ trips monitored by GPCB • AIS 140 Compliant GPS Device sending data directly to XGN-VLTS Server Under the ambit of “Vehicle Location Tracking System (VLTS)”; all the vehicles of Gujarat State carrying hazardous waste are going to be covered in coming months. However, it is planned to implement it in a phased manner starting with common facilities for the smooth roll out of the system. NIC has not only developed this system but also conceptualized related all the activities viz. vehicle registration, data transmission – analysis – storage – its retrieval, shooting alert message etc. as well as its continuous maintenance. NIC has proved a technological partner that has made it possible to materialize the idea of GPCB that has resulted into such a novel system. The system helps real-time monitoring of the hazardous waste movement for fulfilling “cradle to grave” approach and thereby has further strengthened the overall efforts of GPCB in environment preservation. D. M. THAKER Member Secretary Gujarat Pollution Control Board Innovations Applied GPCB-VLTS listener is directly receiving Transmission Control Protocol (TCP) packets sent by GPS AIS 140 device on the TCP/IP port of the VLTS. The servers are hosted at Gujarat State Data Centre. Benefits • Real-time location tracking of vehicle carrying hazardous waste • Alerts in case of route deviation, unexpected delay, too much halt, no logical end of the trip etc. • Hazardous waste inventory is strengthened • Availability of the precise data • Irregular trips are easily detected (without e-Manifest) Accolades GPCB-VLTS has been honored by the SKOCH GOLD award under the environment category and the same has been jointly received by official staffs of GPCB, NIC Gujarat &amp; Uttarakhand in a ceremony held at New Delhi on 27th May 2023. Way Forward In the near future, the implementation of the GPCB-VLTS will progress through several important steps. First, there will be a focus on finalizing the Action Framework for addressing violations within the VLTS. Additionally, efforts will be made to strengthen the capacities of relevant stakeholders involved in the transportation of hazardous waste. Furthermore, vulnerable hot-spots will be geofenced to provide heightened protection. Lastly, comprehensive analytics will be applied to various alerts generated by the VLTS. These collective measures aim to improve the efficiency of the VLTS, facilitate better management of hazardous waste transportation, ensure compliance with regulations, minimize environmental risks, and safeguard public health and safety. Contact for more details Pramod Kumar Singh Dy. Director General &amp; SIO NIC, Block-13, 2nd Floor, New Sachivalaya Gandhinagar, Gujarat - 382010 Email: sio-guj@nic.in, Phone: 079-23223035</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="eprayuktisewa-online-portal-for-mobile-app-bharat-map-service-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">ePrayuktiSewa: Online Portal for Mobile App &amp; Bharat Map Service</span></a><a class="article-nav-link next" href="ihrms-punjab-tool-for-effective-hr-management-decision-support-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">iHRMS Punjab: Tool for Effective HR Management &amp; Decision Support</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="eprayuktisewa-online-portal-for-mobile-app-bharat-map-service-july-2023.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">ePrayuktiSewa: Online Portal for Mobile App &amp; Bharat Map Service</span></a><a class="article-nav-link next" href="ihrms-punjab-tool-for-effective-hr-management-decision-support-july-2023.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">iHRMS Punjab: Tool for Effective HR Management &amp; Decision Support</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

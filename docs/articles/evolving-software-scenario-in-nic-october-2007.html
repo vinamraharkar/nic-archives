@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Evolving Software Scenario in NIC — Informatics October 2007</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2007"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/october-2007/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2007/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2007/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/october-2007/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2007/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2007/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;39</div><a href="../pages/october-2007/page-39.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2007/page-39.jpg" alt="Page 39" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2007/page-39.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/october-2007/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2007/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2007/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2007.html">October 2007</a><span class="breadcrumb-sep">&rsaquo;</span><span>Evolving Software Scenario in NIC</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2007.html">October 2007</a><span class="breadcrumb-sep">&rsaquo;</span><span>Evolving Software Scenario in NIC</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Perspectives</div>
-          <h1 class="article-title" data-pagefind-meta="title">Evolving Software Scenario in NIC</h1>
+          <h1 class="article-title">Evolving Software Scenario in NIC</h1>
           <hr class="title-rule">
           <p class="article-byline">By Deepak Goswami &bull; pp. 39–40</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">In his over two decades of service at NIC, the author has developed many e-governance applications in various areas. This is an account of his experience and observations about how the software scenario has evolved over time at NIC. During 1980's workstations and dumb terminals connected to mainframe, mini or super-mini systems with various third generation languages (e.g. FORTRAN, COBOL, PL/1 etc) were being used for software development. The new mainframe computer NEC-1000/20D from Japan was installed and various software systems were ported from the old CDC Cyber System to NEC-1000 which also provided good support for FORTRAN and COBOL. Compiling programs with JCL (Job Control Language), taking printouts of source-codes and compilation errors on Line Printers, interacting with Operators for mounting tapes etc were parts of the daily routines of software developers. As State and District Units came up towards the late eighties and PCs became ubiquitous with initially MS-DOS and FORTRAN/COBOL compilers and GWBasic were used for development; but soon, dBase III Plus became popular for software development with WordStar, Lotus 1-2-3 and IBM Storyboard as office automation products. Some of the State Units also had super-mini multi-user systems like Norsk Data ND 550 and ECIL Micro-32 with dumb terminals, bulky magnetic tape drives, Line Printers and FORTRAN and other languages for software development. As the NEC-1000 systems (available at NIC HQ and the three regional centres at Hyderabad, Pune and Bhubaneswar) supported DBMSs like INQ and ADABAS, their use was found in some applications like GISTNIC developed by NIC Hyderabad. The General Election in 1991, where NIC first played a major role throughout the country, used NEC-1000 at NIC HQ as the central server and round-wise counting data was entered by all DIOs through MES (or Micro Earth Station as VSATs were known in those days). Some of the State Units also started developing statewide systems for use by DIOs on NEC-1000 using FORTRAN/COBOL etc and flat-files for data storage. Soon, 80386-based SCO-XENIX-based systems became available in early nineties in State and District Units with FoxBASE, Professional (spreadsheet) and Lyrix (word processor) as application softwares. FoxBASE became (and retained its position throughout the decade) the mainstream application development tool in all State and District Units. Soon, the OS underwent rapid changes to SCO UNIX 3.2, then AT &amp; T UNIX SVR 4, SCO Openserver5, Novel UnixWare. Later on, an effort was made to switch over to the Uniplex Office-suite in projects like District Courts; Uniplex however lacked programming features in the database. In a few projects during early 90's, C/C++ with flat files or FoxBASE was used. A number of developers wrote libraries for accessing dbf and index files in FoxBASE or simply used flat files. For developing forms etc under character-user-interface (CUI) on Unix terminals, programmers resorted to curses library and to some extent Extended Terminal Interface (ETI) as well as Form and Menu Language Interface (FMLI, which was a precursor of new tools like E-Forms). A few successful applications of this type were DISNIC-PLAN, DCIS (District Court Information System). Oracle-base software development (with version 6.0 and then 7.0) on various flavours of Unix was another major trend using PRO*C and 4GLs like SQL Form, SQL Report, SQL Menu in the Character-User-Interface (CUI). Oracle became widely used in projects with large databases like Passport, 6th AIES (at national level) and Treasury, Land Records etc at State-level. NIC also used DB2 for a few projects. A few graphical applications developed in those days (e.g. GISNIC etc) used the Computer Graphics Interface (CGI) library. When support for CGI was discontinued with SVR 4 and UnixWare, some of the developers (like the present author) used IOCTL system calls for developing a library similar to CGI under these new Unix variants. As Windows-based machines came during mid to late nineties, an initial development during this period was the conversion of existing systems to Windows 3.1/3.11 environment. After Visual Studio 6.0 became available to all the States and District Units and a series of very effective training programmes were conducted on VB &amp; VC++, a large number of developers switched over from FoxBASE to VB6.0 and client-server applications came up with MS SQL Server 7.0 as the back-end database. Web-based development and Open Source Software (OSS) characterize the present phase of software development in NIC. While CGI (Common Gateway Interface) did not find many takers in NIC, ASP (Active Server Pages) came in a big way; parallely, PHP and JSP also had their share of applications. Acceptance of Linux in the server front has been quite widespread at NIC HQ, most of the State Units and a number of District Units. Linux as a Desktop OS, is being used only by hardcore open-source enthusiasts or by those badly mauled by viruses. Java Servelets and JSP-based applications have made their appearances; but full-fledged J2EE-based systems are even now very few. With a number of excellent JAVA IDEs (e.g Eclipse, NetBeans etc) having become free in recent years, Java and J2EE-based development is likely to receive some boost (CollabCAD is an excellent example). NetBeans 5.5 with JDK 1.6 especially is a very good combination for Java developers to develop a wide range of applications from AWT/Swing-based environment to full-fledged J2EE-based environment. .NET framework and Visual Studio.NET have made development of diverse kinds of applications (e.g. in Windows-based, Web-based, Console-based environments, DLLs, Web-services etc) quite easy in a number of programming languages (e.g. VB, C#, VC++, J# etc). It provides great interoperability features through CLR (Common Language Runtime) amongst components developed using different languages. Web Services hold great promises for interoperability amongst all development platforms (.NET, J2EE &amp; PHP) and Service Oriented Architecture (SOA) is likely to come in a big way. The 2-tier applications consisting of the user-interface (UI) and the data-layers (the Business Object layer often conspicuous by its absence) are the hallmark of our development approach which has changed with systems like Vahan, Rural Soft, eNRICH which were developed using 3-tier architecture. This proved the reusability and maintainability of our code. Also, now UML is being used extensively for systems analysis and design in many projects. True to its reputation of being the pioneer ICT organisation in our country, NIC is moving with technology changes to provide best support for egovernance applications.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="it-infrastructure-protection-from-malicious-code-october-2007.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">IT Infrastructure Protection From Malicious Code</span></a><a class="article-nav-link next" href="accounts-general-jharkhand-october-2007.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Accounts General, Jharkhand</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="it-infrastructure-protection-from-malicious-code-october-2007.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">IT Infrastructure Protection From Malicious Code</span></a><a class="article-nav-link next" href="accounts-general-jharkhand-october-2007.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Accounts General, Jharkhand</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

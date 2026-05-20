@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector — Informatics April 2025</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2025"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/april-2025/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/april-2025/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/april-2025/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;27</div><a href="../pages/april-2025/page-27.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2025/page-27.jpg" alt="Page 27" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2025/page-27.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2025.html">April 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</span></nav>
         <div class="article-header">
           <div class="article-section-badge">e-Gov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</h1>
+          <h1 class="article-title">Matsya Baibhav: A Digital Leap in Assam’s Fisheries Sector</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by KAVITA BARKAKOTY &bull; pp. 26–27</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The fisheries sector holds immense socio-economic significance for Assam, contributing substantially to the livelihood of rural communities. With an average annual growth of about 6% in fish production, Assam’s total fish output has increased from 2.94 lakh tons in 2015-16 to 3.93 lakh tons in 2020-21. Similarly, fish seed production has seen a significant rise from 5,678 million fry to 9,886 million fry in the same period. However, despite this positive trend, the demand for fish in the state surpasses the supply, necessitating the import of fish from other states. Ghare Ghare Pukhuri Ghare Ghare Maach (GGPGGM) Initiative Recognizing this gap, the Assam government introduced a strategic project in 2017-18 to enhance local fish production and generate employment for rural youth. The project, Ghare Ghare Pukhuri Ghare Ghare Maach (GGPGGM), was launched under the Rural Infrastructure Development Fund (RIDF-XXIII) with an outlay of Rs. 12,155 lakh, sourced from NABARD (Rs. 9,509.50 lakh), State Share (Rs. 500.50 lakh), and beneficiaries (Rs. 2,145 lakh). The project aimed to boost fish production by 5,000 metric tons annually. As part of the initiative, beneficiaries received fish culture input support, including fish seed and feed, for two consecutive years under the Chief Minister’s Samagra Grammya Unnayan Yojana (CMSGUY). They were also provided with training through College of Fisheries in Raha, and Krishi Vigyan Kendras under Assam Agricultural University, Jorhat, to ensure the long-term success of the project. The GGPGGM scheme focused on constructing 1,000 hectares of individual farmer ponds and 430 hectares of village community tanks across all Legislative Assembly Constituencies (LACs) in Assam. Given the scale of the project, real-time tracking of assets and beneficiaries became essential, leading to the development of a digital solution. Objective To streamline the monitoring and evaluation of GGPGGM, the National Informatics Centre (NIC), Assam State Centre, developed a web portal and a mobile app called Matsya Baibhav. The Matsya Baibhav mobile app and Portal https://fisheryassets.assam.gov.in was launched in the month of February, 2022. The primary objective of this application is to geo-tag the assets created under the project and provide a centralized platform for data management, integration of Fishery Assets created in the Bharat Map with location and transparency. • Common Platform: Facilitate monitoring of the GGPGGM scheme through an integrated web portal • Real-time Status Updates: Provide up-to-date information on the implementation progress • Dashboard &amp; Reports: Summarize scheme status with graphical representation and detailed reports Matsya Baibhav is a digital initiative to enhance fisheries management in Assam. Launched under the GGPGGM project, it tracks and geo-tags fishery assets using a mobile app and web portal available at https://fisheryassets.assam.gov.in/ integrated with Bharat Map Services. With 9,083 ponds created and 9,029 geo-tagged, it ensures transparency, real-time monitoring, and data-driven decision-making. By reducing fish imports and boosting self-sufficiency, Matsya Baibhav plays a key role in Assam’s fisheries development. • Geo-mapping of Ponds &amp; Tanks: Display location-based data of assets created under GGPGGM • Public Access: Ensure transparency by making dashboard and reports accessible to the public User Roles and Workflow The system follows a hierarchical approval mechanism: • State-level users can approve or reject entries made by district or block-level users • District-level users can approve or reject only block-level entries • Block-level users Features of Matsya Baibhav The portal includes distinct categories to track assets and beneficiaries: • Ponds Geotagged: List of all approved ponds/tanks • Individual Ponds: Approved private ponds • Community Ponds: Approved village community tanks • Pending for Approval: Entries awaiting validation • Rejected Entries: Ponds/tanks not approved by state or district authorities • Monthly Geotagging Updates: Summary of geotagged ponds/tanks within a specific month Additionally, the system provides district-wise, LAC-wise, and block-wise reports, ensuring comprehensive data accessibility for state-level users. Latest Data from Matsya Baibhav Portal As per the latest records, a total of 9,083 ponds and tanks have been created under the GGPGGM initiative, of which 8,706 are individual ponds and 377 are community tanks. In terms of geo-tagging, 9,029 water bodies have been successfully mapped, with 8,650 being individual ponds and 379 being community tanks. These figures highlight the remarkable progress made in implementing the initiative, demonstrating the crucial role of Matsya Baibhav in accurately tracking, mapping, and managing fisheries assets across Assam. Geotagging Process in Matsya Baibhav The geo-tagging process involves: • Adding a new entry: Users input beneficiary or community details • Capturing images: Clicking photos at all corners of the pond/tank, which records latitude and longitude • Saving and uploading: Users review entries, ensure accuracy, and upload them to the server • Approval process: Entries are verified and either approved or rejected with feedback If required, images can be re-captured before uploading to the server, ensuring precise geolocation data. Conclusion Matsya Baibhav has revolutionized fisheries management in Assam by integrating digital tracking, ensuring transparency, and enhancing decision-making capabilities. By accurately geo-tagging ponds and tanks, the initiative strengthens the state’s ability to achieve self-sufficiency in fish production. With over 9,000 ponds/tanks already mapped and tracked, the project showcases the power of technology in boosting local livelihoods and reducing Assam’s dependency on fish imports. Moving forward, continuous monitoring and expansion of Matsya Baibhav will be crucial in sustaining this progress and maximizing the benefits for fish farmers across the state.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="grievance-appellate-committee-gac-portal-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Grievance Appellate Committee (GAC) Portal</span></a><a class="article-nav-link next" href="telangana-judiciary-system-digital-transformation-of-the-judiciary-in-telangana-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="grievance-appellate-committee-gac-portal-april-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Grievance Appellate Committee (GAC) Portal</span></a><a class="article-nav-link next" href="telangana-judiciary-system-digital-transformation-of-the-judiciary-in-telangana-april-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Telangana Judiciary System: Digital Transformation of the Judiciary in Telangana</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

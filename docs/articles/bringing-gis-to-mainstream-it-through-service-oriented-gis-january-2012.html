@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Bringing GIS to Mainstream IT through Service Oriented GIS — Informatics January 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/january-2012/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/january-2012/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/january-2012/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;28</div><a href="../pages/january-2012/page-28.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-28.jpg" alt="Page 28" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-28.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;29</div><a href="../pages/january-2012/page-29.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-29.jpg" alt="Page 29" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-29.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/january-2012/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2012/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2012/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Bringing GIS to Mainstream IT through Service Oriented GIS</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2012.html">January 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>Bringing GIS to Mainstream IT through Service Oriented GIS</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">Bringing GIS to Mainstream IT through Service Oriented GIS</h1>
+          <h1 class="article-title">Bringing GIS to Mainstream IT through Service Oriented GIS</h1>
           <hr class="title-rule">
           <p class="article-byline">pp. 28–30</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Information and Communications Technologies (ICTs) are playing an increasingly vital role in the daily activities of Government departments, revolutionizing work culture, promising to enhance the delivery of good, essential services to citizens by improving the process and management of Government. Importance of GIS and its potential are also being realized across Government departments. The restrictions being imposed on map data are not so encouraging because the GIS datasets cannot be distributed across easily for various reasons. Further, the software cost, technology related issues and dedicated GIS resources and time in each and every department for implementing the technology are the challenges blocking the growth of the GIS community. By conventional method, to depict tabular data in a map form, the typical requirements would be a GIS server, GIS database with appropriate data loaded in each application's database server, apart from the attribute data itself and necessary scripts that could interact with all these components to generate maps on the fly. However, by adopting open standards and services based architecture, GIS databases could be distributed geographically, but opened and federated through GIS services while applications themselves could be run geographically anywhere else, in any platform, using any technology. Individual applications could consume these services, query, filter and apply styles appropriately for depiction locally, based on their application data and make the integration happen seamlessly. STANDARDS SPECIFICATIONS FOR GIS WEB SERVICES / OPENGIS STANDARDS Open standards promote interoperability of systems, and Open Geospatial Consortium (OGC) is the group that specifies the development and implementation of open standards for geospatial content and services, GIS data processing and data sharing. The specifications for GIS based services are laid out by OGC and adhered by different vendors including open source developers. The Web Map Server (WMS) is the most promising services for amalgamation of GIS into IT services. WMS renders the map as a standard image format (PNG, GIF, JPG, SVG, etc.) to the client, by adopting the default style or any application supplied style. Through WMS, Service level metadata, map - whose geographic dimensional parameters are well defined and information about particular features could be returned. The styling of WMS map presentation is defined by an XML document called the Styled Layer Descriptor (SLD) and fed through URL. Any application could create SLD on the fly, based on its own database, stream it to the WMS Server and thus could control the visual portrayal of any geospatial data. USAGE OF THESE OPENGIS STANDARDS WOULD ENSURE THE FOLLOWING ADVANTAGES: - The client could be any desktop GIS software or any browser based application - Can consume / overlay local layers or geospatial data from one or more servers and visualize / query / analyse - Query these data with reference to the spatial or attribute data - Ensure interoperability among software / application / tools, by adopting open standards. SOFTWARE Almost all major vendors dealing with proprietary software provide OGC services support. The following lists server and client software in the open source arena with various levels of implementation: Servers: - UMN MapServer - Deegree - GeoServer - MapGuide Open Source Clients: - Desktop GIS tools like GRASS, uDig, QGIS, OpenJump, gvSig, etc. - OpenLayers (Simple JavaScript interface for Web applications) USE OF SLD FOR THEMATIC MAPPING THROUGH A GENERIC SYSTEM SLD could be used to draw simple choropleth maps, for example: colour all the roads (line) features as 4 pixel line in red for National Highways, 3 pixel line in blue for State Highways, and other roads in green; Colour all districts (polygons) red which are having sex ratio less than 800, orange for those between 800 and 1000 and green for others, etc. Proportional Symbols / graduated symbol maps could be generated for point features where the individual symbol's size and colours could be applied depending upon the value of attribute. Symbols themselves could be a dynamic image retrievable through a valid URL. Bivariate symbols with a mix of the fill colour and varied symbol size could also be generated. A generic interface has been designed and developed by NIC Chennai using completely open source software stack, to create dynamic thematic / choropleth maps for use in any platform, from any technology. By reading the XML data generated by individual applications on the fly, using any technology, SLD is generated dynamically and the map rendered using the WMS layer. ARCHITECTURE USED FOR THE GENERIC GIS INTERFACE This service oriented application gives us the freedom of platform independent deployment and the advantage of distributed environment. The attribute and spatial components collaborate over XML technologies from different servers. The set of processes for generic GIS interface has been planned as given below: - At the application server side, individual applications generate attribute XML for thematic representation using any technology; - Dynamic SLD generation using PHP technology and - The WMS server that hosts the spatial datasets interprets the SLD and renders map images. Here, the last two process could probably be out of the same server or be distributed too. The process flow is given in fig. 2. - Application Server: The Application server has to create the XML Attribute file for the attributes to be thematically represented in the maps, in a pre-designed format, and this could be using any technology viz. ASP, ASP.NET, PHP, JSP, etc. This could also initiate a map request through this Attribute XML file whose URL is passed onto SLD generation process server. The attribute XML is required to be in a specific format that provides the following parameters: which layer is to be displayed, column to link in WMS (that is, linking column between spatial and attribute), column to use for labeling maps, symbology type (default - Equal interval), range (default - 5), filters to apply, if any (both the column name and value pair for filter) and title. Also, the code-value pairs for the administrative units / features chosen are to be provided in the XML file. The administrative / feature codes need to be unique. It is also possible to provide a drill down effect on the thematic map to traverse down to the hierarchically next level maps. For this, necessary parameter could be set to appropriate URL of the XML file that would generate thematic map at the required map level. SLD generation: The SLD generation / GIS Server reads the attribute XML file on the fly, for the parameters necessary and the code-value pairs and generates Styled Layer Descriptor (SLD), through PHP scripting. Based on the request, the attribute XML data is classified (equal interval, equal count and custom ranges are currently possible) for the code-value pairs in the XML data. SLD file identifies the correct symbolizer to use, for the selected layer, to apply different styles / colours over different features. This SLD file gets stored temporarily on the Server. The layer request to the WMS server has this SLD file link as one of the parameters in the URL. Passing the SLD file link as a URL makes it possible to separate the SLD generation server and the actual WMS server that applies the style and renders the image on the client as an image viz. jpeg, gif or png. WMS Server: WMS Server hosts the spatial data as geospatial services. The SLD=http://someserver/sld.xml parameter in the request URL applies the styles on the fly. ADMINISTRATIVE CODES / FEATURE CODES Generally, Census 2001 codes have been used in the administrative layers. It is possible to link the layers with other codes also. For this, necessary codes need to be added in the GIS layer first. For example, if Revenue codes need to be used for Tamil Nadu District layer, these codes need to be included in the layer and then the newly added column could be used for linking spatial and the attributes. Salient Features in the generic interface. - Customizable for layer selection, linkable column selection, filtering for a column name-value pair and label column selection. - User selectable Number of ranges, classification type like Equal Interval / Equal Count / custom ranges, colours and title through parameters. The thematic parameter could be either integer or floating values. - Drill down map hierarchically by enabling clickable map through appropriate URL in the XML parameters. - Has RIA interface including Accordion interface that could be docked / expanded for Data, Legend, Query Builder and Symbology selection - Map panel with Ajax based Zoom in / out, pan, information query, previous / next extents, label on / off, distance and area calculations in the map, etc. - Built completely on Open Source software stack IMPLEMENTATION The generic model has been implemented for thematic representations in the following department websites in Tamil Nadu State: Industries Department - Number of Micro, Small and Medium Entrepreneurs applications applied online in Tamil Nadu (PHP) Revenue Department - Daily / Weekly / Monthly Rainfall Map (ASP) Rural Development Department - Financial Progress and Physical Progress of Schemes for Rural Development (PHP) Civil Supplies &amp; Consumer Protection Department - Daily / Weekly / Monthly price of commodities for (JSP) ADVANTAGES This architecture overcomes the following drawbacks over usage of GIS interfaces across multiple applications: - Sharing the spatial data across the organization / websites for various security reasons by retaining source data at the source itself leading to savings on costs incurred for procuring spatial data. - Enables easy administration of maps (as the changes on maps would be required less frequently but to be carried out in only one database) - Since the map rendering is Service oriented, the backend technologies do not matter. Interoperability is achieved using XML technologies. - Fully compliant with the Open Geospatial Consortium Standards being proposed by the OGC - Supports a distributed architecture ADVANCING TOWARDS FUTURE GIS This acts as a proof of concept on how a common unified GIS server can provide simple thematic services to n-number of applications, independent of platform and technologies, to start with. Distributed architecture based on Services would have much wider scope or reach than any regular / conventional GIS website could deliver. This concept could be enhanced to draw graduated symbol maps, charts, etc. WFS or Web Feature service allows requests for geographical features (and not images) over the web using platform-independent calls. Actual geospatial objects are returned as GML to the client. Creation / Updation / Deletion of features and get / query features based on spatial and attribute data could be performed. The OGC Web Processing Service (WPS) Interface Standard provides rules for standardizing how the requests and responses should be, for invoking geospatial processing services, such as creating a buffer around any feature, intersection, union, overlay of spatial entities, etc., through the web service.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="unique-eprocurement-initiative-of-mahanadi-coalfields-limited-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Unique eProcurement initiative of Mahanadi Coalfields Limited</span></a><a class="article-nav-link next" href="biometric-authentication-iris-image-capture-storage-and-processing-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Biometric Authentication: IRIS image Capture, Storage and Processing</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="unique-eprocurement-initiative-of-mahanadi-coalfields-limited-january-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Unique eProcurement initiative of Mahanadi Coalfields Limited</span></a><a class="article-nav-link next" href="biometric-authentication-iris-image-capture-storage-and-processing-january-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Biometric Authentication: IRIS image Capture, Storage and Processing</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

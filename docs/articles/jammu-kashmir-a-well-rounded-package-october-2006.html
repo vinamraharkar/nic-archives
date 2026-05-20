@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Jammu &amp; Kashmir– A Well Rounded Package — Informatics October 2006</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2006"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2006/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/october-2006/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/october-2006/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2006/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;12</div><a href="../pages/october-2006/page-12.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-12.jpg" alt="Page 12" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-12.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/october-2006/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2006/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2006/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2006.html">October 2006</a><span class="breadcrumb-sep">&rsaquo;</span><span>Jammu &amp; Kashmir– A Well Rounded Package</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2006.html">October 2006</a><span class="breadcrumb-sep">&rsaquo;</span><span>Jammu &amp; Kashmir– A Well Rounded Package</span></nav>
         <div class="article-header">
           <div class="article-section-badge">State in Focus</div>
-          <h1 class="article-title" data-pagefind-meta="title">Jammu &amp; Kashmir– A Well Rounded Package</h1>
+          <h1 class="article-title">Jammu &amp; Kashmir– A Well Rounded Package</h1>
           <hr class="title-rule">
           <p class="article-byline">By Jit Raj, J &amp; K Correspondent &bull; pp. 11–13</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Strategically located Jammu &amp; Kashmir State constitutes the northern most extremity of India. The total area of the State is 2,22,236 Sq.Kms including 78114 Sq.Kms under occupation of Pakistan and 42,685 Sq.Kms under occupation of China. The current population of the State is 102 Lakhs. It is the only State that has two Capitals, Jammu (winter) and Srinagar (summer). There are three regions viz jammu, Kashmir and Ladakh, divided into 14 districts. NIC State Centre came into existence in October 1988 when the Information Technology (IT) itself was a new concept. NIC J&amp;K was the only IT agency in the State at that time which played a very crucial role in promotion of ICT culture in the Government Departments in J&amp;K. The NIC J&amp;K State has its State Centre at Civil Secretariat Jammu and a mini move Office that moves along with the Annual Darbar move to Srinagar. Some of the major ICT projects undertaken by NIC J&amp;K are Electoral Rolls NIC J&amp;K has developed and implemented the Project for the Comprehensive revision of Electoral Rolls in J&amp;K in the year 2005-06 comprising more than 63 Lakhs electors in more than 8000 Polling Stations in local language Urdu interface. The output is in the form of Electoral Rolls in Urdu and Hindi, in the format prescribed by the ECI of India. All the menus and forms have bi-lingual interface. The Computerization of the EPIC (Electors’ Photo Identity Card) coverage and photo based Electoral Rolls is in the pipeline. JAKMAP (J&amp;K Municipal Automation Package) JAKMAP that includes 13 Modules is under implementation at two pilot sites i.e. Jammu Municipal Corporation (JMC) and Srinagar Municipal Corporation (SMC). The Birth &amp; Death Registration, Estates &amp; Revenue, Establishment and Payroll modules are computerized at JMC in coordination with NIC Pune. With the implementation of JAKMAP, the Municipal Bodies will be able to deliver better and reliable services to the citizens and will also help the Corporations to strengthen the integration of structures and processes for better decision making and planning. City Civil Courts Information System (CC-COURTIS) The scope of the CC-COURTIS Project is to develop, deliver, install and implement automated Decision Making and Decision Support Systems in the Civil Courts of all states including J&amp;K. In the pilot phase, City Courts of Jammu have been covered. It will be ensured that the Judicial Administration would streamline its routine activities, reduce the pendency of cases by implementing appropriate automated processes and provide easy and transparent information access to litigant public through sustainable processes. All computer systems in the City Civil Court complex have been networked. Internet connectivity will be provided through DVB VSAT. High Court of Jammu &amp; Kashmir Computerization and Networking Project Both the wings of the J&amp;K High Courts have been computerized. The Main Applications are (i) Cause List, (ii) Filing Counter, (iii) Payroll, (iv) Administrative Wing, (v) Judges’ Library etc. This being National E-Governance Project, the process of bringing about a paradigm shift in the project is underway and all the dimensions of the project are going to be influenced by this. A comprehensive Project Proposal has already been submitted to the Registrar General of the High Court. At the High Court in Jammu. 110-Node LAN installation for Srinagar Wing is also completed. The High Court has its own website at the URL http://jkhighcourt.nic.in. Community Information Centre The community Information Centre is a combination of PC based Citizen Kiosk with content enabling citizen centric services, e- governance,e learning and e-commerce. It enables access to database containing wide range of information regarding agriculture marketing, disaster management, employment opportunities, public health etc. It is being implemented in 135 blocks of J&amp;K. Connectivity to all 135 blocks will be through VSAT. Each CIC will have its own website. Computerisation of Motor Vehicle Department of J &amp; K The project proposal for the Computerisation of Motor Vehicle Department, J&amp;K was approved under “Comprehensive e-Governance Solution Transport sector in J&amp;K” by the department of Information Technology, GOI on the request of Motor Vehicle Department, J&amp;K for 8 RTOs/ARTOs and Transport Commissioner’s Officer Srinagar/ Jammu. Process for the Computerisation of backlog has started. Computerisation of GP Fund &amp; CP Fund Organisations The state government has approved the replication of the user friendly GUI software at 15 locations in J&amp;K State. The objectives are to automate the workflow process of Fund Office functioning, to provide better services to the Subscribers (all Government employees), to maintain the data pertaining to earlier years on the computer system, better control of Information regarding the amount actually received and that of postings done comparative statements of the compilation figures with the posting figures, generation of reports like yearly detailed Broadsheets, yearly statements, etc. Computerisation of Treasuries in J &amp; K The Treasury System, developed for Directorate of Accounts &amp; Treasuries of Finance Department J&amp;K state, automates the workflow process of Treasury business. The Treasuries are located at Civil Secretariat as State Treasury, Regional Treasuries at Jammu &amp; Srinagar, Additional Treasuries located in the cities of Jammu &amp; Srinagar, District Treasuries and Sub Treasuries, Interstate Treasuries. There are 104 Treasuries in total. The J&amp;K Bank acts as Treasury Bank for the state. Computerised Budget Allocation System Budget allocation System has been implemented in the Finance Department of J&amp;K Government for the year 2006-2007. The Budget Allocation System streamlines the generation of Demand for Grants and Budget Release to the various departments. The actual expenditure incurred, previous years Budget estimates, previous year’s revised estimates and Current Years Budget estimates are captured as per the six tiers Classification of account heads of the Departments. The Demand for grants of different departments, the consolidated Detail head wise reports, Consolidated Major head wise reports are generated from the data captured. MAP-ON [Management and presentation of ON-Line News] Web based MAP-ON is a useful tool for online posting, updation and automatic publishing on the website and management of the news Archives in the web based Interface The main features of MAP-ON are to post and update news items online from anywhere in the world by the authorized persons only, to get the news instantaneously on the web as soon as they are posted, to provide the web interface to the final presentation of the news items and the option like changing one’s password etc., to upload the pictures from the user’s system to the web server using the web interface, to allow the user to either use the standard HTML editor or WYSIWYG editor. Employment Data Computerisation It contains information on Professional Registration, Company Registration, and Query on Registered Candidates, Employment Schemes, Vocational Guidance, and Career Counseling etc. For the unemployed youth from far-flung areas, it is very difficult to come to Employment Offices for registration purposes and companies looking for suitable candidates do not have centralized databases. With the launch of this website, both the problems have been sorted out. The main features of this website are : registration of ordinary and professional candidates made easy and standardized, companies can register with Employment Department to search the database for suitable candidates and detailed employment information is available on the website. PMIS [Pensioners Management Information System] Windows based software for Pensioners Software released by Directorate of Accounts &amp; Treasuries. Implemented at 3 Treasuries in Jammu region and 2 treasuries in Kashmir region NIC has provided all technical support for its implementation at District level. PMIS is also included as a module in the Treasury system. Electricity Billing Software The Electricity Billing software was developed by NIC J&amp;K for Power Development Department and implemented in the Chief Engineer (M&amp;RE) Office. It generates the bill based on the energy meter reading. All the business rules have been incorporated in the software. Now NIC J&amp;K submitted a comprehensive project proposal for its implementation in J&amp;K State. Centrally Sponsored Projects DACNET Dacnet has been implemented in three offices i.e Directorate of Marketing &amp; Inspections (DMI), Jammu, CIPMC Jammu and CIPMC Srinagar. All the Computers are Networked and connected. Information System and Budget computerisation are extensively used in these Offices. The Websites have also been developed and hosted. At CIPMC Jammu, IPMIS is implemented and is being used for reporting to HQ at New Delhi. AGMARKET The NICNET based Agricultural Marketing Information Network (AGMARKNET) facilities for all Agriculture Produce Marketing Committees and mandis of J&amp;K to disseminate market information for the benefit of farmers and other target groups. The AGMARKNET has been implemented in J&amp;K covering 4 Mandis in Phase I and 13 Mandis in Phase-II. Next Phase is under implementation in 17 Mandis. Some of the Mandis are regularly uploading the information on web. CIPA (Common Integrated Police Application) CIPA has been designed and developed by NIC HQ for the computerization of police stations. The software has different modules for Registration of Cases, their investigation, disposal/charge sheeting by police, and disposal of cases by court. IISFM (Integarted Information System for Food Grains Management) IISFM centrally launched Project is under implementation in FCI J&amp;K. Both the FCI District Offices Jammu and Srinagar have been provided with Computer and Internet Connection and are making the full use of ICT. All the 13 FCI Depots have been provided with ICT Hardware and working fine. Few Depots have started online reporting of Food Grains Movement. Passport Offices in Jammu &amp; Kashmir The centrally launched project of Passport Offices has also been implemented at both the Passport Offices of J&amp;K i.e. Jammu and Srinagar. NIC J&amp;K is providing full support in computerization process of issuing of passports. The passport status of both the offices is regularly updated on the centralized website of Passport Office. Rajbhawan Jammu/Srinagar NIC has been active in the computerization of the Governor’s Secretariat, Raj Bhawan, J&amp;K from the very beginning. LANs are established at Raj Bhawan, Jammu and Raj Bhawan, Srinagar and VSAT connectivity is also available at both the places. Raj Bhawan, Jammu as well as Raj Bhawan, Srinagar shall have Video Conferencing facility soon. Utility Packages CCMS The Court Cases Monitoring System(CCMS) is implemented in the Secretariat. Through this system, databases of all the court cases are being built department-wise providing the facility to departments for regular follow up. The history of the cases is being stored and maintained through this system. Various reports are being generated through this system like next date of hearing case-wise, department-wise, cases penidng in different courts etc. Payroll Payroll System is implemented in the Secretariat. Through this system the salary of around 5000 employess is maintained and prepared every month. With the implementation of this system all employees are able to get their payslips and other schedules prepared through the payroll. ANOMS (Annoucements Monitoring System) Web based Chief Minister’s Annoucements Monitoring System(ANOMS) is implemented in the Chief Minister’s Section. The System proves to be very useful to the section in regular follow up of actions taken by the different departments on the different annoucements made by the Chief Minister during his public and government meetings. The data base of annoucements can be browsed date-wise, department-wise, action taken and action not taken etc. BPL Computerisation NIC J&amp;K has computerized the Below Poverty Line data of J&amp;K for Rural Development Department. The BPL system is helping the dpartment in getting the BPL data validated, merged and compiled for whole of state block-wise. A web site has been developed for dynamic search of BPL Infrastucture Civil Secretariat Jammu For the last two years NIC has upgraded and installed network equipment at its J&amp;K State Centre. At present NIC J&amp;K State Centre at Jammu has the following network equipments. Routers for long distance Connectivity with STM1 Circuit (63 PCM of 2Mbps). Routers for horizontal lease line Connectivity with 2 X 2 Mbps MLLN Circuit. PRI Circuit with 30 Channel of 64 Kbps for PSTN and ISDN Dialup. RF Connectivity Storage Area Network with 1 terabyte Storage with Tape Library for Backup 14Mb Lease line Circuit from Chandigarh. Horizontal Connectivity Passport office 256 Kbps, Census Department 128 Kbps, NCRB (National Crime Record Bureau) Jammu Email Server with appox. 800 users. Web Server A LAN of 600 Nodes is established by State Government, which is using the NIC’s Backbone. Besides, 135 Community Information Centres (CICs) have also been set up by NIC in the State to provide citizen centric services in the remote regions. NIC Civil Secretariat Srinagar Strong and powerful networking equipment is also provided at NIC Civil Secretariat Srinagar. State Government has already established a LAN of 500 Nodes. This LAN is using NIC’s backbone. NIC J&amp;K State Centre is directly connected to NIC HQ Delhi using leased line. The Internet Gateway has been placed at NIC HQ Delhi. All the traffic for Internet is being routed through NIC Delhi. The INOC (Inter Network Operating Centre) Centre at NIC,HQ monitors all the network traffic of the State Centre round the clock. The Civil Secretariat LAN is connected to NIC J&amp;K State Centre and the Internet traffic is being routed through NIC J&amp;K State Centre. All the incoming and outgoing traffic is monitored by firewall and it drops unwanted traffic. NIC J&amp;K is using network monitoring tools, which is freely available with source code. District Centres All the 14 Districts of J&amp;K are well equipped with the latest hardware in respect of Computers, Networking, VSAT and other peripherals and providing IT related support to District Administrations. The sheer scale of operations that has been carried out in Jammu &amp; Kashmir is staggering and there is no doubt that the state has made a big headway in e-governance. For further information, kindly contact, Sh. Abhay Kumar State Informatics Officer NIC J&amp;K State Centre E-Mail : sio@jk.nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="lakhimpur-marching-ahead-october-2006.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Lakhimpur – Marching Ahead</span></a><a class="article-nav-link next" href="nirmal-gram-puraskar-ngp-for-ict-at-department-of-drinking-water-supply-october-2006.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Nirmal Gram Puraskar (NGP) for ICT at Department of Drinking Water Supply</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="lakhimpur-marching-ahead-october-2006.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Lakhimpur – Marching Ahead</span></a><a class="article-nav-link next" href="nirmal-gram-puraskar-ngp-for-ict-at-department-of-drinking-water-supply-october-2006.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Nirmal Gram Puraskar (NGP) for ICT at Department of Drinking Water Supply</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

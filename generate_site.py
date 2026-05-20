@@ -30,6 +30,7 @@ DOCS_DIR        = BASE_DIR / 'docs'
 DOCS_ARTICLES   = DOCS_DIR / 'articles'
 DOCS_ISSUES     = DOCS_DIR / 'issues'
 DOCS_PAGES_DIR  = DOCS_DIR / 'pages'
+WORKER_URL      = 'https://nic-archives-search.nicarchives.workers.dev'
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,
@@ -174,33 +175,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -889,17 +1030,15 @@ _SEARCH_ICON = (
 
 def _base_html(title: str, body: str, depth: int = 0) -> str:
     """Wrap body in full HTML document. depth=0 for docs/, depth=1 for subdirs."""
-    pagefind_path = '../' * depth + 'pagefind'
     root_path = '../' * depth
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="{WORKER_URL}">
 <title>{html_escape(title)}</title>
 <style>{CSS}</style>
-<link href="{pagefind_path}/pagefind-ui.css" rel="stylesheet">
-<script src="{pagefind_path}/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -910,6 +1049,128 @@ def _base_html(title: str, body: str, depth: int = 0) -> str:
 {body}
 </body>
 </html>"""
+
+
+def _search_widget_html(depth: int = 0) -> str:
+    """Semantic search widget (search + ask tabs + results). depth=1 for docs subdirs."""
+    root = '../' * depth
+    return f"""<div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics\u2026"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '{root}';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {{
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC\u2019s history\u2026'
+        : 'Search 30 years of NIC Informatics\u2026';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }}
+
+    async function semSubmit() {{
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer\u2026' : 'Searching\u2026';
+      results.innerHTML = '';
+      try {{
+        const resp = await fetch(WORKER + '/' + _mode, {{
+          method: 'POST',
+          headers: {{ 'Content-Type': 'application/json' }},
+          body: JSON.stringify({{ query: q, limit: 24 }})
+        }});
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      }} catch(e) {{
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      }} finally {{
+        btn.disabled = false;
+      }}
+    }}
+
+    function esc(s) {{ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }}
+
+    function relUrl(u) {{ return _ROOT + u.replace(/^\//, ''); }}
+
+    function issueSlug(d) {{ return d.toLowerCase().replace(' ', '-'); }}
+
+    function thumbImg(d) {{
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${{_ROOT}}pages/${{slug}}/page-1.jpg" loading="lazy" alt="${{esc(d)}} cover" onerror="this.style.display='none'">`;
+    }}
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {{
+      if (!items.length) {{ document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }}
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }}
+
+    function _renderVisible(upTo) {{
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${{visible.length}} of ${{_allResults.length}} result${{_allResults.length === 1 ? '' : 's'}}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${{thumbImg(r.issue_date)}}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${{relUrl(esc(r.url))}}">${{esc(r.title)}}</a>
+            <div class="sem-card-meta">${{esc(r.issue_date)}}</div>
+            <div class="sem-card-snippet">${{esc((r.body_snippet||'').slice(0,350))}}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${{upTo + _PAGE}})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }}
+
+    function renderAsk(data) {{
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${{thumbImg(c.issue_date)}}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${{i+1}}.</div>
+             <a class="sem-card-title" href="${{relUrl(esc(c.url))}}">${{esc(c.title)}}</a>
+             <div class="sem-card-meta">${{esc(c.issue_date)}}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${{esc(data.answer)}}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${{cites}}` : '');
+    }}
+  </script>"""
 
 
 def render_index(issues_data: list) -> str:
@@ -962,14 +1223,7 @@ def render_index(issues_data: list) -> str:
   </header>
 
   <main id="main-content" class="home-content">
-    <div class="search-wrap">
-      <div class="search-offline-warning" id="search-offline-warning">
-        Search requires a local server. Open a terminal and run:<br>
-        <code>python3 -m http.server 8765 --directory docs</code><br>
-        Then visit <strong>http://localhost:8765/</strong> in your browser.
-      </div>
-      <div id="search"></div>
-    </div>
+    {_search_widget_html(depth=0)}
 
     <p class="archive-blurb">
       <strong>NIC Informatics</strong> is the quarterly newsletter of India's
@@ -986,11 +1240,6 @@ def render_index(issues_data: list) -> str:
   </main>
 
   <script>
-    if (location.protocol === 'file:') {{
-      document.getElementById('search-offline-warning').style.display = 'block';
-    }} else {{
-      new PagefindUI({{ element: "#search", showSubResults: true, placeholder: "Search 30 years of NIC Informatics\u2026" }});
-    }}
     function filterYear(btn, year) {{
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
@@ -1063,6 +1312,8 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
     {strip_html}
     <p class="section-rule">Table of Contents</p>
     <ul class="toc toc-grid">{items_html}</ul>
+    <p class="section-rule">Search the Archive</p>
+    {_search_widget_html(depth=1)}
   </main>"""
 
     return _base_html(f'Informatics — {issue_date}', body, depth=1)
@@ -1193,7 +1444,7 @@ def get_scan_panel_html(issue_slug: str, pages: list, article_slug: str = '') ->
         return ''
 
     return (
-        f'<aside class="scan-panel" data-pagefind-ignore>'
+        f'<aside class="scan-panel">'
         f'{"".join(items)}'
         f'</aside>'
     )
@@ -1288,7 +1539,7 @@ def render_article_page(meta: dict, html_body: str, filename: str,
     scan_panel = get_scan_panel_html(issue_slug, pages, article_slug=article_slug)
 
     breadcrumb = (
-        f'<nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore>'
+        f'<nav class="breadcrumb" aria-label="Breadcrumb">'
         f'<a href="../index.html">Informatics</a>'
         f'<span class="breadcrumb-sep">&rsaquo;</span>'
         f'<a href="../issues/{issue_slug}.html">{html_escape(issue_date)}</a>'
@@ -1315,21 +1566,19 @@ def render_article_page(meta: dict, html_body: str, filename: str,
             f'</a>'
         )
     article_nav = (
-        f'<nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore>{"".join(nav_links)}</nav>'
+        f'<nav class="article-nav" aria-label="Article navigation">{"".join(nav_links)}</nav>'
         if nav_links else ''
     )
 
     body = f"""
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:{html_escape(issue_date)}"
-       data-pagefind-filter="issue[data-pagefind-meta]">
+  <div class="article-container" id="main-content">
     {scan_panel}
     <div class="text-panel">
       <div class="text-panel-inner">
         {breadcrumb}
         <div class="article-header">
           {section_badge}
-          <h1 class="article-title" data-pagefind-meta="title">{title}</h1>
+          <h1 class="article-title">{title}</h1>
           <hr class="title-rule">
           {byline_block}
           <p class="article-issue-link">
@@ -1341,11 +1590,73 @@ def render_article_page(meta: dict, html_body: str, filename: str,
           {html_body}
         </div>
         {article_nav}
+        <p class="section-rule">Search the Archive</p>
+        {_search_widget_html(depth=1)}
       </div>
     </div>
   </div>"""
 
     return _base_html(f'{meta.get("title", "Article")} — Informatics {issue_date}', body, depth=1)
+
+
+# ---------------------------------------------------------------------------
+# API exports (Phase 1 of semantic search plan)
+# ---------------------------------------------------------------------------
+
+def _body_snippet(body: str, max_chars: int = 500) -> str:
+    """Extract plain-text snippet from markdown body, stripping all markers."""
+    # Strip image blockquotes, headings, list markers, footnotes
+    text = re.sub(r'^> \*\*\[Image\]\*\*.*$', '', body, flags=re.MULTILINE)
+    text = re.sub(r'^#+\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^\[\^\d+\]:.*$', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^[-*\d]+[.)]\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)
+    text = ' '.join(text.split())
+    return text[:max_chars]
+
+
+def write_api_exports(all_articles: list, sorted_issues: list) -> None:
+    """Write docs/api/articles.json and docs/api/issues.json."""
+    api_dir = DOCS_DIR / 'api'
+    api_dir.mkdir(parents=True, exist_ok=True)
+
+    articles_out = []
+    for meta, body, filename in all_articles:
+        slug = filename.replace('.md', '')
+        issue_date = get_issue_date(meta)
+        articles_out.append({
+            'slug': slug,
+            'title': meta.get('title', ''),
+            'issue_date': issue_date,
+            'issue_slug': make_issue_slug(issue_date),
+            'pages': meta.get('pages', []),
+            'author': meta.get('author'),
+            'section': meta.get('section'),
+            'body_snippet': _body_snippet(body),
+            'url': f'/articles/{slug}.html',
+        })
+
+    (api_dir / 'articles.json').write_text(
+        json.dumps(articles_out, ensure_ascii=False, indent=2), encoding='utf-8'
+    )
+    print(f'  → api/articles.json  ({len(articles_out)} articles)')
+
+    issues_out = []
+    for issue_date, issue_articles in sorted_issues:
+        slug = make_issue_slug(issue_date)
+        article_slugs = [fn.replace('.md', '') for _, _, fn in issue_articles]
+        issues_out.append({
+            'issue_slug': slug,
+            'issue_date': issue_date,
+            'article_count': len(article_slugs),
+            'article_slugs': article_slugs,
+        })
+
+    (api_dir / 'issues.json').write_text(
+        json.dumps(issues_out, ensure_ascii=False, indent=2), encoding='utf-8'
+    )
+    print(f'  → api/issues.json  ({len(issues_out)} issues)')
 
 
 # ---------------------------------------------------------------------------
@@ -1430,8 +1741,10 @@ def main():
     (DOCS_DIR / 'index.html').write_text(index_html, encoding='utf-8')
     print('  → index.html')
 
+    print('\nGenerating API exports...')
+    write_api_exports(all_articles, sorted_issues)
+
     print(f'\nDone. {total_articles_count} articles across {len(sorted_issues)} issues.')
-    print('Next: npx pagefind --site docs/')
     print('Then: open docs/index.html')
 
 

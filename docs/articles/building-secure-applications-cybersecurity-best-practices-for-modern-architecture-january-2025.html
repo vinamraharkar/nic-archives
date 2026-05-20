@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Building Secure Applications Cybersecurity Best Practices for Modern Architecture — Informatics January 2025</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2025"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/january-2025/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="../pages/january-2025/page-35.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;34</div><a href="../pages/january-2025/page-34.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-34.jpg" alt="Page 34" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-34.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;35</div><a href="../pages/january-2025/page-35.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-35.jpg" alt="Page 35" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-35.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2025.html">January 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Building Secure Applications Cybersecurity Best Practices for Modern Architecture</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2025.html">January 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Building Secure Applications Cybersecurity Best Practices for Modern Architecture</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">Building Secure Applications Cybersecurity Best Practices for Modern Architecture</h1>
+          <h1 class="article-title">Building Secure Applications Cybersecurity Best Practices for Modern Architecture</h1>
           <hr class="title-rule">
           <p class="article-byline">pp. 34–35</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">In today’s hyper-connected world, cybersecurity is essential in application architecture. As businesses grow reliant on digital platforms, securing applications from cyber threats is critical for protecting data, maintaining trust, and ensuring business continuity. Cybersecurity in application architecture involves safeguarding hardware, software, and data from unauthorized access, breaches, and attacks. Without proper security, hackers can exploit vulnerabilities, steal data, or disrupt services. Cyberattacks can result in financial loss, legal repercussions, and reputational damage. Securing application architecture helps prevent these risks, ensuring systems remain resilient against emerging threats. Secure System Development Life-Cycle (SSDLC) To effectively secure applications, organizations must adopt a proactive approach, starting from the very beginning of development. Integrating security into every phase of the Software Development Life Cycle (SDLC) is the primary step to ensure security of applications. Instead of treating security as an afterthought, it should be embedded in design, development, testing, and deployment. • Early Security Integration: Address security concerns from the design stage to identify risks and vulnerabilities before development begins. • Static / Dynamic Application Security Testing: Use SAST and DAST tools to detect and fix vulnerabilities in code and applications. • Threat Modelling: Conduct early threat modelling to anticipate security risks. • Security Training for Developers: Train developers and stakeholders in secure coding and keep them updated on vulnerabilities like the OWASP Top Ten. Role-Based Access Control (RBAC) Role-based access control is a method for managing user access to systems and resources based on a user’s role or job function. RBAC allows IT administrators to assign roles to users with the appropriate permissions so that they are allowed access only to the information they need to know or perform their job duties. Access control is essential to protect sensitive parts of an application. • Limit Access by Role: Implement RBAC to ensure users only access necessary data. • Backend and Frontend Enforcement: Apply access controls at both user interface and backend levels. • API Restrictions: Block unauthorized API access using reliable gateways. Secure Authentication Authentication confirms that only the right people with the right permissions can get access to the applications and data. Proper authentication mechanisms ensure sensitive data remains protected. Some of the tools and technologies that can be employed for this purpose are: • Multi-Factor Authentication (MFA): Strengthen authentication with multiple forms of identity verification like DSC, OTP (Time-Based One-Time Password), FIDO2, Tokens, or app-based authenticators. • Password Policies: Enforce long and strong passwords, with minimum 12 characters including special characters, numbers, and case variations. • Secure Session Management: Implement secure session handling, automatic timeouts, and safe password reset mechanisms. • Password Communication: Any change in password should be intimated to the user by SMS. Proper Security Configuration Security configuration is the process of setting up security controls and parameters for computer systems, networks, or software applications to reduce security risks. Proper security configuration is the key to security of any enterprise application. Incomplete and incorrect configurations can leave applications vulnerable, resulting in unauthorized access and exploitation. • Remove Default Settings: Replace default credentials and configurations with secure alternatives. • Custom Error Pages: Use custom error pages to obscure technical details. • Limited Privilege: Provide only the required access to the users over the folders, databases and other resources. Regular Patching and Vulnerability Management Use of outdated software components in applications makes the application susceptible to cyber-attacks as the miscreants exploit the known vulnerabilities in these components. Regular and continuous patching to keep the components up-to-date reduces the risk of an application falling victim to attacks. • Patch Updates: Apply security patches and updates regularly to frameworks and software. • Vulnerability Scanning: Continuously scan applications for vulnerabilities. • Monitor Alerts: Stay informed about vulnerabilities and patch them promptly. Secure Communication Protocols Secure communication protocols are rules and procedures that ensure that data transmission across a network is secure. A secure connection is one that uses encryption protocols to protect the data being transferred. Secured connections protect data from man-in-the-middle attacks, and ensures the data has not been tampered with during transit. • Enforce HTTPS: Encrypt data between clients and servers using strong SSL/TLS configurations. • Disable Insecure Protocols: Turn off outdated protocols like SSLv3. Logging, Monitoring, and Incident Response Logging, monitoring, and incident response are the three important activities for detecting and responding to security incidents. Log monitoring is essential for incident response as it enables organizations to detect and analyze security incidents, system failures, and operational issues. Hence, these activities should be envisaged while architecting the application itself. • Comprehensive Logging: Record security-related events such as access attempts and system errors. • Log Security: Ensure logs are securely stored and access is restricted to authorized personnel. • Incident Response Plan: Develop formal procedures for handling security incidents. DevSecOps Integration DevSecOps is a framework that integrates security into every stage of the software development lifecycle. It stands for development, security, and operations. Each term defines different roles and responsibilities of software teams when they are building software applications. Integrating security into the DevOps process ensures continuous protection. • Security as Code: Use tools like SonarQube and OWASP Dependency-Check in the CI/CD pipeline. • Container Security: Secure containerized applications by using minimal base images and performing regular scans. Database Security Database security is crucial for protecting sensitive data from accidental and intentional threats. Data being the new oil, modern day hackers focus on data exfiltration or encryption through some ransomware. Compliance to legal frameworks like data protection laws also necessitates secure database management. • Use Stored Procedures: Implement stored procedures and parameterized queries for database interactions instead of direct SQL queries. • Limited access to Data: Access Privilege may be need to know basis, like Read Only access for Reports and Dashboard. • Secure file names and folders: Do not keep files in directly accessible directories to prevent unauthorized access through the web server. Generate unique filenames using Global Unique Identifier (GUID) to prevent guessing and overwriting files. • Encryption at Rest: Encrypt data using strong Keys to protect sensitive information stored in the database. Consider field level encryption for highly sensitive data like credit card information. Implement a secure key management system to handle encryption keys. API Security APIs (Application Programming Interface) are the communication channels between software systems. Protecting APIs from attacks deserves attention while architecting the application. API security is important because it protects sensitive data and prevents unauthorized access to APIs. • Strong Authentication and Authorization: Implement robust authentication mechanisms to ensure that only authorized users and applications can access API. Enforce role-based access control (RBAC) to limit user permissions based on their roles. • Encryption in Transit: Use appropriate protocols, like TLS (Transport Layer Security), to encrypt data being transmitted between the client and the server, as well as between different database components. Conclusion Implementing cybersecurity best practices is crucial for protecting systems, data, and users from evolving threats. By securing all stages of development, from design to deployment, organizations can prevent vulnerabilities, reduce the risk of attacks, and maintain compliance. Organisations may also formulate a Cyber Security Policy that govern how the information systems, data, and resources are protected from internal and external threats. The policy may be reviewed periodically for maintaining an effective cybersecurity strategy to ensure that the policies remain relevant, up-to-date, and aligned with evolving threats, technologies, and compliance regulations. These practices foster trust, reliability, and resilience in today’s digital world.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="human-centered-ai-design-a-synergy-of-design-thinking-and-data-science-january-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Human-Centered AI Design A Synergy of Design Thinking and Data Science</span></a><a class="article-nav-link next" href="passkeys-and-webauthn-revolutionizing-authentication-with-the-passwordless-technology-january-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Passkeys and WebAuthn Revolutionizing Authentication with the Passwordless Technology</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="human-centered-ai-design-a-synergy-of-design-thinking-and-data-science-january-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Human-Centered AI Design A Synergy of Design Thinking and Data Science</span></a><a class="article-nav-link next" href="passkeys-and-webauthn-revolutionizing-authentication-with-the-passwordless-technology-january-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Passkeys and WebAuthn Revolutionizing Authentication with the Passwordless Technology</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

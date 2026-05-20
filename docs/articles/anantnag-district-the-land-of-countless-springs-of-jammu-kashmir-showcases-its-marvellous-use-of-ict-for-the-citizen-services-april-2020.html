@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Anantnag District: The Land of countless springs of Jammu &amp; Kashmir showcases its marvellous use of ICT for the citizen services — Informatics April 2020</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2020"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/april-2020/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/april-2020/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2020/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;13</div><a href="../pages/april-2020/page-13.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-13.jpg" alt="Page 13" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-13.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;14</div><a href="../pages/april-2020/page-14.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-14.jpg" alt="Page 14" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-14.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;15</div><a href="../pages/april-2020/page-15.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2020/page-15.jpg" alt="Page 15" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2020/page-15.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2020.html">April 2020</a><span class="breadcrumb-sep">&rsaquo;</span><span>Anantnag District: The Land of countless springs of Jammu &amp; Kashmir showcases its marvellous use of ICT for the citizen services</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2020.html">April 2020</a><span class="breadcrumb-sep">&rsaquo;</span><span>Anantnag District: The Land of countless springs of Jammu &amp; Kashmir showcases its marvellous use of ICT for the citizen services</span></nav>
         <div class="article-header">
           <div class="article-section-badge">District Informatics</div>
-          <h1 class="article-title" data-pagefind-meta="title">Anantnag District: The Land of countless springs of Jammu &amp; Kashmir showcases its marvellous use of ICT for the citizen services</h1>
+          <h1 class="article-title">Anantnag District: The Land of countless springs of Jammu &amp; Kashmir showcases its marvellous use of ICT for the citizen services</h1>
           <hr class="title-rule">
           <p class="article-byline">By SARBJEET SINGH &bull; pp. 13–15</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Since its inception in 1989, NIC Anantnag has played a pivotal role in implementation of various ICT Projects in the district. Many G2C and G2E services like Back-to-Village, PSGA, SANJY, PGRS, ERMS/ ERONET, NSP, GeM, PMDISHA, PMKMY, Ayushman Bharat, e-Tendering, e-PDS, PMKISAN, Vahan &amp; Sarathi, e-Court, e-Prison, DM Dashboard has made the lives of common people easier and has helped the district administration to carry out the monitoring and development tasks in a smooth manner. The name Anantnag, according to Kalhana, has been taken from the great spring of Cesha or Ananta Naga “land of countless springs”. The spring is mentioned in the Neelmat Purana as a sacred place for the Hindus and Koshur Encyclopedia testifies it. Anantnag District is in southern part of Kashmir Valley. As per census 2011, the population of the district is 10.71 lacs. The district comprises of 4 sub-divisions, 12 tehsils, 16 blocks and 387 villages. Anantnag has largest number of tourist places in whole of Jammu &amp; Kashmir. World famous tourist place Pahalgam lies in district Anantnag. Kolie Glacier and some famous Mughal Gardens like Achabal, Kokernag, Verinag, Daksum etc are also located in the district. Some important religious places like Amarnath Ji Cave, Ziarat Hazrat Zain-ud-Din Wali, Ziarat Baba Hyder Reshi, Baba Naseeb Din Gazi, Martand Temple, Nagdandi Temple, Bumzoo caves and Chapped of John Bishop are also located in the district. National &amp; State Level MMPs in the District NIC Anantnag has been successfully carrying out all the major MMPs of national and state level, which include e-Treasuries, Online Budget (BEAMS), e-PDS, VAHAN, SARATHI, e-Courts etc. A brief description is given below: E-tendering (https://jktenders.gov.in) NIC has implemented this online solution to conduct all stages of procurement process. BEAMS (Budget Estimation, Allocation &amp; Monitoring System) (http://164.100.150.230) BEAMS is being used to release the budget for all the departments. Revised Estimates and Budget Estimates All DDOs trained. TreasuryNET (http://jakfinance.nic.in) A Mission Mode Project which has been rolled out so far in treasuries and Directorate Offices. PAO System introduced in 2017. Due to remote locations of many treasuries, last mile connectivity provided from BSNL 2Mbps Leased line / VSATs. E-Transport (http://jaktrans.nic.in) Online SARATHI 4.0 and VAHAN 4.0 having services related to license and vehicle registration namely Online application, slot booking for driving test, digital payment of fee &amp; online learner license test, e-payment of Road tax, Online application for fitness of Vehicle and Dealer Point Registration implemented. e-Courts (http://jkhighcourt.nic.in; http://ecourts.gov.in/jk) Implemented in district court and all Taluka Courts updating their data of cases, judgments and daily orders on the National Judicial Data Grid (NJDG) now. 31 of the identified 41 services have been initiated. Backlog data of cases digitized. e-PDS (http://jkfcsca.gov.in) Under the computerization of Food &amp; Supplies department, Lakh Ration Cards issued. Online Allocation of Food Grains started on Pilot basis. State Portal and Online Grievance Redressal Mechanism operational. e-Municipalities (http://jkhudd.giv.in) Birth &amp; Death Registration Urban, Processing &amp; issuance of Building Permissions, Double Entry Accounting System, Establishment System and Public Grievances Monitoring and Redressal System implemented in local bodies. ICT Initiatives in the District: MIS for Back to Village Programme: Back to Village (B2V) is a landmark and transformative programme of Government of Jammu &amp; Kashmir conceived with an objective of bringing people to the centre stage of governance, ensuring their participation in the developmental process and putting in place an effective grievance redressal mechanism right from the identification of work till its completion. NIC Anantnag designed and developed a MIS for smooth monitoring, analysis and implementation of the works and demands received during the back to village programmes. At present 5732 demands of public have been entered into the system. The MIS provides the following features:- • Data entry and assigning of unique codes to demands. • Categorization of demands at data entry level. • Monitoring of works and demands at District/ Block Panchayat/ Village/ Departmental level through a series of Dashboards. • Enable citizens to check the progress/status of their demands. Portal for Service Providers for conduct of Shri AmarNath Ji Yatra In order to help the district administration to handle large number of applications and to facilitate the general public, NIC Anantnag has designed and developed ‘SANJY’ portal with the following features:- • Online submission of application forms by intending service providers. • Generation of acknowledgement slips after submission of application form. • Processing by way of categorization of application forms based on location and type of service. • Validation of data. • Management and selection of service providers by way of online randomization of application forms. • Report and permission letter generation. Public Services Guarantee Act (PSGA) Portal PSGA is an Act to provide/deliver Public Services to the people within the specified time limit. NIC Anantnag has designed and developed ‘SUHULIYAT ’ a web portal for citizen to apply online for availing various services like SRO-43, Legal Heir, Dependency and Income Certificate. The salient features of the system are: • Online submission of application forms by the citizens. • Processing and monitoring of the application forms to ensure delivery of services in a time bound manner. • Checking of status of applications by the citizens. e-Token for crowd Management After the abrogation of article 370, all the internet related services were restricted in J&amp;K including district Anantnag. NIC was asked by the Jammu and Kashmir Government to provide Internet services to government departments as well as general public. Huge crowds visited NIC district Centre as well as the Internet Kiosks setup by NIC on daily basis for availing internet facilities. An intranet based token generation system ‘e-Token’ was designed and developed by NIC Anantnag to manage the queue at internet kiosk centers Anantnag. This e-Token system not only helped the operators working at internet kiosk center to deliver internet services efficiently but also the citizens who visited internet kiosk centers. District Web Site The Anantnag district website has been redesigned by implementing the Secure, Scalable and Sugamya Website as a Service (S3WAAS) platform. The platform ensures compliance with the guidelines for Indian Government Websites (GIGW). By revamping the design of the portal using S3WAAS, citizens can access the website through different digital devices with easy search content facility. Other ICT Initiatives Establishment and Management of Internet Kiosks post abrogation of Article 370 period Due to internet blockade in J&amp;K post 5th August 2019, NIC, Anantnag rose to the occasion and established two internet kiosks comprising of 50 nodes. Up to ending February, 2020 more than 1.50 lac people used the facilities established by NIC. The services include submission of application forms for various exams like NEET, GATE, SSC-JE, Railways, IGNOU, CSIR NET, UGC NET, JNV schools, MCI Forms, Air Force Admit cards, Results of various exams, e-mail access, Air Ticket, Passport applications, Scholarship forms, income tax returns, GST returns, PMKISAN application uploading and internet facilities to all government departments. The facilities were open for 18-24 hours a day. Implementation of Pre and Post Matric Scholarship scheme through National Scholarship Portal: Due to restrictions on internet access in Jammu &amp; Kashmir, NIC has provided 24x7 internet access to student community and against last year figure of 26,000 a record number of 1,13,459 students of Anantnag district have registered themselves on the NSP portal which is highest in union territory of Jammu &amp; Kashmir. IT support for conducting Lok Sabha/Assembly/Panchayat/BDC Elections. NIC Anantnag provided extensive support at different times for this challenging task. In addition to Electoral Rolls, which are available in Urdu, English &amp; Hindi and are regularly updated and published on the official website (http://ceojammukashmir.nic.in), IT support has been provided for other vital activities like making available candidate information, affidavit hosting, randomization of polling paryies and EVMs, Communication Plan, Video conferencing etc. Various web based IT applications like eSuvidha, c-Vigil, BLONET etc. have been implemented successfully. Besides NIC Anantnag has developed and implemented a web based system for data entry and randomization of staff for conduct of Block Development Council Elections-2019. Implementation of PM KISAN Samman Nidhi Programme Hon’ble Prime Ministers PMKISAN programme has been successfully implemented in the district. The farmers of the district have been paid three installments of Rs. 2000 each under the programme. The programme has been implemented through the web portal https://pmkisan.nic.in portal. Sofar data of 87,836 farmers has been uploaded and validated and out of the data uploaded, financial assistance to 72,625 farmers have been paid through the portal. “Go Cashless Pay Digital Programme” in District Anantnag: • Under the programme a number of awareness programmes have been conducted in the district. • NIC is the leading department in organizing of such programmes in the district. • Emphasis has been given to organize such programmes in Rural Areas. • With this objective three villages namely Manzigam, Singhpora and Sallar Batpora of the district has been chosen to make these villages cashless. • In the first instance in village Manzigam a series of awareness programmes has been conducted. • One member from each family (211 families) trained to make digital payments using different modes. • 11 local merchants have also been trained. • DIO being the Nodal Officers of the district to carry Aadhaar activities, with the help of Special Aadhaar campaign in the area 96% of the people have been provided Aadhaar cards. • Out of total population of 1455 about 1440 people have bank accounts. • Efforts are on to declare the village as 2nd Cashless Village in J&amp;K. Other Key Initiatives in the District/ Innovations Applied IT Services for smooth implementation of e-PDS, e-Prison, e-Court, Jal Jeevan Mission, NADRS, e-Hospital, e-Municipality, Central Personnel Information System (CPIS), Aadhaar based Skill Profiling of daily wagers/ casual labours etc., Grievance Monitoring System, Video conferencing facilities through 4 VC Rooms, PMDISHA, Digital India projects have been provided by NIC Anantnag. Awards and Accolades DIO and Scientist “E”, NIC Anantnag Mr. Jan Mubarik Ahmed received award of appreciation during the Republic Day function of 2020 from Chief Guest (District Development Commissioner) in presence of DIG, South Kashmir, DIG CRPF, Brigadier 1-RR and SSP Anantnag. The award has been conferred as a marks of recognition of IT/meritorious services rendered by the NIC Anantnag especially the work done by NIC Anantnag for design and development of MIS for monitoring of Back-to-Village Programme in the district and 24x7 services provided by NIC the internet blockade since 5th of August 2019. Summary In order to realise the dream of ‘Digital India’, NIC Anantnag is well prepared and continues to provide all technical support to the district administration. A number of IT based projects have been launched during the past few months, and in near future, it is envisaged to launch of an e-Market portal of district Anantnag. Famous products of Anantnag such as willow cricket bats, handicrafts, trout fish, apples etc. shall be marketed through the e-market portal. Various training and capacity building programmes have been held for all stake holders for smooth roll out of the product. The Back-to-Village Portal developed by NIC Anantnag is proposed to be implemented in other districts of J&amp;K in the near future. The dedication and zeal towards achieving excellence in the area of ICT have made NIC Anantnag a household name in the district. For further information, please contact: District Informatics Officer NIC Anantnag District Centre, DC Office Complex, Anantnag Jammu &amp; Kashmir – 192101 Email: anantnag@nic.in, Phone: 01932-223539 NIC District Centre, Anantnag has played a pivotal role in implementation of various schemes and projects like Back-to-Village, PMKISAN, e-PDS, DM Dashboard, ERMS/ERONET and many others. The NIC has been rendering exemplary services during the conduct of Parliamentary, Assembly, Panchayat and Local Body elections. The District Administration is thankful to the NIC for providing round the clock internet facilities to students, job aspirants, NEET/NET applicants, passport seekers, IT/GST return filers, e-tenderers etc. during the period the facilities were otherwise not available. A record number of students have been registered on NSP portal with the active IT support of the NIC. I hope that NIC will continue to provide ICT services to the government and the public of the district. Bashir Ahmad Dar, KAS Collector &amp; District Magistrate Anantnag District Jan Mubarik Ahmed Bhat Sr. Tech. Director &amp; DIO jan.mubarak@nic.in Sachin STA &amp; ADIO sachin.m@nic.in Inauguration of “Back-to-Village” Portal by DDC, Anantnag Dashboard of ‘Back-to-Village” MIS portal Dashboard of Shri Amarnath Ji Yatra portal DIO, NIC, Anantnag Shri. Jan Mubarik Ahmad receiving award of appreciation during Republic Day function of 2020 Roadshow at Village Manzigam regarding Digital India awareness week</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="telangana-state-harnessing-innovation-with-cutting-edge-technologies-for-digital-transformation-april-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Telangana State: Harnessing innovation with cutting-edge Technologies for Digital Transformation</span></a><a class="article-nav-link next" href="west-godavari-district-ict-initiatives-at-its-best-at-the-rice-bowl-of-andhra-pradesh-april-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Godavari District: ICT initiatives at its best at the Rice Bowl of Andhra Pradesh</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="telangana-state-harnessing-innovation-with-cutting-edge-technologies-for-digital-transformation-april-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Telangana State: Harnessing innovation with cutting-edge Technologies for Digital Transformation</span></a><a class="article-nav-link next" href="west-godavari-district-ict-initiatives-at-its-best-at-the-rice-bowl-of-andhra-pradesh-april-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Godavari District: ICT initiatives at its best at the Rice Bowl of Andhra Pradesh</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>DevSecOps: Producing high quality, secure software at pace — Informatics October 2021</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2021"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/october-2021/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2021/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;30</div><a href="../pages/october-2021/page-30.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-30.jpg" alt="Page 30" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-30.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2021/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2021/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2021/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2021.html">October 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>DevSecOps: Producing high quality, secure software at pace</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2021.html">October 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>DevSecOps: Producing high quality, secure software at pace</span></nav>
         <div class="article-header">
           <div class="article-section-badge">In Focus</div>
-          <h1 class="article-title" data-pagefind-meta="title">DevSecOps: Producing high quality, secure software at pace</h1>
+          <h1 class="article-title">DevSecOps: Producing high quality, secure software at pace</h1>
           <hr class="title-rule">
           <p class="article-byline">By Anil Kumar Jha &bull; pp. 30–31</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">We must always meet customer’s requirement. Be it any role in the software industry - developer, tester, security auditor or manager, our job is to support the business so that it wins in the marketplace. Now, there is tough competition among the business players in every field to woo the customers. So, they demand product innovation and delivery at a rapid pace. Three or four product releases in a year is no longer a norm, business demands the release every week or every month with new features or to support the customer requirements. These paradigm shifts happening in the industry gave birth to technologies like Agile Software Development practices, DevOps, DevSecOp etc. Enterprises across the world are demanding software release at high speed to meet business requirements. when software is developed at such speed, security should not be left behind which can only happen if security is built in to SDLC. Such requirements gave birth to technologies like Agile development, DevOps and DevSecOps.In this paper we describe the DevOps technology that enables Development team and Operation team to collaborate with each other on day to day basis such that operational issues and customer problems reduce to a larger extent. We also explain DevSecOp technology that allows security to be built in to the application through automation, cultural shift, application security programs etc. In the end we describe what technologies and tools NIC is providing to the developers to implement DevSecOp across organisation. Why DevOps? If Development and Operation work in silos, then when a developer writes code, builds it, tests it and deploys it into the operation, it normally fails. Whatever the failure may be- deployment failure, operation failure or crashes, the customer faces the problem in running the business. Normally, in such cases, the blame game begins, people from development say that there are operational issues and people from operations blame it on development issues and a lot of time is lost in the process. This usually happens because development and operation are not in sync with the software stack, tools and versions. Moreover, as discussed earlier, it is today’s requirement to push the code to deployment/operation at a rapid pace, certain deployment each day. DevOps was created to address all these issues. DevOps best practices can be narrowed down to three basic principles called the three ways : First way The first principle says we need to accelerate the work from development to operation, and then to the customer. This can be achieved by limiting work in progress and through automation. Second way The second way enables constant flow of feedback from operation to development. This can be achieved through continuous integration, build and deployment process working together with a fast, automated suite of tests. Third way The third way is about creating a culture of continual experimentation and learning. While DevOps culture brought a lot of innovation to the software development process, security was either not considered or not able to keep pace with the rate at which software was being built and released. DevSecOp is an attempt to inject security into the DevOps process and make sure that software delivery rate is not disturbed due to this injection. DevSecOp is short for Development, Security and Operation. This technology dictates that security is not the job of one group, rather everyone including development, security, operation quality is responsible for security. If any issue comes in production, all the teams should work together to resolve the issue therefore all the teams should learn security. Security should not be an afterthought, rather it should be built into the application. Security should be discussed and practiced during all the phases of Software Development life cycle during requirement analysis, architecture, design, development, testing and in operation. Hence, to deliver software at high speed and make it secure as well, security needs to be built into the application development workflow and process. The earlier we introduce security into SDLC, the sooner we will be able to identify and fix vulnerabilities in the software, rather than waiting till the end for security assessment reports or run time issues in the operation. Organizations can introduce security into existing continuous integration and continuous delivery (CI/CD) pipelines. Just like after a build failure, software is not eligible for deployments in the production, a policy may be defined by the organization, if a security issue is caught in the CI/CD pipeline, the application should not reach production until the vulnerabilities are taken care of. To implement DevSecOp, organizations need to integrate application security tools into CI/CD pipeline. Some of the tools are: • Static Application Security Testing (SAST) • Software Composition Analysis (SCA) • Dynamic Application Security Testing (DAST) SAST SAST tools scan the source code of the application and identify security vulnerabilities that may be exploited by the hacker while in production. These tools pinpoint the code location where security issues exist. This tool is used by the developer while the developer is writing the application and so the advantage of this tool is that the developer may fix all the security issues reported by the tool during the development phase of SDLC. SCA SCA tools scan the source code and binaries to identify vulnerabilities in open source libraries included in the application. These tools not only uncover the security issues but also highlights the licensing risks due to open source software components. DAST DAST is an automated black box testing technology that attacks our web applications/ APIs just like hackers would do. DAST tools do not require access to source code to perform the scan on web applications/APIs. Since these tools attack the application in real time just like a hacker and provide proof for each of the reported issues, it has a low number of false positives. With traditional software development strategies, it is not possible to deliver secure software at high velocity. DevSecOps is the philosophy of incorporating security practices within the DevOps using automation and security tools, and thus enabling secure software delivery through the seamless and transparent integration of security into the CI/CD pipeline. RATNABOLI GHORAI DINDA Dy. Director General, NIC DevSecOp In NIC, the Application Security Group is providing the following tools to developers to enforce security in the CI/CD pipeline through automation: HCL Appscan Source for Development This tool provides a plugin to integrate in Developer IDE like Eclipse, Microsoft Visual Studio etc. This allows developers to scan the code, find vulnerabilities and fix it during the development phase of SDLC. This tool also provides recommendations for the issues reported by it. HCL Appscan Enterprise This tool is a black box security testing tool that identifies the security threats by attacking the running web applications/APIs/ web services just like hackers. It does not require source code of the application and can scan the applications developed in any language. It also provides proof of the reported issues of what parameter tampering/ manipulations/fuzzing were done and its effect on the target application. Conclusion If we utilize these tools regularly as a part of our design and development work, we will be able to eradicate security issues early in the SDLC. Moreover, the developers acquire a lot of security knowledge in the process and will apply these learnings in the other projects they work up on. All these things will certainly make a cultural shift in the organization and will ultimately make the software much more secure, robust and resilient. For further information, please contact: Anil Kumar Jha Sr. Technical Director Application Security Audits &amp; Assessment Division National Informatics Centre, A-Block, CGO Complex Lodhi Road, New Delhi - 110003 Email: aniljha@nic.in, Phone: 011-24305140</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="endpoint-the-start-point-of-cyber-security-enhancing-cyber-security-through-advanced-endpoint-security-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Endpoint: The Start Point of Cyber Security: Enhancing Cyber Security through advanced Endpoint Security</span></a><a class="article-nav-link next" href="preventing-cyber-crisis-must-haves-for-all-organizations-to-secure-against-cyber-crisis-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Preventing Cyber Crisis: ‘Must haves’ for all organizations to secure against cyber crisis</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="endpoint-the-start-point-of-cyber-security-enhancing-cyber-security-through-advanced-endpoint-security-october-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Endpoint: The Start Point of Cyber Security: Enhancing Cyber Security through advanced Endpoint Security</span></a><a class="article-nav-link next" href="preventing-cyber-crisis-must-haves-for-all-organizations-to-secure-against-cyber-crisis-october-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Preventing Cyber Crisis: ‘Must haves’ for all organizations to secure against cyber crisis</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

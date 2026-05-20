@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>School Education Portal, Uttarakhand: Focussing on Enabling Transparency and Efficiency in Education System — Informatics January 2018</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2018"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2018/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/january-2018/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/january-2018/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2018/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;25</div><a href="../pages/january-2018/page-25.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-25.jpg" alt="Page 25" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-25.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;26</div><a href="../pages/january-2018/page-26.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2018/page-26.jpg" alt="Page 26" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2018/page-26.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2018.html">January 2018</a><span class="breadcrumb-sep">&rsaquo;</span><span>School Education Portal, Uttarakhand: Focussing on Enabling Transparency and Efficiency in Education System</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2018.html">January 2018</a><span class="breadcrumb-sep">&rsaquo;</span><span>School Education Portal, Uttarakhand: Focussing on Enabling Transparency and Efficiency in Education System</span></nav>
         <div class="article-header">
           <div class="article-section-badge">eGov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">School Education Portal, Uttarakhand: Focussing on Enabling Transparency and Efficiency in Education System</h1>
+          <h1 class="article-title">School Education Portal, Uttarakhand: Focussing on Enabling Transparency and Efficiency in Education System</h1>
           <hr class="title-rule">
           <p class="article-byline">By SANJAY GUPTA, Sr. Technical Director; PUSHPANJALI, Scientist-C &bull; pp. 24–26</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The Portal developed by NIC Uttarakhand helps Education Department in keeping the large volume of record of teachers and students at single point and therefore enable various stakeholders to access this valuable information online with a single click. The quality points of teachers maintained and generated through this portal has helped Education Department to bring transparency in existing transfer system in the State. Geographical spread of Uttarakhand is marked by plains and hills in the south and tough mountainous terrain in the north which defines the demographic pattern. The total geographical area of the state is 53,483 sq.km comprising 13 districts, 2 Divisions (Kumaon and Garhwal) and 95 blocks. Implementation of the state run education system face challenges born out of geographical and demographic complications. To enhance the effectiveness of the education system in vogue, it was conceived by the state Govt. to develop a web based portal which can be used as an integrated platform for the students, teachers, administration, various schemes of school education implemented in the State, citizens and the other stake holders. With this background a portal named “School Education Portal Uttarakhand” was designed &amp; developed by NIC Uttarakhand and implemented by the School Education Department- Uttarakhand. The portal is available on http://educationportal.uk.gov.in. The project was initiated in April 2015. In Uttarakhand Department of education has a unified structure covering elementary and secondary education. The other wings of School Education, Uttarakhand are State council of Education Research and Training (SCERT), Uttarakhand Board of School Education &amp; Exams (UBSE) and District Institutes of Education and Training (DIET). OBJECTIVES The School Education Portal for Education Department- Uttarakhand has been conceptualized, designed and developed to ensure single point availability with easy accessibility and transparency of various services of the department up-to school level in the State. The transparent system of transfer and posting of teachers is one of the prime objectives of this system. Digitization of enrolment of students for Uttarakhand board exam and automating exam related functions are another major area which department of school education is focusing upon through this portal. HIGHLIGHTS HUMAN RESOURCE MANAGEMENT SYSTEM This module is to manage the Employees and teachers Information like Personal details, educational qualification, joining &amp; posting/ transfer details, trainings attended and promotion details. Other details as per service book of a teacher are also maintained in this module . SCHOOL MANAGEMENT SYSTEM This module captures details of government schools like demographic details, infrastructure details, class-wise student enrolment, sanctioned post and school/ unit categorization. Every school is categorized based on eleven norms and their sub-norms as prescribed by State Government. On the basis of these norms every school is categorized as X (Sugam) or Y(Durgam). TEACHERS TRANSFER MODULE Transfer system is primarily based upon the quality points calculated for the teachers. Quality points are calculated on the basis of certain parameters i.e. teachers posting period in X(Sugam) and Y(Durgam) category of schools, attendance records of teacher and exam result performance in teacher’s main subject in last three years. Online requests for transfer are sought from an individual teacher who is eligible for transfer based on their quality points. After receipt of requests from all the teachers a combined gradation list is generated which is used as the main criteria for transfer in individual counseling of teacher for final transfer. SCHOOL INSPECTION MODULE This module is for creating and managing the inspection team, inspection schedules, online filing of reports. The main objective of this module is for keeping school inspection records in digitized form thereby improving the quality of school education in the State. STUDENT ENROLMENT MODULE This module captures school-wise basic details of a student such as his/ her personal details, Aadhaar number contact number, subjects etc. The student record is validated with the class-wise student enrolment. The basic student details are further added with stream-wise subjects detail for students of class 9th and 11th for the purpose of Board Exam Registration. Management schools in the State are also covered under this module. Every school (Government &amp; Management) have been provided user-id and password to enter their student’s details. BACKEND TECHNOLOGY Hosting Infrastructure: 3 VMS on MEGHRAJ Cloud Language: Java RDBMS: Postgres SQL Web Server: APACHE TOMCAT Framework: Java Netbeans Operating System: LINUX7 INTENDED BENEFITS A powerful tool in the hand of stakeholders for continual improvement of the school education system in public domain. Availability of all information related to school system at one point viz., detail of students, subject-wise teachers, amenities etc. An efficient tool to bring transparency in transfer/ posting policy and its implementation Infusing awareness for quality enhancement among the teachers as this portal makes their service data and quality points accessible to them A successful implementation of the portal is likely to bring a pervasive change in the quality of education system Public (student/ Parents) feedback mechanism about functioning of schools in their areas FUTURE ROAD MAP A Daily Mid-Day-Meal Reporting System through mobile app and SMS for reporting daily real time data for Mid-Day -Meal Automation of Uttarakhand Board Exam related activities like online generation of admit cards etc. Workflow based online submission of annual performance report by teachers &amp; officials and their assessment Development and integration of online module for monitoring daily work performance of identified model schools (Currently two schools identified per block. Total 190 schools) Development of Geo-Tag based mobile App for daily monitoring teachers and student attendance Dashboards for administrators and school principals CORE TEAM Capt. Alok Shekhar Tiwari, Director General, Department of School Education Uttarakhand Shri R K Kunwar, Director, Department of School Education Uttarakhand Shri Mukesh Bahuguna, Administrative Officer (Directorate), Department of School Education- Uttarakhand Shri Sunil Tariyal &amp; Shri Manoj Kapkoti, Programmers Project Team of NIC- Uttarakhand</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="tehri-garhwal-district-the-beautiful-hilly-area-of-uttarakhand-provides-relentless-ict-based-services-to-citizens-january-2018.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">TEHRI GARHWAL District: The Beautiful Hilly Area of Uttarakhand Provides relentless ICT based Services to Citizens</span></a><a class="article-nav-link next" href="goa-s-common-portal-for-e-services-of-urban-local-bodies-ensuring-effective-better-citizen-centric-services-january-2018.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Goa’s Common Portal for e-Services of Urban Local Bodies: Ensuring Effective &amp; Better Citizen Centric Services</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="tehri-garhwal-district-the-beautiful-hilly-area-of-uttarakhand-provides-relentless-ict-based-services-to-citizens-january-2018.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">TEHRI GARHWAL District: The Beautiful Hilly Area of Uttarakhand Provides relentless ICT based Services to Citizens</span></a><a class="article-nav-link next" href="goa-s-common-portal-for-e-services-of-urban-local-bodies-ensuring-effective-better-citizen-centric-services-january-2018.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Goa’s Common Portal for e-Services of Urban Local Bodies: Ensuring Effective &amp; Better Citizen Centric Services</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

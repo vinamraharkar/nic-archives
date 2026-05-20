@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Human-Centered AI Design A Synergy of Design Thinking and Data Science — Informatics January 2025</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2025"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2025/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/january-2025/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/january-2025/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/january-2025/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/january-2025/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/january-2025/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2025/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2025/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2025.html">January 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Human-Centered AI Design A Synergy of Design Thinking and Data Science</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2025.html">January 2025</a><span class="breadcrumb-sep">&rsaquo;</span><span>Human-Centered AI Design A Synergy of Design Thinking and Data Science</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">Human-Centered AI Design A Synergy of Design Thinking and Data Science</h1>
+          <h1 class="article-title">Human-Centered AI Design A Synergy of Design Thinking and Data Science</h1>
           <hr class="title-rule">
           <p class="article-byline">pp. 31–33</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">The journey of AI began with rule-based expert systems and evolved into complex machine learning and deep learning models. Initially, AI systems were designed for efficiency and automation, often without considering human-centric factors such as transparency and fairness. However, the rise of ethical concerns, biased algorithms, and the lack of explainability has fueled the demand for a new approach—HCAI. Unlike traditional AI, which emphasizes automation and data-driven optimization, HCAI prioritizes human needs and values. AI design has transitioned from merely improving computational efficiency to developing systems that work collaboratively with humans, ensuring decision-making processes remain accountable and inclusive. Why Human-Centered AI Matters For AI to be effective and ethical, it must align with diverse human needs. Key pillars of HCAI include: • Accessibility: AI should cater to people across different linguistic, educational, and technological backgrounds. • Transparency &amp; Trust: AI-driven decisions must be understandable to users, especially in high-stakes domains like healthcare, finance, and governance. • Fairness &amp; Bias Mitigation: AI models should be trained on diverse datasets to prevent discriminatory outcomes. • Ethical Deployment: AI should support, rather than replace, human professionals, particularly in fields like education, healthcare, and legal systems. Additionally, AI should empower users through interactive and explainable interfaces that promote trust and comprehension. Designing AI with a human-centric mindset ensures inclusivity, ethical responsibility, and social alignment. Human-Centered AI vs. Traditional AI Unlike traditional AI, which focuses on maximizing efficiency and automating tasks, HCAI emphasizes human-AI collaboration and ethical decision-making. Here are key differences: • Education: Traditional AI automates grading and content delivery, while HCAI creates personalized learning platforms that adapt to individual students’ needs. • Healthcare: Traditional AI optimizes diagnosis and data processing, while HCAI ensures AI respects patient comfort, privacy, and emotional well-being. • Finance: Traditional AI maximizes risk analysis for investments, while HCAI ensures transparency and prevents biased credit scoring. • Transportation: Traditional AI focuses on developing fully autonomous vehicles, while HCAI enhances driver-assistance systems to improve safety and comfort. • Customer Service: Traditional AI chatbots handle queries efficiently, whereas HCAI-powered assistants detect user frustration and escalate issues to human agents when necessary. The Human-Centered AI Design Process Stage 1: Empathize &amp; Hypothesis The Empathize &amp; Hypothesis stage is where designers, engineers, and data scientists collaborate to: • Understand user needs deeply • Assess AI’s potential to enhance user experience • Identify key opportunities where AI provides unique value • Develop initial hypotheses about how AI should function This phase relies on qualitative and quantitative insights to inform AI development, ensuring that technology does not dictate design but rather serves as an enabler of better human experiences. Key Design Goals for Empathize &amp; Hypothesis To create user-centered AI solutions, teams should: • Engage in User Research: Conduct qualitative interviews, surveys, and ethnographic studies to understand the motivations, pain points, and workflows of target users. • Apply Design Thinking Techniques: Use methodologies such as Jobs-to-be-Done (JTBD) and User Journey Mapping to contextualize user challenges. • Leverage AI Ideation Frameworks: Use tools like: • AI Design Sprints to rapidly prototype AI concepts • AI Prompt Card Decks for brainstorming AI use cases • AI Canvases to visualize potential AI applications and associated risks • Assess Uncertainty &amp; Risk: Categorize AI-driven decisions into levels of uncertainty to mitigate risks early in the process: • Low uncertainty → Low risk • Medium uncertainty → Some risk • High uncertainty → High risk Pairing Designers with Data Scientists A significant shift in AI development is the close collaboration between designers and data scientists. This partnership ensures that: • Designers bring human insights to data science models • Data scientists align their models with real-world user needs • AI solutions are designed with a balance between automation and augmentation. A notable example of this approach is IBM’s AI Fairness 360 Toolkit, which helps designers and data scientists detect and mitigate biases in AI models collaboratively. Optimizing AI: Precision vs. Recall When developing AI models, teams must decide whether to prioritize precision or recall: • High Precision → Reduces false positives but may miss relevant cases • High Recall → Captures all relevant cases but may include false positives For example, in a medical diagnosis AI, it’s more critical to prioritize recall to avoid missing potential cancer patients (false negatives). In contrast, for fraud detection AI, prioritizing precision may be better to prevent blocking legitimate users. Using frameworks like the Google People + AI Guidebook, teams can design reward functions that balance these trade-offs effectively. Stage 2: Define In the Define phase, teams refine the problem statement based on insights from Stage 1. This phase involves: • Synthesizing research data to define user pain points • Creating personas to represent user types • Developing a problem statement that captures the core challenge AI aims to solve • Identifying AI opportunities within constraints like ethical considerations, feasibility, and regulatory compliance A clear problem definition ensures that AI solutions remain focused and impactful, preventing scope creep. Stage 3: Ideate The Ideate phase encourages brainstorming multiple solutions. Methods used include: • Storyboarding AI Interactions: Mapping user journeys to visualize AI integration points • Sketching AI Workflow Models: Conceptualizing AI behaviors and outputs • Using AI-Specific Brainstorming Tools: Google’s People + AI Guidebook provides frameworks for AI-specific ideation Teams should generate diverse ideas before narrowing down the best solutions based on feasibility, user impact, and ethical considerations. Stage 4: Prototype The Prototype phase involves creating tangible AI-powered experiences. Approaches include: • Wizard of Oz Testing: Simulating AI behavior manually before full-scale implementation • Low-Fidelity Mockups: Using tools like Figma or Sketch for early UI/UX prototyping • Building AI Proof-of-Concepts (PoCs): Developing small-scale AI models for usability testing Rapid prototyping allows teams to validate AI assumptions early, reducing development risks. Stage 5: Test The Test phase ensures AI aligns with user needs through: • User Testing with AI Prototypes: Gathering real-world feedback • Bias &amp; Fairness Audits: Using tools like Microsoft’s Fairlearn to detect biases • Iterative Refinements: Improving AI interactions based on testing insights Continuous testing is vital to refining AI-driven experiences before full deployment. Trends &amp; Challenges in HCAI • Ethical AI Governance: Organizations are developing AI ethics committees to oversee design and implementation • Adaptive AI Systems: AI that evolves based on user interactions and real-time feedback • Regulatory Challenges: Navigating GDPR, AI Act, and other compliance frameworks As AI continues to shape our world, integrating human-centered principles into AI development is not just a best practice, it is essential for creating technology that empowers people and enriches lives. Conclusion The Empathize &amp; Hypothesis phase in Human-Centered AI Design sets the foundation for AI solutions that are not only technically robust but also deeply aligned with human needs. By fostering collaboration between designers and data scientists, organizations can: • Develop AI that is more intuitive, ethical, and impactful • Reduce risks associated with bias and poor user experiences • Create AI-driven services that truly enhance, rather than replace, human capabilities As AI continues to shape our world, integrating human-centered principles into AI development is no longer optional-it is essential for governments to create technologies that empowers citizens and enriches lives.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="gram-manchitra-transforming-rural-india-with-geo-spatial-technology-january-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gram Manchitra Transforming Rural India with Geo-Spatial Technology</span></a><a class="article-nav-link next" href="building-secure-applications-cybersecurity-best-practices-for-modern-architecture-january-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Building Secure Applications Cybersecurity Best Practices for Modern Architecture</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="gram-manchitra-transforming-rural-india-with-geo-spatial-technology-january-2025.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gram Manchitra Transforming Rural India with Geo-Spatial Technology</span></a><a class="article-nav-link next" href="building-secure-applications-cybersecurity-best-practices-for-modern-architecture-january-2025.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Building Secure Applications Cybersecurity Best Practices for Modern Architecture</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

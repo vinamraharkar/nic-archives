@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance — Informatics January 2026</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2026"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2026/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2026/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2026/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2026/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2026.html">January 2026</a><span class="breadcrumb-sep">&rsaquo;</span><span>Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2026.html">January 2026</a><span class="breadcrumb-sep">&rsaquo;</span><span>Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance</span></nav>
         <div class="article-header">
           <div class="article-section-badge">District Informatics</div>
-          <h1 class="article-title" data-pagefind-meta="title">Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance</h1>
+          <h1 class="article-title">Kangra (at Dharmshala) Himachal Pradesh: Digital Pathways for Empowered Governance</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by SUSHMA MISHRA &bull; pp. 20–21</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Located in the western part of Himachal Pradesh, Kangra is one of the most vibrant and historical District. Nestled in the lap of the majestic Dhauladhar range, District is renowned for its scenic landscapes, lush green tea gardens, ancient temples, rich cultural heritage and pleasant climate. It is also home of His Holiness, the Dalai Lama, making it an important spiritual and tourist destination. It is also famous for the world-renowned Kangra miniature paintings and paragliding sites. Since establishment, the NIC District Centre Kangra is delivering vital ICT services to the District Administration and other Central and State Government Departments. District Kangra, with Dharamshala as its administrative hub, is steadily transforming into a model of digitally empowered governance in Himachal Pradesh. Through the strategic deployment of e-Governance applications, NIC District Centre Kangra has been instrumental in enabling transparent, efficient, and citizen-friendly administration across sectors ranging from health and education to revenue, transport, and disaster management. ICT Initiatives in the District Various Central, State and District initiated ICT projects have been implemented across all the levels to provide G2G, G2E and G2C services in an online and transparent mode. The key initiatives include: e-Himbhhoomi e-himboomi is a flagship Land Records Management System to maintain and update Record of Rights (RoR), Jamabandi, Mutations and Girdawari. It empowers the citizens, Revenue Officials, and District Administration through a centrally managed, secure, and user-friendly platform. RoR – Copy of the Record of Rights It provides online access to Land Records using multiple interfaces, digitally signed RoR copies and seamless integration with multiple applications. National Generic Document Registration System (NGDRS) NGDRS is an online platform to streamline and modernize the property registration process. It enables citizens to prepare documents, calculate stamp duty, book appointment slots, and submit registration requests online. The system incorporates secure digital signatures for document authentication, ensuring a legally valid, tamper-proof, and transparent registration process. Pong Dam Oustees MIS The Pong Dam, constructed on the Beas River in Himachal Pradesh, led to the displacement of thousands of families in HP. For rehabilitation of approximately 16,352 Pong Dam displaced (Oustee) families, this dedicated portal is developed for the allotment of “Murabba” land, enabling faster, transparent and more efficient disposal of the cases. Integrated Financial Management System HimKosh (IFMS) is a comprehensive platform for the management of budgeting, accounting, treasury operations, and revenue collection. It has replaced fragmented processes with a unified, auditable workflow system linking Departments, DDOs, Treasuries and the Finance Department. NIC Kangra has consistently provided exemplary support to the District Administration, playing a pivotal role in promoting ICT and advancing multiple e-Governance initiatives across the District. I sincerely acknowledge and appreciate the dedication, professionalism, and technical expertise of the NIC Officers in the successful implementation of numerous IT projects. I also place on record my special commendation for NIC Team who worked tirelessly to ensure seamless technical support and services during the elections. I am confident that NIC will continue to uphold these high standards, delivering innovative solutions and technical expertise to successfully implement ICT initiatives for the benefit of our citizens. Shri Hemraj Bairwa, IAS Dy. Commissioner, Kangra (at Dharamshala) Schemes Monitoring Information System Schemes MIS is an online system that enables the management, monitoring and tracking of the developmental schemes. It allows the District Planning Offices to record details of sanctioned schemes under different heads and provides tools for geo tagging, generating reports, monitoring and facilitating social audit &amp; feedback by the citizens. e-Kalyan eKalyan is an online Welfare Pension system to streamline the delivery of social security pensions to eligible beneficiaries under various Central and State Pension Schemes. It helps the Department to manage large volumes of pensioner records efficiently and transparently. Rajpatra (e-Gazette) The Rajpatra (eGazette) is a paperless, end-to-end system to manage and publish the digitally signed Gazette in the State. CM Office &amp; Vidhan Sabha Support NIC Kangra plays a critical role in ensuring smooth ICT operations of the CM Camp Office and Vidhan Sabha during the Winter Session in Dharamshala. Manav Sampada (eHRMS) Manav Sampada is a generic landmark initiative aimed at standardizing and digitizing human resource management across all the Government Departments. Transport Software (Vahan, Sarathi) For the seamless delivery of the transport services, Vahan, Sarathi, iRAD/DAR, e-Detection applications have been implemented at RTO and all the R&amp;LAs in the District. NDAL-ALIS The Arms License software is implemented to streamline and modernize the entire process of issuing, renewing and managing Arms Licenses in the District. Other Key Initiatives in the District Other key ICT initiatives implemented in the District are: • e-Procurement • e-Office - a flagship digital workplace solution for Government Offices • Aadhaar Enabled Biometric Attendance System • e-Rozgar - Employment Exchange MIS • Loan Application system for Himachal Backward Classes Finance &amp; Development Corporation • Video Conferencing, Network and eMail Services ICT Support for VVIP Events To review the damages caused by heavy rains &amp; floods during the Monsoon Season, Hon’ble Prime Minister Shri Narendra Modi chaired a high-level review meeting at Kangra Airport. NIC Kangra provided the support for establishing the Prime Minister’s Office and for the seamless conduct of presentations. Awards and Recognitions e-KATCH (Kangra Application for Tracking Chunav) web application developed by NIC Kangra received the Best Electoral Practice Award for IT Initiatives from Hon’ble President of India. Conclusion NIC District Centre Kangra is driving digital governance in the District by modernizing and enhancing the service delivery. By strengthening the public service delivery and access to online platforms, NIC Kangra is creating a seamless, inclusive, and citizen-centric digital ecosystem across the district.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="gir-somnath-gujarat-driving-transparent-efficient-and-citizen-centric-e-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gir Somnath, Gujarat: Driving Transparent, Efficient, and Citizen-Centric e-Governance</span></a><a class="article-nav-link next" href="west-siang-arunachal-pradesh-bridging-distance-with-digital-governance-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Siang, Arunachal Pradesh: Bridging Distance with Digital Governance</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="gir-somnath-gujarat-driving-transparent-efficient-and-citizen-centric-e-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Gir Somnath, Gujarat: Driving Transparent, Efficient, and Citizen-Centric e-Governance</span></a><a class="article-nav-link next" href="west-siang-arunachal-pradesh-bridging-distance-with-digital-governance-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">West Siang, Arunachal Pradesh: Bridging Distance with Digital Governance</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

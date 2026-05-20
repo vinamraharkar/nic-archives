@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>SAMPADA Suite — Informatics October 2020</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2020"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2020/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/october-2020/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/october-2020/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;31</div><a href="../pages/october-2020/page-31.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-31.jpg" alt="Page 31" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-31.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;32</div><a href="../pages/october-2020/page-32.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-32.jpg" alt="Page 32" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-32.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;33</div><a href="../pages/october-2020/page-33.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2020/page-33.jpg" alt="Page 33" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2020/page-33.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2020.html">October 2020</a><span class="breadcrumb-sep">&rsaquo;</span><span>SAMPADA Suite</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2020.html">October 2020</a><span class="breadcrumb-sep">&rsaquo;</span><span>SAMPADA Suite</span></nav>
         <div class="article-header">
           <div class="article-section-badge">eGov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">SAMPADA Suite</h1>
+          <h1 class="article-title">SAMPADA Suite</h1>
           <hr class="title-rule">
           <p class="article-byline">By MOHAN DAS VISWAM &bull; pp. 31–33</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Ministry of Food Processing Industries (www.mofpi.nic.in) was set up in 1988, to develop a strong food processing sector in India, enabling our farmers to get a better return on their produce, helping the rural economy grow faster and increase export of processed food products. Mission of Ministry of Food Processing Industries (MOFPI) • Mission of MOFPI is to develop the food processing sector in such a way that will help reduce wastage and decay of agricultural and other farm produce, adding value to farmers’ produce, thus helping people engaged in the agricultural and other farm sector earn more from their farm produce • Provide financial and technical help for setting up food processing industries and associated infrastructures and provide seamless backward and forward linkages with farmland and markets for the farm produce • Provide research and development support to the agricultural sector and create facilities for food testing laboratories • Increase export of processed food items in international markets The Sampada suite The government of India (GOI) has approved a new Central Sector Scheme– Pradhan Mantri Kisan SAMPADA Yojana with an allocation of ₹ 6,000 Crore for the period 2016-20. The scheme is to be implemented by the Ministry. NIC has developed a web-based application suite named “Sampada Portal” (https://sampada-mofpi.gov.in) for various schemes under which the Ministry provides grants to the promoters to set up Food Processing Facilities. The different modules of the suite, based on different schemes of the Ministry provide an online system for submitting an application, evaluation of the same by the Ministry and its authorized Project Management Agencies, approval/ rejection of applications, monitoring of grant release instalments, and final closure of a project. The detailed workflow of the Ministry for these activities has been automated in the Sampada suite. It has helped the Ministry to simplify the process of grant allocation and manage the schemes more efficiently helping timely completion of projects. The Modules Nine different modules have been developed so far in the suite. APC: Agro Processing Cluster In this scheme, Food Processing Units are set up using a cluster approach, where at least 5 units are set up with a minimum investment of ₹ 25/- crore on a land area of at least 10 acres for a group of promoters. Basic facilities, warehouses, packaging, etc. are provided as common facilities. CBFL: Creation of Backward Forward Linkage Under the scheme, financial assistance is provided for setting up primary processing/ collection centers at the farm gate and modern retail outlets at the front end along with connectivity through refrigerated transport with an aim to creating a seamless backward and forward integration of the processed food industry in terms of availability of raw material and linkages with the market with a special thrust on the preservation of perishable items. CEFPPC: Creation/ Expansion of Food Preservation/ Processing Capacity In this Scheme creation of processing and preservation capacities, modernization/ expansion and value addition of existing processing units and reduction of wastage are ensured. Cold Chain Facility It is the creation of infrastructure (multi-temperature multi-product storage units, mobile storage units, CA storage, blast freezing, packing and distribution, etc.) for the preservation of farm produce/ dairy products/ meat/ fish items, etc. from the farm gate till its delivery to consumers. Mega Food Park It is a large-scale Food Processing facility established at an industrial plot in an agriculture/ horticulture zone as part of a cluster with a steady supply of raw materials. It typically consists of supply chain infrastructure (collection centres, primary processing centres, central processing units, cold chain and about 25-30 fully developed plots) for entrepreneurs to set up food processing units. Food Safety &amp; Quality Assurance Infrastructure (FTL) : Food Testing Laboratory Financial assistance under this scheme is granted for setting up Food Testing Laboratory (FTL) to ensure the quality of processed food products sold in the market meet the stringent parameters prescribed by the food safety regulator in compliance with the various aspects of Total Quality Management (TQM). Operations Greens In 2018-19, a new Scheme “Operation Greens” was announced on the line of “Operation Flood”, with an outlay of ₹ 500 Crore for professional management of agri-logistics, processing facilities and to promote Farmer Producers Organizations (FPOs). Accordingly, the Ministry has formulated a scheme for integrated development of the Tomato, Onion and Potato (TOP) value chain. Objectives of the scheme • Enhancing value realisation of TOP farmers by targeted interventions to strengthen TOP production • Price stabilization for producers and consumers by proper production planning • Reduction in post-harvest losses by creation of farm gate infrastructure, and creation of appropriate storage capacity • Setting up a market intelligence network to collect and collate real-time data on demand and supply and price of TOP crops. Skill The scheme aims to provide a sector-specific skilled workforce from floor level workers, operators, packaging and assembly line workers to quality control supervisor, etc. in various segments of food processing industries to meet the requirement of 17.8 million trained manpower in the food processing sector by 2022 as envisaged by National Skill Development Corporation (NSDC). HACCP: Hazard analysis and critical control points It is a preventive approach to food safety from biological, chemical, physical and radiological hazards in production processes that can make the finished product unsafe for human consumption and design measures to reduce these risks by complying with HACCP, ISO Standards (ISO 9000, ISO 22000, HACCP, GMP, GHP, etc.) for improving the overall quality of food safety &amp; hygiene and also to increase India’s share in global food trade. The SAMPADA Portal and the Dashboard, developed by the NIC team in the Ministry, has proved to be a transformational tool in the ways of working within the Ministry and its interface with entrepreneurs seeking financial assistance under its flagship scheme, Pradhan Mantri Kisan Sampada Yojana (PMKSY). It has directly enhanced transparency, accountability, efficiency, and responsiveness amongst all stakeholders, particularly of the officials in the Ministry. I congratulate each member of the NIC team and the team leaders for their sustained efforts in developing the portal in close coordination with the various divisions in the Ministry. I look forward to their continued support in upgrading the IT infrastructure and IT solutions for a more transparent and accountable government. – PUSHPA SUBRAHMANYAM, IAS, Secretary, MOFPI Salient Features • Facility for an auto-generated email to the applicant’s (promoter) registered email-id regarding system-generated user-id and password for accessing the EOI module. • One portal multiple schemes • Single login for all the schemes • Feedback submission facility regarding experience in using the software • Three types of users- i) Promoter ii) PMA (project management agency), iii) Ministry • For each user type, there are different modules ― • Promoter: i) EOI (Expression of Interest) and ii) Project • Ministry: i) EOI, ii) Project, iii) Report, and iv) Dashboard • PMA: i) EOI ii) Project, iii) My applications, iv) Report and v) Movement (movement of Promoter’s application/ data) • Online release of grants • Graphical representation of important statistics • Audit trail of sensitive fields (password change, financial information, etc.) • Integration of Operation Greens Dashboard with DARPAN portal of Niti Aayog Technical Specifications • Front End : ASP.NET and C# with framework 4.0. • Backend : MS-SQL server 2014. • Web Server : IIS. Benefits The obvious benefits of the suite are: • Automation of workflow • Less paperwork • Greater transparency and higher efficiency concerning approval of projects and grants • Ease of applying for a grant and setting up food processing units • Release of a grant through the portal • Easy tracking of the status of a grant application and project completion Beneficiary Beneficiaries of the schemes are citizens of India in general and in particular the promoters of Food Processing Units, the farmers, the poultry owners, the dairy owners, etc. who are immensely benefitted due to creation facilities like food preservation, food quality testing, packaging, processing, etc. leading to minimal wastage and a higher price for the produce. Way Forward In future, with the growing number of users, it may be necessary to add more webservers behind a load balancer to make the deployment more robust and scalable. The release of the grants depends on the status of work completed. At present, the inspectors need to travel to each project site to check the physical progress of work, and based on their reports grants are released. To remove the mandatory human interventions in this process, the project owners may be asked to send geo-tagged photographs of each project site. The photographs may be further analyzed using machine learning tools for their genuineness if needed.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="e-labharthi-october-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-Labharthi</span></a><a class="article-nav-link next" href="ojas-online-job-application-system-october-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">OJAS (Online Job Application System)</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="e-labharthi-october-2020.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">e-Labharthi</span></a><a class="article-nav-link next" href="ojas-online-job-application-system-october-2020.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">OJAS (Online Job Application System)</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

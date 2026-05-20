@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>TRANSACTION TERMINALS IN E-GOVERNANCE (“DEVISING” E-GOVERNANCE APPLICATIONS) — Informatics October 2012</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:October 2012"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/october-2012/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2012/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;10</div><a href="../pages/october-2012/page-10.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-10.jpg" alt="Page 10" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-10.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;11</div><a href="../pages/october-2012/page-11.jpg" target="_blank" title="Open full resolution"><img src="../pages/october-2012/page-11.jpg" alt="Page 11" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/october-2012/page-11.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>TRANSACTION TERMINALS IN E-GOVERNANCE (“DEVISING” E-GOVERNANCE APPLICATIONS)</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/october-2012.html">October 2012</a><span class="breadcrumb-sep">&rsaquo;</span><span>TRANSACTION TERMINALS IN E-GOVERNANCE (“DEVISING” E-GOVERNANCE APPLICATIONS)</span></nav>
         <div class="article-header">
           <div class="article-section-badge">E-Gov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">TRANSACTION TERMINALS IN E-GOVERNANCE (“DEVISING” E-GOVERNANCE APPLICATIONS)</h1>
+          <h1 class="article-title">TRANSACTION TERMINALS IN E-GOVERNANCE (“DEVISING” E-GOVERNANCE APPLICATIONS)</h1>
           <hr class="title-rule">
           <p class="article-byline">By V. GOPI SWAMINATHAN &bull; pp. 10–11</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Transaction Terminal is a mobile handheld data terminal which has the ability to capture, process and transmit information to host computers in real time. New models of hand held devices come with seamless connectivity options like GSM/GPRS, CDMA and Ethernet. Also, they support all the payment related logical interfaces for Magnetic stripe reader, Smart card reader and optional Contact-less card reader. INTRODUCTION Over the decades, the functioning of the major e-governance applications is aimed at automating the processes of the Government. With the internet came in existence, there is a paradigm shift in the development of applications as they are present in web. The cyber security, electronic payment gateway, business process outsourcing are some of the new terminologies found in our applications as more and more stake holders are present between citizens and government. Invariably, in all these applications, the internet is the basic requirement and the netizens submit his online application, grievance, payments from his office or at home or from a browsing centre either technically dependent or independent. But, citizen perspectives from Government expect fairness and ease in dealings; let it come to him manually, mechanically or electronically.. In most of the occasions, a computer across the counter requires authentic verification of the individual with various documents for proof. There is always a complaint that this process is time consuming. If the application is online, the server computer authenticates the user at various levels before a secured transaction occur. In these situations, a “Handy” solution is readily available for the e-governance applications which is the usage of “Hand held Terminals” otherwise called as Point of Sale(PoS) systems. WHAT IS A TRANSACTION TERMINAL? It is a mobile handheld data terminal which has the ability to capture, process and transmit information to host computers in real time. The simple user-friendly design allows you to operate with ease. The device can be integrated with external barcode reader, built in contactless smart card reader. Some of the hand held devices have in-built fingerprint scanner designed to specific applications like PDS, NREGA etc., for biometric authentication for beneficiary transactions. SPECIFICATIONS Normally the widely available Hand Held terminals available in India have 128 x 64 pixel LCD Graphic with LED back light. These hand held devices uses processors like Marvell PXA270 , ARM9. Also, the memory ranges from 128MB to 1 GB with flash memory Linux and Windows CE Operating systems are widely used in these devices. Custom keypads are available with function keys for paper feed, cancel and bar code reader options. These devices can be used in Indian climatic conditions for carrying to remote locations. Also, applications are designed integrated with voice response for transactions supporting WAV and MP3 files. ANSI 378 is the interoperability standard for fingerprint templates and the hand held devices basically should support the template formats. Similarly, ISO/IEC 19794-4 specifies fingerprints image standard and ISO/IEC 14794-2 for minutiae data standard. Generally, the hand held terminals are compliant to both ANSI 378/ISO 19794-2 formats. WHERE THE HAND HELD DEVICES ARE BEST FITTED? Over the last decade, hundreds of web enabled e-government systems have been deployed in India. It needs citizens’ participation and transparency in operations. Electronic Payment of Bills including utility services like Electricity Bills, Telephone bills can be paid electronically and thus citizens can avoid going to receipt counters of the corporation or post offices and standing in long queues for payment of their electricity bills. Though these applications are available in web it had evoked partial response. Apart from these, the major applications like Public Distribution System, Property Tax payments, Disbursement of Aid or materials through camps can be done with Hand held devices. In all these systems, the computers need not be situated or taken to citizen doorsteps. Only the handy PoS devices can be taken by the official for the safe transactions. The Hand held devices helps the solutions provider in l Centralized server update and receipt printing l Productivity enhancement of staff l Real time inventory management l Avoid book record keeping l Reduce fraud l Secure transactions using biometric authentication l Transactions updated in real time on central server l Updated customer data at central server without carrying a computer system or laptop towards the citizen. PROBLEM UNDERSTANDING A well defined work flow is required to implement a successful Hand held device based system. If a system is addressing to a huge records geographically distributed and update the transactions every month by verifying and authenticating the individual, the hand held device is the best tool for implementing the same. The system requires clear work flow for the following: HAND HELD TERMINAL IN PDS APPLICATION A typical application of the Hand held terminal is now can be seen in PDS applications of few states. In PDS application, a state may have a back-end database of card holders, the quantity of commodities issued to each FP Shop. The state PDS system requires an effective mechanism to monitor the delivery of commodities to the ration card holders through FP Shops. Here, the Hand held terminal serves the purpose. l The system should have the capability to move the enumerated data to PoS or smart card for making transactions. l If a Citizen is visiting the FP Shop, then he has to bring or produce the relevant smart card based ID card or ration card for verification. l Biometric fingerprint authentication is done using handheld terminal by comparing the fingerprint data available in Smart card with the individual. This ensures secure transactions. l If the Hand held terminal is used for issuing commodities from a FP Shop, either a bar code available in the ration card or smart card will be verified for the eligibility or the category of the citizen. The FP dealer will also have a smart card containing the card holders details, price policy, and quantity of bags lifted from warehouse. l After verification, the official issues the commodities to the beneficiary and hands over receipt generated using in-built printer in handheld terminal. l Two receipts can be generated: one for beneficiary and another for official purpose. l The transaction details can be stored in handheld terminal / smart card. l Data is uploaded from handheld terminal to central server in ONLINE mode through GSM/GPRS, CDMA, or PSTN mode of communication or in OFFLINE mode using USB drive. Batch mode updation is also possible for bulk updation at any interval on a day. l Reports at various levels are generated For the above processes, a customized application is required in Hand held terminal.A custom built MIS can be developed to monitor the online mode updations at the central server and the collections across the districts or a place can be seen online. With the above features, the registers maintained in FP Shops are made electronic, and closing stock of FP Shop are made online. Simultaneously, the delivery to card holders are tracked online by the department. Sufficient study is required and design document containing Hand held terminal specifications, smart card specifications and the application specifications are required for the complete functioning of the system. FOR FURTHER INFORMATION V. Gopi Swaminathan Principal Systems Analyst, NIC,Puducherry Email: gopi.pon@nic.in</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="audit-status-monitoring-system-v-3-0-a-system-for-facilitating-web-application-security-audit-services-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">AUDIT STATUS MONITORING SYSTEM V 3.0- A SYSTEM FOR FACILITATING WEB APPLICATION SECURITY AUDIT SERVICES</span></a><a class="article-nav-link next" href="collaboration-and-messaging-service-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">COLLABORATION AND MESSAGING SERVICE</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="audit-status-monitoring-system-v-3-0-a-system-for-facilitating-web-application-security-audit-services-october-2012.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">AUDIT STATUS MONITORING SYSTEM V 3.0- A SYSTEM FOR FACILITATING WEB APPLICATION SECURITY AUDIT SERVICES</span></a><a class="article-nav-link next" href="collaboration-and-messaging-service-october-2012.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">COLLABORATION AND MESSAGING SERVICE</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

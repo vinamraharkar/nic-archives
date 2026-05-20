@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps — Informatics January 2011</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2011"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/january-2011/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/january-2011/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2011/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/january-2011/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2011/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;16</div><a href="../pages/january-2011/page-16.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-16.jpg" alt="Page 16" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-16.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;17</div><a href="../pages/january-2011/page-17.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-17.jpg" alt="Page 17" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-17.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;18</div><a href="../pages/january-2011/page-18.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-18.jpg" alt="Page 18" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-18.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;19</div><a href="../pages/january-2011/page-19.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-19.jpg" alt="Page 19" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-19.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/january-2011/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</h1>
+          <h1 class="article-title">Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</h1>
           <hr class="title-rule">
           <p class="article-byline">By R.Gayatri, Jayanthi S &bull; pp. 16–20</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Bridging the gap between the haves and the have-nots has been the focus of the Government of Karnataka. The aspiration is being fulfilled by continuously providing more and better services to the citizens. The rural citizens are empowered by taking ICT to their doorsteps thus enabling them to demand their rights along with providing urban masses with a better interface for their interactions with the Government. THIS article gives a bird's eye view of some of the large and successful projects architected, designed and developed by NIC, Karnataka. Use of bio-metrics for authentication, digitally signed documents, water marked and hologram affixed stationery, inte-gration with payment gateways, SMS technology in almost all appli-cations facilitate secured transac-tions and convenience to citizens. VATSoft - for the Commercial Taxes Department-facilitates the 3.9 lakh dealers to register, make e-payment, file returns online, down-load statutory forms, view their records maintained by the Department and provides an elec-tronic face of the Department. The stakeholders - dealers, bankers, VAT officers, audit/enforcement officers, check post officers, treas-ury - exchange data electronically. The officers act on these requests of the dealers enabling quicker and transparent approvals. The docu-ments / way bills produced at check posts are verified against the on-line document / SMS message. It is mandatory for all the dealers to file the returns electronically and more than 2.5 lakh dealers have filed the return last month. On an average Rs 1000 Crores are received through E-Payment every month. 7 lakh WayBill forms are filled up and downloaded (as part of E-Forms Services) and 1 lakh CST forms are filled up on-line and down-loaded by the dealers. Rural Digital Services- Nemmadi: Facilitating the rural citizen's inter-actions with the Government, RDS is a single window system for deliv-ering 40 G2C services to the citi-zens from village level kiosks. Implemented in 2006, it is the first successful project implemented using the PPP model in the state. Accepting the oral request from the citizen, giving an acknowledgment, checking the status and printing of the digitally signed certificate / endorsement on watermarked sta-tionery affixed with hologram are facilitated at the village tele-centre while the rest of the activities are performed at the taluk back office. The software facilitates queu-ing of messages when connectiv-ity is not available, processing of applications on FIFO basis, tracking of the water marked stationery, enabling issue of cer-tificates across the counter, using data of ration card to digi-tally sign the data in bulk mode to facilitate speedy delivery of services etc. For the current financial year till date more than 53 lakh applications have been processed in addi-tion to 46 lakh Land Record Certificates being delivered through the above infra-structure. Nemmadi project has won the 'Microsoft e-Governance award 2007', 'Silver Icon' in the National e-Governance awards - 2007, 'Government Technology award for eGovernence in the Asia Pacific region- 2007' organ-ised by Public Sector Technology &amp; Management magazine. — SH. A. VENKATESAN, SIO, Karnataka, NIC. The industrially progressive state of Karnataka has experienced significant growth in ICT in the last decade. Greater emphasis on development, the vision of the State leadership in adopting different models of project implementation, coupled with new technologies has resulted in a paradigm shift in the way e-Governance has penetrated in the state. Better computing and network infrastructure has had a catalytic effect in taking the benefits of ICT to every corner of the State. The highly qualified, well trained and motivated officers of the NIC State Centre have been closely interacting with the State Departments in conceptualizing and architecting major G2C applications for the State. NIC, Karnataka has built up capacity for carrying out major application development following all the steps of Software Development Life Cycle thereby ensuring quality. Skill sets in both proprietary and Open Source Technologies are available for project execution. The commitment with which the NIC officers have executed the projects have brought in many awards like National E-Governance awards for Bhoomi, Nemmadi, Excise, Commercial Taxes project etc., Highly available network connecting upto the districts and 24X7 hosting facilities in the NIC Data Centre have greatly helped the user to embark on massive delivery of services on-line. On this occasion, I would like to assure our valued users that NIC will continue to be their valued partner in all their e-Governance initiatives. Minerals Activities Administration System (MAAS): Department of Mines and Geology in the state uses INTRAMINE - a workflow based software for the manage-ment and administration of mineral activities such as issue of mining, quarry licenses / per-mits adhering to central and state acts and rules. The Permit Management System has brought in solace to the other-wise concern area of issue and management of permits for monitoring the transportation of minerals at check posts. Integration with payment gate-way / net banking enabling the lessees to apply for permit from convenient locations, remit the royalty and statutory fees and taxes, print the permits for transporting minerals, SMS, mobile check posts &amp; enforce-ments and GIS applications with maps integrated with the lease / permit master data are other value added services. — SH. RAJEEV CHAWLA, IAS, Special Secretary to Govt., Revenue Department (BHOOMI &amp; Urban Properties Ownership Records). I am happy to know that Karnataka is being covered as state in focus in INFORMATICS magazine. NIC Karnataka has designed and developed many successful flagship applications. BHOOMI, NEMMADI, SACHIVALAYA VAHINI are few to name. I strongly feel that, it is important to involve NIC in some way or the other in each of the e-Governance projects as it provides the much required crucial continuity for projects. Land records management system- Bhoomi: Bhoomi, developed by NIC, Karnataka is the flagship e-Governance application. From the vanilla application, it has been enhanced to enable citizens to obtain digitally signed land records documents, to integrate survey activities with land records mutation process, to synchronize survey with records updation during a transaction, to initiate land registration by tightly integrating with the bhoomi system and then auto-matically initiating a mutation transaction in Bhoomi system to update the land records details. The land acquisition software integrates with Bhoomi by updating the bhoomi records at different stages in the land acquisition process which is completely automated. Use of handheld devices for crop updation, capturing GPS coordinates and photo-graphs of crops is being piloted in Mysore District. It has won many awards like National E-Governance award, CAPAM-Sweden etc., Land records of nearly 7 mil-lion farmers (20 million records) are digi-tized and maintained in the central reposi-tory at the SDC and more than 1.5 crore land records are issued during the year. — Sh. H.R.Srinivasa, IAS, Director, Department of Mines &amp; Geology, Karnataka Government. The Centralized Permit Management System (PMS) has been operational in DMG for the issue and management of Mineral Despatch Permits throughout the state for the last three years. The Workflow Driven INTRAMINE software helps administrate the lifecycle activities of various types of leases, licenses and permits in the state. With the introduction of Net Banking, INTERNET based services for Lessees, SMS based monitoring and an enforcement system at Check Posts DMG has been able to provide transparent services to lessees and public. We are also introducing systems at the mine heads for capturing the vehicle number, weight etc and to issue trip sheets with RFID tags. NIC Karnataka has been providing very useful ICT support to DMG. Digital OFS (Order for Supplies) and Excise Permit System: The software was developed for regulating and controlling the supply and distribution of liquor in the state of Karnataka. Karnataka State Beverages Corporation is a pioneer in using technology to enable electronic indent, processing, approval and delivery of digitally signed OFS and enabling the state excise Department to generate online excise transport permits. This facilitated arresting pilferage by tracking the excise adhesive labels, maintaining optimum stock at depots, preventing evasion of excise duty and protecting State Excise revenue. The project won the National E-Governance Bronze Award: 2008-09 under the category - &quot;Exemplary Usage of ICT by Public Sector Undertaking&quot;. e-initiatives in Municipality: Bangalore Municipality- Bruhat Bengaluru Mahanagara Palike (BBMP) has introduced e-initiatives for Property Tax Payment, Birth/ Death Registration, Trade License System and Grievances Monitoring System. Property tax software is hosted for the pub-lic to calculate the property tax to be paid based on given parameters and make e-pay-ment or pay at service centres. Registration of birth/death at citizen service centres and by the hospitals, has led to a transparent, efficient and handy system for issue of birth/death certificates. Postal Accounts Current System (PACS): PACS Software - reporting, accounting and reconciliation of government business transactions of all postal units across the country is done over the national postal network through a workflow driven software. Automatic reconciliation of transactions between postal units with RBI and agency banks has been achieved by use of electronic generation of e-Scrolls and PO schedules. Tool for automated Gram Panchayats- Panchatantra: Panchatantra enables the Gram Panchayats to maintain data of bene-ficiaries availing subsidy, assets and liabili-ties and also provides citizen services enablement, GP fund management guided by the double entry accounting system, property tax system, MIS on the different schemes and works. Checks and balances as part of the workflow built in some of these systems ensure proper approvals for dif-ferent works and clearing of bills. BWSSB Ganakeekrutha Graha-kara Seve (BGS) for BWSSB: BGS - online system for Revenue Billing and Collection of BWSSB (Bangalore Water Supply and Sewerage Board) is operational since April 2003 com-puterising the activities of the Cash Counter, Sub-Divisions and head office. It has won the First prize in National Urban Water awards 2009 - Achieving Cost Recovery Through Effective Billing And Collection, error free bar coded bills and anytime/anywhere payment. On-the-spot billing using the hand held device enables 6 lakh cus-tomers to receive the bills in time. — KARNATAKA is in the forefront in e-Governance initiatives and has been so for more than half a decade now. The mission of the Department of e-Governance is to deliver services to its esteemed population &quot;anytime, anywhere and through any device&quot;. With this mission in view, the State has rolled out many initiatives. The dream of the state has been to reach to the citizen's doorsteps through ICT. Including the far-flung villages as part of the digital world has been pos-sible by the use of ICT which would have otherwise been left aloof, under developed and to whose residents the benefits offered by the Government would never reach. Karnataka has been the fore-runner in this race of e-Governance and has several feathers in its cap. Bhoomi - the land records management system was the first G2C service enabling the farmers to obtain a copy of the record of rights without has-sle. Taking a step forward in providing land records and other G2C services, the Nemmadi programme enabled the citizens to avail about 40 services from the village tele-centres established by PPP vendor. The enabling factor for taking ICT to Gram Panchayats has been the development of the Panchatantra system. NIC has been playing a noteworthy role in architecting the software and providing support in the successful implemen-tation of these projects. The computerization of the High Court of Karnataka has benefited the advocate communi-ty and the citizens by reducing their visits to the court for mundane activities. The Sachivalaya Vahini - a basket of applica-tions for the Secretariat - has brought in a sea change in the minds of people about adminis-tration by bringing in transparency and accountability. G2B application such as the VATsoft for the commercial taxes department has enabled the dealers to perform all their interactions with the department on-line by interfacing with payment gateway. The urban population has not been left behind in the use of ICT. The citizens of Bangalore pay their Property Tax sitting in the comforts of their home, obtain certificates and make utility bill payments from citizen service counters. The Bangalore-One initiatives, with more than 70 centres in the City, doles out 43 different services round the world. NIC has been an important player in all these initiatives by architecting the solution and using state of the art technolo-gy enabling a smooth transi-tion to the e-Governance era. It has also added value to realize our dream of &quot;Digital Karnataka&quot;. The paperless office product has brought in a sea change in the minds of the people about administration. The support for computerization and enable-ment of e-Governance in the municipalities, panchayat raj, commercial taxes, RTO using the state of the art technolo-gies is laudable. The Department of e-Governance, Karnataka, has the definition of rolling out ini-tiatives in the e-Governance space, with no par-allels in the country, in many projects. The first State Data Centre in the country, the first rural BPOs in the country, the first of Customer Service Centres in the country, the first end-to-end e-Procurement solution in the country etc. speak volumes on the extent of ground covered in the technology space. The Department of e-Governance, Government of Karnataka, has now taken up the initiatives of replicating the exercises and trans-planting the success stories in other States in the country. This will go a long way in replicat-ing the success stories as, reinventing the wheel is not only futile, but a drain of resources. Karnataka leads the way in e-Governance and sincerely believes and practices the premise that e-Governance is the only road to good gov-ernance. — SH. M.N. VIDYASHANKAR, Principal Secretary, Department of e-Governance, Karnataka. Computerization of Karnataka Appellate Tribunal: Activities at KAT went electronic resulting in e-enabling status of around 20,000 cases and daily cause lists. Around 18,000 Judgments of KAT are hosted for electronic retrieval. Litigant Information System for the High Court of Karnataka: The Litigant Man-agement System brings in accura-cy and transparency in disposing of cases. Display boards located at strategic locations in the High court providing information on cases being heard, enabling citi-zens to get the case status by SMS / IVRS / Information Kiosks and e-filing of cases are recent initiatives greatly applauded. Vahan and Sarathi for Road Transport Department: The software has been instrumental in issuing Driving licenses and Registration Certificates in smart card which enables enhanced QoS delivery and reliable MIS for motor vehicles in the state. The replication of the data to state and national registries on DL and RC has been initiated. 11.25 lakh smart card based Driving Licences and 10.18 lakh. The project runs the NIC National Vahan/Sarathi software on a PPP model. Sachivalaya Vahini - Basket of applications for Secretariat: 'Sachivalaya Vahini' implemented in 40 Departments of Karnataka Secretariat on a LAN with 1500 nodes, comprises of Letter Monitoring System, File Monitoring System (FMS), Court Cases monitoring, Document Management system etc. KIOSK set up in the Secretariat enable gen-eral public to track the files/letters. More than 4 lakh files are being tracked through this system. Computerisation of Karnataka Information Commission (KIC): With the RTI act being extensively exercised by public, the automation at KIC has been an effective way to disseminate infor-mation to the citizen on the RTI applicant by way of SMS messages at every stage in the electronic workflow process enabled in the KIC to process the application. Cause list and judgments published on the web site, SMS and comput-erized enquiry counters facilitate quick access to the application sta-tus using multiple search options. — DR. H.N.KRISHNA, State Information Commissioner, Karnataka Information Commission. ICT is put to Best use in KIC. The entire workflow in the KIC along with enabling the citizens to know their case details is made possible. The citizens are also facilitated to know the status of their petitions through sms. All these things are a reality due to the dedicated efforts of NIC. NIC is instrumental in bringing the ICT culture in KIC. I would like to place on record my appreciation for the efforts of NIC in automating the process of KIC. — SH. P. B. RAMAMURTHY, IAS, Chairman, BWSSB. National Informatics Centre, Govt. of India, Bangalore has been playing a vital role in e-governance implementations of BWSSB. The Revenue Billing System has improved the efficiency of our Billing, Collection and providing deliverables in a citizen friendly manner. Long years of NICs association with BWSSB has brought in many enhancements like introducing Spot Billing, Any Where Any Time payment, variety of decision making reports which has helped the board to take vital decisions anytime. I wish NIC's dedicated team all success for our future initiatives in e-governance plan. Other projects implemented by NIC, Karnataka include Scholarship Management Information System for the Social Welfare Department, Online Registration of Fishing Vessels and issue of license (ReALCraft), Online Recruitment System, e-tendering system for the agricul-ture produce marketing commit-tee (e-mandi), Insurance System for girl child (Bhagyalakshmi), Financial and Stock accounting package for the PDS ( FIST ), Cocoon market Information System (CMIS) - activities related to auctioning in cocoon, Integrated Budget Information System, web applications for dif-ferent Departments, hosting of results of examinations.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="manipur-online-tenders-for-pmgsy-through-e-procurement-system-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Manipur: Online Tenders for PMGSY through e-Procurement System</span></a><a class="article-nav-link next" href="tripura-focusing-on-it-enabled-services-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Tripura: Focusing on IT Enabled Services</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="manipur-online-tenders-for-pmgsy-through-e-procurement-system-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Manipur: Online Tenders for PMGSY through e-Procurement System</span></a><a class="article-nav-link next" href="tripura-focusing-on-it-enabled-services-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Tripura: Focusing on IT Enabled Services</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

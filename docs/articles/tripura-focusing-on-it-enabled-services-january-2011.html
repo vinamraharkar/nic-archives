@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Tripura: Focusing on IT Enabled Services — Informatics January 2011</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2011"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2011/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/january-2011/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/january-2011/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/january-2011/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/january-2011/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;23</div><a href="../pages/january-2011/page-23.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-23.jpg" alt="Page 23" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-23.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;24</div><a href="../pages/january-2011/page-24.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2011/page-24.jpg" alt="Page 24" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2011/page-24.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Tripura: Focusing on IT Enabled Services</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2011.html">January 2011</a><span class="breadcrumb-sep">&rsaquo;</span><span>Tripura: Focusing on IT Enabled Services</span></nav>
         <div class="article-header">
           <div class="article-section-badge">From the States/UT</div>
-          <h1 class="article-title" data-pagefind-meta="title">Tripura: Focusing on IT Enabled Services</h1>
+          <h1 class="article-title">Tripura: Focusing on IT Enabled Services</h1>
           <hr class="title-rule">
           <p class="article-byline">By Prashant Belwariar, Chayan Kanti Dhar &bull; pp. 21–24</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Tripura, a landlocked hilly state, bounded on the north, west, south and south-east by Bangladesh and in the east with Assam and Mizoram, has a tropical climate and the main languages spoken are Bengali and kokborok. Rice is the principal crop followed by oilseed, pulses, potato and sugarcane. High quality timber including sal, garjan, teak, and Gamar are found abundantly in the forests of Tripura. Natural gas based industry, tourism, bamboo based handicrafts, rubber and tea plantations are some of the potential industries of the state. EQUIPPED with state-of-the art computing and ICT infrastructure facilities, NIC Tripura State Centre was formally setup during 1990s. NIC has established itself as total ICT- solution providers to the Government of Tripura. Along with Department of IT, NIC has drawn specific plans to facilitate and enable various departments to deliver IT enabled services at the doorsteps of common people, thus promoting e-Governance in the state. Website - http://tripura.nic.in is the official website of the government and provides information related to agriculture, tourism, industry, handicrafts, culture etc. It also has links related to hospital management systems, job information, government notices and e-governance portal etc. Tripura State Wide Area Network: NIC-NICSI has implemented Tripura State Wide Area Network connecting 61 POPs cover-ing state, block &amp; tehsil head quar-ters. More than 1200 horizontal con-nectivity were already extended from such POPs and are operational with an uptime of more than 98%. All the four NIC districts centres in Tripura are connected through 2 Mbps leased line to NICNET Gateway with the state headquarters. Campus &amp; City Area Network: State of the art ICT Infrastructure was established at New Secretariat Complex, New Assembly House, New High Court Building &amp; State Guest House with an interface to Tripura SWAN, Tripura State Data Centre and to NICNET Gateway for Internet Services. A total of 1500 nodes were commissioned with OFC backbone among the four buildings. Agartala City Area Network was established using OFC, RF with leased line con-necting more than 80 major build-ings/ offices across the city of Agartala with an interface to NIC-NET Gateway for Internet Services. NIC State Data Centre: NIC has established 4TB capacity Storage Area Network (SAN) integrated with high end server farm and i-NOC for storage consolidation, providing storage on demand &amp; efficient utilization of com-puting resources, access control, robust security implementation and Disaster Recovery (DR) site for various e-Gov applications. MAJOR PROJECTS e-Hospital@NIC - is a patient-centric, Hospital Management System with a workflow based ICT solution specifically meant for hospitals in government sector. It is an HL7 Development Framework (HDF) compliant and ISO/IEC 9126 certified end-to-end solution for managing processes and services in hospitals including tele-medicine services. A generic software, which covers major functional areas like patient care, laboratory services, work flow based document/information exchange, human resource and medical records management of a hospital. e-Hospital@NIC Suite is a web based solution, developed using Free Open Source Software (FOSS) tools, for managing health-care service delivery in public hospitals and solution is made available as Software as a Services (SaaS) for accelerated adoption of ICT tools and health-care standards by large number of public hospitals. — IN THE STATE OF TRIPURA, the NIC has been actively participating in various e-Governance Projects in tandem with DIT, Govt. of Tripura. They have done lot of good work in conceiving and imple-menting in Projects in different sectors, which needs to be appreci-ated. A few of them are e-Hospital@NIC, e-Suvidha, RuralSoft@Tripura, Energy Billing System, Jami, On-Line TPSC, Vahan-Sarathi, e-Courts, CIPA, SMS Based Election Monitoring System and Agromet services, etc. They have also been assisting the IT Department in implementing a number of e-Governance proj-ects like Tripura SWAN, Campus Area Networks in various build-ings/ offices, Tripura State Data Centre, National Portal, SSDG-SP and so on. At present, the State of Tripura is focusing on delivery of Citizen Centric Services as core infrastructure projects like Agartala City Area Network, Data Centre, Tripura SWAN etc. are ready and operationalised. We intend to avail software solution from NIC considering domain expertise in Government Sector and continuity of support, including software maintenance aspects. NIC's present model of partnering with industry for sourcing certain activities of software development is the right delivery model for us for accelerated deployment of IT systems. In this endeavour, NIC is expected to play an important role in helping the State to achieve these objectives. I wish the NIC team in Tripura all success in their efforts in facilitating in implementation of e-Governance projects in Tripura. — Sh. L.K. GUPTA, Principal Secretary, Deptt. of Industries &amp; Commerce, Govt. of Tripura. KEY FEATURES: Conformance to Global Standards: Based on HDF (HL7 Development Framework). Compliant with healthcare standards such as HL7, ICD 10, LOINC, DICOM and many more. Electronic Medical Record: An ideal EMR container and clinical data management solution for any kind of hospital. Implemented at different health care institutions like District Hospital, State referral Hospital, Medical College, Telemedicine Centre, Blood Bank and Trauma Centre. Energy Billing System (EBS): A workflow based Revenue and Energy Billing System for Tripura State Electricity Corporation Ltd and all its divisions and sub-divisions. It auto-mated the process of bill generation and revenue management of the cash collected at various collection centres including mobile collection centres in market places. It has brought qualita-tive &amp; quantitative change in services with the use of IT at different levels of operations. EBS, implemented at Electrical sub-divisions, has the facility to record and index the power distribution invento-ry viz. pole, Transformer, Feeder etc. mapped to each consumer. The system generates meter reading sheets daily which are carried to the consumer premises for recording the current reading. The data is then fed into the system after which it generates the current bill along with arrears, if any. Rural Soft@Tripura: OnLine Rural Development Works Monitoring System was implemented for Engineering wing of Rural Development Department, which is a workflow based solution covering RDD Circles, Divisions and Sub-Divisions on a turnkey basis. The software features are: Centralised repository of all requests coming to RDD for works execution. All Scheme &amp; Program manage-ment workflow, comprising of Estimate Preparation, Technical Sanctions, Departmental Work Order, Administrative Approval, Expenditure Sanction, Scheme closing and RDD Schedule of Works management. Stores and material management workflow like Annual requirement gathering, Stores approval, Issue Rate calculation, Stores Requisition &amp; Acceptance, Depositing of Indented value by Treasury Challan, Raising of Store Indent for movement between Division &amp; Sub-Division etc. The Finance and accounts wor-flows like Receipt of Treasury Challans deposited for store mate-rials, Release of Fund from Suspense Account including pro-posal and Sub-Allocation, Receipt-Verification-Passing of Bills, Placement of Fund, TDS manage-ment, Treasury Bill preparation, Management of Bank Accounts and Cash Analysis and Verification. Below Poverty Line [BPL] Survey: A software for BPL data entry was developed and implemented for Rural Development Department. Data entry of BPL beneficiaries for all 4 Districts are under progress. The department has initiated BPL Census 2009 for approximately 7, 00,000 families in the state. Land Records Computerization - Online Mutation is handled by the Jami software designed, developed and implemented by NIC-Tripura. The Jami Ver.3.0 software is ISO certified. The up-to-date land records registry is available on the website http://tsu.trp.nic.in/jami. Touch screen based KIOSK services are available at Sub-Divisional level for search-ing of land information in Bengali. It is one of popular service across the state. Tripura Registration Information System (TRIS) - The system takes care of various Registration activities like Receiving and serialization of pre-sented documents using intelligent input forms to capture document details, Determination of stamp duty and fee based on document type, gen-eration of receipts, Integrated account-ing for Fees and Stamp duty collection, Database support for market value assessment, cross verification with Land Records Database, Capturing of online photograph and bio-metric impression, searching of document, Generation of various Registers, notices, reports and scanning and delivery of documents. Implemented at four Sub Registry offices of Tripura. ICDS MIS: NIC has designed, devel-oped and implemented ICDS MIS. The Application leverages the strength of the web to build an online history sheet of each Anganwadi center (Template based Daily, Monthly and Yearly Inspection Reports uploaded by the different stakeholders of the ICDS projects). Training, monitoring, quan-titative ranking and incentives are built around the available information so generated so as to achieve a high quality of service delivery to the tar-geted group. Physically Challenged Persons Information System: PCPIS@Tripura, a comprehensive Information System was implemented for physically challenged persons. A Survey was carried out to capture indi-vidual details of the disabled persons of Tripura. The application is used by - District Disability Rehabilitation Centre (DDRC) who are authorized to examine, identify and issue dis-ability certificate to a disabled per-son. Aids and Appliances are pro-vided whose record is captured in the database. All DDRC of the State are using the application. Social Welfare Directorate, moni-tors schemes for the disabled per-son and updates the beneficiaries details. Education and the Employment Exchange Department. Various MIS such as number of dis-abled person with regards to age, dis-ability, sex etc. are generated. Features such as screen reader, audio equivalent of text are some of the features attached to the website interface of PCPIS@Tripura. AGROMET: Current Weather Data from field offices, over SMS input is deployed and piloted in ICAR Tripura Centre and are being centrally entered by ICAR/ Field Offices. In association with ICAR, NIC imple-mented an application software to automate their AgroMet Advisory Services comprising the following functionalities- Publishing Met Bulletin: preparation is automated and displayed over web. Forecast: Capturing of IMD 5 day Weather Forecast Input on Parameters like Temperature (Max &amp; Min), Wind Direction &amp; Speed, Rainfall, Relative Humidity (Morning &amp; Evening) &amp; Cloud Cover. Current Weather: Capturing actual weather data like Temperature (Max &amp; Min), Soil Temperature, Wind Direction &amp; Speed, Rainfall, Relative Humidity, Evaporation, Cloud Cover, Bright Sunshine Hour, Solar Radiation from field offices (Pull SMS/Web Entry). Moderated sharing of Archive Weather Data: Administration of Weather Grouping, Parameters, their Consolidation Logic, Bulletin Periodicity, Forecast/ Current Weather Summary generation logic and Importing of legacy Weather Archive data. SMS linkage, to capture actual weather from the AMFU field offices and deliver objective weather forecast over SMS. Transport Computerization: VAHAN and SARATHI s/w are imple-mented at JTC and DTOs of Tripura. The old paper based Registration Certificate and Driving Licenses were discontinued. SCOSTA compliant SMART card based Registration cer-tificates and Driving Licenses are issued across the state. Connectivity in all the JTC/DTO offices were estab-lished using 256KB VPNoBB. e-Courts: NIC provides ICT support to the Agartala bench of Gauhati High Court. Key functions such as List of Business Information System, includ-ing Case Filing, Registration &amp; Case allocation and Orders/Judgments of the Cases, are being maintained. Cause Lists, Case Status and Judgments are accessible to Litigants, Advocates and General Public. Online Blood Donor Information and Blood Bank Status: The service (http://tsu.trp.nic.in/blood) helps cit-izens to find out the present blood stock at blood banks in Tripura and search for the required blood group. Also citizen can read the FAQs on blood donation and get their queries answered. It's a G2C and C2C application. e-Pourasabha: e-Pourasabha (http://tsu.trp.nic.in/amc), a compre-hensive e-Governance suite for local bodies was implemented at Agartala Municipal Council. The major compo-nents are: Tax Collection system Touji and other Misc. collections KIOSK and web based citizen cen-tric information services for citi-zens on tax demand Static web-site based information on rules regulations, downloadable forms etc. Online-demand list and notice gen-eration facility MIS reports on demand and collec-tion Birth &amp; Death Registration system Application receipt and generation of acknowledgement Status report over the web Certificate generation MIS reports and record mainte-nance e-TPSC: e-TPSC - (http://www.tpsc.gov.in) for Tripura Public Service Commission, is a process flow based system to automate the steps involved in conducting a recruitment process. The application has facilities for Receiving requisitions from various departments for recruitment Candidates can apply over the net or Download application form Receiving application over comput-erised counters with appropriate acknowledgement. Short listing candidates on pre-defined criteria Subject -wise / Exam-wise grouping of candidates and attendance list generation Generating Admit Card and pub-lishing on the web-site Entering marks and generating result sheet SMS based Election Monitoring System: Software solution and techni-cal support was provided during last Assembly, Parliamentary and Bye Elections. Electoral Rolls, which are available in Bengali and English, are regularly updated and published on the official website at http://ceotripu-ra.nic.in with Unicode based searching facilities. Activities like availability of candidates' information, affidavits hosting, results processing, Randomization of Polling Parties and Randomization of Electronic Voting Machines, Communication Plan etc. were taken care by Election Software Suite. IVRS &amp; Online G.P.F &amp; Final Payment Information for State Govt. Employees: Interactive Voice Response System (IVRS) was intro-duced at the office of the Accountants General (A&amp;E), Agartala, through which GPF subscribers and Pensioners can obtain relevant information round the clock over phone and access the online system (http://agtripura.nic.in/). IVRS and web based online GPF information system was inaugurated by the then His Excellency Sh. Dinesh Nandan Sahay, Governor of Tripura.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="karnataka-empowering-rural-citizens-by-taking-ict-to-their-doorsteps-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</span></a><a class="article-nav-link next" href="cloud-computing-infrastructure-in-nic-assam-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Cloud Computing Infrastructure in NIC Assam</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="karnataka-empowering-rural-citizens-by-taking-ict-to-their-doorsteps-january-2011.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Karnataka: Empowering Rural Citizens by Taking ICT to Their Doorsteps</span></a><a class="article-nav-link next" href="cloud-computing-infrastructure-in-nic-assam-january-2011.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Cloud Computing Infrastructure in NIC Assam</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

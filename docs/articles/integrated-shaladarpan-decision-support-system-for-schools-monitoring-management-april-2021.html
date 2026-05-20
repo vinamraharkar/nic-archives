@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>Integrated ShalaDarpan Decision Support System for Schools Monitoring &amp; Management — Informatics April 2021</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:April 2021"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/april-2021/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2021/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2021/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;20</div><a href="../pages/april-2021/page-20.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-20.jpg" alt="Page 20" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-20.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;21</div><a href="../pages/april-2021/page-21.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-21.jpg" alt="Page 21" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-21.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;22</div><a href="../pages/april-2021/page-22.jpg" target="_blank" title="Open full resolution"><img src="../pages/april-2021/page-22.jpg" alt="Page 22" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/april-2021/page-22.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2021.html">April 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>Integrated ShalaDarpan Decision Support System for Schools Monitoring &amp; Management</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/april-2021.html">April 2021</a><span class="breadcrumb-sep">&rsaquo;</span><span>Integrated ShalaDarpan Decision Support System for Schools Monitoring &amp; Management</span></nav>
         <div class="article-header">
           <div class="article-section-badge">eGov Products &amp; Services</div>
-          <h1 class="article-title" data-pagefind-meta="title">Integrated ShalaDarpan Decision Support System for Schools Monitoring &amp; Management</h1>
+          <h1 class="article-title">Integrated ShalaDarpan Decision Support System for Schools Monitoring &amp; Management</h1>
           <hr class="title-rule">
           <p class="article-byline">pp. 20–22</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">ShalaDarpan is an excellent system developed for the Education Department, Rajasthan, covering online records of all students, teachers and staff of government schools. System is used by students, teachers, staff and higher managements for their day to day working. System reaches up to village level for the services like daily attendance, Staff selection, Joining/ Relieving of staff, Class wise academic records, Result preparations, School Infrastructure status and Enrollment status in about 65,000+ government schools of Rajasthan. It is also being used as a real time system for state level Planning, Decision support and schemes/ programs implementation. System covers online information of 80+ Lakhs Students, 4.6+ Lakhs Teachers/ Staff details of all types of Government Schools in the state. ShalaDarpan is widely appreciated by various state governments as well as the Secretary MHRD, Government of India - most critically because of its ability to largely eradicate offline data processes and redundancy in data collection efforts. 20+ states visited Rajasthan to study the System. ShalaDarpan has received many national/ State level awards, viz. CSI SIG e-Governance Award-2019, State e-Governance Award-2018 and SKOCH Order-of-Merit Certificate-2018. About The focus of designing the system is “What Government Needs”. Agile development and implementation was carried out in a phased database-to-decision approach wherein all critical databases related to students, staff and schools were built and reports were designed and released to take data-driven decisions. Looking at the impact of Integrated ShalaDarpan in terms of availability of data, prevention of data redundancy, sharp and swift two-way communication across the state education machinery, and coverage of almost all the areas of School’s Management, the system has become a vital need for district/ state level offices. This centralized data supports the department to face significant challenges such as pupil-teacher ratio, absenteeism, vacancies, low enrollment, inadequate infrastructure, budget requirements etc. School, district and state staff have become more accountable because it is extremely simple to figure out the bottleneck in any implementation. Analytical reports are available at schools using which lists of possible dropout children are seen so that schools can take necessary action to retain the children in mainstream thus minimizing the dropout numbers. In short, ShalaDarpan has now become a unique, centralized tool integral to the Education Department which is steadily driving Rajasthan towards the Digital Age. Salient Features • Bilingual, workflow based user friendly system • Covers all government Schools under various managements such as the School Education department, Sanskrit education, Social justice, Madarsa, TADA schools etc. • Transactional information of Staff/ Students maintained • Availability of Dashboard for every school • Reliable tool for department to quickly fetch the information for Assembly/ Court/ RTI queries • Staffing pattern generation based on School Category/ Enrolment etc. • Live vacancies against the Sanctioned Post and their posting through Counselling Process • Daily attendance of Staff &amp; Leave Management • Communication (Web/ SMS/ Email) from Hq. to School/ Staff on various events • Schools linked through Help &amp; Support Module for their day to day issues • Result Preparation, Sessional Marks Calculation, Green Sheet &amp; Mark sheet Printing • Work Progress/ Monitoring Reports • Used for all beneficiary services viz. Scholarship, Free Textbook distribution, Laptops, Cycle distribution, Transport voucher etc. • Developed using UDISE code which is a standard for School Education sector to help develop full-fledged customizable product for use by any state • NIC Chat Intelligence (NICCI) Chatbot for users assistance Technologies Used Languages &amp; Technology: Asp.Net/C#, JQuery, Bootstrap Design Pattern RDBMS: SQL Server 2019 and Non Relational DB- Mongo for document storing Important Integration • Aadhaar • Jan Aadhaar • eGRAS Payment Gateway • SMS and email relay services • About 80,000+ eMitra Kiosks • Jan Soochna Portal Important Initiatives GyanSankalp: Online platform to mobilize CSR funding, donations and voluntary contributions for the development of Government Schools by displaying infrastructure &amp; other gaps based on the data available in ShalaDarpan. For the ease of decision making, various pre-packaged donation options made available for citizens. Funds are being transferred in SMC/ SDMC account online through payment gateway. Physical &amp; Financial Progress are being also monitored to display to the Donor, along with final UC. Donor may propose/ create a project to support any number of selected schools. Funds are directly transferred into school’s bank account, received under Donate to a school category. Staff Joining/ Relieving: New and existing staff may only join or be relieved from school if processed for various options like transfer, promotion, APO, suspension, deputation, retirement etc. Joining feature is broadened by incorporating it. School Allotment for Internship: Module helps Teacher Trainee with filling choices filling and school allotment for Internship, which is required for various courses Diploma in Elementary Education (D. El. Ed), Bachelor of Education (B. Ed) etc. Automated Scholarship: Module for end-to-end solution from application to disbursement of Scholarship and based on eligibility criteria, Incharge select/ apply students for 11 types of Pre-Matric Scholarship using existing Student’s data along with various certificates needed for the allotment process. Scholarship amounts are transferred directly to the beneficiary’s bank account, linked with Student’s JanAadhaar. School/ Student may also track their Application status and payment disbursal. Star Rating &amp; District Ranking: Every school is provided Star rating using 8th, 10th &amp; 12th Board results annually. Block/ District wise monthly rank is generated automatically on a certain cutoff date using 42 parameters data of the Portal. One can view any month Ranking report, drilled down to School level details. Staff Selection &amp; District Allotment: Under this workflow based module, selected candidates info is processed for Merit/ Selection list.District/ division allotment is executed based on state reservation policy and choices filed by the candidate. 5th/ 8th Board Automation: End to end solution for exam related activities starting from Form Filling to Result Publication including Exam Centre Setup, Roll No. Allotment, Admit Card, Result data Capturing, Result Preparation, Mark Sheet printing etc. through all 33 DIET (District Institute of Education and Training) centers. Shala Samvad: Unique tool designed to cater to the needs of students &amp; Parents, helping them to provide info captured through ShalaDarpan like profile, Class/ Subject teacher details, exam result, applied scheme status etc. Feature is also provided to access NCERT (National Council of Educational Research and Training) Books, eContent, Video Lectures, Question Bank etc. Students may also ask any academic doubts and area wise subject teachers reply online. Impact • Collection and automation process of information reduced multiple entry, redundancy and duplication of data • Ensure Subject Teachers availability through rationalization of staff. Long Pending promotion process completed • By identifying actual beneficiaries for various schemes like “Transport Voucher”, “Free Text Book” “Laptop/ Cycle” etc. through ShalaDarpan, saving lot of government funds • Staff window under ShalaDarpan provided relief to staff by providing online 24x7 channel to apply for various services which has created a positive environment among staff • Save lot of money and manpower with quick redressal of issues by simplifying various activities through online processes • Automation of various processes through ShalaDarpan saves lots in paper printing. Way forward • Seniority List for Staff of School Education department • Mobile Apps for School/ Office Users • Teacher Diary, Time Table • Staff Vigilance • Co-curricular Activities Monitoring • Online Transfer System • Pay Fixation and Service Verification • HRMIS with Pension Kulak • Online Fund Transfer and Civil Works Monitoring • Online Training Monitoring and Management • PAB Plan Preparation, Execution and Monitoring</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="indian-customs-edi-systems-taking-ease-of-doing-business-to-greater-heights-april-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Indian Customs EDI Systems Taking Ease of Doing Business to greater heights</span></a><a class="article-nav-link next" href="prayas-pursuing-excellence-in-governance-april-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Prayas Pursuing Excellence in Governance</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="indian-customs-edi-systems-taking-ease-of-doing-business-to-greater-heights-april-2021.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Indian Customs EDI Systems Taking Ease of Doing Business to greater heights</span></a><a class="article-nav-link next" href="prayas-pursuing-excellence-in-governance-april-2021.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Prayas Pursuing Excellence in Governance</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>

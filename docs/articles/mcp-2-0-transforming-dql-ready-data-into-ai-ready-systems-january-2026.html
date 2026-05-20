@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="worker-url" content="https://nic-archives-search.nicarchives.workers.dev">
 <title>MCP 2.0: Transforming DQL-Ready Data into AI-Ready Systems — Informatics January 2026</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
@@ -138,33 +139,173 @@ body {
 .archive-blurb a { color: #7a1f1f; text-decoration: none; }
 .archive-blurb a:hover { text-decoration: underline; }
 
-/* ── Search bar ── */
+/* ── Semantic search widget ── */
 .search-wrap {
-    max-width: 600px;
+    max-width: 660px;
     margin: 1.5rem auto;
 }
-.search-offline-warning {
-    display: none;
+.sem-tabs {
+    display: flex;
+    border-bottom: 2px solid #b8892a;
+    margin-bottom: 0.75rem;
+    gap: 0;
+}
+.sem-tab {
+    background: none;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a7355;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 150ms, border-color 150ms;
+}
+.sem-tab.active { color: #7a1f1f; border-bottom-color: #7a1f1f; }
+.sem-tab:hover:not(.active) { color: #1e1408; }
+.sem-form {
+    display: flex;
+    gap: 0.5rem;
+}
+.sem-input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #b8892a;
+    background: #ede6c0;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    color: #1e1408;
+    outline: none;
+    border-radius: 2px;
+}
+.sem-input:focus { border-color: #7a1f1f; }
+.sem-btn {
+    padding: 0.5rem 1rem;
     background: #7a1f1f;
     color: #f7f0d8;
+    border: none;
     font-family: 'Crimson Text', Georgia, serif;
     font-size: 0.9rem;
-    padding: 0.6rem 1rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
     border-radius: 2px;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.4;
+    transition: background 150ms;
+    white-space: nowrap;
 }
-/* Pagefind theme via CSS custom properties — inherited through Pagefind's own all:unset reset */
-#search {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #7a1f1f;
-    --pagefind-ui-text: #1e1408;
-    --pagefind-ui-background: #ede6c0;
-    --pagefind-ui-border: #b8892a;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 2px;
-    --pagefind-ui-tag: #d4c090;
+.sem-btn:hover { background: #5a1515; }
+.sem-btn:disabled { opacity: 0.55; cursor: default; }
+.sem-status {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #8a7355;
+    margin-top: 0.5rem;
+    min-height: 1.2em;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-results { margin-top: 1rem; }
+.sem-answer-box {
+    background: #ede6c0;
+    border: 1px solid #b8892a;
+    border-left: 3px solid #7a1f1f;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: 'Crimson Text', Georgia, serif;
+    color: #1e1408;
+}
+.sem-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin-bottom: 0.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card {
+    border-bottom: 1px solid #d4c090;
+    padding: 0.65rem 0;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+.sem-card-thumb {
+    width: 72px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #d4c090;
+    display: block;
+}
+.sem-card-num {
+    font-size: 0.72rem;
+    color: #8a7355;
+    min-width: 1.4rem;
+    font-family: 'Crimson Text', Georgia, serif;
+    flex-shrink: 0;
+}
+.sem-card-body { flex: 1; min-width: 0; }
+.sem-card-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #7a1f1f;
+    text-decoration: none;
+    display: block;
+    line-height: 1.3;
+}
+.sem-card-title:hover { text-decoration: underline; }
+.sem-card-meta {
+    font-size: 0.78rem;
+    color: #8a7355;
+    margin: 0.1rem 0 0.25rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-card-snippet {
+    font-size: 0.87rem;
+    color: #3a2a15;
+    line-height: 1.55;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-citations-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8a7355;
+    margin: 0.85rem 0 0.3rem;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+.sem-result-count {
+    font-size: 0.75rem;
+    color: #8a7355;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Crimson Text', Georgia, serif;
+    margin-bottom: 0.4rem;
+}
+.sem-more-btn {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.45rem 1.4rem;
+    background: none;
+    border: 1px solid #b8892a;
+    color: #7a1f1f;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 150ms, color 150ms;
+}
+.sem-more-btn:hover { background: #7a1f1f; color: #f7f0d8; }
+.sem-error {
+    color: #7a1f1f;
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: 'Crimson Text', Georgia, serif;
 }
 
 /* ── Section rule ── */
@@ -618,8 +759,6 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
     .navbar { padding: 0 1rem; }
 }
 </style>
-<link href="../pagefind/pagefind-ui.css" rel="stylesheet">
-<script src="../pagefind/pagefind-ui.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -628,16 +767,14 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
   <a class="navbar-search-link" href="../index.html" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></a>
 </nav>
 
-  <div class="article-container" id="main-content" data-pagefind-body
-       data-pagefind-meta="issue:January 2026"
-       data-pagefind-filter="issue[data-pagefind-meta]">
-    <aside class="scan-panel" data-pagefind-ignore><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/january-2026/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;41</div><a href="../pages/january-2026/page-41.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-41.jpg" alt="Page 41" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-41.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
+  <div class="article-container" id="main-content">
+    <aside class="scan-panel"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;40</div><a href="../pages/january-2026/page-40.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-40.jpg" alt="Page 40" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-40.jpg" target="_blank">Open full resolution &nearr;</a></div></div><hr class="scan-divider"><div class="scan-panel-item"><div class="scan-panel-label">Original scan &middot; Page&nbsp;41</div><a href="../pages/january-2026/page-41.jpg" target="_blank" title="Open full resolution"><img src="../pages/january-2026/page-41.jpg" alt="Page 41" loading="lazy"></a><div class="scan-panel-caption"><a href="../pages/january-2026/page-41.jpg" target="_blank">Open full resolution &nearr;</a></div></div></aside>
     <div class="text-panel">
       <div class="text-panel-inner">
-        <nav class="breadcrumb" aria-label="Breadcrumb" data-pagefind-ignore><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2026.html">January 2026</a><span class="breadcrumb-sep">&rsaquo;</span><span>MCP 2.0: Transforming DQL-Ready Data into AI-Ready Systems</span></nav>
+        <nav class="breadcrumb" aria-label="Breadcrumb"><a href="../index.html">Informatics</a><span class="breadcrumb-sep">&rsaquo;</span><a href="../issues/january-2026.html">January 2026</a><span class="breadcrumb-sep">&rsaquo;</span><span>MCP 2.0: Transforming DQL-Ready Data into AI-Ready Systems</span></nav>
         <div class="article-header">
           <div class="article-section-badge">Technology Update</div>
-          <h1 class="article-title" data-pagefind-meta="title">MCP 2.0: Transforming DQL-Ready Data into AI-Ready Systems</h1>
+          <h1 class="article-title">MCP 2.0: Transforming DQL-Ready Data into AI-Ready Systems</h1>
           <hr class="title-rule">
           <p class="article-byline">By Edited by MOHAN DAS VISWAM &bull; pp. 40–41</p>
           <p class="article-issue-link">
@@ -648,7 +785,125 @@ figure.article-image figcaption { font-size: 0.8rem; color: #8a7355; font-style:
         <div class="article-body" id="article-body">
           <p class="first-para">Artificial Intelligence (AI) systems— particularly Large Language Models (LLMs)—have made remarkable advances in understanding, interpreting, and generating human language. These models are now widely deployed across domains for tasks such as information retrieval, document summarization, decision support, content generation, and conversational user interfaces. Their ability to reason over vast amounts of text and respond in natural language has significantly enhanced productivity and accessibility in both consumer and professional settings. However, despite these advances, LLMs fundamentally operate as isolated computational systems. By design, they lack a native, standardized, and secure mechanism to interact directly with external tools, live databases, enterprise applications, APIs, or operational workflows. As a result, while LLMs can recommend or describe actions, they cannot reliably execute them within real-world systems without extensive external scaffolding. MCP is an open standard that allows AI models to securely connect with external tools, data, and systems. By replacing complex, custom integrations with a unified client–server architecture, MCP enables safe, scalable, and governed AI interactions. It transforms AI from a standalone language model into a reliable, action-capable system suitable for enterprise and mission-critical use. This limitation severely constrains the practical deployment of AI in real-world and enterprise environments, where access to real-time data, controlled system actions, and compliance with organizational policies are critical. Existing integration approaches typically rely on custom-built connectors, bespoke middleware, or tightly coupled interfaces. These solutions are often brittle, difficult to scale across multiple models or tools, expensive to maintain, and introduce significant risks related to security, access control, auditing, and long-term governance. The Model Context Protocol (MCP) addresses these challenges by introducing an open, standardized communication framework that enables AI models to interact with external systems in a secure, governed, and interoperable manner. By serving as a common interface between AI models and real-world tools, data sources, and workflows, MCP eliminates the need for ad-hoc integrations and enforces a clear separation between AI reasoning and system execution. This architectural approach allows AI systems to move beyond passive language understanding and evolve into reliable, action-oriented applications—capable of operating within enterprise-grade constraints while maintaining trust, security, and scalability. The Core Problem Understanding the N × M Problem Before MCP, integrating AI systems with external tools suffered from a major scalability issue known as the N<em> × M</em> problem: <em>N: Number of AI models (e.g., GPT, Claude, Gemini) </em>M: Number of tools or data sources (e.g., APIs, databases, CRMs, file systems) Each AI model required a custom integration for every external tool. Example: • 3 AI models × 5 tools = 15 separate integrations • High maintenance overhead • Increased cost • Greater risk of errors • Significant security exposure MCP’s Architectural Solution MCP replaces this complexity with a 1 × M or N × 1 architecture: • Tools implement MCP once • Any MCP-compatible AI model can immediately use them This approach dramatically simplifies integration, improves maintainability, and strengthens security. What is the MCP? MCP is an open, standardized communication protocol that enables AI models to securely interact with external systems, tools, and data sources. Built on JSON-RPC 2.0, MCP defines a consistent client–server framework through which AI applications can discover and invoke external capabilities in a controlled manner. MCP provides a unified way to expose tools, data resources, and structured prompts to AI models, while maintaining a clear separation between AI reasoning and system execution. AI models do not directly access infrastructure or APIs; instead, all interactions are mediated through MCP servers that validate and govern each request. By connecting AI models to authoritative, real-time data and controlled actions, MCP helps reduce unreliable outputs and enables dependable, task-oriented AI behavior. This makes MCP particularly suitable for enterprise and government environments where security, auditability, and scalability are essential. MCP Architecture Overview MCP Client The MCP Client represents the AI-facing component of the Model Context Protocol. It is typically embedded within an AI application, agent framework, or LLM runtime and is responsible for managing interactions between the AI model and external systems. Using a standardized JSON-RPC 2.0 interface, the MCP Client sends structured requests to MCP Servers to access tools, retrieve data, or execute predefined actions. It supports dynamic discovery of available capabilities, allowing the AI application to adapt at runtime without relying on hard-coded integrations. Importantly, the MCP Client does not directly interact with infrastructure or external APIs. All real-world actions are delegated to MCP Servers, ensuring a strict separation between AI reasoning and system execution. MCP Server The MCP Server acts as the secure and authoritative gateway between AI models and real-world systems. It exposes well-defined and discoverable capabilities while preventing direct access to underlying infrastructure. The server is responsible for validating requests, enforcing permissions, and executing approved actions initiated by AI models. It can encapsulate a wide range of backend systems, including APIs, databases, file systems, business logic, and internal services, and present them in a standardized, AI-ready form. By centralizing control and execution, the MCP Server enables organizations to integrate AI into existing architectures without redesigning systems, while maintaining strong security, governance, and auditability. Communication Layer The Communication Layer forms the foundation of the Model Context Protocol and is built on JSON-RPC 2.0, a lightweight and widely adopted standard for structured communication. This layer enables reliable, bidirectional communication between MCP Clients and Servers in a language-agnostic manner, allowing implementations across diverse platforms and programming environments. It introduces only minimal abstractions for tools, resources, and prompts, ensuring simplicity and ease of adoption. Through its standardized and extensible design, the communication layer ensures interoperability, scalability, and long-term stability for AI-system interactions. Security and Governance in MCP Security is a first-class principle in the Model Context Protocol. Its key features are: • Role-Based Access Control (RBAC) • Capability scoping • No direct system access by LLMs • Server-side validation of all actions • Auditable execution trails At no point does the AI model directly interact with infrastructure. All access is mediated through controlled MCP interfaces, ensuring compliance and trust. The Future of MCP The Model Context Protocol (MCP) is emerging as a foundational infrastructure layer for next-generation AI systems, enabling the development of autonomous agents that can plan, reason, and execute tasks across multiple steps. By providing a standardized and governed interface to external tools and systems, MCP allows AI models to operate reliably within real-world environments rather than responding to isolated prompts. MCP also enables robust multi-step reasoning, allowing AI systems to iteratively interact with data, tools, and workflows while maintaining a strict separation between reasoning and execution. This structured approach ensures controlled access to authoritative data and predictable system behavior. At the enterprise level, MCP serves as a core building block for scalable, secure, and interoperable AI platforms. By replacing fragmented integrations with a unified protocol, it allows organizations to deploy AI across systems and vendors without compromising governance or compliance. As AI evolves from conversational chatbots to action-oriented “do-bots,” MCP provides the essential infrastructure to safely connect intelligence with execution—transforming AI into a trusted, action-capable participant in real-world workflows. Way Forward MCP represents a decisive shift in how artificial intelligence systems engage with the real world. By resolving long-standing challenges related to integration complexity, security governance, and scalability, it establishes the foundational infrastructure needed to move beyond isolated language models. MCP elevates AI from a passive source of insight to a secure, reliable, and action-capable agent, capable of interacting with live systems, data, and workflows under well-defined controls. As AI adoption expands into mission-critical domains, MCP stands out as a key enabling standard—allowing intelligence to operate with trust, precision, and real-world impact.</p>
         </div>
-        <nav class="article-nav" aria-label="Article navigation" data-pagefind-ignore><a class="article-nav-link prev" href="dyslexia-friendly-ui-ux-design-standards-and-engineering-guidance-for-inclusive-digital-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Dyslexia‑Friendly UI/UX: Design Standards and Engineering Guidance for Inclusive Digital Governance</span></a><a class="article-nav-link next" href="appscape-introduction-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Appscape Introduction</span></a></nav>
+        <nav class="article-nav" aria-label="Article navigation"><a class="article-nav-link prev" href="dyslexia-friendly-ui-ux-design-standards-and-engineering-guidance-for-inclusive-digital-governance-january-2026.html"><span class="article-nav-dir">&larr; Previous</span><span class="article-nav-title">Dyslexia‑Friendly UI/UX: Design Standards and Engineering Guidance for Inclusive Digital Governance</span></a><a class="article-nav-link next" href="appscape-introduction-january-2026.html"><span class="article-nav-dir">Next &rarr;</span><span class="article-nav-title">Appscape Introduction</span></a></nav>
+        <p class="section-rule">Search the Archive</p>
+        <div class="search-wrap">
+      <div class="sem-tabs" role="tablist">
+        <button class="sem-tab active" id="tab-search" role="tab" aria-selected="true" onclick="semSwitchTab('search')">Search</button>
+        <button class="sem-tab" id="tab-ask" role="tab" aria-selected="false" onclick="semSwitchTab('ask')">Ask</button>
+      </div>
+      <div class="sem-form">
+        <input class="sem-input" id="sem-input" type="text" autocomplete="off"
+               placeholder="Search 30 years of NIC Informatics…"
+               onkeydown="if(event.key==='Enter')semSubmit()">
+        <button class="sem-btn" id="sem-btn" onclick="semSubmit()">Search</button>
+      </div>
+      <div class="sem-status" id="sem-status"></div>
+      <div class="sem-results" id="sem-results"></div>
+    </div>
+
+  <script>
+    const WORKER = document.querySelector('meta[name="worker-url"]').content;
+    const _ROOT = '../';
+    let _mode = 'search';
+
+    function semSwitchTab(mode) {
+      _mode = mode;
+      document.getElementById('tab-search').classList.toggle('active', mode === 'search');
+      document.getElementById('tab-ask').classList.toggle('active', mode === 'ask');
+      document.getElementById('tab-search').setAttribute('aria-selected', mode === 'search');
+      document.getElementById('tab-ask').setAttribute('aria-selected', mode === 'ask');
+      document.getElementById('sem-btn').textContent = mode === 'ask' ? 'Ask' : 'Search';
+      document.getElementById('sem-input').placeholder = mode === 'ask'
+        ? 'Ask anything about NIC’s history…'
+        : 'Search 30 years of NIC Informatics…';
+      document.getElementById('sem-results').innerHTML = '';
+      document.getElementById('sem-status').textContent = '';
+    }
+
+    async function semSubmit() {
+      const q = document.getElementById('sem-input').value.trim();
+      if (!q) return;
+      const btn = document.getElementById('sem-btn');
+      const status = document.getElementById('sem-status');
+      const results = document.getElementById('sem-results');
+      btn.disabled = true;
+      status.textContent = _mode === 'ask' ? 'Searching sources and composing answer…' : 'Searching…';
+      results.innerHTML = '';
+      try {
+        const resp = await fetch(WORKER + '/' + _mode, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, limit: 24 })
+        });
+        if (!resp.ok) throw new Error('Worker error ' + resp.status);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        status.textContent = '';
+        if (_mode === 'search') renderSearch(data);
+        else renderAsk(data);
+      } catch(e) {
+        status.textContent = '';
+        results.innerHTML = '<p class="sem-error">Search unavailable: ' + e.message + '</p>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function relUrl(u) { return _ROOT + u.replace(/^\//, ''); }
+
+    function issueSlug(d) { return d.toLowerCase().replace(' ', '-'); }
+
+    function thumbImg(d) {
+      const slug = issueSlug(d);
+      return `<img class="sem-card-thumb" src="${_ROOT}pages/${slug}/page-1.jpg" loading="lazy" alt="${esc(d)} cover" onerror="this.style.display='none'">`;
+    }
+
+    let _allResults = [];
+    const _PAGE = 8;
+
+    function renderSearch(items) {
+      if (!items.length) { document.getElementById('sem-results').innerHTML = '<p class="sem-error">No results found.</p>'; return; }
+      _allResults = items;
+      _renderVisible(_PAGE);
+    }
+
+    function _renderVisible(upTo) {
+      const visible = _allResults.slice(0, upTo);
+      const hasMore = upTo < _allResults.length;
+      const countLine = `<div class="sem-result-count">Showing ${visible.length} of ${_allResults.length} result${_allResults.length === 1 ? '' : 's'}</div>`;
+      const cards = visible.map(r => `
+        <div class="sem-card">
+          ${thumbImg(r.issue_date)}
+          <div class="sem-card-body">
+            <a class="sem-card-title" href="${relUrl(esc(r.url))}">${esc(r.title)}</a>
+            <div class="sem-card-meta">${esc(r.issue_date)}</div>
+            <div class="sem-card-snippet">${esc((r.body_snippet||'').slice(0,350))}&hellip;</div>
+          </div>
+        </div>`).join('');
+      const btn = hasMore
+        ? `<button class="sem-more-btn" onclick="_renderVisible(${upTo + _PAGE})">Show more results</button>`
+        : '';
+      document.getElementById('sem-results').innerHTML = countLine + cards + btn;
+    }
+
+    function renderAsk(data) {
+      const cites = (data.citations || []).map((c, i) =>
+        `<div class="sem-card">
+           ${thumbImg(c.issue_date)}
+           <div class="sem-card-body">
+             <div class="sem-card-num">${i+1}.</div>
+             <a class="sem-card-title" href="${relUrl(esc(c.url))}">${esc(c.title)}</a>
+             <div class="sem-card-meta">${esc(c.issue_date)}</div>
+           </div>
+         </div>`).join('');
+      document.getElementById('sem-results').innerHTML =
+        `<div class="sem-answer-box"><div class="sem-answer-label">Answer</div>${esc(data.answer)}</div>` +
+        (cites ? `<div class="sem-citations-label">Sources</div>${cites}` : '');
+    }
+  </script>
       </div>
     </div>
   </div>
