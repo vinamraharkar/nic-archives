@@ -31,6 +31,7 @@ DOCS_ARTICLES   = DOCS_DIR / 'articles'
 DOCS_ISSUES     = DOCS_DIR / 'issues'
 DOCS_PAGES_DIR  = DOCS_DIR / 'pages'
 WORKER_URL      = 'https://nic-archives-search.nicarchives.workers.dev'
+R2_PAGES_URL    = 'https://pub-aeebc89b75274bada82104943378de01.r2.dev'
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,
@@ -1125,7 +1126,7 @@ def _search_widget_html(depth: int = 0) -> str:
 
     function thumbImg(d) {{
       const slug = issueSlug(d);
-      return `<img class="sem-card-thumb" src="${{_ROOT}}pages/${{slug}}/page-1.jpg" loading="lazy" alt="${{esc(d)}} cover" onerror="this.style.display='none'">`;
+      return `<img class="sem-card-thumb" src="{R2_PAGES_URL}/pages/${{slug}}/page-1.jpg" loading="lazy" alt="${{esc(d)}} cover" onerror="this.style.display='none'">`;
     }}
 
     let _allResults = [];
@@ -1192,7 +1193,7 @@ def render_index(issues_data: list) -> str:
         cover_path = DOCS_PAGES_DIR / slug / 'page-1.jpg'
         cover_html = (
             f'<div class="issue-card-cover">'
-            f'<img src="pages/{slug}/page-1.jpg" alt="{html_escape(issue["date"])} cover" loading="lazy">'
+            f'<img src="{R2_PAGES_URL}/pages/{slug}/page-1.jpg" alt="{html_escape(issue["date"])} cover" loading="lazy">'
             f'</div>'
         ) if cover_path.exists() else '<div class="issue-card-cover"></div>'
         cards.append(
@@ -1260,7 +1261,7 @@ def render_issue_page(issue_date: str, articles: list, page_images: list = None)
     if page_images:
         thumbs = []
         for n in page_images:
-            img_rel = f'../pages/{slug}/page-{n}.jpg'
+            img_rel = f'{R2_PAGES_URL}/pages/{slug}/page-{n}.jpg'
             thumbs.append(
                 f'<a class="page-thumb" href="{img_rel}" target="_blank" title="Open page {n}">'
                 f'<img src="{img_rel}" alt="Page {n}" loading="lazy">'
@@ -1425,7 +1426,7 @@ def get_scan_panel_html(issue_slug: str, pages: list, article_slug: str = '') ->
         if not page_path.exists():
             continue
 
-        full_rel = f'../pages/{issue_slug}/{full_name}'
+        full_rel = f'{R2_PAGES_URL}/pages/{issue_slug}/{full_name}'
         divider = '<hr class="scan-divider">' if i > 0 else ''
         items.append(
             f'{divider}'
@@ -1480,8 +1481,8 @@ def get_scan_viewer_html(issue_slug: str, pages: list, article_slug: str = '') -
                 _make_crop(page_path, bbox, crop_path)
 
             if crop_path.exists():
-                rel = f'../pages/{issue_slug}/{crop_name}'
-                full_rel = f'../pages/{issue_slug}/{full_name}'
+                rel = f'{R2_PAGES_URL}/pages/{issue_slug}/{crop_name}'
+                full_rel = f'{R2_PAGES_URL}/pages/{issue_slug}/{full_name}'
                 caption = f'Page {n} scan &mdash; <a href="{full_rel}" target="_blank" style="color:#8a7355;">view full page</a>'
                 items.append(
                     f'<div class="scan-page">'
@@ -1493,7 +1494,7 @@ def get_scan_viewer_html(issue_slug: str, pages: list, article_slug: str = '') -
                 )
                 continue
 
-        rel = f'../pages/{issue_slug}/{full_name}'
+        rel = f'{R2_PAGES_URL}/pages/{issue_slug}/{full_name}'
         caption = f'Page {n} &mdash; click to enlarge'
         items.append(
             f'<div class="scan-page">'
